@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg_default"
+    android:layoutAnimation="@anim/layout_animation_row_right_slide"
+    android:orientation="vertical" >
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="60dip"
+        android:layout_marginLeft="40dip"
+        android:background="@drawable/login_facebook"
+        android:onClick="onClickFacebook" />
+
+    <ImageButton
+        android:id="@+id/imagebutton_twitter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dip"
+        android:background="@drawable/login_linkedin"
+        android:onClick="onClickTwitter" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="60dip"
+        android:layout_marginRight="40dip"
+        android:background="@drawable/login_mail"
+        android:onClick="onClickMail" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/imagebutton_twitter"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dip"
+        android:text="CONNECT WITH..."
+        android:textColor="#909090"
+        android:textSize="20dip"
+        android:typeface="sans" />
+
+</RelativeLayout>
