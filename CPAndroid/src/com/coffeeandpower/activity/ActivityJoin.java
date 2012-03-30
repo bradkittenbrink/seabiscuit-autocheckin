@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.cont.ResponseData;
+import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.utils.HttpUtil;
 import com.coffeeandpower.views.CustomDialog;
 
@@ -34,7 +34,7 @@ public class ActivityJoin extends RootActivity{
 	private String rePassword;
 	private String nickName;
 
-	private ResponseData result;
+	private DataHolder result;
 
 	private Handler handler = new Handler(){
 		@Override

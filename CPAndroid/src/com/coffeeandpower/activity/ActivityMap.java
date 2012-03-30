@@ -1,6 +1,7 @@
 package com.coffeeandpower.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -25,16 +26,16 @@ public class ActivityMap extends MapActivity{
 	private static final int SCREEN_MAP = 1;
 
 	private HorizontalPager pager;
-	
+
 	// Map items
 	private MapView mapView;
 	private MapController mapController;
 	private MyOverlays itemizedoverlay;
 	private MyLocationOverlay myLocationOverlay;
 	private LocationManager locationManager;
-	
-	
-	
+
+
+
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
@@ -51,29 +52,29 @@ public class ActivityMap extends MapActivity{
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		Drawable drawable = this.getResources().getDrawable(R.drawable.loc_point);
 		itemizedoverlay = new MyOverlays(this, drawable);
-		
-		
+
+
 		// Views states
 		pager.setCurrentScreen(SCREEN_MAP, false);
-		
-		
+
+
 		// Set others
 		mapView.getOverlays().add(myLocationOverlay);
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new GeoUpdateHandler());
 		mapController = mapView.getController();
 		mapController.setZoom(12);
-		
+
 	}
 
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		myLocationOverlay.enableMyLocation();
 	}
 
-	
+
 	public class GeoUpdateHandler implements LocationListener {
 
 		@Override
@@ -101,8 +102,8 @@ public class ActivityMap extends MapActivity{
 			RootActivity.log("ActivityMap statusChanged");
 		}
 	}
-	
-	
+
+
 	private void createMarker() {
 		GeoPoint p = mapView.getMapCenter();
 		OverlayItem overlayitem = new OverlayItem(p, "", "");
@@ -111,8 +112,8 @@ public class ActivityMap extends MapActivity{
 			mapView.getOverlays().add(itemizedoverlay);
 		}
 	}
-	
-	
+
+
 	public void onClickSettings (View v){
 
 		if (pager.getCurrentScreen()==SCREEN_MAP){
@@ -120,37 +121,44 @@ public class ActivityMap extends MapActivity{
 		} else {
 			pager.setCurrentScreen(SCREEN_MAP, true);
 		}
-		
+
 	}
 
-	
+
 	public void onClickCheckIn (View v){
 		
+		if (myLocationOverlay.getMyLocation()!=null){
+			
+			Intent intent = new Intent(ActivityMap.this, ActivityCheckInList.class);
+			intent.putExtra("lat", myLocationOverlay.getMyLocation().getLatitudeE6());
+			intent.putExtra("lng", myLocationOverlay.getMyLocation().getLongitudeE6());
+			startActivity(intent);
+		}
 	}
-	
-	
+
+
 	public void onClickLocateMe (View v) {
 		mapController.animateTo(myLocationOverlay.getMyLocation());
 		mapController.setZoom(17);
 	}
-	
-	
+
+
 	public void onClickRefresh (View v) {
-		
+
 	}
-	
-	
+
+
 	public void onClickPeopleList (View v){
 
 	}
 
-	
+
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
 	}
 
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

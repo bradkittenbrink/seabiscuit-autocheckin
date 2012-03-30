@@ -15,6 +15,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.LayeredSocketFactory;
@@ -27,23 +28,182 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.cont.ResponseData;
+import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.Venue;
+import com.google.android.maps.GeoPoint;
 
 public class HttpUtil {
+
+
+	/**
+	 * Get venues near my location
+	 * @param gp GeoPoint with my coordinates
+	 * @param number of displayed venues
+	 * @return
+	 */
+	public static DataHolder getVenuesCloseToLocation(GeoPoint gp, int number){
+
+		double latFromGp = gp.getLatitudeE6() / 1E6;
+		double lngFromGp = gp.getLongitudeE6() / 1E6;
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		HttpClient client = getThreadSafeClient();
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpGet get = new HttpGet(AppCAP.URL_FOURSQUARE + "&limit=" + number + "&ll=" + latFromGp +"," + lngFromGp);
+
+		try {
+			// Execute HTTP Get Request
+			HttpResponse responseClient = client.execute(get);
+			HttpEntity resEntity = responseClient.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_getVenuesCloseToLocation " + responseString);
+
+			if (responseString!=null){
+				JSONObject json = new JSONObject(responseString);
+
+				JSONObject meta = json.optJSONObject("meta");
+				if (meta!=null){
+
+					int code = meta.optInt("code");
+					if (code==200){
+
+						JSONObject response = json.optJSONObject("response");
+						if (response!=null){
+
+							JSONArray venues = response.optJSONArray("venues");
+							if (venues!=null){
+
+								ArrayList<Venue> venuesArray = new ArrayList<Venue>();
+
+								for(int m=0; m<venues.length(); m++){
+
+									JSONObject venue = venues.optJSONObject(m);
+									if (venue!=null){
+
+										String id = venue.optString("id");
+										String name = venue.optString("name");
+										String address = "";
+										String crossStreet = "";
+										double lat = 0;
+										double lng = 0;
+										int  distance = 0;
+										String postalCode = "";
+										String city = "";
+										String state = "";
+										String country = "";
+										String categoryName = "";
+										String categoryPluralName = "";
+										String categoryShortName = "";
+										int checkinsCount = 0;
+										int usersCount = 0;
+										int tipCount = 0;
+										int hereNowCount = 0;
+										
+										
+										// Location Object
+										JSONObject locationObj = venue.optJSONObject("location");
+										if (locationObj!=null){
+
+										    address = locationObj.optString("address");
+										    crossStreet = locationObj.optString("crossStreet");
+											lat = locationObj.optDouble("lat");
+											lng = locationObj.optDouble("lng");
+											distance = locationObj.optInt("distance");
+											postalCode = locationObj.optString("postalCode");
+											city = locationObj.optString("city");
+											state = locationObj.optString("state");
+											country = locationObj.optString("country");
+										}
+
+										// Categories Array
+										JSONArray categoriesArray = venue.optJSONArray("categories");
+										if (categoriesArray!=null){
+
+											if (categoriesArray.length()>0){
+
+												JSONObject cat = categoriesArray.optJSONObject(0);
+												if (cat!=null){
+
+													categoryName = cat.optString("name");
+													categoryPluralName = cat.optString("pluralName");
+													categoryShortName = cat.optString("shortName");
+												}
+											}
+										}
+
+										// Stats Object
+										JSONObject statsObj = venue.optJSONObject("stats");
+										if (statsObj!=null){
+											
+											checkinsCount = statsObj.optInt("checkinsCount");
+											usersCount = statsObj.optInt("usersCount");
+											tipCount = statsObj.optInt("tipCount");
+										}
+
+										// HereNow Object
+										JSONObject hereNowObj = venue.optJSONObject("hereNow");
+										if (hereNowObj!=null){
+											
+											hereNowCount = hereNowObj.optInt("count");
+										}
+										
+										venuesArray.add(new Venue(id, name, address, crossStreet, lat, lng, distance, postalCode, city, state, 
+												country, categoryName, categoryPluralName, categoryShortName, checkinsCount, usersCount, tipCount, hereNowCount));
+									}
+								}
+								
+								result.setResponseCode(code);
+								result.setObject(venuesArray);
+								return result;
+							}
+						}
+
+					} else {
+						result.setResponseCode(code);
+						return result;
+					}
+
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+
+		}
+
+		return result;
+	}
 
 
 	/**
 	 * Get user data for logged user
 	 * @return
 	 */
-	public static ResponseData getUserData(){
+	public static DataHolder getUserData(){
 
-		ResponseData result = new ResponseData(AppCAP.HTTP_ERROR, "Internet connection error", null);
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
 		HttpClient client = getThreadSafeClient();
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
@@ -69,9 +229,7 @@ public class HttpUtil {
 
 				JSONObject json = new JSONObject(responseString);
 
-
 			}
-
 
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -104,10 +262,10 @@ public class HttpUtil {
 	 * @param nickName
 	 * @return
 	 */
-	public static ResponseData signup(String userName, String password, String nickName ){
+	public static DataHolder signup(String userName, String password, String nickName ){
 
-		ResponseData result = new ResponseData(AppCAP.HTTP_ERROR, "Internet connection error", null);
-		
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
 		HttpClient client = getThreadSafeClient();
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
@@ -139,14 +297,14 @@ public class HttpUtil {
 				JSONObject json = new JSONObject(responseString);
 				Boolean succeeded = json.optBoolean("succeeded");
 				String mess = json.optString("message");
-				
+
 				result.setResponseMessage(mess);
-				
+
 				if (succeeded){
-					
+
 					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 					return result;
-					
+
 				} else {
 					result.setResponseCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
 					return result;
@@ -183,9 +341,9 @@ public class HttpUtil {
 	 * @param password
 	 * @return
 	 */
-	public static ResponseData login(String userName, String password){
-		
-		ResponseData result = new ResponseData(AppCAP.HTTP_ERROR, "Internet connection error", null);
+	public static DataHolder login(String userName, String password){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
 		HttpClient client = getThreadSafeClient();
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
@@ -215,14 +373,14 @@ public class HttpUtil {
 				JSONObject json = new JSONObject(responseString);
 				Boolean succeeded = json.optBoolean("succeeded");
 				String mess = json.optString("message");
-				
+
 				result.setResponseMessage(mess);
-				
+
 				if (succeeded){
-					
+
 					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 					return result;
-					
+
 				} else {
 					result.setResponseCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
 					return result;
@@ -233,19 +391,19 @@ public class HttpUtil {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			return result;
-			
+
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 			return result;
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			return result;
-			
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return result;
-			
+
 		}
 
 		return result;

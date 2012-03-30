@@ -11,6 +11,7 @@ public class AppCAP extends Application{
 	private static final String TAG_USER_EMAIL_PASSWORD = "tag_user_email_password";
 	
 	public static final String URL_WEB_SERVICE = "https://www.coffeeandpower.com/"; // production
+	public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
 	public static final String URL_LOGIN = "login.php";
 	public static final String URL_SIGNUP= "signup.php";
 	public static final String URL_API = "api.php";
