@@ -160,9 +160,12 @@
         <com.coffeeandpower.views.CustomSeek
             android:id="@+id/seekbar_hours"
             android:layout_width="200dip"
+            style="@style/custom_seekbar_track"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/textview_how_long"
             android:layout_below="@+id/textview_how_long"
+            android:thumb="@drawable/check_in_slider_handle"
+            android:progressDrawable="@drawable/custom_seekbar"
             android:layout_marginTop="20dip" />
 
         <ImageView
