@@ -35,6 +35,7 @@ import org.json.JSONObject;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.Venue;
 import com.google.android.maps.GeoPoint;
 
@@ -208,22 +209,22 @@ public class HttpUtil {
 		HttpClient client = getThreadSafeClient();
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
-		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+		HttpGet post = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API+"?action=getUserData");
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>(1);
+		//List<NameValuePair> params = new ArrayList<NameValuePair>(1);
 
-		params.add(new BasicNameValuePair("action", "getUserData"));
+		//params.add(new BasicNameValuePair("action", "getUserData"));
 
 		try {
 
-			post.setEntity(new UrlEncodedFormEntity(params));
+			//post.setEntity(new UrlEncodedFormEntity(params));
 
 			// Execute HTTP Post Request
 			HttpResponse response = client.execute(post);
 			HttpEntity resEntity = response.getEntity();  
 
 			String responseString = EntityUtils.toString(resEntity); 
-			RootActivity.log(EntityUtils.toString(post.getEntity())+":"+responseString);
+			RootActivity.log("HttpUtil_getUserData: " +responseString);
 
 			if (responseString!=null){
 
@@ -290,7 +291,7 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();  
 
 			String responseString = EntityUtils.toString(resEntity); 
-			RootActivity.log(EntityUtils.toString(post.getEntity())+":"+responseString);
+			RootActivity.log("HttpUtil_signup: " + EntityUtils.toString(post.getEntity())+":"+responseString);
 
 			if (responseString!=null){
 
@@ -366,7 +367,7 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();  
 
 			String responseString = EntityUtils.toString(resEntity); 
-			RootActivity.log(EntityUtils.toString(post.getEntity())+":"+responseString);
+			RootActivity.log("HttpUtil_login: " + EntityUtils.toString(post.getEntity())+":"+responseString);
 
 			if (responseString!=null){
 
@@ -377,7 +378,20 @@ public class HttpUtil {
 				result.setResponseMessage(mess);
 
 				if (succeeded){
-
+					
+					JSONObject paramsObj = json.optJSONObject("params");
+					if (paramsObj!=null){
+						
+						JSONObject userObj = paramsObj.optJSONObject("user");
+						if (userObj!=null){
+							
+							int userId = userObj.optInt("id");
+							String nickName = userObj.optString("nickname");
+							
+							result.setObject(new User(userId, nickName));
+						}
+					}
+					
 					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 					return result;
 
@@ -410,7 +424,49 @@ public class HttpUtil {
 	}
 
 
+	/**
+	 * Logout current user
+	 * @return
+	 */
+	public static DataHolder logout(){
+		
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+		
+		HttpClient client = getThreadSafeClient();
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
+		HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_LOGOUT);
+
+		try {
+			// Execute HTTP Get Request
+			HttpResponse response = client.execute(get);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_logout: " +responseString);
+
+			if (responseString!=null){
+
+			}
+
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+		} 
+		
+		return result;
+	}
+
+	
 	/**
 	 * Returns the Http client that is safe to use with threads
 	 * @return

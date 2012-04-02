@@ -36,7 +36,7 @@
         android:background="@drawable/login_mail"
         android:onClick="onClickMail" />
 
-    <TextView
+    <com.coffeeandpower.views.CustomFontView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/imagebutton_twitter"
@@ -44,7 +44,7 @@
         android:layout_marginBottom="20dip"
         android:text="CONNECT WITH..."
         android:textColor="#909090"
-        android:textSize="20dip"
+        android:textSize="26dip"
         android:typeface="sans" />
 
 </RelativeLayout>

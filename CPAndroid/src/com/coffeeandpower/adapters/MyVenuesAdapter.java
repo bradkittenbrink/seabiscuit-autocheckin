@@ -11,7 +11,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.coffeeandpower.R;
-import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.Venue;
 
 public class MyVenuesAdapter extends BaseAdapter{

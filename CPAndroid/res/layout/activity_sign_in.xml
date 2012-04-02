@@ -22,14 +22,14 @@
             android:text="Back"
             android:textColor="#ffffff" />
 
-        <TextView
+        <com.coffeeandpower.views.CustomFontView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="Sign In"
             android:textColor="#ffffff"
-            android:textSize="18dip" />
+            android:textSize="25dip" />
 
         <Button
             android:layout_width="wrap_content"

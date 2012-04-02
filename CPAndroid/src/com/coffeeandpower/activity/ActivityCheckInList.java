@@ -4,10 +4,17 @@ import java.util.ArrayList;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LayoutAnimationController;
+import android.view.animation.TranslateAnimation;
+import android.widget.ListView;
 
 import com.coffeeandpower.R;
 import com.coffeeandpower.adapters.MyVenuesAdapter;
@@ -39,6 +46,7 @@ public class ActivityCheckInList extends ListActivity{
 				
 				adapter = new MyVenuesAdapter(ActivityCheckInList.this, (ArrayList<Venue>) dh.getObject());
 				setListAdapter(adapter);
+				animateListView(getListView());
 			}
 		}
 		
@@ -78,6 +86,18 @@ public class ActivityCheckInList extends ListActivity{
 
 	}
 
+	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		
+		Intent intent = new Intent (ActivityCheckInList.this, ActivityCheckIn.class);
+		intent.putExtra("venue", (Venue)adapter.getItem(position));
+		startActivity(intent);
+	}
+
+
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -94,5 +114,22 @@ public class ActivityCheckInList extends ListActivity{
 		super.onDestroy();
 	}
 
+	private void animateListView(ListView lv){
+		AnimationSet set = new AnimationSet(true);
+
+		Animation animation = new AlphaAnimation(0.0f, 1.0f);
+		animation.setDuration(150);
+		set.addAnimation(animation);
+
+		animation = new TranslateAnimation(
+				Animation.RELATIVE_TO_SELF, 0.0f,Animation.RELATIVE_TO_SELF, 0.0f,
+				Animation.RELATIVE_TO_SELF, -1.0f,Animation.RELATIVE_TO_SELF, 0.0f
+				);
+		animation.setDuration(300);
+		set.addAnimation(animation);
+
+		LayoutAnimationController controller = new LayoutAnimationController(set, 0.5f);       
+		lv.setLayoutAnimation(controller);
+	}
 
 }

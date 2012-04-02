@@ -8,12 +8,12 @@ import android.os.Message;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.User;
 import com.coffeeandpower.utils.HttpUtil;
 import com.coffeeandpower.views.CustomDialog;
 
@@ -57,6 +57,8 @@ public class ActivitySignInViaMail extends RootActivity{
 				textViewErrorMsg.setVisibility(View.INVISIBLE);
 				
 				Intent intent = new Intent(ActivitySignInViaMail.this, ActivityMap.class);
+				User user = (User) result.getObject();
+				intent.putExtra("user", user);
 				startActivity(intent);
 				finish();
 				

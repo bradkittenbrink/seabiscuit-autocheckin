@@ -1,6 +1,8 @@
 package com.coffeeandpower.cont;
 
-public class Venue {
+import java.io.Serializable;
+
+public class Venue implements Serializable{
 
 	private String id;
 	private String name;
@@ -26,6 +28,13 @@ public class Venue {
 	private int tipCount;
 	private int hereNowCount;
 
+	/**
+	 * Create empty venue obj
+	 */
+	public Venue(){
+		this("","","","",0,0,0,"","","","","","","",0,0,0,0);
+	}
+	
 	/**
 	 * Venue constructor
 	 * @param id

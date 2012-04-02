@@ -8,10 +8,15 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
+import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.cont.User;
 import com.coffeeandpower.maps.MyOverlays;
+import com.coffeeandpower.utils.HttpUtil;
+import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPager;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -21,10 +26,13 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 
 public class ActivityMap extends MapActivity{
-
+	
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_MAP = 1;
 
+	// Views
+	private CustomFontView textNickName;
+	
 	private HorizontalPager pager;
 
 	// Map items
@@ -34,7 +42,7 @@ public class ActivityMap extends MapActivity{
 	private MyLocationOverlay myLocationOverlay;
 	private LocationManager locationManager;
 
-
+	private User loggedUser;
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -46,9 +54,19 @@ public class ActivityMap extends MapActivity{
 		super.onCreate(icicle);
 		setContentView(R.layout.activity_map);
 
+		
+		// Get data from Intent
+		Bundle extras = getIntent().getExtras();
+		if (extras!=null){
+			loggedUser = (User) extras.getSerializable("user");
+			//HttpUtil.getUserData();
+		}
+		
+		
 		// Views
 		pager = (HorizontalPager) findViewById(R.id.pager);
 		mapView = (MapView) findViewById(R.id.mapview);
+		textNickName = (CustomFontView) findViewById(R.id.text_nick_name);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		Drawable drawable = this.getResources().getDrawable(R.drawable.loc_point);
 		itemizedoverlay = new MyOverlays(this, drawable);
@@ -56,7 +74,7 @@ public class ActivityMap extends MapActivity{
 
 		// Views states
 		pager.setCurrentScreen(SCREEN_MAP, false);
-
+		textNickName.setText(loggedUser.getNickName());
 
 		// Set others
 		mapView.getOverlays().add(myLocationOverlay);
@@ -64,6 +82,8 @@ public class ActivityMap extends MapActivity{
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new GeoUpdateHandler());
 		mapController = mapView.getController();
 		mapController.setZoom(12);
+		
+		
 
 	}
 
@@ -83,8 +103,7 @@ public class ActivityMap extends MapActivity{
 			int lng = (int) (location.getLongitude() * 1E6);
 			GeoPoint point = new GeoPoint(lat, lng);
 
-
-			RootActivity.log("ActivityMap locationChanged: " + lat+":"+lng);
+			//RootActivity.log("ActivityMap locationChanged: " + lat+":"+lng);
 		}
 
 		@Override
@@ -124,7 +143,28 @@ public class ActivityMap extends MapActivity{
 
 	}
 
+	
+	public void onClickAccountSettings (View v){
+		
+		Toast.makeText(this, "onClickAccountSettings", Toast.LENGTH_SHORT).show();
+	}
 
+	
+	public void onClickWallet (View v){
+		
+		Toast.makeText(this, "onClickWallet", Toast.LENGTH_SHORT).show();
+	}
+	
+	
+	public void onClickLogout (View v){
+	
+		//HttpUtil.logout();
+		AppCAP.setUserEmail("");
+		onBackPressed();
+		Toast.makeText(this, "onClickLogout", Toast.LENGTH_SHORT).show();
+	}
+	
+	
 	public void onClickCheckIn (View v){
 		
 		if (myLocationOverlay.getMyLocation()!=null){

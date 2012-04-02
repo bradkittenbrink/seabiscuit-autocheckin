@@ -8,8 +8,7 @@
         android:layout_width="60dp"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="27.2m" />
+        android:gravity="center_vertical|center_horizontal" />
 
     <TextView
         android:id="@+id/dummy_view"
@@ -33,15 +32,13 @@
             android:id="@+id/text_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Omladinski Stadion"
             android:textColor="#ffdddddd"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text_address"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Mije Kovacevic 10" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </RelativeLayout>
