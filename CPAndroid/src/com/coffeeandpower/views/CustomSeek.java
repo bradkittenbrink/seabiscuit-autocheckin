@@ -18,11 +18,24 @@ public class CustomSeek extends SeekBar{
 
 	private int viewWidth;
 
-
 	private int TEXT_VERT_OFFSET = 23;
 	private boolean lockSetProgress = false;
 
-
+	
+	public interface HoursChangeListener{
+		public void onHoursChange(int hours);
+	}
+	
+	HoursChangeListener hoursChangeListener = new HoursChangeListener() {
+		@Override
+		public void onHoursChange(int hours) {}
+	};
+	
+	public void setOnHoursChangeListener(HoursChangeListener hoursChangeListener){
+		this.hoursChangeListener = hoursChangeListener;
+	}
+	
+	
 	@Override
 	protected synchronized void onMeasure(int widthMeasureSpec,int heightMeasureSpec) {
 
@@ -64,6 +77,7 @@ public class CustomSeek extends SeekBar{
 				canvas.drawText("1", 1 * step - textRect.width() /2, TEXT_VERT_OFFSET, paintBig);
 				if (!lockSetProgress){
 					setProgress(9);
+					hoursChangeListener.onHoursChange(1);
 				}
 			} else {
 				canvas.drawText("1", 1 * step - textRect.width() /2, TEXT_VERT_OFFSET, paintNormal);
@@ -73,6 +87,7 @@ public class CustomSeek extends SeekBar{
 				canvas.drawText("3", 3 * step - textRect.width() /2, TEXT_VERT_OFFSET, paintBig);
 				if (!lockSetProgress){
 					setProgress(38);
+					hoursChangeListener.onHoursChange(3);
 				}
 			} else {
 				canvas.drawText("3", 3 * step - textRect.width() /2, TEXT_VERT_OFFSET, paintNormal);
@@ -82,6 +97,7 @@ public class CustomSeek extends SeekBar{
 				canvas.drawText("5", 5 * step - textRect.width() /2, TEXT_VERT_OFFSET, paintBig);
 				if (!lockSetProgress){
 					setProgress(67);
+					hoursChangeListener.onHoursChange(5);
 				}
 			} else {
 				canvas.drawText("5", 5 * step - textRect.width() /2, TEXT_VERT_OFFSET, paintNormal);
@@ -91,13 +107,13 @@ public class CustomSeek extends SeekBar{
 				canvas.drawText("7", 7 * step - textRect.width() /2, TEXT_VERT_OFFSET, paintBig);
 				if (!lockSetProgress){
 					setProgress(96);
+					hoursChangeListener.onHoursChange(7);
 				}
 			} else {
 				canvas.drawText("7", 7 * step - textRect.width() /2, TEXT_VERT_OFFSET, paintNormal);
 			}
 
 		}
-
 
 		//invalidate();
 		super.draw(canvas);
