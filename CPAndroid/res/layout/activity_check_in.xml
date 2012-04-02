@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
     <RelativeLayout
         android:id="@+id/dummy_layout"
@@ -50,25 +49,25 @@
             android:layout_margin="20dip"
             android:background="#77000000"
             android:orientation="vertical"
-            android:padding="10dip" >
+            android:padding="5dip" >
 
             <com.coffeeandpower.views.CustomFontView
                 android:id="@+id/textview_check_in"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CHECK IN AT"
-                android:textStyle="bold"
+                android:text="CHECK IN AT..."
                 android:textColor="#ffffff"
-                android:textSize="16dip" />
+                android:textSize="16dip"
+                android:textStyle="bold" />
 
             <com.coffeeandpower.views.CustomFontView
                 android:id="@+id/textview_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="dfgdfg"
-                android:textStyle="bold"
                 android:textColor="#ffffff"
-                android:textSize="14dip" />
+                android:textSize="14dip"
+                android:textStyle="bold" />
 
             <com.coffeeandpower.views.CustomFontView
                 android:id="@+id/textview_street"
@@ -81,13 +80,38 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/layout_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/dummy_layout_2"
+        android:background="#77000000"
+        android:visibility="visible" >
+
+        <ImageView
+            android:id="@+id/imageview_face"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="15dip"
+            android:background="@drawable/default_avatar25" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dip"
+            android:layout_toRightOf="@+id/imageview_face"
+            android:text="Who&apos;s here now?" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/dummy_layout_2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="#c3c3c3" >
 
-        <TextView
+        <com.coffeeandpower.views.CustomFontView
             android:id="@+id/textview_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -107,7 +131,7 @@
             android:layout_marginRight="20dip"
             android:hint="optional" />
 
-        <TextView
+        <com.coffeeandpower.views.CustomFontView
             android:id="@+id/textview_how_long"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -119,7 +143,7 @@
             android:textSize="17dip"
             android:textStyle="bold" />
 
-        <TextView
+        <com.coffeeandpower.views.CustomFontView
             android:id="@+id/textview_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -142,8 +166,8 @@
             android:layout_marginTop="20dip" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dip"
+            android:layout_height="80dip"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/textview_hours"
             android:background="@drawable/check_in_big" />
