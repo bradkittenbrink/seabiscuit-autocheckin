@@ -27,7 +27,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dip"
             android:background="@drawable/settings_button"
-            android:onClick="onClickList" />
+            android:onClick="onClickBack" />
     </RelativeLayout>
 
     <LinearLayout

@@ -157,9 +157,9 @@
             android:textColor="#42818b"
             android:textSize="17dip" />
 
-        <SeekBar
+        <com.coffeeandpower.views.CustomSeek
             android:id="@+id/seekbar_hours"
-            android:layout_width="150dip"
+            android:layout_width="200dip"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/textview_how_long"
             android:layout_below="@+id/textview_how_long"

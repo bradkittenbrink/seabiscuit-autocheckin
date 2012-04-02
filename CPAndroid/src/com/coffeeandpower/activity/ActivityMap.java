@@ -129,10 +129,10 @@ public class ActivityMap extends MapActivity{
 		myLocationOverlay.enableMyLocation();
 	}
 
-	
+
 	// We have user data from logged user, use it now...
 	public void useUserData(){
-		
+
 		textNickName.setText(loggedUser.getNickName());
 	}
 
@@ -187,7 +187,8 @@ public class ActivityMap extends MapActivity{
 
 	public void onClickAccountSettings (View v){
 
-		Toast.makeText(this, "onClickAccountSettings", Toast.LENGTH_SHORT).show();
+		Intent intent = new Intent(ActivityMap.this, ActivitySettings.class);
+		startActivity(intent);
 	}
 
 
