@@ -35,18 +35,17 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dummy_layout"
         android:layout_above="@+id/dummy_layout_2"
+        android:layout_below="@+id/dummy_layout"
         android:background="#55000000" >
 
         <com.google.android.maps.MapView
-            android:id="@+id/mapview_image"
+            android:id="@+id/imageview_mapview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:apiKey="0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q"
-            android:clickable="true" />
+            android:apiKey="0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q" />
 
-        <LinearLayout
+        <LinearLayout 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="20dip"
@@ -54,6 +53,7 @@
             android:padding="10dip" >
 
             <com.coffeeandpower.views.CustomFontView
+                android:id="@+id/textview_check_in"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="dfgdfg"
@@ -61,6 +61,7 @@
                 android:textSize="16dip" />
 
             <com.coffeeandpower.views.CustomFontView
+                android:id="@+id/textview_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="dfgdfg"
@@ -68,6 +69,7 @@
                 android:textSize="14dip" />
 
             <com.coffeeandpower.views.CustomFontView
+                android:id="@+id/textview_street"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="dfgdfg"
@@ -78,17 +80,55 @@
 
     <RelativeLayout
         android:id="@+id/dummy_layout_2"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentBottom="true"
+        android:background="#c3c3c3" >
 
-        <TextView
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:padding="10dip"
+            android:padding="8dip"
             android:text="What can you do, or what do you need?"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:textSize="17dip"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edittext_optional"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_text"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dip"
+            android:hint="optional" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_how_long"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edittext_optional"
+            android:layout_marginLeft="20dip"
+            android:layout_marginTop="5dip"
+            android:text="FOR HOW LONG?"
+            android:textColor="#666666"
+            android:textSize="17dip"
+            android:textStyle="bold" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/textview_how_long"
+            android:layout_below="@+id/edittext_optional"
+            android:layout_marginLeft="20dip"
+            android:layout_marginTop="5dip"
+            android:text="1 hour"
+            android:textColor="#42818b"
+            android:textSize="17dip"
+            android:textStyle="bold" />
     </RelativeLayout>
 
 </RelativeLayout>
