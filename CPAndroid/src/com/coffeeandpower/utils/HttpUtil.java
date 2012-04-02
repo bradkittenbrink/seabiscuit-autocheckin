@@ -13,6 +13,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -41,21 +42,29 @@ import com.google.android.maps.GeoPoint;
 
 public class HttpUtil {
 
-
+	private HttpClient client;
+	
+	
+	public HttpUtil(){
+		
+		this.client = getThreadSafeClient();
+	}
+	
+	
 	/**
 	 * Get venues near my location
 	 * @param gp GeoPoint with my coordinates
 	 * @param number of displayed venues
 	 * @return
 	 */
-	public static DataHolder getVenuesCloseToLocation(GeoPoint gp, int number){
+	public DataHolder getVenuesCloseToLocation(GeoPoint gp, int number){
 
 		double latFromGp = gp.getLatitudeE6() / 1E6;
 		double lngFromGp = gp.getLongitudeE6() / 1E6;
 
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
-		HttpClient client = getThreadSafeClient();
+		//HttpClient client = getThreadSafeClient();
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpGet get = new HttpGet(AppCAP.URL_FOURSQUARE + "&limit=" + number + "&ll=" + latFromGp +"," + lngFromGp);
@@ -108,14 +117,14 @@ public class HttpUtil {
 										int usersCount = 0;
 										int tipCount = 0;
 										int hereNowCount = 0;
-										
-										
+
+
 										// Location Object
 										JSONObject locationObj = venue.optJSONObject("location");
 										if (locationObj!=null){
 
-										    address = locationObj.optString("address");
-										    crossStreet = locationObj.optString("crossStreet");
+											address = locationObj.optString("address");
+											crossStreet = locationObj.optString("crossStreet");
 											lat = locationObj.optDouble("lat");
 											lng = locationObj.optDouble("lng");
 											distance = locationObj.optInt("distance");
@@ -144,7 +153,7 @@ public class HttpUtil {
 										// Stats Object
 										JSONObject statsObj = venue.optJSONObject("stats");
 										if (statsObj!=null){
-											
+
 											checkinsCount = statsObj.optInt("checkinsCount");
 											usersCount = statsObj.optInt("usersCount");
 											tipCount = statsObj.optInt("tipCount");
@@ -153,15 +162,15 @@ public class HttpUtil {
 										// HereNow Object
 										JSONObject hereNowObj = venue.optJSONObject("hereNow");
 										if (hereNowObj!=null){
-											
+
 											hereNowCount = hereNowObj.optInt("count");
 										}
-										
+
 										venuesArray.add(new Venue(id, name, address, crossStreet, lat, lng, distance, postalCode, city, state, 
 												country, categoryName, categoryPluralName, categoryShortName, checkinsCount, usersCount, tipCount, hereNowCount));
 									}
 								}
-								
+
 								result.setResponseCode(code);
 								result.setObject(venuesArray);
 								return result;
@@ -202,11 +211,11 @@ public class HttpUtil {
 	 * Get user data for logged user
 	 * @return
 	 */
-	public static DataHolder getUserData(){
+	public DataHolder getUserData(){
 
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
-		HttpClient client = getThreadSafeClient();
+		//HttpClient client = getThreadSafeClient();
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpGet post = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API+"?action=getUserData");
@@ -229,6 +238,8 @@ public class HttpUtil {
 			if (responseString!=null){
 
 				JSONObject json = new JSONObject(responseString);
+				
+				
 
 			}
 
@@ -263,11 +274,11 @@ public class HttpUtil {
 	 * @param nickName
 	 * @return
 	 */
-	public static DataHolder signup(String userName, String password, String nickName ){
+	public DataHolder signup(String userName, String password, String nickName ){
 
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
-		HttpClient client = getThreadSafeClient();
+		//HttpClient client = getThreadSafeClient();
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_SIGNUP);
@@ -342,11 +353,11 @@ public class HttpUtil {
 	 * @param password
 	 * @return
 	 */
-	public static DataHolder login(String userName, String password){
+	public DataHolder login(String userName, String password){
 
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
-		HttpClient client = getThreadSafeClient();
+		//HttpClient client = getThreadSafeClient();
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_LOGIN);
@@ -378,20 +389,20 @@ public class HttpUtil {
 				result.setResponseMessage(mess);
 
 				if (succeeded){
-					
+
 					JSONObject paramsObj = json.optJSONObject("params");
 					if (paramsObj!=null){
-						
+
 						JSONObject userObj = paramsObj.optJSONObject("user");
 						if (userObj!=null){
-							
+
 							int userId = userObj.optInt("id");
 							String nickName = userObj.optString("nickname");
-							
+
 							result.setObject(new User(userId, nickName));
 						}
 					}
-					
+
 					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 					return result;
 
@@ -428,11 +439,11 @@ public class HttpUtil {
 	 * Logout current user
 	 * @return
 	 */
-	public static DataHolder logout(){
-		
+	public DataHolder logout(){
+
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
-		
-		HttpClient client = getThreadSafeClient();
+
+		//HttpClient client = getThreadSafeClient();
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_LOGOUT);
@@ -462,17 +473,27 @@ public class HttpUtil {
 			e.printStackTrace();
 			return result;
 		} 
-		
+
 		return result;
 	}
 
-	
+
 	/**
 	 * Returns the Http client that is safe to use with threads
 	 * @return
 	 */
-	private static DefaultHttpClient getThreadSafeClient()  {
+	private Object mLock = new Object();
+	private CookieStore mCookie = null;
+
+	private  DefaultHttpClient getThreadSafeClient()  {
 		DefaultHttpClient client = new DefaultHttpClient();
+		synchronized (mLock) {
+			if (mCookie == null) {
+				mCookie = client.getCookieStore();
+			} else {
+				client.setCookieStore(mCookie);
+			}
+		}
 		ClientConnectionManager mgr = client.getConnectionManager();
 		HttpParams params = client.getParams();
 		client = new DefaultHttpClient(new ThreadSafeClientConnManager(params, mgr.getSchemeRegistry()), params);
@@ -482,7 +503,7 @@ public class HttpUtil {
 
 	}
 
-	private static void workAroundReverseDnsBugInHoneycombAndEarlier(org.apache.http.client.HttpClient client) {
+	private void workAroundReverseDnsBugInHoneycombAndEarlier(org.apache.http.client.HttpClient client) {
 		// Android had a bug where HTTPS made reverse DNS lookups (fixed in Ice Cream Sandwich) 
 		// http://code.google.com/p/android/issues/detail?id=13117
 		SocketFactory socketFactory = new LayeredSocketFactory() {

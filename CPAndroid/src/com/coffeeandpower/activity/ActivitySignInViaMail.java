@@ -13,8 +13,6 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.cont.User;
-import com.coffeeandpower.utils.HttpUtil;
 import com.coffeeandpower.views.CustomDialog;
 
 public class ActivitySignInViaMail extends RootActivity{
@@ -31,7 +29,7 @@ public class ActivitySignInViaMail extends RootActivity{
 	private String password;
 
 	private DataHolder result;
-
+	
 	private Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
@@ -57,8 +55,11 @@ public class ActivitySignInViaMail extends RootActivity{
 				textViewErrorMsg.setVisibility(View.INVISIBLE);
 				
 				Intent intent = new Intent(ActivitySignInViaMail.this, ActivityMap.class);
-				User user = (User) result.getObject();
-				intent.putExtra("user", user);
+				
+				// Get user data from login response
+				
+				// User user = (User) result.getObject();
+				// intent.putExtra("user", user);
 				startActivity(intent);
 				finish();
 				
@@ -84,6 +85,9 @@ public class ActivitySignInViaMail extends RootActivity{
 		textViewErrorMsg.setVisibility(View.INVISIBLE);
 		editTextEmail.setText(AppCAP.getUserEmail());
 		progress.setMessage("Logging in...");
+		
+		// Other
+		
 	}
 
 
@@ -106,7 +110,7 @@ public class ActivitySignInViaMail extends RootActivity{
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					result = HttpUtil.login(userName, password);
+					result = AppCAP.getConnection().login(userName, password);
 					if (result!=null){
 						handler.sendEmptyMessage(result.getResponseCode());
 					}

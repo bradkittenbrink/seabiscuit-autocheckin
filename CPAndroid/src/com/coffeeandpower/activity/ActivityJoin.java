@@ -12,7 +12,6 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.utils.HttpUtil;
 import com.coffeeandpower.views.CustomDialog;
 
 public class ActivityJoin extends RootActivity{
@@ -126,7 +125,7 @@ public class ActivityJoin extends RootActivity{
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						result = HttpUtil.signup(userName, password, nickName);
+						result = AppCAP.getConnection().signup(userName, password, nickName);
 						if (result!=null){
 							handler.sendEmptyMessage(result.getResponseCode());
 						}

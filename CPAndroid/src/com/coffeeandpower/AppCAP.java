@@ -1,5 +1,7 @@
 package com.coffeeandpower;
 
+import com.coffeeandpower.utils.HttpUtil;
+
 import android.app.Application;
 import android.content.SharedPreferences;
 
@@ -24,10 +26,23 @@ public class AppCAP extends Application{
 	
 	private static AppCAP instance;
 	
+	private HttpUtil http;
+	
 	public AppCAP(){
 		instance = this;
 	}
-
+	
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		
+		this.http = new HttpUtil();
+	}
+	
+	public static HttpUtil getConnection(){
+		return instance.http;
+	}
+	
 	private static SharedPreferences getSharedPreferences() {
 		return instance.getSharedPreferences(AppCAP.TAG, MODE_PRIVATE);
 	}

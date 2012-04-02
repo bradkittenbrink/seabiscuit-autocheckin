@@ -15,7 +15,6 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.maps.MyOverlays;
-import com.coffeeandpower.utils.HttpUtil;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPager;
 import com.google.android.maps.GeoPoint;
@@ -26,13 +25,13 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 
 public class ActivityMap extends MapActivity{
-	
+
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_MAP = 1;
 
 	// Views
 	private CustomFontView textNickName;
-	
+
 	private HorizontalPager pager;
 
 	// Map items
@@ -54,15 +53,15 @@ public class ActivityMap extends MapActivity{
 		super.onCreate(icicle);
 		setContentView(R.layout.activity_map);
 
-		
+
 		// Get data from Intent
 		Bundle extras = getIntent().getExtras();
 		if (extras!=null){
 			loggedUser = (User) extras.getSerializable("user");
-			//HttpUtil.getUserData();
+			AppCAP.getConnection().getUserData();
 		}
-		
-		
+
+
 		// Views
 		pager = (HorizontalPager) findViewById(R.id.pager);
 		mapView = (MapView) findViewById(R.id.mapview);
@@ -82,8 +81,6 @@ public class ActivityMap extends MapActivity{
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new GeoUpdateHandler());
 		mapController = mapView.getController();
 		mapController.setZoom(12);
-		
-		
 
 	}
 
@@ -143,32 +140,32 @@ public class ActivityMap extends MapActivity{
 
 	}
 
-	
+
 	public void onClickAccountSettings (View v){
-		
+
 		Toast.makeText(this, "onClickAccountSettings", Toast.LENGTH_SHORT).show();
 	}
 
-	
+
 	public void onClickWallet (View v){
-		
+
 		Toast.makeText(this, "onClickWallet", Toast.LENGTH_SHORT).show();
 	}
-	
-	
+
+
 	public void onClickLogout (View v){
-	
+
 		//HttpUtil.logout();
 		AppCAP.setUserEmail("");
 		onBackPressed();
 		Toast.makeText(this, "onClickLogout", Toast.LENGTH_SHORT).show();
 	}
-	
-	
+
+
 	public void onClickCheckIn (View v){
-		
+
 		if (myLocationOverlay.getMyLocation()!=null){
-			
+
 			Intent intent = new Intent(ActivityMap.this, ActivityCheckInList.class);
 			intent.putExtra("lat", myLocationOverlay.getMyLocation().getLatitudeE6());
 			intent.putExtra("lng", myLocationOverlay.getMyLocation().getLongitudeE6());
@@ -178,8 +175,10 @@ public class ActivityMap extends MapActivity{
 
 
 	public void onClickLocateMe (View v) {
-		mapController.animateTo(myLocationOverlay.getMyLocation());
-		mapController.setZoom(17);
+		if (myLocationOverlay!=null){
+			mapController.animateTo(myLocationOverlay.getMyLocation());
+			mapController.setZoom(17);
+		}
 	}
 
 

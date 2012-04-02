@@ -16,11 +16,11 @@ import android.view.animation.LayoutAnimationController;
 import android.view.animation.TranslateAnimation;
 import android.widget.ListView;
 
+import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.adapters.MyVenuesAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Venue;
-import com.coffeeandpower.utils.HttpUtil;
 import com.google.android.maps.GeoPoint;
 
 public class ActivityCheckInList extends ListActivity{
@@ -78,7 +78,7 @@ public class ActivityCheckInList extends ListActivity{
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					dh = HttpUtil.getVenuesCloseToLocation(gp, 20);
+					dh = AppCAP.getConnection().getVenuesCloseToLocation(gp, 20);
 					handler.sendEmptyMessage(dh.getResponseCode());
 				}
 			}).start();
