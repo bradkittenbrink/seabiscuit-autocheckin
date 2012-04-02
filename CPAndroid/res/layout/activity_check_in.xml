@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/dummy_layout_2"
         android:layout_below="@+id/dummy_layout"
-        android:background="#55000000" >
+         >
 
         <com.google.android.maps.MapView
             android:id="@+id/imageview_mapview"
@@ -50,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dip"
             android:orientation="vertical"
+            android:background="#55000000"
             android:padding="10dip" >
 
             <com.coffeeandpower.views.CustomFontView
