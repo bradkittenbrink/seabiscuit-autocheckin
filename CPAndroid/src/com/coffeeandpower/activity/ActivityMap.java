@@ -221,8 +221,10 @@ public class ActivityMap extends MapActivity{
 
 	public void onClickLocateMe (View v) {
 		if (myLocationOverlay!=null){
-			mapController.animateTo(myLocationOverlay.getMyLocation());
-			mapController.setZoom(17);
+			if (myLocationOverlay.getMyLocation()!=null){
+				mapController.animateTo(myLocationOverlay.getMyLocation());
+				mapController.setZoom(17);
+			}
 		}
 	}
 
