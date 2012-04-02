@@ -218,15 +218,14 @@ public class HttpUtil {
 		//HttpClient client = getThreadSafeClient();
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
-		HttpGet post = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API+"?action=getUserData");
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
-		//List<NameValuePair> params = new ArrayList<NameValuePair>(1);
-
-		//params.add(new BasicNameValuePair("action", "getUserData"));
+		List<NameValuePair> params = new ArrayList<NameValuePair>(1);
+		params.add(new BasicNameValuePair("action", "getUserData"));
 
 		try {
 
-			//post.setEntity(new UrlEncodedFormEntity(params));
+			post.setEntity(new UrlEncodedFormEntity(params));
 
 			// Execute HTTP Post Request
 			HttpResponse response = client.execute(post);
@@ -238,7 +237,30 @@ public class HttpUtil {
 			if (responseString!=null){
 
 				JSONObject json = new JSONObject(responseString);
-				
+				if (json!=null){
+					
+					int userId = json.optInt("userid");
+					String nickName = json.optString("nickname");
+					String userName = json.optString("username");
+					String statusText = json.optString("status_text");
+					String status = json.optString("status");
+					String active = json.optString("active");
+					String photo = json.optString("photo");
+					String photoLarge = json.optString("photo_large");
+					double lat = json.optDouble("lat");
+					double lng = json.optDouble("lng");
+					int favoriteEnabled = json.optInt("favorite_enabled");
+					int favoriteCount = json.optInt("favorite_count");
+					int myFavoriteCount = json.optInt("my_favorite_count");
+					int moneyReceived = json.optInt("money_received");
+					int offersPaid = json.optInt("offers_paid");
+					int balance = json.getInt("balance");
+					
+					result.setObject(new User(userId, favoriteEnabled, favoriteCount, myFavoriteCount, moneyReceived, 
+							offersPaid, balance, nickName, userName, statusText, status, active, photo, photoLarge, lat, lng));
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+					return result;
+				}
 				
 
 			}
@@ -258,9 +280,7 @@ public class HttpUtil {
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return result;
-
 		}
-
 
 		return result;
 	}
@@ -389,7 +409,7 @@ public class HttpUtil {
 				result.setResponseMessage(mess);
 
 				if (succeeded){
-
+					/*
 					JSONObject paramsObj = json.optJSONObject("params");
 					if (paramsObj!=null){
 
@@ -402,7 +422,7 @@ public class HttpUtil {
 							result.setObject(new User(userId, nickName));
 						}
 					}
-
+					 */
 					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 					return result;
 

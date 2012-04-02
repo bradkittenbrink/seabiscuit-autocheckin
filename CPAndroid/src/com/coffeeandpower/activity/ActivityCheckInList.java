@@ -26,55 +26,57 @@ import com.google.android.maps.GeoPoint;
 public class ActivityCheckInList extends ListActivity{
 
 	private static final int RESPONSE_OK = 200;
-	
+
 	private ProgressDialog progress;
-	
+
 	private DataHolder dh;
 	private MyVenuesAdapter adapter;
-	
+
 	private Handler handler = new Handler(){
 
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
-			
+
 			progress.dismiss();
-			
+
 			switch (msg.what){
-			
+
 			case RESPONSE_OK:
-				
-				adapter = new MyVenuesAdapter(ActivityCheckInList.this, (ArrayList<Venue>) dh.getObject());
-				setListAdapter(adapter);
-				animateListView(getListView());
+
+				if (dh.getObject()!=null){
+					adapter = new MyVenuesAdapter(ActivityCheckInList.this, (ArrayList<Venue>) dh.getObject());
+					setListAdapter(adapter);
+					animateListView(getListView());
+				}
 			}
 		}
-		
+
 	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_check_in_list);
-		
+
 		// Views
 		progress = new ProgressDialog(ActivityCheckInList.this);
-		
-		
+
+
 		// Views state
 		progress.setMessage("Searching nearest locations...");
-		
-		
+
+
 		// Getdata from Intent
 		Bundle extras = getIntent().getExtras();
 		if (extras!=null){
-			
+
 			int lng = extras.getInt("lng");
 			int lat = extras.getInt("lat");
-			
+
 			final GeoPoint gp = new GeoPoint(lat, lng);
 			progress.show();
-			
+
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -86,11 +88,11 @@ public class ActivityCheckInList extends ListActivity{
 
 	}
 
-	
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		
+
 		Intent intent = new Intent (ActivityCheckInList.this, ActivityCheckIn.class);
 		intent.putExtra("venue", (Venue)adapter.getItem(position));
 		startActivity(intent);
@@ -103,12 +105,12 @@ public class ActivityCheckInList extends ListActivity{
 		super.onResume();
 	}
 
-	
+
 	public void onClickCancel (View v){
 		onBackPressed();
 	}
-	
-	
+
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
