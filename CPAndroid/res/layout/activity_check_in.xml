@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/dummy_layout"
         android:layout_width="fill_parent"
         android:layout_height="45dip"
         android:background="@drawable/header" >
@@ -31,4 +32,63 @@
             android:textSize="25dip" />
     </RelativeLayout>
 
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dummy_layout"
+        android:layout_above="@+id/dummy_layout_2"
+        android:background="#55000000" >
+
+        <com.google.android.maps.MapView
+            android:id="@+id/mapview_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:apiKey="0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q"
+            android:clickable="true" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dip"
+            android:orientation="vertical"
+            android:padding="10dip" >
+
+            <com.coffeeandpower.views.CustomFontView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="dfgdfg"
+                android:textColor="#ffffff"
+                android:textSize="16dip" />
+
+            <com.coffeeandpower.views.CustomFontView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="dfgdfg"
+                android:textColor="#ffffff"
+                android:textSize="14dip" />
+
+            <com.coffeeandpower.views.CustomFontView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="dfgdfg"
+                android:textColor="#ffffff"
+                android:textSize="14dip" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/dummy_layout_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="10dip"
+            android:text="What can you do, or what do you need?"
+            android:textColor="#666666" />
+    </RelativeLayout>
+
+</RelativeLayout>
