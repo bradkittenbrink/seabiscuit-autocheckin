@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,14 +44,200 @@ import com.google.android.maps.GeoPoint;
 public class HttpUtil {
 
 	private HttpClient client;
-	
-	
+
+
 	public HttpUtil(){
-		
+
 		this.client = getThreadSafeClient();
+	}
+
+	
+	/**
+	 * Get users checked in venue
+	 * @param venue
+	 * @return
+	 */
+	public DataHolder getUsersCheckedInAtFoursquareID (Venue venue){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>(2);
+
+		try {
+			params.add(new BasicNameValuePair("action", "getUsersCheckedIn"));
+			params.add(new BasicNameValuePair("foursquare", URLEncoder.encode(venue.getId()+"", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_getUsersCheckedIn: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
 	}
 	
 	
+
+	/**
+	 * Check out user from location
+	 * @return
+	 */
+	public DataHolder checkOut(){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>(1);
+
+		try {
+			params.add(new BasicNameValuePair("action", "checkout"));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_checkOut: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Check in user to location
+	 * @return
+	 */
+	public DataHolder checkIn(Venue venue, int checkInTime, int checkOutTime, String statusText){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>(13);
+
+		try {
+			params.add(new BasicNameValuePair("action", "checkin"));
+			params.add(new BasicNameValuePair("lat", Double.toString(venue.getLat())));
+			params.add(new BasicNameValuePair("lng", Double.toString(venue.getLng())));
+			params.add(new BasicNameValuePair("venue_name", URLEncoder.encode(venue.getName()+"", "utf-8")));
+			params.add(new BasicNameValuePair("checkin", checkInTime + ""));
+			params.add(new BasicNameValuePair("checkout", checkOutTime + ""));
+			params.add(new BasicNameValuePair("foursquare", URLEncoder.encode(venue.getId()+"", "utf-8")));
+			params.add(new BasicNameValuePair("address", URLEncoder.encode(venue.getAddress()+"", "utf-8")));
+			params.add(new BasicNameValuePair("city", URLEncoder.encode(venue.getCity()+"", "utf-8")));
+			params.add(new BasicNameValuePair("state", URLEncoder.encode(venue.getState()+"", "utf-8")));
+			params.add(new BasicNameValuePair("zip", URLEncoder.encode(venue.getPostalCode()+"", "utf-8")));
+			params.add(new BasicNameValuePair("phone", ""));
+			params.add(new BasicNameValuePair("status", URLEncoder.encode(statusText+"", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_checkIn: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					String res = json.optString("response");
+					if (res.equals("1")){
+						result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+					}
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+
+		return result;
+
+	}
+
+
 	/**
 	 * Get venues near my location
 	 * @param gp GeoPoint with my coordinates
@@ -238,7 +425,7 @@ public class HttpUtil {
 
 				JSONObject json = new JSONObject(responseString);
 				if (json!=null){
-					
+
 					int userId = json.optInt("userid");
 					String nickName = json.optString("nickname");
 					String userName = json.optString("username");
@@ -255,13 +442,13 @@ public class HttpUtil {
 					int moneyReceived = json.optInt("money_received");
 					int offersPaid = json.optInt("offers_paid");
 					int balance = json.getInt("balance");
-					
+
 					result.setObject(new User(userId, favoriteEnabled, favoriteCount, myFavoriteCount, moneyReceived, 
 							offersPaid, balance, nickName, userName, statusText, status, active, photo, photoLarge, lat, lng));
 					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 					return result;
 				}
-				
+
 
 			}
 

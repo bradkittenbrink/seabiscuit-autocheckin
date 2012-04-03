@@ -64,7 +64,7 @@ public class ActivityCheckInList extends ListActivity{
 
 
 		// Views state
-		progress.setMessage("Searching nearest locations...");
+		progress.setMessage("Loading nearby places...");
 
 
 		// Getdata from Intent
@@ -81,7 +81,11 @@ public class ActivityCheckInList extends ListActivity{
 				@Override
 				public void run() {
 					dh = AppCAP.getConnection().getVenuesCloseToLocation(gp, 20);
-					handler.sendEmptyMessage(dh.getResponseCode());
+					if (dh!=null){
+						handler.sendEmptyMessage(dh.getResponseCode());
+					} else {
+						handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+					}
 				}
 			}).start();
 		}
@@ -95,9 +99,24 @@ public class ActivityCheckInList extends ListActivity{
 
 		Intent intent = new Intent (ActivityCheckInList.this, ActivityCheckIn.class);
 		intent.putExtra("venue", (Venue)adapter.getItem(position));
-		startActivity(intent);
+		startActivityForResult(intent, AppCAP.ACT_CHECK_IN);
 	}
 
+
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		switch (requestCode){
+
+		case AppCAP.ACT_CHECK_IN:
+
+			if (resultCode == AppCAP.ACT_QUIT){
+				ActivityCheckInList.this.finish();
+			}
+		}
+	}
 
 
 	@Override

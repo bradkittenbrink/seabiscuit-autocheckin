@@ -16,9 +16,9 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dip"
             android:background="@drawable/rounded_border"
-            android:onClick="onClickCheckIn"
+            android:onClick="onClickBack"
             android:padding="8dip"
-            android:text="Check In"
+            android:text="Back"
             android:textColor="#ffffff" />
 
         <com.coffeeandpower.views.CustomFontView
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:text="CHECK IN AT..."
                 android:textColor="#ffffff"
-                android:textSize="18dip"
+                android:textSize="20dip"
                 android:textStyle="bold" />
 
             <com.coffeeandpower.views.CustomFontView
@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:text="dfgdfg"
                 android:textColor="#ffffff"
-                android:textSize="16dip"
+                android:textSize="17dip"
                 android:textStyle="bold" />
 
             <com.coffeeandpower.views.CustomFontView
@@ -100,6 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dip"
+            android:textSize="18sp"
             android:layout_toRightOf="@+id/imageview_face"
             android:text="Who&apos;s here now?" />
     </RelativeLayout>
@@ -119,7 +120,7 @@
             android:padding="8dip"
             android:text="What can you do, or what do you need?"
             android:textColor="#666666"
-            android:textSize="17dip"
+            android:textSize="22dip"
             android:textStyle="bold" />
 
         <EditText

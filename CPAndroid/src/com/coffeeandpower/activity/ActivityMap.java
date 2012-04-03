@@ -18,16 +18,13 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
-import com.coffeeandpower.maps.MyOverlays;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPager;
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.OverlayItem;
 
 public class ActivityMap extends MapActivity{
 
@@ -38,11 +35,11 @@ public class ActivityMap extends MapActivity{
 	private CustomFontView textNickName;
 	private ProgressDialog progress;
 	private HorizontalPager pager;
-
+	
+	
 	// Map items
 	private MapView mapView;
 	private MapController mapController;
-	private MyOverlays itemizedoverlay;
 	private MyLocationOverlay myLocationOverlay;
 	private LocationManager locationManager;
 
@@ -92,7 +89,7 @@ public class ActivityMap extends MapActivity{
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		progress = new ProgressDialog(ActivityMap.this);
 		Drawable drawable = this.getResources().getDrawable(R.drawable.loc_point);
-		itemizedoverlay = new MyOverlays(this, drawable);
+		//itemizedoverlay = new MyOverlays(this, drawable);
 
 
 		// Views states
@@ -103,7 +100,12 @@ public class ActivityMap extends MapActivity{
 		// Set others
 		mapView.getOverlays().add(myLocationOverlay);
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new GeoUpdateHandler());
+		try {
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new GeoUpdateHandler());
+		} catch (IllegalArgumentException e){
+			e.printStackTrace();
+			new CustomDialog(ActivityMap.this, "Info", "Location Manager error").show();
+		}
 		mapController = mapView.getController();
 		mapController.setZoom(12);
 
@@ -116,6 +118,8 @@ public class ActivityMap extends MapActivity{
 				result = AppCAP.getConnection().getUserData();
 				if (result!=null){
 					handler.sendEmptyMessage(result.getResponseCode());
+				} else {
+					handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 				}
 			}
 		}).start();
@@ -127,6 +131,7 @@ public class ActivityMap extends MapActivity{
 	protected void onResume() {
 		super.onResume();
 		myLocationOverlay.enableMyLocation();
+		mapController.setZoom(17);
 	}
 
 
@@ -160,16 +165,6 @@ public class ActivityMap extends MapActivity{
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 			RootActivity.log("ActivityMap statusChanged");
-		}
-	}
-
-
-	private void createMarker() {
-		GeoPoint p = mapView.getMapCenter();
-		OverlayItem overlayitem = new OverlayItem(p, "", "");
-		itemizedoverlay.addOverlay(overlayitem);
-		if (itemizedoverlay.size() > 0) {
-			mapView.getOverlays().add(itemizedoverlay);
 		}
 	}
 

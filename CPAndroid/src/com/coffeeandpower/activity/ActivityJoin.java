@@ -128,6 +128,8 @@ public class ActivityJoin extends RootActivity{
 						result = AppCAP.getConnection().signup(userName, password, nickName);
 						if (result!=null){
 							handler.sendEmptyMessage(result.getResponseCode());
+						} else {
+							handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 						}
 					}
 				}).start();
