@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="#2d2d2d" >
 
     <RelativeLayout
@@ -21,8 +21,8 @@
             android:textSize="25dip" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="41dip"
+            android:layout_height="28dip"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dip"
@@ -30,11 +30,17 @@
             android:onClick="onClickBack" />
     </RelativeLayout>
 
+    <View android:id="@+id/dummy_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dummy_layout"
+        android:background="@drawable/header_shadow" />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/dummy_layout"
-        android:layout_margin="20dip"
+        android:layout_margin="25dip"
         android:background="@drawable/rounded_border_gray"
         android:orientation="vertical" >
 
@@ -120,8 +126,8 @@
                 android:id="@+id/textview_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:padding="10dip"
                 android:text="asda" />
         </RelativeLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
     <RelativeLayout
         android:id="@+id/dummy_layout"
@@ -39,8 +39,8 @@
 
         <com.google.android.maps.MapView
             android:id="@+id/imageview_mapview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:apiKey="0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q" />
 
         <LinearLayout
@@ -173,6 +173,7 @@
             android:layout_height="80dip"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/textview_hours"
+            android:onClick="onClickCheckIn"
             android:background="@drawable/check_in_big" />
     </RelativeLayout>
 
