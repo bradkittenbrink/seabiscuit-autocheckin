@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#2d2d2d" >
+
+    <RelativeLayout
+        android:id="@+id/dummy_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="45dip"
+        android:background="@drawable/header" >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:background="@drawable/rounded_border"
+            android:onClick="onClickBack"
+            android:padding="8dip"
+            android:text="C&amp;P"
+            android:textColor="#ffffff" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_location_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="sdfsdcs"
+            android:textColor="#ffffff"
+            android:textSize="25dip" />
+    </RelativeLayout>
+    <ListView android:id="@+id/listview_persons" 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dummy_layout"
+        ></ListView>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/check_in"
+        android:onClick="onClickCheckIn" />
+
+</RelativeLayout>

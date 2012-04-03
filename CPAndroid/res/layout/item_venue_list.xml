@@ -19,7 +19,7 @@
 
     <LinearLayout
         android:id="@+id/layout_name_address"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_toRightOf="@+id/dummy_view"
         android:gravity="center_vertical"
@@ -30,15 +30,23 @@
 
         <TextView
             android:id="@+id/text_name"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#ffdddddd"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text_address"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dip"
+        android:background="@drawable/list_arrow_dark_grey" />
 
 </RelativeLayout>
