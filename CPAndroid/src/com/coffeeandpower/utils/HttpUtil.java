@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -37,9 +38,11 @@ import org.json.JSONObject;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.MapUserData;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.Venue;
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapView;
 
 public class HttpUtil {
 
@@ -51,7 +54,120 @@ public class HttpUtil {
 		this.client = getThreadSafeClient();
 	}
 
-	
+
+	/**
+	 * Get users checked in around me
+	 * @param venue
+	 * @return
+	 */
+	public DataHolder getCheckedInBoundsOverTime (MapView mapView){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		GeoPoint pointCenterMap = mapView.getMapCenter();
+		int lngSpan = mapView.getLongitudeSpan();
+		int latSpan = mapView.getLatitudeSpan();
+
+		GeoPoint sw = new GeoPoint(pointCenterMap.getLatitudeE6() - latSpan/2, pointCenterMap.getLongitudeE6() - lngSpan/2);
+		GeoPoint ne = new GeoPoint(pointCenterMap.getLatitudeE6() + latSpan/2, pointCenterMap.getLongitudeE6() + lngSpan/2);
+
+		float numberOfDays = 7.0f;
+
+		HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API + 
+				"?action=getCheckedInBoundsOverTime" + 
+				"&sw_lat=" + (sw.getLatitudeE6() / 1E6) + 
+				"&sw_lng=" + (sw.getLongitudeE6() / 1E6) + 
+				"&ne_lat=" + (ne.getLatitudeE6() / 1E6) + 
+				"&ne_lng=" + (ne.getLongitudeE6() / 1E6) + 
+				"&checked_in_since=" + (System.currentTimeMillis() /1000 - (86400 * numberOfDays)) + 
+				"&group_users=1" + 
+				"&version=0.1");
+
+		try {
+
+			// Execute HTTP Get Request
+			HttpResponse response = client.execute(get);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_getCheckedInBoundsOverTime: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					boolean res = json.optBoolean("error");
+					if (!res){
+
+						JSONArray payload = json.optJSONArray("payload");
+						if (payload!=null){
+
+							HashMap<String,MapUserData> mapUsersArray = new HashMap<String,MapUserData>();
+							
+							for (int m=0; m<payload.length(); m++){
+
+								JSONObject item = payload.optJSONObject(m);
+								if (item!=null){
+									
+									int checkInId = item.optInt("checkin_id");
+									int userId= item.optInt("id");
+									String nickName = item.optString("nickname");
+									String statusText = item.optString("status_text");
+									String photo = item.optString("photo");  // ???
+									String majorJobCategory = item.optString("major_job_category");
+									String minorJobCategory = item.optString("minor_job_category");
+									String headLine = item.optString("headline");
+									String fileName = item.optString("filename");
+								    double lat = item.optDouble("lat");
+									double lng = item.optDouble("lng");
+									int checkedIn = item.optInt("checked_in");
+									String foursquareId = item.optString("foursquare");
+									String venueName = item.optString("venue_name");
+									int checkInCount = item.optInt("checkin_count");
+									String skills = item.optString("skills");
+									boolean met = item.optBoolean("met");
+									
+									mapUsersArray.put(foursquareId, new MapUserData(checkInId, userId, nickName, statusText, photo, majorJobCategory, minorJobCategory, 
+											headLine, fileName, lat, lng, checkedIn, foursquareId, venueName, checkInCount, skills, met));
+								}
+							}
+
+							result.setObject(mapUsersArray);
+						}
+
+					} else {
+						// we have unknown error
+						result.setResponseMessage("Unknown error");
+					}
+
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+
+
+
 	/**
 	 * Get users checked in venue
 	 * @param venue
@@ -107,8 +223,8 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
+
+
 
 	/**
 	 * Check out user from location
@@ -163,8 +279,8 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Check in user to location
 	 * @return

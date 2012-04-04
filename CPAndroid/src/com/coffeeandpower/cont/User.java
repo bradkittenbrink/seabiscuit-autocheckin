@@ -54,193 +54,129 @@ public class User{
 		return userId;
 	}
 
-
-
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
-
-
 
 	public int getFavoriteEnabled() {
 		return favoriteEnabled;
 	}
 
-
-
 	public void setFavoriteEnabled(int favoriteEnabled) {
 		this.favoriteEnabled = favoriteEnabled;
 	}
-
-
 
 	public int getFavoriteCount() {
 		return favoriteCount;
 	}
 
-
-
 	public void setFavoriteCount(int favoriteCount) {
 		this.favoriteCount = favoriteCount;
 	}
-
-
 
 	public int getMyFavoriteCount() {
 		return myFavoriteCount;
 	}
 
-
-
 	public void setMyFavoriteCount(int myFavoriteCount) {
 		this.myFavoriteCount = myFavoriteCount;
 	}
-
-
 
 	public int getMoneyReceived() {
 		return moneyReceived;
 	}
 
-
-
 	public void setMoneyReceived(int moneyReceived) {
 		this.moneyReceived = moneyReceived;
 	}
-
-
 
 	public int getOffersPaid() {
 		return offersPaid;
 	}
 
-
-
 	public void setOffersPaid(int offersPaid) {
 		this.offersPaid = offersPaid;
 	}
-
-
 
 	public int getBalance() {
 		return balance;
 	}
 
-
-
 	public void setBalance(int balance) {
 		this.balance = balance;
 	}
-
-
 
 	public String getNickName() {
 		return nickName;
 	}
 
-
-
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
 	}
-
-
 
 	public String getUserName() {
 		return userName;
 	}
 
-
-
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-
-
 
 	public String getStatusText() {
 		return statusText;
 	}
 
-
-
 	public void setStatusText(String statusText) {
 		this.statusText = statusText;
 	}
-
-
 
 	public String getStatus() {
 		return status;
 	}
 
-
-
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-
 
 	public String getActive() {
 		return active;
 	}
 
-
-
 	public void setActive(String active) {
 		this.active = active;
 	}
-
-
 
 	public String getPhoto() {
 		return photo;
 	}
 
-
-
 	public void setPhoto(String photo) {
 		this.photo = photo;
 	}
-
-
 
 	public String getPhotoLarge() {
 		return photoLarge;
 	}
 
-
-
 	public void setPhotoLarge(String photoLarge) {
 		this.photoLarge = photoLarge;
 	}
-
-
 
 	public double getLat() {
 		return lat;
 	}
 
-
-
 	public void setLat(double lat) {
 		this.lat = lat;
 	}
-
-
 
 	public double getLng() {
 		return lng;
 	}
 
-
-
 	public void setLng(double lng) {
 		this.lng = lng;
 	}
-
-
 
 
 }

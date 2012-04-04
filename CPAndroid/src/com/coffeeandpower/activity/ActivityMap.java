@@ -1,5 +1,8 @@
 package com.coffeeandpower.activity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,34 +20,42 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.MapUserData;
 import com.coffeeandpower.cont.User;
+import com.coffeeandpower.maps.MyItemizedOverlay;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPager;
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.OverlayItem;
 
 public class ActivityMap extends MapActivity{
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_MAP = 1;
+	private static final int GET_MAP_DATA_SET = 3;
 
 	// Views
 	private CustomFontView textNickName;
 	private ProgressDialog progress;
 	private HorizontalPager pager;
-	
-	
+
+
 	// Map items
 	private MapView mapView;
 	private MapController mapController;
 	private MyLocationOverlay myLocationOverlay;
+	private MyItemizedOverlay itemizedoverlay;
 	private LocationManager locationManager;
 
 	private User loggedUser;
+
 	private DataHolder result;
+	private DataHolder resultMapDataSet;
 
 	private Handler handler = new Handler(){
 
@@ -67,6 +78,20 @@ public class ActivityMap extends MapActivity{
 				}
 				break;
 
+			case GET_MAP_DATA_SET:
+				if (resultMapDataSet.getObject()!=null){
+
+					HashMap<String,MapUserData> mapUsersArray = (HashMap<String,MapUserData>) resultMapDataSet.getObject();
+					RootActivity.log("ActivityMap_mapUsersArray.size()=" + mapUsersArray.size());
+
+					for (Map.Entry<String, MapUserData> mud: mapUsersArray.entrySet()){
+
+						GeoPoint gp = new GeoPoint((int)(mud.getValue().getLat()*1E6), (int)(mud.getValue().getLng()*1E6));
+						createMarker(gp);
+					}
+					mapView.invalidate();
+				}
+				break;
 			}
 		}
 
@@ -88,8 +113,8 @@ public class ActivityMap extends MapActivity{
 		textNickName = (CustomFontView) findViewById(R.id.text_nick_name);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		progress = new ProgressDialog(ActivityMap.this);
-		Drawable drawable = this.getResources().getDrawable(R.drawable.loc_point);
-		//itemizedoverlay = new MyOverlays(this, drawable);
+		Drawable drawable = this.getResources().getDrawable(R.drawable.people_marker_turquoise_circle);
+		itemizedoverlay = new MyItemizedOverlay(drawable);
 
 
 		// Views states
@@ -132,6 +157,16 @@ public class ActivityMap extends MapActivity{
 		super.onResume();
 		myLocationOverlay.enableMyLocation();
 		mapController.setZoom(17);
+	}
+
+
+	private void createMarker(GeoPoint point) {
+
+		OverlayItem overlayitem = new OverlayItem(point, "", "");
+		itemizedoverlay.addOverlay(overlayitem);
+		if (itemizedoverlay.size() > 0) {
+			mapView.getOverlays().add(itemizedoverlay);
+		}
 	}
 
 
@@ -225,6 +260,25 @@ public class ActivityMap extends MapActivity{
 
 
 	public void onClickRefresh (View v) {
+
+		for (int i=mapView.getOverlays().size(); i>1; i--){
+			mapView.getOverlays().remove(i-1);
+		}
+		mapView.postInvalidate();
+		
+		RootActivity.log("ActivityMap_mapView.getOverlays().size=" + mapView.getOverlays().size());
+		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				resultMapDataSet = AppCAP.getConnection().getCheckedInBoundsOverTime(mapView);
+				if (resultMapDataSet!=null){
+					handler.sendEmptyMessage(GET_MAP_DATA_SET);
+				} else {
+					handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+				}
+			}
+		}).start();
 
 	}
 
