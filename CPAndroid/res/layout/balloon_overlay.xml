@@ -2,13 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/balloon_main_layout"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="#ff000000"
+    android:layout_height="60dip"
+    android:background="@drawable/bg_balloon"
     android:orientation="horizontal"
-    android:paddingBottom="35dip"
-    android:paddingLeft="10dip"
-    android:paddingRight="0dip"
-    android:paddingTop="0dip" >
+    android:paddingBottom="15dip"
+    android:paddingLeft="10dip" >
 
     <LinearLayout
         android:id="@+id/balloon_inner_layout"
@@ -40,11 +38,10 @@
         android:id="@+id/close_img_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dip"
-        android:paddingLeft="10dip"
-        android:paddingRight="8dip"
-        android:paddingTop="8dip"
-        android:src="@drawable/balloon_overlay_close" >
+        android:layout_marginTop="5dip"
+        android:layout_gravity="center_vertical"
+        android:padding="10dip"
+        android:src="@drawable/icon_next" >
     </ImageView>
 
 </LinearLayout>
