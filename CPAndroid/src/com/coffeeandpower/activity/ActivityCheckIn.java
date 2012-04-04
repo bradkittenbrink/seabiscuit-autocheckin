@@ -12,7 +12,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Venue;
-import com.coffeeandpower.maps.MyItemizedOverlay;
+import com.coffeeandpower.maps.MyItemizedOverlayBACKUP;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.CustomSeek;
@@ -30,7 +30,7 @@ public class ActivityCheckIn extends MapActivity{
 	// Map items
 	private MapView mapView;
 	private MapController mapController;
-	private MyItemizedOverlay itemizedoverlay;
+	private MyItemizedOverlayBACKUP itemizedoverlay;
 
 	private Venue venue;
 
@@ -109,7 +109,7 @@ public class ActivityCheckIn extends MapActivity{
 		mapView = (MapView) findViewById(R.id.imageview_mapview);
 		progress = new ProgressDialog(this);
 		Drawable drawable = this.getResources().getDrawable(R.drawable.map_marker_iphone);
-		itemizedoverlay = new MyItemizedOverlay(drawable);
+		itemizedoverlay = new MyItemizedOverlayBACKUP(drawable);
 
 
 		// Views states

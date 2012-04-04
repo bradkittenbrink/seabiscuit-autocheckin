@@ -166,8 +166,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/map_refresh"
-                        android:onClick="onClickRefresh" />
+                        android:background="@drawable/map_refresh" />
 
                     <ImageButton
                         android:id="@+id/imagebutton_map_refresh_progress"

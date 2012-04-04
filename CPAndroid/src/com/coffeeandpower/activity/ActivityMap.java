@@ -13,7 +13,11 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.coffeeandpower.AppCAP;
@@ -87,7 +91,7 @@ public class ActivityMap extends MapActivity{
 					for (Map.Entry<String, MapUserData> mud: mapUsersArray.entrySet()){
 
 						GeoPoint gp = new GeoPoint((int)(mud.getValue().getLat()*1E6), (int)(mud.getValue().getLng()*1E6));
-						createMarker(gp);
+						createMarker(gp, mud.getValue());
 					}
 					mapView.invalidate();
 				}
@@ -114,7 +118,7 @@ public class ActivityMap extends MapActivity{
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		progress = new ProgressDialog(ActivityMap.this);
 		Drawable drawable = this.getResources().getDrawable(R.drawable.people_marker_turquoise_circle);
-		itemizedoverlay = new MyItemizedOverlay(drawable);
+		itemizedoverlay = new MyItemizedOverlay(drawable, mapView);
 
 
 		// Views states
@@ -159,13 +163,25 @@ public class ActivityMap extends MapActivity{
 		mapController.setZoom(17);
 	}
 
+	
+	/**
+	 * Create point on Map with data from MapUserdata
+	 * @param GeoPoint
+	 * @param MapUserData
+	 */
+	private void createMarker(GeoPoint point, MapUserData mud) {
 
-	private void createMarker(GeoPoint point) {
-
-		OverlayItem overlayitem = new OverlayItem(point, "", "");
-		itemizedoverlay.addOverlay(overlayitem);
-		if (itemizedoverlay.size() > 0) {
-			mapView.getOverlays().add(itemizedoverlay);
+		if (mud!=null){
+			
+			int checkInCount = mud.getCheckInCount();
+			String checkStr = checkInCount == 1 ? " checkin in the last week" : " checkins in the last week";
+			
+			OverlayItem overlayitem = new OverlayItem(point, mud.getVenueName(), checkInCount + checkStr);
+			
+			itemizedoverlay.addOverlay(overlayitem);
+			if (itemizedoverlay.size() > 0) {
+				mapView.getOverlays().add(itemizedoverlay);
+			}
 		}
 	}
 
@@ -176,6 +192,7 @@ public class ActivityMap extends MapActivity{
 		textNickName.setText(loggedUser.getNickName());
 	}
 
+	
 	public class GeoUpdateHandler implements LocationListener {
 
 		@Override
@@ -261,13 +278,27 @@ public class ActivityMap extends MapActivity{
 
 	public void onClickRefresh (View v) {
 
+		refreshMapDataSet(v);
+	}
+
+
+	private void refreshMapDataSet(View v){
+
+		Animation anim = new RotateAnimation(360.0f, 0.0f, v.getWidth()/2, v.getHeight()/2);
+		anim.setDuration(1000);
+		anim.setRepeatCount(0);
+		anim.setRepeatMode(Animation.REVERSE);
+		anim.setFillAfter(true);
+
+		((ImageView) findViewById(R.id.imagebutton_map_refresh_progress)).setAnimation(anim);
+
 		for (int i=mapView.getOverlays().size(); i>1; i--){
 			mapView.getOverlays().remove(i-1);
 		}
 		mapView.postInvalidate();
-		
+
 		RootActivity.log("ActivityMap_mapView.getOverlays().size=" + mapView.getOverlays().size());
-		
+
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -279,9 +310,7 @@ public class ActivityMap extends MapActivity{
 				}
 			}
 		}).start();
-
 	}
-
 
 	public void onClickPeopleList (View v){
 

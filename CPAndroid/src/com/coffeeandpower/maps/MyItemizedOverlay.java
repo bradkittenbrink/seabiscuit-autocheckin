@@ -2,35 +2,41 @@ package com.coffeeandpower.maps;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
-public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
+public class MyItemizedOverlay extends BalloonItemizedOverlay<OverlayItem> {
 
-	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
+	private ArrayList<OverlayItem> m_overlays = new ArrayList<OverlayItem>();
+	private Context c;
 	
-	public MyItemizedOverlay(Drawable defaultMarker) {
-		super(boundCenterBottom(defaultMarker));
+	public MyItemizedOverlay(Drawable defaultMarker, MapView mapView) {
+		super(boundCenter(defaultMarker), mapView);
+		c = mapView.getContext();
 	}
 
 	public void addOverlay(OverlayItem overlay) {
-	    mOverlays.add(overlay);
+	    m_overlays.add(overlay);
 	    populate();
 	}
-	
+
 	@Override
 	protected OverlayItem createItem(int i) {
-		 return mOverlays.get(i);
+		return m_overlays.get(i);
 	}
 
 	@Override
 	public int size() {
-		return mOverlays.size();
+		return m_overlays.size();
 	}
 
-
-
-
+	@Override
+	protected boolean onBalloonTap(int index, OverlayItem item) {
+		
+		return true;
+	}
+	
 }
