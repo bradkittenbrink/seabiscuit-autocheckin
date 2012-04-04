@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dip" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textview_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Omladinski..."
+            android:textColor="#62615f" />
+
+        <TextView
+            android:id="@+id/textview_street"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ulica"
+            android:textColor="#62615f" />
+
+        <TextView
+            android:id="@+id/textview_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Grad"
+            android:textColor="#62615f" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textview_checkin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dip"
+        android:text="4 checkins"
+        android:textColor="#62615f" />
+
+</RelativeLayout>
