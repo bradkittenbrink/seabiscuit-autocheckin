@@ -110,16 +110,122 @@
             </RelativeLayout>
 
             <!-- Second layout checked in transparent -->
+
+            <LinearLayout
+                android:layout_width="180dip"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dip"
+                android:background="#55000000"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dip"
+                    android:text="CHECKED IN..."
+                    android:textColor="#f2f1eb"
+                    android:textSize="18dip"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dip"
+                    android:background="#00000000" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dip" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="2dip"
+                        android:background="@drawable/checked_in_location_iphone" />
+
+                    <TextView
+                        android:id="@+id/textview_place"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="5dip"
+                        android:text="Odfsdf"
+                        android:textColor="#f2f1eb"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textview_street"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dip"
+                    android:text="sdfsdf"
+                    android:textColor="#f2f1eb" />
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dip"
+                    android:background="#00000000" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dip" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="2dip"
+                        android:background="@drawable/available_for_icon_iphone" />
+
+                    <TextView
+                        android:id="@+id/textview_available_for"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="5dip"
+                        android:text="AVAILABLE FOR:"
+                        android:textColor="#f2f1eb" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textview_minutes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dip"
+                    android:text="48 mins"
+                    android:textColor="#f2f1eb"
+                    android:textSize="20dip"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            
+            <!-- Third layout Resume -->
             
             <RelativeLayout 
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dip"
+                android:background="@drawable/paper_texture" 
+                               
                 >
-                <TextView 
+
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     
-                    />
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_margin="10dip"
+                    android:text="RESUME"
+                    android:textColor="#62615f"
+                    android:textSize="20dip"
+                    android:textStyle="bold" />
                 
             </RelativeLayout>
             
