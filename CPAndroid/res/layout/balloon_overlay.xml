@@ -6,15 +6,17 @@
     android:background="@drawable/bg_balloon"
     android:orientation="horizontal"
     android:paddingBottom="15dip"
+    android:layout_marginBottom="10dip"
     android:paddingLeft="10dip" >
 
     <LinearLayout
         android:id="@+id/balloon_inner_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:paddingTop="10dip" >
+        android:paddingTop="0dip" >
 
         <TextView
             android:id="@+id/balloon_item_title"
@@ -38,8 +40,7 @@
         android:id="@+id/close_img_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dip"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center"
         android:padding="10dip"
         android:src="@drawable/icon_next" >
     </ImageView>
