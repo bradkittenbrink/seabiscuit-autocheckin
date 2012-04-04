@@ -1,7 +1,10 @@
 package com.coffeeandpower.cont;
 
+import java.io.Serializable;
 
-public class User{
+
+@SuppressWarnings("serial")
+public class User implements Serializable{
 
 	private int userId;
 	private int favoriteEnabled;

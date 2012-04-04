@@ -56,6 +56,72 @@ public class HttpUtil {
 
 
 	/**
+	 * Change user profile data
+	 * @param user
+	 * @return
+	 */
+	public DataHolder setUserProfileData (User user, boolean isEmailChanged){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "setUserProfileData"));
+			params.add(new BasicNameValuePair("nickname", URLEncoder.encode(user.getNickName()+"", "utf-8")));
+			if (isEmailChanged){
+				params.add(new BasicNameValuePair("email", URLEncoder.encode(user.getUserName()+"", "utf-8")));
+			}
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_setUserProfileData: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					boolean res = json.optBoolean("succeeded");
+					result.setObject(res);
+
+					String message = json.optString("message");
+					result.setResponseMessage(message);
+
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+
+
+
+	/**
 	 * Get users checked in around me
 	 * @param venue
 	 * @return
@@ -106,12 +172,12 @@ public class HttpUtil {
 						if (payload!=null){
 
 							HashMap<String,MapUserData> mapUsersArray = new HashMap<String,MapUserData>();
-							
+
 							for (int m=0; m<payload.length(); m++){
 
 								JSONObject item = payload.optJSONObject(m);
 								if (item!=null){
-									
+
 									int checkInId = item.optInt("checkin_id");
 									int userId= item.optInt("id");
 									String nickName = item.optString("nickname");
@@ -121,7 +187,7 @@ public class HttpUtil {
 									String minorJobCategory = item.optString("minor_job_category");
 									String headLine = item.optString("headline");
 									String fileName = item.optString("filename");
-								    double lat = item.optDouble("lat");
+									double lat = item.optDouble("lat");
 									double lng = item.optDouble("lng");
 									int checkedIn = item.optInt("checked_in");
 									String foursquareId = item.optString("foursquare");
@@ -129,7 +195,7 @@ public class HttpUtil {
 									int checkInCount = item.optInt("checkin_count");
 									String skills = item.optString("skills");
 									boolean met = item.optBoolean("met");
-									
+
 									mapUsersArray.put(foursquareId, new MapUserData(checkInId, userId, nickName, statusText, photo, majorJobCategory, minorJobCategory, 
 											headLine, fileName, lat, lng, checkedIn, foursquareId, venueName, checkInCount, skills, met));
 								}

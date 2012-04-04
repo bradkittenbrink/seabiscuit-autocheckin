@@ -69,4 +69,9 @@ public class AppCAP extends Application{
 	public static String getUserEmailPassword (){
 		return getSharedPreferences().getString(TAG_USER_EMAIL_PASSWORD, "");
 	}
+	
+	public static String cleanResponseString(String data){
+
+		return data.replaceAll("\\+", " ").replaceAll("%28", "\"").replaceAll("%29", "\"");
+	}
 }

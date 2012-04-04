@@ -13,7 +13,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
@@ -42,6 +41,9 @@ public class ActivityMap extends MapActivity{
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_MAP = 1;
 	private static final int GET_MAP_DATA_SET = 3;
+	
+	private static final int ACTIVITY_ACCOUNT_SETTINGS = 1888;
+	public static final int ACCOUNT_CHANGED = 1900;
 
 	// Views
 	private CustomFontView textNickName;
@@ -56,6 +58,7 @@ public class ActivityMap extends MapActivity{
 	private MyItemizedOverlay itemizedoverlay;
 	private LocationManager locationManager;
 
+	// Current user
 	private User loggedUser;
 
 	private DataHolder result;
@@ -140,6 +143,16 @@ public class ActivityMap extends MapActivity{
 
 
 		// User is logged in, get user data
+		getUserData();
+
+	}
+
+	
+	/**
+	 * Get user data from server
+	 */
+	private void getUserData(){
+		
 		progress.show();
 		new Thread(new Runnable() {
 			@Override
@@ -152,10 +165,9 @@ public class ActivityMap extends MapActivity{
 				}
 			}
 		}).start();
-
 	}
 
-
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -163,7 +175,7 @@ public class ActivityMap extends MapActivity{
 		mapController.setZoom(17);
 	}
 
-	
+
 	/**
 	 * Create point on Map with data from MapUserdata
 	 * @param GeoPoint
@@ -172,12 +184,13 @@ public class ActivityMap extends MapActivity{
 	private void createMarker(GeoPoint point, MapUserData mud) {
 
 		if (mud!=null){
-			
+
 			int checkInCount = mud.getCheckInCount();
 			String checkStr = checkInCount == 1 ? " checkin in the last week" : " checkins in the last week";
-			
-			OverlayItem overlayitem = new OverlayItem(point, mud.getVenueName(), checkInCount + checkStr);
-			
+			String name = AppCAP.cleanResponseString(mud.getVenueName());
+
+			OverlayItem overlayitem = new OverlayItem(point, name, checkInCount + checkStr);
+
 			itemizedoverlay.addOverlay(overlayitem);
 			if (itemizedoverlay.size() > 0) {
 				mapView.getOverlays().add(itemizedoverlay);
@@ -192,7 +205,7 @@ public class ActivityMap extends MapActivity{
 		textNickName.setText(loggedUser.getNickName());
 	}
 
-	
+
 	public class GeoUpdateHandler implements LocationListener {
 
 		@Override
@@ -235,7 +248,8 @@ public class ActivityMap extends MapActivity{
 	public void onClickAccountSettings (View v){
 
 		Intent intent = new Intent(ActivityMap.this, ActivitySettings.class);
-		startActivity(intent);
+		intent.putExtra("user_obj", loggedUser);
+		startActivityForResult(intent, ACTIVITY_ACCOUNT_SETTINGS);
 	}
 
 
@@ -311,6 +325,25 @@ public class ActivityMap extends MapActivity{
 			}
 		}).start();
 	}
+
+
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		switch (requestCode){
+
+		case ACTIVITY_ACCOUNT_SETTINGS:
+			
+			if (resultCode==ACCOUNT_CHANGED){
+				getUserData();
+			}
+			
+			break;
+		}
+	}
+
 
 	public void onClickPeopleList (View v){
 
