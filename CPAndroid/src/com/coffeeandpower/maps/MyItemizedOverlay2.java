@@ -8,11 +8,11 @@ import android.util.Log;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 
-public class MyItemizedOverlayBACKUP extends ItemizedOverlay<OverlayItem> {
+public class MyItemizedOverlay2 extends ItemizedOverlay<OverlayItem> {
 
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	
-	public MyItemizedOverlayBACKUP(Drawable defaultMarker) {
+	public MyItemizedOverlay2(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
 	}
 

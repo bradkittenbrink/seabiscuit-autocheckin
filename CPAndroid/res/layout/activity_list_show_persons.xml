@@ -32,11 +32,13 @@
             android:textColor="#ffffff"
             android:textSize="25dip" />
     </RelativeLayout>
-    <ListView android:id="@+id/listview_persons" 
+
+    <ListView
+        android:id="@+id/android.R.id.list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dummy_layout"
-        ></ListView>
+        android:layout_below="@+id/dummy_layout" >
+    </ListView>
 
     <ImageButton
         android:layout_width="wrap_content"

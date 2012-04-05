@@ -20,7 +20,7 @@
             android:background="@drawable/rounded_border"
             android:onClick="onClickBack"
             android:padding="8dip"
-            android:text="Omladinski..."
+            android:text="C&amp;P"
             android:textColor="#ffffff" />
 
         <com.coffeeandpower.views.CustomFontView
@@ -68,9 +68,9 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
                 android:orientation="vertical" >
-
-                <!-- First layout with user details on the top -->
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
@@ -102,8 +102,8 @@
                             android:textColor="#60605e"
                             android:textSize="16dip" />
 
-                        <TextView
-                            android:id="@+id/textview_user_name"
+                        <com.coffeeandpower.views.CustomFontView
+                            android:id="@+id/textview_nick_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="sdfsdf"
@@ -111,8 +111,6 @@
                             android:textSize="22dip" />
                     </LinearLayout>
                 </RelativeLayout>
-
-                <!-- Second layout checked in transparent -->
 
                 <LinearLayout
                     android:layout_width="180dip"
@@ -207,8 +205,6 @@
                         android:textSize="20dip"
                         android:textStyle="bold" />
                 </LinearLayout>
-
-                <!-- Third layout Resume -->
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
@@ -385,14 +381,13 @@
                         android:textStyle="bold" />
                 </RelativeLayout>
 
-                <!-- List view on the bottom -->
-
                 <ListView
                     android:id="@+id/listview_favorite_places"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content" >
                 </ListView>
             </LinearLayout>
+
         </RelativeLayout>
     </ScrollView>
 

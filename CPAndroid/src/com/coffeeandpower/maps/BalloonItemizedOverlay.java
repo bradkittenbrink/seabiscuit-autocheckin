@@ -14,22 +14,26 @@ import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 
 
-public abstract class BalloonItemizedOverlay<Item extends OverlayItem> extends ItemizedOverlay<Item> {
+public abstract class BalloonItemizedOverlay<Item extends MyOverlayItem> extends ItemizedOverlay<Item> {
 
-	private MapView mapView;
+	
 	private BalloonOverlayView<Item> balloonView;
-	private View clickRegion;
-	private int viewOffset;
-	final MapController mc;
 	private Item currentFocussedItem;
+	
+	private int viewOffset;
 	private int currentFocussedIndex;
+	
+	final MapController mc;
+	
+	private MapView mapView;
+	private View clickRegion;
 
 
 	public BalloonItemizedOverlay(Drawable defaultMarker, MapView mapView) {
 		super(defaultMarker);
+		
 		this.mapView = mapView;
 		viewOffset = 0;
 		mc = mapView.getController();
@@ -38,6 +42,7 @@ public abstract class BalloonItemizedOverlay<Item extends OverlayItem> extends I
 	public void setBalloonBottomOffset(int pixels) {
 		viewOffset = pixels;
 	}
+	
 	public int getBalloonBottomOffset() {
 		return viewOffset;
 	}
@@ -137,7 +142,6 @@ public abstract class BalloonItemizedOverlay<Item extends OverlayItem> extends I
 	}
 
 
-
 	private boolean createAndDisplayBalloonOverlay(){
 		boolean isRecycled;
 		if (balloonView == null) {
@@ -160,6 +164,7 @@ public abstract class BalloonItemizedOverlay<Item extends OverlayItem> extends I
 			balloonView.setData(currentFocussedItem);
 
 		GeoPoint point = currentFocussedItem.getPoint();
+		
 		MapView.LayoutParams params = new MapView.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, point,
 				MapView.LayoutParams.BOTTOM_CENTER);

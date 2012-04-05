@@ -26,6 +26,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.MapUserData;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.maps.MyItemizedOverlay;
+import com.coffeeandpower.maps.MyOverlayItem;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPager;
@@ -34,7 +35,6 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.OverlayItem;
 
 public class ActivityMap extends MapActivity{
 
@@ -189,8 +189,9 @@ public class ActivityMap extends MapActivity{
 			String checkStr = checkInCount == 1 ? " checkin in the last week" : " checkins in the last week";
 			String name = AppCAP.cleanResponseString(mud.getVenueName());
 
-			OverlayItem overlayitem = new OverlayItem(point, name, checkInCount + checkStr);
-
+			MyOverlayItem overlayitem = new MyOverlayItem(point, name, checkInCount + checkStr);
+			overlayitem.setMapUserData(mud);
+			
 			itemizedoverlay.addOverlay(overlayitem);
 			if (itemizedoverlay.size() > 0) {
 				mapView.getOverlays().add(itemizedoverlay);

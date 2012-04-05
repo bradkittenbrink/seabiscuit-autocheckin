@@ -2,29 +2,27 @@ package com.coffeeandpower.maps;
 
 import java.util.ArrayList;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.MapView;
-import com.google.android.maps.OverlayItem;
 
-public class MyItemizedOverlay extends BalloonItemizedOverlay<OverlayItem> {
+public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 
-	private ArrayList<OverlayItem> m_overlays = new ArrayList<OverlayItem>();
-	private Context c;
+	private ArrayList<MyOverlayItem> m_overlays = new ArrayList<MyOverlayItem>();
+
 	
 	public MyItemizedOverlay(Drawable defaultMarker, MapView mapView) {
 		super(boundCenter(defaultMarker), mapView);
-		c = mapView.getContext();
+
 	}
 
-	public void addOverlay(OverlayItem overlay) {
+	public void addOverlay(MyOverlayItem overlay) {
 	    m_overlays.add(overlay);
 	    populate();
 	}
 
 	@Override
-	protected OverlayItem createItem(int i) {
+	protected MyOverlayItem createItem(int i) {
 		return m_overlays.get(i);
 	}
 
@@ -34,7 +32,7 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<OverlayItem> {
 	}
 
 	@Override
-	protected boolean onBalloonTap(int index, OverlayItem item) {
+	protected boolean onBalloonTap(int index, MyOverlayItem item) {
 		
 		return true;
 	}
