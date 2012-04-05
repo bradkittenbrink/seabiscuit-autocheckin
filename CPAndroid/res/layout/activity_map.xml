@@ -7,6 +7,7 @@
     <!-- Setting Layout View -->
 
     <LinearLayout
+        android:id="@+id/dummy_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical" >
@@ -15,16 +16,26 @@
             android:id="@+id/text_nick_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#333333"
+            android:background="#2d2d2d"
             android:padding="10dp"
             android:text="nikoladj"
             android:textColor="#dddddd"
             android:textSize="25sp" />
 
-        <TextView
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#2d2d2d" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#494949" />
+
+        <com.coffeeandpower.views.CustomFontView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#555555"
+            android:background="#3e3e3e"
             android:clickable="true"
             android:onClick="onClickAccountSettings"
             android:padding="10dp"
@@ -34,13 +45,18 @@
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="2px"
-            android:background="#ff444444" />
+            android:layout_height="1px"
+            android:background="#2d2d2d" />
 
-        <TextView
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#494949" />
+
+        <com.coffeeandpower.views.CustomFontView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#555555"
+            android:background="#3e3e3e"
             android:clickable="true"
             android:onClick="onClickWallet"
             android:padding="10dp"
@@ -50,13 +66,18 @@
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="2px"
-            android:background="#ff444444" />
+            android:layout_height="1px"
+            android:background="#2d2d2d" />
 
-        <TextView
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#494949" />
+
+        <com.coffeeandpower.views.CustomFontView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#555555"
+            android:background="#3e3e3e"
             android:clickable="true"
             android:onClick="onClickLogout"
             android:padding="10dp"
@@ -66,9 +87,88 @@
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="2px"
-            android:background="#ff444444" />
+            android:layout_height="1px"
+            android:background="#2d2d2d" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#494949" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="5dip"
+        android:paddingLeft="5dip"
+        android:paddingRight="90dip"
+        android:paddingTop="5dip" >
+
+        <TextView
+            android:id="@+id/dummy_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show me new Check Ins"
+            android:textColor="#009590" />
+
+        <LinearLayout
+            android:id="@+id/dummy_layout_1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dummy_text"
+            android:layout_marginTop="10dip"
+            android:layout_toLeftOf="@+id/dummy_vertical_line"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="From"
+                android:textColor="#e6e6e6" />
+
+            <Button
+                android:layout_width="180dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="5dip"
+                android:background="@drawable/drop_down"
+                android:gravity="left|center_vertical"
+                android:paddingLeft="10dip"
+                android:text="in city"
+                android:textColor="#000000" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/dummy_view"
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_below="@+id/dummy_layout_1"
+            android:layout_marginTop="10dip"
+            android:background="#555555" />
+
+        <TextView
+            android:id="@+id/dummy_text_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dummy_view"
+            android:layout_marginLeft="5dip"
+            android:layout_marginTop="5dip"
+            android:text="Only when I am\nchecked in"
+            android:textColor="#e6e6e6" />
+
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dummy_view"
+            android:layout_marginLeft="5dip"
+            android:layout_marginTop="5dip"
+            android:layout_toRightOf="@+id/dummy_text_1"
+            android:background="@drawable/btn_on_off"
+            android:textOff=""
+            android:textOn="" />
+    </RelativeLayout>
 
     <!-- Horizontal Pager View -->
 
@@ -80,8 +180,15 @@
         <!-- FIRST VIEW -->
 
         <RelativeLayout
+            android:id="@+id/dummy_vertical_line"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
+
+            <View
+                android:layout_width="15dip"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/map_shadow" />
         </RelativeLayout>
 
         <!-- SECOND VIEW -->

@@ -34,22 +34,6 @@
             android:textSize="25dip" />
     </RelativeLayout>
 
-    <!-- Buttons on the bottom -->
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/go_button_iphone" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/check_in" />
-
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -62,14 +46,15 @@
             <com.google.android.maps.MapView
                 android:id="@+id/mapview_user_details"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="300dip"
                 android:apiKey="0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
+                android:background="#5588B5B0"
                 android:orientation="vertical" >
 
                 <RelativeLayout
@@ -131,7 +116,7 @@
                     <View
                         android:layout_width="fill_parent"
                         android:layout_height="1dip"
-                        android:background="#00000000" />
+                        android:background="#22ffffff" />
 
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -169,7 +154,7 @@
                     <View
                         android:layout_width="fill_parent"
                         android:layout_height="1dip"
-                        android:background="#00000000" />
+                        android:background="#22ffffff" />
 
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -207,9 +192,10 @@
                 </LinearLayout>
 
                 <RelativeLayout
+                    android:id="@+id/dummy_resume"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dip"
+                    android:layout_marginBottom="-20dip"
                     android:background="@drawable/paper_texture" >
 
                     <TextView
@@ -387,8 +373,23 @@
                     android:layout_height="wrap_content" >
                 </ListView>
             </LinearLayout>
-
         </RelativeLayout>
     </ScrollView>
+
+    <!-- Buttons on the bottom -->
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/go_button_iphone" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/check_in" />
 
 </RelativeLayout>

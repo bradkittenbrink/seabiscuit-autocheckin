@@ -32,8 +32,8 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_above="@+id/dummy_layout_2"
         android:layout_below="@+id/dummy_layout" >
 
@@ -42,6 +42,11 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:apiKey="0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#5588B5B0" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -100,9 +105,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dip"
-            android:textSize="18sp"
             android:layout_toRightOf="@+id/imageview_face"
-            android:text="Who&apos;s here now?" />
+            android:text="Who&apos;s here now?"
+            android:textSize="18sp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -160,22 +165,22 @@
 
         <com.coffeeandpower.views.CustomSeek
             android:id="@+id/seekbar_hours"
-            android:layout_width="200dip"
             style="@style/custom_seekbar_track"
+            android:layout_width="200dip"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/textview_how_long"
             android:layout_below="@+id/textview_how_long"
-            android:thumb="@drawable/check_in_slider_handle"
+            android:layout_marginTop="20dip"
             android:progressDrawable="@drawable/custom_seekbar"
-            android:layout_marginTop="20dip" />
+            android:thumb="@drawable/check_in_slider_handle" />
 
         <ImageView
             android:layout_width="80dip"
             android:layout_height="80dip"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/textview_hours"
-            android:onClick="onClickCheckIn"
-            android:background="@drawable/check_in_big" />
+            android:background="@drawable/check_in_big"
+            android:onClick="onClickCheckIn" />
     </RelativeLayout>
 
 </RelativeLayout>
