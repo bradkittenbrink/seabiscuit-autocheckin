@@ -1,26 +1,37 @@
 package com.coffeeandpower.maps;
 
-import com.coffeeandpower.cont.MapUserData;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
 public class MyOverlayItem extends OverlayItem{
 
-	private MapUserData mud;
+	private String foursquareIdKey;
+	
+	private boolean res;
+	
 	
 	public MyOverlayItem(GeoPoint point, String title, String snippet) {
 		super(point, title, snippet);
 		
 	}
 
-	public void setMapUserData (MapUserData mud){
+	public void setMapUserData (String foursquareIdKey){
 		
-		this.mud = mud;
+		this.foursquareIdKey = foursquareIdKey;
 	}
 	
-	public MapUserData getMapuserData (){
+	public String getFoursquareIdKey(){
 		
-		return mud;
+		return foursquareIdKey;
 	}
 	
+	public void setAsList (boolean res){
+		
+		this.res = res;
+	}
+	
+	public boolean isList(){
+		
+		return res;
+	}
 }

@@ -1,27 +1,46 @@
 package com.coffeeandpower.activity;
 
-import com.coffeeandpower.R;
-import com.coffeeandpower.cont.MapUserData;
+import java.util.ArrayList;
 
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import com.coffeandpower.db.CAPDao;
+import com.coffeeandpower.R;
+import com.coffeeandpower.cont.MapUserData;
+
 public class ActivityListPersons extends ListActivity {
 
-	private MapUserData mud;
 
+	private ArrayList<MapUserData> arrayMapUserData;
+	
+	private CAPDao capDao;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_show_persons);
 
+		// Configure database
+		capDao = new CAPDao(this);
+		capDao.open();
+		
 		// Get data from intent
 		Bundle extras = getIntent().getExtras();
 		if (extras!=null){
 			
-			mud = (MapUserData) extras.getSerializable("mapuserdata");
+			String foursquareId = extras.getString("mapuserdata");
+
+			if (foursquareId!=null){
+				
+				arrayMapUserData = capDao.getMapsUsersData(foursquareId);
+				capDao.close();
+				
+				Log.d("LOG", "arrayFormDb: " + arrayMapUserData.size());
+			}
 		}
 		
 		

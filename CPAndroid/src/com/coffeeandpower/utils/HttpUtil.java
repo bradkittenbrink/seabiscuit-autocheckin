@@ -171,7 +171,7 @@ public class HttpUtil {
 						JSONArray payload = json.optJSONArray("payload");
 						if (payload!=null){
 
-							HashMap<String,MapUserData> mapUsersArray = new HashMap<String,MapUserData>();
+							ArrayList<MapUserData> mapUsersArray = new ArrayList<MapUserData>();
 
 							for (int m=0; m<payload.length(); m++){
 
@@ -196,7 +196,7 @@ public class HttpUtil {
 									String skills = item.optString("skills");
 									boolean met = item.optBoolean("met");
 
-									mapUsersArray.put(foursquareId, new MapUserData(checkInId, userId, nickName, statusText, photo, majorJobCategory, minorJobCategory, 
+									mapUsersArray.add(new MapUserData(checkInId, userId, nickName, statusText, photo, majorJobCategory, minorJobCategory, 
 											headLine, fileName, lat, lng, checkedIn, foursquareId, venueName, checkInCount, skills, met));
 								}
 							}

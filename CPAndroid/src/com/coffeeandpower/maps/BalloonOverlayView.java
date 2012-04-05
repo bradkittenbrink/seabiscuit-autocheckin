@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.coffeeandpower.R;
 import com.coffeeandpower.activity.ActivityListPersons;
 import com.coffeeandpower.activity.ActivityUserDetails;
-import com.coffeeandpower.cont.MapUserData;
 
 
 
@@ -25,8 +24,9 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 	private TextView title;
 	private TextView snippet;
 
-	private MapUserData mud;
-
+	private String foursquareIdKey;
+	
+	private boolean isList;
 
 	public BalloonOverlayView(final Context context, int balloonBottomOffset) {
 
@@ -46,18 +46,20 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 		ImageView next = (ImageView) v.findViewById(R.id.close_img_button);
 		next.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if (mud!=null){
+				
+				if (foursquareIdKey!=null){
 
-					final int checkInCount = mud.getCheckInCount();
-					if (checkInCount>1){
+					if (isList){
 
+						// This is temp solution
 						Intent intent = new Intent(context, ActivityListPersons.class);
-						intent.putExtra("mapuserdata", mud);
+						intent.putExtra("mapuserdata", foursquareIdKey);
 						context.startActivity(intent);
 					} else {
 
 						Intent intent = new Intent(context, ActivityUserDetails.class);
-						intent.putExtra("mapuserdata", mud);
+						intent.putExtra("mapuserdata", foursquareIdKey);
+						intent.putExtra("from_act", "map");
 						context.startActivity(intent);
 					}
 				}
@@ -74,8 +76,9 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 
 	public void setData(Item item) {
 
-		this.mud = item.getMapuserData();
-
+		this.foursquareIdKey = item.getFoursquareIdKey();
+		this.isList = item.isList();
+		
 		layout.setVisibility(VISIBLE);
 
 		if (item.getTitle() != null) {

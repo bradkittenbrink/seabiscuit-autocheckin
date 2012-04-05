@@ -1,9 +1,8 @@
 package com.coffeeandpower.cont;
 
-import java.io.Serializable;
 
-@SuppressWarnings("serial")
-public class MapUserData implements Serializable{
+
+public class MapUserData{
 
 
 	private int checkInId;
@@ -153,7 +152,6 @@ public class MapUserData implements Serializable{
 	public void setMet(boolean met) {
 		this.met = met;
 	}
-
-
+	
 
 }

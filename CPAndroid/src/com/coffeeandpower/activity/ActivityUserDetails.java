@@ -1,11 +1,14 @@
 package com.coffeeandpower.activity;
 
+import java.util.ArrayList;
+
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.coffeandpower.db.CAPDao;
 import com.coffeeandpower.R;
 import com.coffeeandpower.cont.MapUserData;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
@@ -33,6 +36,8 @@ public class ActivityUserDetails extends MapActivity{
 
 	private TextView textStatus;
 
+	private CAPDao capDao;
+
 	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
@@ -48,18 +53,34 @@ public class ActivityUserDetails extends MapActivity{
 		Drawable drawable = this.getResources().getDrawable(R.drawable.map_marker_iphone);
 		itemizedoverlay = new MyItemizedOverlay2(drawable);
 
+		// Database controler
+		capDao = new CAPDao(this);
+		capDao.open();
+
+
 		// Get data from intent 
 		Bundle extras = getIntent().getExtras();
 		if (extras!=null){
 
-			// INTENT FROM MAP !!!!
-			mud = (MapUserData) extras.getSerializable("mapuserdata");
+			String foursquareId = extras.getString("mapuserdata");
+			String fromAct = extras.getString("from_act");
 
-			// INTENT FORM LIST !!!!
-			if (mud==null){
+			if (fromAct!=null){
 
-				//buttonTitle.setText(mud.getVenueName());
+				if (fromAct.equals("map")){
+					// From Map
+
+					ArrayList<MapUserData> tempArray = capDao.getMapsUsersData(foursquareId);
+					if (!tempArray.isEmpty()){
+						mud = tempArray.get(0);
+					}
+				} else {
+					// From list
+
+				}
+
 			}
+
 		}
 
 
@@ -71,10 +92,11 @@ public class ActivityUserDetails extends MapActivity{
 
 
 		// Navigate map to location from intent data
-		GeoPoint point = new GeoPoint((int)(mud.getLat()*1E6), (int)(mud.getLng()*1E6));
-		mapController.animateTo(point);
-		createMarker(point);
-
+		if (mud!=null){
+			GeoPoint point = new GeoPoint((int)(mud.getLat()*1E6), (int)(mud.getLng()*1E6));
+			mapController.animateTo(point);
+			createMarker(point);
+		}
 
 		// Set Views states
 		if (mud!=null){
@@ -93,8 +115,8 @@ public class ActivityUserDetails extends MapActivity{
 			mapView.getOverlays().add(itemizedoverlay);
 		}
 	}
-	
-	
+
+
 	@Override
 	protected void onResume() {
 		super.onResume();

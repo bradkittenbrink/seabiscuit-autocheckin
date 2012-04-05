@@ -1,7 +1,9 @@
 package com.coffeeandpower.activity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Map.Entry;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -19,6 +21,8 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.coffeandpower.db.CAPDao;
+import com.coffeandpower.db.CASPSQLiteDatabase;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
@@ -41,7 +45,7 @@ public class ActivityMap extends MapActivity{
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_MAP = 1;
 	private static final int GET_MAP_DATA_SET = 3;
-	
+
 	private static final int ACTIVITY_ACCOUNT_SETTINGS = 1888;
 	public static final int ACCOUNT_CHANGED = 1900;
 
@@ -63,6 +67,8 @@ public class ActivityMap extends MapActivity{
 
 	private DataHolder result;
 	private DataHolder resultMapDataSet;
+
+	private CAPDao capDao;
 
 	private Handler handler = new Handler(){
 
@@ -88,14 +94,82 @@ public class ActivityMap extends MapActivity{
 			case GET_MAP_DATA_SET:
 				if (resultMapDataSet.getObject()!=null){
 
-					HashMap<String,MapUserData> mapUsersArray = (HashMap<String,MapUserData>) resultMapDataSet.getObject();
+					@SuppressWarnings("unchecked")
+					ArrayList<MapUserData> mapUsersArray = (ArrayList<MapUserData>) resultMapDataSet.getObject();
+
 					RootActivity.log("ActivityMap_mapUsersArray.size()=" + mapUsersArray.size());
 
-					for (Map.Entry<String, MapUserData> mud: mapUsersArray.entrySet()){
+					// < Key, Value >  = < foursquareId, >
+					HashMap<String, ArrayList<MapUserData>> mapKeyIsFoursquareId = new HashMap<String, ArrayList<MapUserData>>();
+					HashSet<String> setFoursquareIds = new HashSet<String>();
 
-						GeoPoint gp = new GeoPoint((int)(mud.getValue().getLat()*1E6), (int)(mud.getValue().getLng()*1E6));
-						createMarker(gp, mud.getValue());
+					// Find all uniq foursquareIds
+					for (MapUserData mud:mapUsersArray){
+						setFoursquareIds.add(mud.getFoursquareId());
 					}
+
+					// Find all MapUserData objects with no duplicated userIds for every foursquareId
+					for (String foursquareId:setFoursquareIds){
+
+						// < Key, Value >  = < userId, >
+						HashMap<Integer, MapUserData> tempMapUserDataArray = new HashMap<Integer, MapUserData>();
+
+						for (MapUserData mud:mapUsersArray){
+
+							if (mud.getFoursquareId().equals(foursquareId)){
+								tempMapUserDataArray.put(mud.getUserId(), mud);
+							}
+						}
+
+						// Array list without duplicates
+						ArrayList<MapUserData> tmpArray = new ArrayList<MapUserData>(tempMapUserDataArray.values());
+
+						mapKeyIsFoursquareId.put(foursquareId, tmpArray);
+					}
+
+
+					// Reset table for new data
+					capDao.open();
+					capDao.deleteAllFromTable(CASPSQLiteDatabase.TABLE_MAP_USER_DATA); // reset table for new data
+
+
+
+					// Loop for creating markers on map, in this loop iterate thru all uniq foursquaresIds
+					for (Entry<String, ArrayList<MapUserData>> itemWithKeyFoursquareId : mapKeyIsFoursquareId.entrySet()){
+
+						int checkinsSum = 0;
+						String venueName = "";
+
+						// init for coordinates of created point
+						double lat = 0.0d;
+						double lng = 0.0d;
+
+						// we need to sum checkins for every user who checked in foursquareId
+						for (MapUserData mud : itemWithKeyFoursquareId.getValue()){
+
+							checkinsSum += mud.getCheckInCount();
+
+							// no matter for loop, all items in loop have the same coordinates
+							lat = mud.getLat();
+							lng = mud.getLng();
+
+							venueName = mud.getVenueName();
+
+							// write data to database
+							capDao.putMapsUsersData(mud, itemWithKeyFoursquareId.getKey());
+						}
+
+						GeoPoint gp = new GeoPoint((int)(lat*1E6), (int)(lng*1E6));
+						if (itemWithKeyFoursquareId.getValue().size()>1){
+							// for ActivityListPersons
+							createMarker(gp, itemWithKeyFoursquareId.getKey(), checkinsSum, venueName, true);
+						} else {
+							// fpr ActivityUserDetails
+							createMarker(gp, itemWithKeyFoursquareId.getKey(), checkinsSum, venueName, false);
+						}
+					}
+					
+					capDao.close();
 					mapView.invalidate();
 				}
 				break;
@@ -142,17 +216,21 @@ public class ActivityMap extends MapActivity{
 		mapController.setZoom(12);
 
 
+		// Database control
+		capDao = new CAPDao(this);
+
+
 		// User is logged in, get user data
 		getUserData();
 
 	}
 
-	
+
 	/**
 	 * Get user data from server
 	 */
 	private void getUserData(){
-		
+
 		progress.show();
 		new Thread(new Runnable() {
 			@Override
@@ -167,7 +245,7 @@ public class ActivityMap extends MapActivity{
 		}).start();
 	}
 
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -181,16 +259,16 @@ public class ActivityMap extends MapActivity{
 	 * @param GeoPoint
 	 * @param MapUserData
 	 */
-	private void createMarker(GeoPoint point, MapUserData mud) {
+	private void createMarker(GeoPoint point, String foursquareIdKey, int checkinsSum, String venueName, boolean isList) {
 
-		if (mud!=null){
+		if (foursquareIdKey!=null){
 
-			int checkInCount = mud.getCheckInCount();
-			String checkStr = checkInCount == 1 ? " checkin in the last week" : " checkins in the last week";
-			String name = AppCAP.cleanResponseString(mud.getVenueName());
+			String checkStr = checkinsSum == 1 ? " checkin in the last week" : " checkins in the last week";
+			venueName = AppCAP.cleanResponseString(venueName);
 
-			MyOverlayItem overlayitem = new MyOverlayItem(point, name, checkInCount + checkStr);
-			overlayitem.setMapUserData(mud);
+			MyOverlayItem overlayitem = new MyOverlayItem(point, venueName, checkinsSum + checkStr);
+			overlayitem.setMapUserData(foursquareIdKey);
+			overlayitem.setAsList(isList);
 			
 			itemizedoverlay.addOverlay(overlayitem);
 			if (itemizedoverlay.size() > 0) {
@@ -336,11 +414,11 @@ public class ActivityMap extends MapActivity{
 		switch (requestCode){
 
 		case ACTIVITY_ACCOUNT_SETTINGS:
-			
+
 			if (resultCode==ACCOUNT_CHANGED){
 				getUserData();
 			}
-			
+
 			break;
 		}
 	}
@@ -356,6 +434,12 @@ public class ActivityMap extends MapActivity{
 		super.onBackPressed();
 	}
 
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		capDao.close();
+	}
 
 	@Override
 	protected void onDestroy() {
