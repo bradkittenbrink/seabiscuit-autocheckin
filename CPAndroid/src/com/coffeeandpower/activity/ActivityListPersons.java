@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -143,6 +144,12 @@ public class ActivityListPersons extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
+		
+		Intent intent = new Intent(ActivityListPersons.this, ActivityUserDetails.class);
+		intent.putExtra("mapuserobject", (MapUserData)adapter.getItem(position));
+		intent.putExtra("from_act", "list");
+		startActivity(intent);
+		onBackPressed();
 	}
 
 

@@ -77,8 +77,10 @@ public class ActivityUserDetails extends MapActivity{
 						mud = tempArray.get(0);
 					}
 				} else {
+					
 					// From list
-
+					mud = (MapUserData) extras.getSerializable("mapuserobject");
+					
 				}
 
 			}

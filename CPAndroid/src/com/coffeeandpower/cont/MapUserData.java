@@ -1,8 +1,11 @@
 package com.coffeeandpower.cont;
 
+import java.io.Serializable;
 
 
-public class MapUserData{
+
+@SuppressWarnings("serial")
+public class MapUserData implements Serializable{
 
 
 	private int checkInId;
