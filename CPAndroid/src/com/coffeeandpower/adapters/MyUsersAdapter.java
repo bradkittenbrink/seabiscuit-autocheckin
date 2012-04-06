@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.cont.MapUserData;
 
@@ -74,7 +75,12 @@ public class MyUsersAdapter extends BaseAdapter{
 			holder = (ViewHolder)convertView.getTag();
 		}
 
+		String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray.get(position).getCheckInCount() + " Checkin" : mudArray.get(position).getCheckInCount() + " Checkins";
 		
+		holder.textNickName.setText(mudArray.get(position).getNickName());
+		holder.textStatus.setText(AppCAP.cleanResponseString(mudArray.get(position).getStatusText()));
+		holder.textCheckinsCount.setText(checkStr);
+		holder.textVenueName.setText(AppCAP.cleanResponseString(mudArray.get(position).getVenueName()));
 		
 		return convertView;
 	}

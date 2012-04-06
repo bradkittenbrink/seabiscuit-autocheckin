@@ -10,7 +10,7 @@
         android:layout_height="45dip"
         android:background="@drawable/header" >
 
-        <Button
+        <Button android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -28,6 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/btn_back"
+            android:paddingLeft="5dp"
             android:text="sdfsdcs"
             android:textColor="#ffffff"
             android:textSize="25dip" />
@@ -35,6 +37,7 @@
 
     <ListView
         android:id="@android:id/list"
+        android:layout_below="@+id/dummy_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:cacheColorHint="#00000000" >
