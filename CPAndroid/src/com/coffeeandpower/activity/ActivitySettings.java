@@ -1,8 +1,21 @@
 package com.coffeeandpower.activity;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
@@ -18,12 +31,17 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
+import com.coffeeandpower.utils.GraphicUtils;
+import com.coffeeandpower.utils.HttpUtil;
 import com.coffeeandpower.views.CustomDialog;
 
 public class ActivitySettings extends RootActivity{
 
+	public static final String IMAGE_FOLDER = "/CoffeeAndPower";
+
 	private final static int HANDLE_EMAIL_CHANGE = 1222;
 	private final static int HANDLE_NICK_NAME_CHANGE = 1223;
+	private final static int PROFILE_PIC_REQUEST = 1455;
 
 	private User loggedUser;
 
@@ -193,7 +211,62 @@ public class ActivitySettings extends RootActivity{
 		super.onResume();
 	}
 
+	private Uri imageUri;
 
+	public void onClickPhoto (View v){
+
+		// Create folders on sdcard for putting images and audio
+		File dir = new File (Environment.getExternalStorageDirectory() + IMAGE_FOLDER);
+		boolean res = dir.mkdir();
+
+		Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
+		File photo = new File(Environment.getExternalStorageDirectory() + IMAGE_FOLDER, "photo_profile.jpg");
+
+		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+
+		imageUri = Uri.fromFile(photo);
+		startActivityForResult(cameraIntent, PROFILE_PIC_REQUEST);
+
+	}
+
+	@Override
+	public void onActivityResult (int requestCode, int resultCode, Intent intent){
+
+		switch (requestCode) {
+
+		case PROFILE_PIC_REQUEST:
+
+			if (resultCode == RESULT_OK) { 
+				Uri selectedImage = imageUri;
+				getContentResolver().notifyChange(selectedImage, null);
+
+				try{
+					OutputStream fOut = null;
+					
+					Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
+					Bitmap resizedImage = GraphicUtils.resizeProfileImage(bitmap);
+					
+					File file = new File(new URI(selectedImage.toString()));
+					fOut = new FileOutputStream(file);
+
+					// Set picture compression
+					resizedImage.compress(CompressFormat.JPEG, 70, fOut);
+					fOut.flush();
+					fOut.close();
+
+				} catch (IOException e) {
+				} catch (URISyntaxException e) {
+				}
+
+			}
+			
+			AppCAP.getConnection().uploadUserProfilePhoto();
+			
+			break;
+		}
+	}
+
+	
 	public void onClickClearNickName (View v){
 		textNickName.setText("");
 	}

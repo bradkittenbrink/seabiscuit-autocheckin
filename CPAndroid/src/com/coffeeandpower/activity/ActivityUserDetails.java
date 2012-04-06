@@ -71,6 +71,8 @@ public class ActivityUserDetails extends MapActivity{
 					// From Map
 
 					ArrayList<MapUserData> tempArray = capDao.getMapsUsersData(foursquareId);
+					capDao.close();
+					
 					if (!tempArray.isEmpty()){
 						mud = tempArray.get(0);
 					}

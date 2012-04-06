@@ -117,6 +117,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dip"
                 android:background="@drawable/default_avatar25"
+                android:onClick="onClickPhoto"
                 android:visibility="visible" />
         </RelativeLayout>
 

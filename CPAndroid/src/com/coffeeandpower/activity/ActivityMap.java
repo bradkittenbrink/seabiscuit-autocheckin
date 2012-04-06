@@ -251,6 +251,15 @@ public class ActivityMap extends MapActivity{
 		super.onResume();
 		myLocationOverlay.enableMyLocation();
 		mapController.setZoom(17);
+		
+		// Temp solution for black space below mapView
+		if (myLocationOverlay!=null){
+			if (myLocationOverlay.getMyLocation()!=null){
+				mapController.animateTo(myLocationOverlay.getMyLocation());
+				mapController.setZoom(17);
+			}
+		}
+		
 	}
 
 
@@ -269,6 +278,11 @@ public class ActivityMap extends MapActivity{
 			MyOverlayItem overlayitem = new MyOverlayItem(point, venueName, checkinsSum + checkStr);
 			overlayitem.setMapUserData(foursquareIdKey);
 			overlayitem.setAsList(isList);
+			
+			if (myLocationOverlay.getMyLocation()!=null){
+				
+				overlayitem.setMyLocationCoords(myLocationOverlay.getMyLocation().getLatitudeE6(), myLocationOverlay.getMyLocation().getLongitudeE6());
+			}
 			
 			itemizedoverlay.addOverlay(overlayitem);
 			if (itemizedoverlay.size() > 0) {

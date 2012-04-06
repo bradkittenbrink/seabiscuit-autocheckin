@@ -9,6 +9,8 @@ public class MyOverlayItem extends OverlayItem{
 	
 	private boolean res;
 	
+	private int lat;
+	private int lng;
 	
 	public MyOverlayItem(GeoPoint point, String title, String snippet) {
 		super(point, title, snippet);
@@ -33,5 +35,22 @@ public class MyOverlayItem extends OverlayItem{
 	public boolean isList(){
 		
 		return res;
+	}
+	
+	public void setMyLocationCoords(int lat, int lng){
+		
+		this.lat = lat;
+		this.lng = lng;
+				
+	}
+	
+	public int getMyLatitude(){
+		
+		return lat;
+	}
+	
+	public int getMyLongitude(){
+		
+		return lng;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,7 +34,12 @@ public class ActivityListPersons extends ListActivity {
 	private CAPDao capDao;
 
 	private CustomFontView textTitle;
+	
+	private ProgressDialog progress;
 
+	private int myLat;
+	private int myLng;
+	
 	private Handler handler = new Handler(){
 
 		@Override
@@ -44,13 +50,14 @@ public class ActivityListPersons extends ListActivity {
 
 			case LIST_CONVERT_FINISHED:
 
+				progress.dismiss();
 				capDao.close();
 
 				if (arrayMapUserData!=null){
 					if (!arrayMapUserData.isEmpty()){
 						
 						textTitle.setText(AppCAP.cleanResponseString(arrayMapUserData.get(0).getVenueName()));
-						adapter = new MyUsersAdapter(ActivityListPersons.this, arrayMapUserData);
+						adapter = new MyUsersAdapter(ActivityListPersons.this, arrayMapUserData, myLat, myLng);
 						setListAdapter(adapter);
 						animateListView(getListView());
 					}
@@ -70,7 +77,8 @@ public class ActivityListPersons extends ListActivity {
 
 		// Views
 		textTitle = (CustomFontView) findViewById(R.id.textview_location_name);
-
+		progress = new ProgressDialog(this);
+		progress.setMessage("Loading...");
 
 		// Configure database
 		capDao = new CAPDao(this);
@@ -81,9 +89,13 @@ public class ActivityListPersons extends ListActivity {
 		if (extras!=null){
 
 			final String foursquareId = extras.getString("mapuserdata");
-
+			myLat = extras.getInt("lat");
+			myLng = extras.getInt("lng");
+			
 			if (foursquareId!=null){
-
+				
+				progress.show();
+				
 				// It may take time...
 				new Thread(new Runnable() {
 					@Override
@@ -140,6 +152,11 @@ public class ActivityListPersons extends ListActivity {
 	}
 
 
+	public void onClickCheckIn (View v){
+		
+	}
+	
+	
 	public void onClickBack (View v){
 		onBackPressed();	
 	}

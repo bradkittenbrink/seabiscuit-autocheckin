@@ -28,6 +28,9 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 	
 	private boolean isList;
 
+	private int lat;
+	private int lng;
+	
 	public BalloonOverlayView(final Context context, int balloonBottomOffset) {
 
 		super(context);
@@ -51,9 +54,12 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 
 					if (isList){
 
-						// This is temp solution
+						// List
 						Intent intent = new Intent(context, ActivityListPersons.class);
 						intent.putExtra("mapuserdata", foursquareIdKey);
+						// my location
+						intent.putExtra("lat", lat);
+						intent.putExtra("lng", lng);
 						context.startActivity(intent);
 					} else {
 
@@ -78,6 +84,9 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 
 		this.foursquareIdKey = item.getFoursquareIdKey();
 		this.isList = item.isList();
+		this.lat = item.getMyLatitude();
+		this.lng = item.getMyLongitude();
+		
 		
 		layout.setVisibility(VISIBLE);
 

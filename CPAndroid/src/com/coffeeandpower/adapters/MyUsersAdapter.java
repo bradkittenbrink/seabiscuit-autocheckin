@@ -1,8 +1,12 @@
 package com.coffeeandpower.adapters;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.location.Location;
+import android.location.LocationManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +21,16 @@ public class MyUsersAdapter extends BaseAdapter{
 
 	private ArrayList<MapUserData> mudArray;
 	private LayoutInflater inflater;
-	
-	public MyUsersAdapter(Activity context, ArrayList<MapUserData> mudArray){
-		
+
+	private int myLat;
+	private int myLng;
+
+	public MyUsersAdapter(Activity context, ArrayList<MapUserData> mudArray, int myLat, int myLng){
+
 		this.inflater = context.getLayoutInflater();
-		
+		this.myLat = myLat;
+		this.myLng = myLng;
+
 		if (mudArray!=null){
 			this.mudArray = mudArray;
 		} else {
@@ -45,7 +54,7 @@ public class MyUsersAdapter extends BaseAdapter{
 	}
 
 	public static class ViewHolder {
-		
+
 		public TextView textNickName;
 		public TextView textStatus;
 		public TextView textVenueName;
@@ -53,7 +62,7 @@ public class MyUsersAdapter extends BaseAdapter{
 		public TextView textCheckinsCount;
 
 		public ViewHolder(View convertView){
-		
+
 			this.textCheckinsCount = (TextView) convertView.findViewById(R.id.textview_checkin);
 			this.textDistance = (TextView) convertView.findViewById(R.id.textview_how_far);
 			this.textStatus = (TextView) convertView.findViewById(R.id.textview_comment);
@@ -61,12 +70,12 @@ public class MyUsersAdapter extends BaseAdapter{
 			this.textNickName = (TextView) convertView.findViewById(R.id.textview_persone_nickname);
 		}
 	}
-	
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		
+
 		ViewHolder holder; 
-		
+
 		if (convertView == null){
 			convertView = inflater.inflate(R.layout.item_list_about_person, null);
 			holder = new ViewHolder(convertView);
@@ -76,12 +85,26 @@ public class MyUsersAdapter extends BaseAdapter{
 		}
 
 		String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray.get(position).getCheckInCount() + " Checkin" : mudArray.get(position).getCheckInCount() + " Checkins";
-		
+
 		holder.textNickName.setText(mudArray.get(position).getNickName());
 		holder.textStatus.setText(AppCAP.cleanResponseString(mudArray.get(position).getStatusText()));
 		holder.textCheckinsCount.setText(checkStr);
 		holder.textVenueName.setText(AppCAP.cleanResponseString(mudArray.get(position).getVenueName()));
-		
+
+		float[] results = new float[1];
+		Location.distanceBetween(myLat / 1E6, myLng / 1E6, mudArray.get(position).getLat(), mudArray.get(position).getLng(), results);
+
+		String distanceS = "";
+		DecimalFormat oneDForm = new DecimalFormat("#.#");
+		if (results[0] < 100){
+			float d = Float.valueOf(oneDForm.format(results[0]));
+			distanceS = d + "m away";
+		} else {
+			float d = Float.valueOf(oneDForm.format(results[0]/1000));
+			distanceS = d + "km away";
+		}
+		holder.textDistance.setText(distanceS);
+
 		return convertView;
 	}
 
