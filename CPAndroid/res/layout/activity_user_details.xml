@@ -378,14 +378,56 @@
 
     <!-- Buttons on the bottom -->
 
-    <ImageButton
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/go_button_iphone" />
+        android:layout_alignParentLeft="true" >
+
+        <ImageButton
+            android:id="@+id/imagebutton_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/go_menu_button_minus" />
+        
+        <ImageButton
+            android:id="@+id/imagebutton_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/go_button_iphone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imagebutton_plus"
+            android:layoutAnimation="@anim/layout_animation_row_slide_from_bottom"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/bg_f2f"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/bg_f2f" />
+
+            <ImageButton
+                android:id="@+id/imagebutton_twitter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chart" />
+
+            <ImageButton
+                android:id="@+id/imagebutton_chart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_paid" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <ImageButton
+        android:id="@+id/imagebutton_check_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
