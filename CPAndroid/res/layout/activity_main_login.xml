@@ -13,7 +13,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="60dip"
         android:layout_marginLeft="40dip"
-        android:background="@drawable/login_facebook"
+        android:background="@drawable/btn_facebook"
         android:onClick="onClickFacebook" />
 
     <ImageButton
@@ -23,7 +23,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="60dip"
-        android:background="@drawable/login_linkedin"
+        android:background="@drawable/btn_linkedin"
         android:onClick="onClickTwitter" />
 
     <ImageButton
@@ -33,7 +33,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="60dip"
         android:layout_marginRight="40dip"
-        android:background="@drawable/login_mail"
+        android:background="@drawable/btn_mail"
         android:onClick="onClickMail" />
 
     <com.coffeeandpower.views.CustomFontView

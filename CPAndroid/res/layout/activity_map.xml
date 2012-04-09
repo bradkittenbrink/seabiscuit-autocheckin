@@ -209,7 +209,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dip"
-                    android:background="@drawable/settings_button"
+                    android:background="@drawable/btn_settings"
                     android:onClick="onClickSettings" />
 
                 <com.coffeeandpower.views.CustomFontView
@@ -227,7 +227,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dip"
-                    android:background="@drawable/people_list"
+                    android:background="@drawable/btn_people"
                     android:onClick="onClickPeopleList" />
             </RelativeLayout>
 

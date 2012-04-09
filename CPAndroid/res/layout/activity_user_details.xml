@@ -61,7 +61,15 @@
                     android:layout_width="fill_parent"
                     android:layout_height="80dip"
                     android:layout_margin="10dip"
-                    android:background="@drawable/paper_texture" >
+                    android:background="@drawable/paper_texture"
+                    android:layoutAnimation="@anim/layout_random_fade" >
+
+                    <ProgressBar
+                        android:id="@+id/progressbar_photo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="8dip" />
 
                     <ImageButton
                         android:id="@+id/imagebutton_user_face"
@@ -102,6 +110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dip"
                     android:background="#55000000"
+                    android:layoutAnimation="@anim/layout_random_fade"
                     android:orientation="vertical" >
 
                     <TextView
@@ -196,7 +205,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="-20dip"
-                    android:background="@drawable/paper_texture" >
+                    android:background="@drawable/paper_texture"
+                    android:layoutAnimation="@anim/layout_random_fade" >
 
                     <TextView
                         android:id="@+id/textview_resume"
@@ -390,7 +400,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@drawable/go_menu_button_minus" />
-        
+
         <ImageButton
             android:id="@+id/imagebutton_plus"
             android:layout_width="wrap_content"
