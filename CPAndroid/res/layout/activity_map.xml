@@ -35,7 +35,7 @@
         <com.coffeeandpower.views.CustomFontView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#3e3e3e"
+            android:background="@drawable/btn_gray"
             android:clickable="true"
             android:onClick="onClickAccountSettings"
             android:padding="10dp"
@@ -56,7 +56,7 @@
         <com.coffeeandpower.views.CustomFontView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#3e3e3e"
+            android:background="@drawable/btn_gray"
             android:clickable="true"
             android:onClick="onClickWallet"
             android:padding="10dp"
@@ -77,7 +77,7 @@
         <com.coffeeandpower.views.CustomFontView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#3e3e3e"
+            android:background="@drawable/btn_gray"
             android:clickable="true"
             android:onClick="onClickLogout"
             android:padding="10dp"
@@ -273,14 +273,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/btn_map_refresh" />
+                        android:background="@drawable/btn_map_refresh"
+                        android:onClick="onClickRefresh" />
 
                     <ImageButton
                         android:id="@+id/imagebutton_map_refresh_progress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/map_refresh_progress_arrow"
+                        android:background="@drawable/btn_map_refresh_progress"
                         android:onClick="onClickRefresh" />
                 </RelativeLayout>
             </RelativeLayout>

@@ -26,7 +26,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dip"
-            android:background="@drawable/settings_button"
+            android:background="@drawable/btn_settings"
             android:onClick="onClickBack" />
     </RelativeLayout>
 
@@ -63,7 +63,7 @@
                 android:layout_height="25dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dip"
+                android:layout_marginRight="6dip"
                 android:visibility="visible" />
 
             <ImageView
@@ -126,7 +126,7 @@
                 android:layout_height="25dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dip"
+                android:layout_marginRight="15dip"
                 android:visibility="visible" />
         </RelativeLayout>
 
@@ -164,7 +164,7 @@
                 android:layout_height="25dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dip"
+                android:layout_marginRight="6dip"
                 android:visibility="visible" />
 
             <EditText
