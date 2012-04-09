@@ -89,6 +89,7 @@
             android:layout_marginBottom="3dip"
             android:singleLine="true"
             android:text="dsfssdasd"
+            android:layout_gravity="right"
             android:textColor="#33726f"
             android:textSize="13sp" />
     </LinearLayout>
