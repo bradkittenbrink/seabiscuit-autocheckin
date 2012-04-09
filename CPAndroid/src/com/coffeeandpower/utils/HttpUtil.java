@@ -2,10 +2,14 @@ package com.coffeeandpower.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +43,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.RootActivity;
@@ -61,6 +68,47 @@ public class HttpUtil {
 		this.client = getThreadSafeClient();
 	}
 
+
+	/**
+	 * Get Bitmap (profile photos) from URL
+	 * @param url
+	 * @return
+	 */
+	public static DataHolder getBitmapFromURL (String url){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		URL myFileUrl =null;   
+		Bitmap bmImg = null;
+
+		try {
+			myFileUrl= new URL(url);
+		} catch (MalformedURLException e) {
+			RootActivity.log("HttpUtil_getBitmapFromURL url:" + url);
+			e.printStackTrace();
+		}
+
+		try {
+			HttpURLConnection conn= (HttpURLConnection)myFileUrl.openConnection();
+			conn.setDoInput(true);
+			conn.connect();
+			InputStream is = conn.getInputStream();
+
+			bmImg = BitmapFactory.decodeStream(is);
+
+			result.setObject(bmImg);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+		}
+
+		return result;
+	}
+
+
+
+
 	/**
 	 * Upload user profile image
 	 * @return
@@ -72,9 +120,9 @@ public class HttpUtil {
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
-		
+
 		MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);  
-		
+
 		File file = new File(Environment.getExternalStorageDirectory() + ActivitySettings.IMAGE_FOLDER, "photo_profile.jpg");
 
 		try {
@@ -94,6 +142,13 @@ public class HttpUtil {
 
 				JSONObject json = new JSONObject(responseString);
 				if (json!=null){
+					result.setObject(json.opt("message"));
+
+					JSONObject params = json.optJSONObject("params");
+					if (params!=null){
+						AppCAP.setLocalUserPhotoURL(params.optString("thumbnail"));
+						AppCAP.setLocalUserPhotoLargeURL(params.optString("picture"));
+					}
 
 				}
 			}
@@ -687,6 +742,9 @@ public class HttpUtil {
 					int moneyReceived = json.optInt("money_received");
 					int offersPaid = json.optInt("offers_paid");
 					int balance = json.getInt("balance");
+
+					AppCAP.setLocalUserPhotoLargeURL(photoLarge);
+					AppCAP.setLocalUserPhotoURL(photo);
 
 					result.setObject(new User(userId, favoriteEnabled, favoriteCount, myFavoriteCount, moneyReceived, 
 							offersPaid, balance, nickName, userName, statusText, status, active, photo, photoLarge, lat, lng));

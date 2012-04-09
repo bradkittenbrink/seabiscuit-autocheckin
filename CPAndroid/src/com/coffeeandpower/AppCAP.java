@@ -11,6 +11,8 @@ public class AppCAP extends Application{
 	
 	private static final String TAG_USER_EMAIL = "tag_user_email";
 	private static final String TAG_USER_EMAIL_PASSWORD = "tag_user_email_password";
+	private static final String TAG_USER_PHOT_URL = "tag_user_photo_url";
+	private static final String TAG_USER_PHOT_LARGE_URL = "tag_user_photo_large_url";
 	
 	public static final String URL_WEB_SERVICE = "https://coffeeandpower.com/"; // production
 	//public static final String URL_WEB_SERVICE = "https://staging.coffeeandpower.com/"; // staging
@@ -74,4 +76,28 @@ public class AppCAP extends Application{
 
 		return data.replaceAll("\\+", " ").replaceAll("%28", "\"").replaceAll("%29", "\"");
 	}
+	
+	public static void setLocalUserPhotoURL(String url){
+		getSharedPreferences().edit().putString(TAG_USER_PHOT_URL, url).commit();
+	}
+	
+	public static String getLocalUserPhotoURL (){
+		return getSharedPreferences().getString(TAG_USER_PHOT_URL, "");
+	}
+	
+	public static void setLocalUserPhotoLargeURL (String url){
+		getSharedPreferences().edit().putString(TAG_USER_PHOT_LARGE_URL, url).commit(); 
+	}
+	
+	public static String getLocalUserPhotoLargeURL (){
+		return getSharedPreferences().getString(TAG_USER_PHOT_LARGE_URL, "");
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }

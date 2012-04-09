@@ -9,16 +9,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.cont.MapUserData;
+import com.coffeeandpower.imageutil.ImageLoader;
 
 public class MyUsersAdapter extends BaseAdapter{
 
 	private ArrayList<MapUserData> mudArray;
 	private LayoutInflater inflater;
+	public ImageLoader imageLoader;
 
 	private int myLat;
 	private int myLng;
@@ -28,7 +31,8 @@ public class MyUsersAdapter extends BaseAdapter{
 		this.inflater = context.getLayoutInflater();
 		this.myLat = myLat;
 		this.myLng = myLng;
-
+		this.imageLoader=new ImageLoader(context.getApplicationContext());
+		
 		if (mudArray!=null){
 			this.mudArray = mudArray;
 		} else {
@@ -58,7 +62,9 @@ public class MyUsersAdapter extends BaseAdapter{
 		public TextView textVenueName;
 		public TextView textDistance;
 		public TextView textCheckinsCount;
-
+		
+		public ImageView profileImage;
+		
 		public ViewHolder(View convertView){
 
 			this.textCheckinsCount = (TextView) convertView.findViewById(R.id.textview_checkin);
@@ -66,6 +72,7 @@ public class MyUsersAdapter extends BaseAdapter{
 			this.textStatus = (TextView) convertView.findViewById(R.id.textview_comment);
 			this.textVenueName = (TextView) convertView.findViewById(R.id.textview_place);
 			this.textNickName = (TextView) convertView.findViewById(R.id.textview_persone_nickname);
+			this.profileImage = (ImageView) convertView.findViewById(R.id.imageview_image);
 		}
 	}
 
@@ -102,7 +109,10 @@ public class MyUsersAdapter extends BaseAdapter{
 			distanceS = d + "km away";
 		}
 		holder.textDistance.setText(distanceS);
-
+		
+		// Try to load profile image
+		imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage);
+		
 		return convertView;
 	}
 

@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -41,6 +42,8 @@ public class ActivitySettings extends RootActivity{
 
 	private final static int HANDLE_EMAIL_CHANGE = 1222;
 	private final static int HANDLE_NICK_NAME_CHANGE = 1223;
+	private final static int HANDLE_USER_PROFILE_PHOTO = 1224;
+	private final static int HANDLE_UPLOAD_PROFILE_PHOTO = 1225;
 	private final static int PROFILE_PIC_REQUEST = 1455;
 
 	private User loggedUser;
@@ -50,12 +53,16 @@ public class ActivitySettings extends RootActivity{
 
 	private ImageView imageClearNickNameField;
 	private ImageView imageClearEmailField;
+	private ImageView imageProfilePhoto;
 
 	private ProgressBar progresNickName;
 	private ProgressBar progresEmail;
+	private ProgressBar progressPhoto;
+	private ProgressDialog progressUploadPhoto;
 
 	private DataHolder result;
-
+	private DataHolder resultPhotoDownload;
+	private DataHolder resultPhotoUpload;
 
 	private Handler handler = new Handler(){
 		@Override
@@ -79,6 +86,34 @@ public class ActivitySettings extends RootActivity{
 				textNickName.setVisibility(View.VISIBLE);
 				new CustomDialog(ActivitySettings.this, "Info", result.getResponseMessage()).show();
 				break;
+
+			case HANDLE_USER_PROFILE_PHOTO:
+				progressPhoto.setVisibility(View.GONE);
+
+				if (resultPhotoDownload!=null){
+					if (resultPhotoDownload.getObject()!=null){
+						if (resultPhotoDownload.getObject() instanceof Bitmap){
+							imageProfilePhoto.setImageBitmap((Bitmap) resultPhotoDownload.getObject());
+						}
+					} else {
+						imageProfilePhoto.setBackgroundResource(R.drawable.default_avatar25);
+					}
+
+				}
+				break;
+
+			case HANDLE_UPLOAD_PROFILE_PHOTO:
+				progressUploadPhoto.dismiss();
+				if (resultPhotoUpload!=null){
+					if (resultPhotoUpload.getObject()!=null){
+						if (resultPhotoUpload.getObject() instanceof String){
+							new CustomDialog(ActivitySettings.this, "Info", (String)resultPhotoUpload.getObject()).show();
+							loadProfilePhoto();
+						}
+					}
+				}
+				break;
+
 			}
 		}
 	};
@@ -102,9 +137,11 @@ public class ActivitySettings extends RootActivity{
 		textEmail = (EditText) findViewById(R.id.edit_email);
 		imageClearNickNameField = (ImageView) findViewById(R.id.imageview_delete_nickname);
 		imageClearEmailField = (ImageView) findViewById(R.id.imageview_delete_email);
+		imageProfilePhoto = (ImageView) findViewById(R.id.imageview_your_face_here);
 		progresNickName = (ProgressBar) findViewById(R.id.progress_nickname);
 		progresEmail =(ProgressBar) findViewById(R.id.progress_email);
-
+		progressPhoto = (ProgressBar) findViewById(R.id.progress_photo);
+		progressUploadPhoto = new ProgressDialog(this);
 
 		// Set views
 		if (loggedUser!=null){
@@ -113,9 +150,10 @@ public class ActivitySettings extends RootActivity{
 		}
 		imageClearEmailField.setVisibility(View.GONE);
 		imageClearNickNameField.setVisibility(View.GONE);
-
 		progresEmail.setVisibility(View.GONE);
 		progresNickName.setVisibility(View.GONE);
+		progressPhoto.setVisibility(View.GONE);
+		progressUploadPhoto.setMessage("Uploading photo...");
 
 		textNickName.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
@@ -127,6 +165,11 @@ public class ActivitySettings extends RootActivity{
 				}
 			}
 		});
+
+
+		// Load profile image if exist
+		loadProfilePhoto();
+
 
 		// Change Nick Name
 		textNickName.setOnEditorActionListener(new OnEditorActionListener() {
@@ -204,6 +247,23 @@ public class ActivitySettings extends RootActivity{
 		});
 	}
 
+	private void loadProfilePhoto(){
+
+		if (AppCAP.getLocalUserPhotoURL().length()>5){
+
+			progressPhoto.setVisibility(View.VISIBLE);
+
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					resultPhotoDownload = HttpUtil.getBitmapFromURL(AppCAP.getLocalUserPhotoURL());
+					handler.sendEmptyMessage(HANDLE_USER_PROFILE_PHOTO);
+				}
+			}).start();
+		} else {
+			imageProfilePhoto.setBackgroundResource(R.drawable.default_avatar25);
+		}
+	}
 
 	@Override
 	protected void onResume() {
@@ -242,10 +302,10 @@ public class ActivitySettings extends RootActivity{
 
 				try{
 					OutputStream fOut = null;
-					
+
 					Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
 					Bitmap resizedImage = GraphicUtils.resizeProfileImage(bitmap);
-					
+
 					File file = new File(new URI(selectedImage.toString()));
 					fOut = new FileOutputStream(file);
 
@@ -259,14 +319,23 @@ public class ActivitySettings extends RootActivity{
 				}
 
 			}
-			
-			AppCAP.getConnection().uploadUserProfilePhoto();
-			
+
+			// Upload user Photo
+			progressUploadPhoto.show();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					resultPhotoUpload = AppCAP.getConnection().uploadUserProfilePhoto();
+					handler.sendEmptyMessage(HANDLE_UPLOAD_PROFILE_PHOTO);
+				}
+			}).start();
+
+
 			break;
 		}
 	}
 
-	
+
 	public void onClickClearNickName (View v){
 		textNickName.setText("");
 	}

@@ -119,6 +119,15 @@
                 android:background="@drawable/default_avatar25"
                 android:onClick="onClickPhoto"
                 android:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/progress_photo"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dip"
+                android:visibility="visible" />
         </RelativeLayout>
 
         <View

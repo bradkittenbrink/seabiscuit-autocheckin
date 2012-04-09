@@ -2,8 +2,6 @@ package com.coffeeandpower.cont;
 
 import java.io.Serializable;
 
-
-
 @SuppressWarnings("serial")
 public class MapUserData implements Serializable{
 
@@ -16,7 +14,7 @@ public class MapUserData implements Serializable{
 	private String majorJobCategory;
 	private String minorJobCategory;
 	private String headLine;
-	private String fileName;
+	private String fileName; // this is Profile Photo
 	private double lat;
 	private double lng;
 	private int checkedIn;
