@@ -247,7 +247,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
-                    android:background="@drawable/check_in"
+                    android:background="@drawable/btn_check_in"
                     android:onClick="onClickCheckIn" />
 
                 <ImageButton
@@ -258,7 +258,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="5dp"
-                    android:background="@drawable/map_locate"
+                    android:background="@drawable/btn_map_locate"
                     android:onClick="onClickLocateMe" />
 
                 <RelativeLayout
@@ -273,7 +273,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/map_refresh" />
+                        android:background="@drawable/btn_map_refresh" />
 
                     <ImageButton
                         android:id="@+id/imagebutton_map_refresh_progress"
