@@ -107,7 +107,7 @@
             android:singleLine="true"
             android:text="sdfsdfsd"
             android:textColor="#000000"
-            android:textSize="16dip"
+            android:textSize="15dip"
             android:textStyle="bold" />
 
         <TextView
@@ -117,7 +117,7 @@
             android:maxLines="1"
             android:text="dfsdfs"
             android:textColor="#000000"
-            android:textSize="16dip" />
+            android:textSize="15dip" />
     </LinearLayout>
 
     <RelativeLayout
@@ -216,7 +216,7 @@
             android:layout_height="80dip"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/textview_hours"
-            android:background="@drawable/check_in_big"
+            android:background="@drawable/btn_check_in_green"
             android:onClick="onClickCheckIn" />
     </RelativeLayout>
 
