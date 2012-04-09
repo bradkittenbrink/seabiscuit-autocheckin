@@ -2,6 +2,7 @@ package com.coffeeandpower.cont;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class Venue implements Serializable{
 
 	private String id;
@@ -22,6 +23,8 @@ public class Venue implements Serializable{
 	private String categoryName;
 	private String categoryPluralName;
 	private String categoryShortName;
+	private String phone;
+	private String photoUrl;
 
 	private int checkinsCount;
 	private int usersCount;
@@ -32,7 +35,7 @@ public class Venue implements Serializable{
 	 * Create empty venue obj
 	 */
 	public Venue(){
-		this("","","","",0,0,0,"","","","","","","",0,0,0,0);
+		this("","","","",0,0,0,"","","","","","","",0,0,0,0,"","");
 	}
 	
 	/**
@@ -60,7 +63,7 @@ public class Venue implements Serializable{
 			double lat, double lng, int distance, String postalCode,
 			String city, String state, String country, String categoryName,
 			String categoryPluralName, String categoryShortName,
-			int checkinsCount, int usersCount, int tipCount, int hereNowCount) {
+			int checkinsCount, int usersCount, int tipCount, int hereNowCount, String phone, String photoUrl) {
 
 		this.id = id;
 		this.name = name;
@@ -80,6 +83,8 @@ public class Venue implements Serializable{
 		this.usersCount = usersCount;
 		this.tipCount = tipCount;
 		this.hereNowCount = hereNowCount;
+		this.phone = phone;
+		this.photoUrl = photoUrl;
 	}
 
 	public String getId() {
@@ -230,6 +235,22 @@ public class Venue implements Serializable{
 		this.hereNowCount = hereNowCount;
 	}
 
+	public String getPhone() {
+		return phone;
+	}
 
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getPhotoUrl() {
+		return photoUrl;
+	}
+
+	public void setPhotoUrl(String photoUrl) {
+		this.photoUrl = photoUrl;
+	}
+
+	
 
 }

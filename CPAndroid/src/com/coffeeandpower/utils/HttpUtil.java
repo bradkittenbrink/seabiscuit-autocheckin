@@ -46,7 +46,6 @@ import org.json.JSONObject;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.RootActivity;
@@ -54,6 +53,7 @@ import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.MapUserData;
 import com.coffeeandpower.cont.User;
+import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.Venue;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -68,6 +68,329 @@ public class HttpUtil {
 		this.client = getThreadSafeClient();
 	}
 
+	
+	/**
+	 * Get Resume for user woth userId
+	 * @param userId
+	 * @return
+	 */
+	public DataHolder getResumeForUserId (int userIdForUrl){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "getResume"));
+			params.add(new BasicNameValuePair("user_id", URLEncoder.encode(userIdForUrl + "", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_getResumeForUserId: " + responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+					
+					JSONObject payload = json.optJSONObject("payload");
+					if (payload!=null){
+						
+						String nickName = "";
+						String statusText = "";
+						String urlPhoto = "";
+						String urlPhotoLarge = "";
+						String joined = "";
+						String bio = "";
+						
+						// Stats
+						int totalEarned = 0;
+						int totalTipsEarned = 0;
+						int totalMissionCountAsRecipient = 0;
+						int distinctTipPayers = 0;
+						int totalSpent = 0;
+						int totalTipsSpent = 0;
+						int totalMissionCountAsPayer = 0;
+						int distinctTipRecipients = 0;
+						double totalEarnedFromMe = 0.00d;
+						int totalMissionsFromMe = 0;
+						int totalMissionsAsAgent = 0;
+						int totalMissionsAsClient = 0;
+						int totalMissions = 0;
+						String totalFunded = "";
+						
+						String skillSet = "";
+						String hourlyBillingRate = "";
+						
+						// Verified
+						String verifiedLinkedIn = "";
+						String linkedInProfileLink = "";
+						String verifiedFacebook = "";
+						String facebookProfileLink = "";
+						String verifiedMobile = "";
+						
+						String trusted = "";
+						String jobTitle = "";
+						
+						// work
+						// education
+						
+						// Check In Data
+						int checkInId = 0;
+						int userId = 0;
+						double lat = 0;
+						double lng = 0;
+						String checkInDate = "";
+						String checkIn = "";
+						String checkOutDate = "";
+						String checkOut = "";
+						String foursquare = "";
+						String foursquareId = "";
+						String venueName = "";
+						String venueAddress = "";
+						String city = "";
+						String state = "";
+						String zip = "";
+						String phone = "";
+						String icon = "";
+						String visible = "";
+						String photoUrlUnUsed = ""; // Unused
+						String formattedPhone = "";
+						int usersHere = 0;
+						
+						// Reviews
+						String reviewsPage = "";
+						String reviewsTotal = "";
+						String reviewsRecords = "";
+						String reviewsLoveReceived = "";
+						
+						double locationLat = 0;
+						double locationLng = 0;
+						
+						//************* PARSE JSON ************************************************
+						nickName = payload.optString("nickname");
+						statusText = payload.optString("status_text");
+						urlPhoto = payload.optString("urlPhoto");
+						urlPhotoLarge = payload.optString("urlThumbnail");
+						joined = payload.optString("joined");
+						bio = payload.optString("bio");
+						skillSet = payload.optString("skillSet");
+						hourlyBillingRate = payload.optString("hourly_biling_rate");
+						trusted = payload.optString("trusted");
+						jobTitle = payload.optString("job_title");
+						
+						JSONObject objLocation = payload.optJSONObject("location");
+						if (objLocation!=null){
+							locationLat = objLocation.optDouble("lat");
+							locationLng = objLocation.optDouble("lng");
+						}
+						
+						JSONObject objStats = payload.optJSONObject("stats");
+						if (objStats!=null){
+							totalEarned = objStats.optInt("totalEarned");
+							totalTipsEarned = objStats.optInt("totalTipsEarned");
+							totalMissionCountAsRecipient = objStats.optInt("totalMissionCountAsRecipient");
+							distinctTipPayers = objStats.optInt("distinctTipPayers");
+							totalSpent = objStats.optInt("totalSpent");
+							totalTipsSpent = objStats.optInt("totalTipsSpent");;
+							totalMissionCountAsPayer = objStats.optInt("totalMissionCountAsPayer");
+							distinctTipRecipients = objStats.optInt("distinctTipRecipients");
+							totalEarnedFromMe = objStats.optDouble("totalEarnedFromMe");
+							totalMissionsFromMe = objStats.optInt("totalMissionsFromMe");
+							totalMissionsAsAgent = objStats.optInt("totalMissionsAsAgent");
+							totalMissionsAsClient = objStats.optInt("totalMissionsAsClient");
+							totalMissions = objStats.optInt("totalMissions");
+							totalFunded = objStats.optString("totalFunded");
+						}
+						
+						JSONObject objVerified = payload.optJSONObject("verified");
+						if (objVerified!=null){
+							
+							JSONObject objLinkedIn = objVerified.optJSONObject("linkedin");
+							if (objLinkedIn!=null){
+								verifiedLinkedIn = objLinkedIn.optString("verified");
+								linkedInProfileLink = objLinkedIn.optString("profileLink");
+							}
+							
+							JSONObject objFacebook = objVerified.optJSONObject("facebook");
+							if (objFacebook!=null){
+								verifiedFacebook = objFacebook.optString("verified");
+								facebookProfileLink = objFacebook.optString("profileLink");
+							}
+							
+							JSONObject objMobile = objVerified.optJSONObject("mobile");
+							if (objMobile!=null){
+								verifiedMobile = objMobile.optString("verified");
+							}
+						}
+						
+						JSONObject objCheckInData = payload.optJSONObject("checkin_data");
+						if (objCheckInData!=null){
+							
+							checkInId = objCheckInData.optInt("id");
+							userId = objCheckInData.optInt("userid");
+							lat = objCheckInData.optDouble("lat");
+							lng = objCheckInData.optDouble("lng");
+							checkInDate = objCheckInData.optString("checkin_date");
+							checkIn = objCheckInData.optString("checkin");
+							checkOutDate = objCheckInData.optString("checkout_date");
+							checkOut = objCheckInData.optString("checkout");
+							foursquare = objCheckInData.optString("foursquare");
+							foursquareId = objCheckInData.optString("foursquare_id");
+							venueName = objCheckInData.optString("name");
+							venueAddress = objCheckInData.optString("address");
+							city = objCheckInData.optString("city");
+							state = objCheckInData.optString("state");
+							zip = objCheckInData.optString("zip");
+							phone = objCheckInData.optString("phone");
+							icon = objCheckInData.optString("icon");
+							visible = objCheckInData.optString("visible");
+							photoUrlUnUsed = objCheckInData.optString("photo_url");
+							formattedPhone = objCheckInData.optString("formatted_phone");
+							usersHere = objCheckInData.optInt("users_here");
+						}
+						
+						// Check in history, I took only first TWO results, but maybe we need more than two....
+						JSONArray arrayCheckIn = payload.optJSONArray("checkin_history");
+						ArrayList<Venue> checkinhistoryArray = new ArrayList<Venue>();
+						if (arrayCheckIn!=null){
+							
+							for (int x=0; x<arrayCheckIn.length(); x++){
+								
+								if (x<2){
+									
+									JSONObject objFromArray = arrayCheckIn.optJSONObject(x);
+									if (objFromArray!=null){
+										
+										Venue venue = new Venue();
+										venue.setCheckinsCount(objFromArray.optInt("count"));
+										venue.setId(objFromArray.optString("foursquare_id"));
+										venue.setName(objFromArray.optString("name"));
+										venue.setAddress(objFromArray.optString("address"));
+										venue.setCity(objFromArray.optString("city"));
+										venue.setState(objFromArray.optString("state"));
+										venue.setPostalCode(objFromArray.optString("zip"));
+										venue.setPhone(objFromArray.optString("phone"));
+										venue.setPhotoUrl(objFromArray.optString("photo_url"));
+										
+										checkinhistoryArray.add(venue);
+									}
+								}
+							}
+						}
+						
+						JSONObject objReview = payload.optJSONObject("reviews");
+						if (objReview!=null){
+							reviewsPage = objReview.optString("page");
+							reviewsLoveReceived = objReview.optString("love_received");
+							reviewsTotal = objReview.optString("total");
+							reviewsRecords = objReview.optString("records");
+						}
+						
+						// [0] Object UserResume, [1] array list favourite checkin locatios
+						ArrayList<Object> tempHolder = new ArrayList<Object>();
+						tempHolder.add(new UserResume(nickName, statusText, urlPhoto, urlPhotoLarge, joined, bio, totalEarned, 
+								totalTipsEarned, totalMissionCountAsRecipient, distinctTipPayers, totalSpent, totalTipsSpent, 
+								totalMissionCountAsPayer, distinctTipRecipients, totalEarnedFromMe, totalMissionsFromMe, 
+								totalMissionsAsAgent, totalMissionsAsClient, totalMissions, totalFunded, skillSet, hourlyBillingRate, 
+								verifiedLinkedIn, linkedInProfileLink, verifiedFacebook, facebookProfileLink, verifiedMobile, trusted, 
+								jobTitle, checkInId, userId, lat, lng, checkInDate, checkIn, checkOutDate, checkOut, foursquare, 
+								foursquareId, venueName, venueAddress, city, state, zip, phone, icon, visible, photoUrlUnUsed, formattedPhone, 
+								usersHere, reviewsPage, reviewsTotal, reviewsRecords, reviewsLoveReceived, locationLat, locationLng));
+						tempHolder.add(checkinhistoryArray);
+						
+						result.setObject(tempHolder);
+					}
+					
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Get user data with userID
+	 * @param userId
+	 * @return
+	 */
+	public DataHolder getCheckInDataWithUserId (int userId){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "getUserCheckInData"));
+			params.add(new BasicNameValuePair("user_id", URLEncoder.encode(userId + "", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_getCheckInDataWithUserId: " + responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
 
 	/**
 	 * Get Bitmap (profile photos) from URL
@@ -654,7 +977,7 @@ public class HttpUtil {
 										}
 
 										venuesArray.add(new Venue(id, name, address, crossStreet, lat, lng, distance, postalCode, city, state, 
-												country, categoryName, categoryPluralName, categoryShortName, checkinsCount, usersCount, tipCount, hereNowCount));
+												country, categoryName, categoryPluralName, categoryShortName, checkinsCount, usersCount, tipCount, hereNowCount, "", ""));
 									}
 								}
 
