@@ -16,6 +16,7 @@ import com.coffeeandpower.maps.MyItemizedOverlay2;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.CustomSeek;
+import com.coffeeandpower.views.HorizontalPager;
 import com.coffeeandpower.views.CustomSeek.HoursChangeListener;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;

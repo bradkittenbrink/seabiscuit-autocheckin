@@ -51,10 +51,17 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dip"
+            android:layout_marginBottom="20dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="20dip"
             android:background="#77000000"
+            android:layoutAnimation="@anim/layout_random_fade"
             android:orientation="vertical"
-            android:padding="5dip" >
+            android:paddingBottom="5dip"
+            android:paddingLeft="5dip"
+            android:paddingRight="25dip"
+            android:paddingTop="5dip" >
 
             <com.coffeeandpower.views.CustomFontView
                 android:id="@+id/textview_check_in"
@@ -62,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:text="CHECK IN AT..."
                 android:textColor="#ffffff"
-                android:textSize="20dip"
+                android:textSize="24dip"
                 android:textStyle="bold" />
 
             <com.coffeeandpower.views.CustomFontView
@@ -71,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:text="dfgdfg"
                 android:textColor="#ffffff"
-                android:textSize="17dip"
+                android:textSize="19dip"
                 android:textStyle="bold" />
 
             <com.coffeeandpower.views.CustomFontView
@@ -80,9 +87,38 @@
                 android:layout_height="wrap_content"
                 android:text="dfgdfg"
                 android:textColor="#ffffff"
-                android:textSize="16dip" />
+                android:textSize="17dip" />
         </LinearLayout>
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout_name"
+        android:layout_marginLeft="15dip"
+        android:background="@drawable/bg_balloon_left"
+        android:orientation="vertical"
+        android:padding="5dip" >
+
+        <TextView
+            android:id="@+id/textview_check_in_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="sdfsdfsd"
+            android:textColor="#000000"
+            android:textSize="16dip"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textview_check_in_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="dfsdfs"
+            android:textColor="#000000"
+            android:textSize="16dip" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/layout_name"
@@ -90,6 +126,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/dummy_layout_2"
         android:background="#77000000"
+        android:layoutAnimation="@anim/layout_random_fade"
         android:visibility="visible" >
 
         <ImageView
@@ -98,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_margin="15dip"
-            android:background="@drawable/default_avatar25" />
+            android:background="@drawable/default_avatar50" />
 
         <com.coffeeandpower.views.CustomFontView
             android:layout_width="wrap_content"
@@ -107,7 +144,7 @@
             android:layout_marginLeft="15dip"
             android:layout_toRightOf="@+id/imageview_face"
             android:text="Who&apos;s here now?"
-            android:textSize="18sp" />
+            android:textSize="20dip" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -125,7 +162,7 @@
             android:padding="8dip"
             android:text="What can you do, or what do you need?"
             android:textColor="#666666"
-            android:textSize="22dip"
+            android:textSize="26dip"
             android:textStyle="bold" />
 
         <EditText
@@ -146,7 +183,7 @@
             android:layout_marginTop="5dip"
             android:text="FOR HOW LONG?"
             android:textColor="#666666"
-            android:textSize="17dip"
+            android:textSize="26dip"
             android:textStyle="bold" />
 
         <com.coffeeandpower.views.CustomFontView
@@ -161,7 +198,7 @@
             android:layout_marginTop="5dip"
             android:text="1 hour"
             android:textColor="#42818b"
-            android:textSize="17dip" />
+            android:textSize="24dip" />
 
         <com.coffeeandpower.views.CustomSeek
             android:id="@+id/seekbar_hours"
@@ -170,7 +207,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/textview_how_long"
             android:layout_below="@+id/textview_how_long"
-            android:layout_marginTop="20dip"
+            android:layout_marginTop="10dip"
             android:progressDrawable="@drawable/custom_seekbar"
             android:thumb="@drawable/check_in_slider_handle" />
 

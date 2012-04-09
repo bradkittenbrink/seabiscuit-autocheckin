@@ -19,7 +19,7 @@
     android:interpolator="@android:anim/accelerate_interpolator" >
 
     <translate
-        android:duration="500"
+        android:duration="600"
         android:fromXDelta="-100%p"
         android:toXDelta="0" />
 
