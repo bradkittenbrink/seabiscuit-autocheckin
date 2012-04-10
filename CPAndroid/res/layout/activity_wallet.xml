@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#2d2d2d" >
+    android:background="#ebebeb" >
 
     <RelativeLayout
         android:id="@+id/dummy_layout"
@@ -26,8 +26,64 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dip"
-            android:background="@drawable/settings_button"
+            android:background="@drawable/btn_settings"
             android:onClick="onClickBack" />
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/dummy_layout_1"
+        android:layout_width="fill_parent"
+        android:layout_height="90dip"
+        android:layout_below="@+id/dummy_layout" >
+
+        <ImageView
+            android:id="@+id/imageview_lock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dip"
+            android:background="@drawable/vector_lock" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:layout_toRightOf="@+id/imageview_lock"
+            android:text="Your Balance"
+            android:textColor="#000000" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageview_lock"
+            android:layout_marginLeft="10dip"
+            android:text="$0.00"
+            android:textColor="#058243"
+            android:textSize="40dip" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dip"
+            android:background="@drawable/btn_add_funds" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textview_transaction"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dummy_layout_1"
+        android:background="#585858"
+        android:padding="5dip"
+        android:text="Transaction History"
+        android:textColor="#c6c6c6" />
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/textview_transaction"
+        android:background="@drawable/perforated_skin" >
+    </ListView>
 
 </RelativeLayout>

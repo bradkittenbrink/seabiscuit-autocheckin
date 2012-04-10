@@ -206,7 +206,8 @@
                     android:id="@+id/dummy_resume"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_marginBottom="20dip"
+                    android:layout_marginBottom="0dip"
+                    android:paddingBottom="90dip"
                     android:background="@drawable/paper_texture"
                     android:layoutAnimation="@anim/layout_random_fade" >
 
@@ -379,7 +380,11 @@
                     <ListView
                         android:id="@+id/listview_favorite_places"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="150dip"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginRight="10dip"
+                        android:layout_marginLeft="5dip"
+                        android:layout_marginBottom="30dip"
                         android:layout_below="@+id/textview_favorite_places"
                         android:cacheColorHint="#00000000" >
                     </ListView>
