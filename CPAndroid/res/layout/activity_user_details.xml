@@ -66,8 +66,8 @@
 
                     <ImageButton
                         android:id="@+id/imagebutton_user_face"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="8dip"
                         android:adjustViewBounds="true"
@@ -408,6 +408,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:onClick="onClickPlus"
             android:background="@drawable/go_button_iphone" />
 
         <LinearLayout
@@ -422,18 +423,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:onClick="onClickF2F"
                 android:background="@drawable/bg_f2f" />
 
             <ImageButton
                 android:id="@+id/imagebutton_twitter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="onClickChart"
                 android:background="@drawable/bg_chart" />
 
             <ImageButton
                 android:id="@+id/imagebutton_chart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="onClickPaid"
                 android:background="@drawable/bg_paid" />
         </LinearLayout>
     </RelativeLayout>
@@ -444,6 +448,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:onClick="onClickCheckIn"
         android:background="@drawable/check_in" />
 
 </RelativeLayout>
