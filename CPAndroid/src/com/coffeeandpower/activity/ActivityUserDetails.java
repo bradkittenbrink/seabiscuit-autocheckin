@@ -19,12 +19,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.coffeandpower.db.CAPDao;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
+import com.coffeeandpower.adapters.MyFavouritePlacesAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.MapUserData;
 import com.coffeeandpower.cont.UserResume;
@@ -62,8 +64,13 @@ public class ActivityUserDetails extends MapActivity{
 
 	private TextView textStatus;
 	private TextView textJoinedDate;
+	private TextView textRate;
+	private TextView textEarned;
+	private TextView textSpent;
 
 	private ImageView imageProfile;
+
+	private ListView favPlacesList;
 
 	private CAPDao capDao;
 
@@ -139,11 +146,17 @@ public class ActivityUserDetails extends MapActivity{
 
 
 		// Views
+		favPlacesList = (ListView) findViewById(R.id.listview_favorite_places);
 		buttonTitle = (Button) findViewById(R.id.button_location_name);
 		textTitleNickName = (CustomFontView) findViewById(R.id.textview_user_name);
 		textStatus = (TextView) findViewById(R.id.textview_user_place);
 		textNickName = (CustomFontView) findViewById(R.id.textview_nick_name);
 		textJoinedDate = (TextView) findViewById(R.id.textview_date);
+		textEarned = (TextView) findViewById(R.id.textview_earned);
+		textRate = (TextView) findViewById(R.id.textview_rate);
+		textSpent = (TextView) findViewById(R.id.textview_spent);
+
+
 		mapView = (MapView) findViewById(R.id.mapview_user_details);
 		progressPhoto = (ProgressBar) findViewById(R.id.progressbar_photo);
 		imageProfile = (ImageView) findViewById(R.id.imagebutton_user_face);
@@ -233,11 +246,16 @@ public class ActivityUserDetails extends MapActivity{
 
 		if (userResumeData!=null){
 			loadProfilePicture();
+			
 			textJoinedDate.setText(userResumeData.getJoined());
+			textEarned.setText("$" + userResumeData.getTotalEarned());
+			textSpent.setText("$" + userResumeData.getTotalSpent());
 		}
 
 		if (favouriteVenues!=null){
-
+			
+			MyFavouritePlacesAdapter adapter = new MyFavouritePlacesAdapter(this, favouriteVenues);
+			favPlacesList.setAdapter(adapter);
 		}
 	}
 
@@ -284,11 +302,11 @@ public class ActivityUserDetails extends MapActivity{
 	private void startButtonsAnim (View v, boolean isPlus) {
 
 		if (isPlus){
-			
+
 			((ImageButton)findViewById(R.id.imagebutton_paid)).setVisibility(View.VISIBLE);
 			((ImageButton)findViewById(R.id.imagebutton_chat)).setVisibility(View.VISIBLE);
 			((ImageButton)findViewById(R.id.imagebutton_f2f)).setVisibility(View.VISIBLE);
-			
+
 			// Plus 
 			Animation anim = new RotateAnimation(360.0f, 0.0f, v.getWidth()/2, v.getHeight()/2);
 			anim.setDuration(700);
@@ -297,7 +315,7 @@ public class ActivityUserDetails extends MapActivity{
 			anim.setFillAfter(true);
 			v.setAnimation(anim);
 			v.setBackgroundResource(R.drawable.go_menu_button_minus);
-			
+
 
 			// Paid
 			Animation animT = new TranslateAnimation(0, 0, 0, -80);
@@ -316,13 +334,13 @@ public class ActivityUserDetails extends MapActivity{
 			animT2.setDuration(500);
 			animT2.setFillAfter(true);
 			((ImageButton)findViewById(R.id.imagebutton_f2f)).startAnimation(animT2);
-			
+
 		} else {
 
 			((ImageButton)findViewById(R.id.imagebutton_paid)).setVisibility(View.GONE);
 			((ImageButton)findViewById(R.id.imagebutton_chat)).setVisibility(View.GONE);
 			((ImageButton)findViewById(R.id.imagebutton_f2f)).setVisibility(View.GONE);
-			
+
 			// Plus 
 			Animation anim = new RotateAnimation(0.0f, 360.0f, v.getWidth()/2, v.getHeight()/2);
 			anim.setDuration(700);
@@ -335,22 +353,22 @@ public class ActivityUserDetails extends MapActivity{
 		}
 	}
 
-	
+
 	public void onClickChat (View v){
-		
+
 	}
-	
-	
+
+
 	public void onClickPaid (View v){
-		
+
 	}
-	
-	
+
+
 	public void onClickF2F (View v){
-		
+
 	}
-	
-	
+
+
 	public void onClickBack (View v){
 
 		onBackPressed();

@@ -205,8 +205,8 @@
                 <RelativeLayout
                     android:id="@+id/dummy_resume"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="-20dip"
+                    android:layout_height="fill_parent"
+                    android:layout_marginBottom="20dip"
                     android:background="@drawable/paper_texture"
                     android:layoutAnimation="@anim/layout_random_fade" >
 
@@ -287,11 +287,10 @@
                                 android:textColor="#62615f" />
 
                             <TextView
-                                android:id="@+id/textview_rate"
+                                android:id="@+id/textview_earned"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/text_earned"
-                                android:text="$0"
                                 android:textColor="#62615f"
                                 android:textStyle="bold" />
                         </RelativeLayout>
@@ -320,11 +319,10 @@
                                 android:textColor="#62615f" />
 
                             <TextView
-                                android:id="@+id/textview_rate"
+                                android:id="@+id/textview_spent"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/text_spent"
-                                android:text="$0"
                                 android:textColor="#62615f"
                                 android:textStyle="bold" />
                         </RelativeLayout>
@@ -377,13 +375,15 @@
                         android:textColor="#444444"
                         android:textSize="16dip"
                         android:textStyle="bold" />
-                </RelativeLayout>
 
-                <ListView
-                    android:id="@+id/listview_favorite_places"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
-                </ListView>
+                    <ListView
+                        android:id="@+id/listview_favorite_places"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textview_favorite_places"
+                        android:cacheColorHint="#00000000" >
+                    </ListView>
+                </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
