@@ -71,8 +71,8 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="8dip"
                         android:adjustViewBounds="true"
-                        android:scaleType="fitXY"
-                        android:background="@drawable/default_avatar50" />
+                        android:background="@drawable/default_avatar50"
+                        android:scaleType="fitXY" />
 
                     <ProgressBar
                         android:id="@+id/progressbar_photo"
@@ -394,53 +394,45 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" >
+        android:layout_alignParentLeft="true"
+        android:paddingBottom="12dip" >
 
         <ImageButton
-            android:id="@+id/imagebutton_plus"
+            android:id="@+id/imagebutton_f2f"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/go_menu_button_minus" />
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/btn_black_f2f"
+            android:onClick="onClickF2F" />
 
         <ImageButton
-            android:id="@+id/imagebutton_plus"
+            android:id="@+id/imagebutton_paid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:onClick="onClickPlus"
-            android:background="@drawable/go_button_iphone" />
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/btn_black_paid"
+            android:onClick="onClickPaid" />
 
-        <LinearLayout
+        <ImageButton
+            android:id="@+id/imagebutton_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/imagebutton_plus"
-            android:layoutAnimation="@anim/layout_animation_row_slide_from_bottom"
-            android:orientation="vertical" >
-
-            <ImageButton
-                android:id="@+id/bg_f2f"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:onClick="onClickF2F"
-                android:background="@drawable/bg_f2f" />
-
-            <ImageButton
-                android:id="@+id/imagebutton_twitter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onClickChart"
-                android:background="@drawable/bg_chart" />
-
-            <ImageButton
-                android:id="@+id/imagebutton_chart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onClickPaid"
-                android:background="@drawable/bg_paid" />
-        </LinearLayout>
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/btn_black_chat"
+            android:onClick="onClickChat" />
     </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/imagebutton_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/go_button_iphone"
+        android:onClick="onClickPlus" />
 
     <ImageButton
         android:id="@+id/imagebutton_check_in"
@@ -448,7 +440,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:onClick="onClickCheckIn"
-        android:background="@drawable/check_in" />
+        android:background="@drawable/check_in"
+        android:onClick="onClickCheckIn" />
 
 </RelativeLayout>

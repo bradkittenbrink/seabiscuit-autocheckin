@@ -9,8 +9,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
+import android.view.animation.RotateAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -35,7 +43,7 @@ public class ActivityUserDetails extends MapActivity{
 
 	private static final int HANDLE_GET_USER_RESUME = 1222; 
 	private static final int HANDLE_LOAD_PROFILE_PICTURE = 1223; 
-	
+
 	private MapUserData mud;
 
 	// Map items
@@ -45,27 +53,27 @@ public class ActivityUserDetails extends MapActivity{
 
 	// Views
 	private Button buttonTitle;
-	
+
 	private CustomFontView textTitleNickName;
 	private CustomFontView textNickName;
-	
+
 	private ProgressDialog progress;
 	private ProgressBar progressPhoto;
-	
+
 	private TextView textStatus;
 	private TextView textJoinedDate;
-	
+
 	private ImageView imageProfile;
-	
+
 	private CAPDao capDao;
 
 	// User Data
 	private DataHolder resultGetUserResume;
 	private DataHolder resultGetProfilePhoto;
-	
+
 	private UserResume userResumeData;
 	private ArrayList<Venue> favouriteVenues;
-	
+
 	private Handler handler = new Handler(){
 
 		@Override
@@ -82,16 +90,16 @@ public class ActivityUserDetails extends MapActivity{
 				if (resultGetUserResume!=null){
 					if (resultGetUserResume.getObject()!=null){
 						if (resultGetUserResume.getObject() instanceof ArrayList<?>){
-							
+
 							ArrayList<Object> tempArray =  (ArrayList<Object>) resultGetUserResume.getObject();
-							
+
 							if (tempArray!=null){
 								if (!tempArray.isEmpty()){
-									
+
 									if (tempArray.get(0) instanceof UserResume){
 										userResumeData = (UserResume) tempArray.get(0);
 									}
-									
+
 									if (tempArray.size()>1){
 										if (tempArray.get(1) instanceof ArrayList<?>){
 											if (tempArray.get(1)!=null){
@@ -99,7 +107,7 @@ public class ActivityUserDetails extends MapActivity{
 											}
 										}
 									}
-									
+
 									updateUserDataInUI();
 								}
 							}
@@ -107,13 +115,13 @@ public class ActivityUserDetails extends MapActivity{
 					}
 				}
 				break;
-				
+
 			case HANDLE_LOAD_PROFILE_PICTURE:
 				progressPhoto.setVisibility(View.GONE);
 				if (resultGetProfilePhoto!=null){
 					if (resultGetProfilePhoto.getObject()!=null){
 						if (resultGetProfilePhoto.getObject() instanceof Bitmap){
-							
+
 							imageProfile.setImageBitmap((Bitmap) resultGetProfilePhoto.getObject());
 						}
 					}
@@ -144,10 +152,10 @@ public class ActivityUserDetails extends MapActivity{
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading");
 
-		
+
 		// Views state
 		progressPhoto.setVisibility(View.GONE);
-		
+
 		// Database controler
 		capDao = new CAPDao(this);
 		capDao.open();
@@ -222,22 +230,22 @@ public class ActivityUserDetails extends MapActivity{
 	 * Update users data in UI, from favouriteVenues and userResumeData
 	 */
 	private void updateUserDataInUI(){
-		
+
 		if (userResumeData!=null){
 			loadProfilePicture();
 			textJoinedDate.setText(userResumeData.getJoined());
 		}
-		
+
 		if (favouriteVenues!=null){
-			
+
 		}
 	}
-	
+
 	/**
 	 * Load profile picture for selected user
 	 */
 	private void loadProfilePicture(){
-		
+
 		progressPhoto.setVisibility(View.VISIBLE);
 		new Thread(new Runnable() {
 			@Override
@@ -247,8 +255,8 @@ public class ActivityUserDetails extends MapActivity{
 			}
 		}).start();
 	}
-	
-	
+
+
 	private void createMarker(GeoPoint point) {
 		OverlayItem overlayitem = new OverlayItem(point, "", "");
 		itemizedoverlay.addOverlay(overlayitem);
@@ -264,7 +272,85 @@ public class ActivityUserDetails extends MapActivity{
 
 	}
 
+	private boolean animFlag = true;
 
+	public void onClickPlus (View v) {
+
+		startButtonsAnim(v, animFlag);
+		animFlag = !animFlag;
+	}
+
+
+	private void startButtonsAnim (View v, boolean isPlus) {
+
+		if (isPlus){
+			
+			((ImageButton)findViewById(R.id.imagebutton_paid)).setVisibility(View.VISIBLE);
+			((ImageButton)findViewById(R.id.imagebutton_chat)).setVisibility(View.VISIBLE);
+			((ImageButton)findViewById(R.id.imagebutton_f2f)).setVisibility(View.VISIBLE);
+			
+			// Plus 
+			Animation anim = new RotateAnimation(360.0f, 0.0f, v.getWidth()/2, v.getHeight()/2);
+			anim.setDuration(700);
+			anim.setRepeatCount(0);
+			anim.setRepeatMode(Animation.REVERSE);
+			anim.setFillAfter(true);
+			v.setAnimation(anim);
+			v.setBackgroundResource(R.drawable.go_menu_button_minus);
+			
+
+			// Paid
+			Animation animT = new TranslateAnimation(0, 0, 0, -80);
+			animT.setDuration(500);
+			animT.setFillAfter(true);
+			((ImageButton)findViewById(R.id.imagebutton_paid)).startAnimation(animT);
+
+			// Chat
+			Animation animT1 = new TranslateAnimation(0, 0, 0, -160);
+			animT1.setDuration(500);
+			animT1.setFillAfter(true);
+			((ImageButton)findViewById(R.id.imagebutton_chat)).startAnimation(animT1);
+
+			// f2f
+			Animation animT2 = new TranslateAnimation(0, 0, 0, -240);
+			animT2.setDuration(500);
+			animT2.setFillAfter(true);
+			((ImageButton)findViewById(R.id.imagebutton_f2f)).startAnimation(animT2);
+			
+		} else {
+
+			((ImageButton)findViewById(R.id.imagebutton_paid)).setVisibility(View.GONE);
+			((ImageButton)findViewById(R.id.imagebutton_chat)).setVisibility(View.GONE);
+			((ImageButton)findViewById(R.id.imagebutton_f2f)).setVisibility(View.GONE);
+			
+			// Plus 
+			Animation anim = new RotateAnimation(0.0f, 360.0f, v.getWidth()/2, v.getHeight()/2);
+			anim.setDuration(700);
+			anim.setRepeatCount(0);
+			anim.setRepeatMode(Animation.REVERSE);
+			anim.setFillAfter(true);
+			v.setAnimation(anim);
+			v.setBackgroundResource(R.drawable.go_button_iphone);
+
+		}
+	}
+
+	
+	public void onClickChat (View v){
+		
+	}
+	
+	
+	public void onClickPaid (View v){
+		
+	}
+	
+	
+	public void onClickF2F (View v){
+		
+	}
+	
+	
 	public void onClickBack (View v){
 
 		onBackPressed();
