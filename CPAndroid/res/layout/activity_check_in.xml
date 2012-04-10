@@ -35,6 +35,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/dummy_layout_2"
+        
+        
         android:layout_below="@+id/dummy_layout" >
 
         <com.google.android.maps.MapView
