@@ -134,7 +134,7 @@ public class CAPDao {
 	 */
 	public void deleteAllFromTable (String tableName){
 
-		database.rawQuery("DELETE FROM " + tableName, null);
+		database.delete(tableName, null, null);
 	}
 
 }

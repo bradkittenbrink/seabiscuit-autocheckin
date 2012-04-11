@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
@@ -31,6 +32,7 @@ import com.coffeeandpower.cont.MapUserData;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.maps.MyItemizedOverlay;
 import com.coffeeandpower.maps.MyOverlayItem;
+import com.coffeeandpower.maps.MyOverlayPin;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPager;
@@ -106,38 +108,38 @@ public class ActivityMap extends MapActivity{
 					// Find all uniq foursquareIds
 					for (MapUserData mud:mapUsersArray){
 						setFoursquareIds.add(mud.getFoursquareId());
+						
+						Log.d("LOG", "array: " + mud.getFoursquareId()+ " : " + mud.getNickName() + " chIn: " + mud.getCheckedIn());
+
 					}
 
-					// Find all MapUserData objects with no duplicated userIds for every foursquareId
+					// Find all MapUserData objects for every foursquareId
 					for (String foursquareId:setFoursquareIds){
 
-						// < Key, Value >  = < userId, >
-						HashMap<Integer, MapUserData> tempMapUserDataArray = new HashMap<Integer, MapUserData>();
-
+						// Array list without duplicates
+						ArrayList<MapUserData> tmpArray = new ArrayList<MapUserData>();
+						
 						for (MapUserData mud:mapUsersArray){
 
 							if (mud.getFoursquareId().equals(foursquareId)){
-								tempMapUserDataArray.put(mud.getUserId(), mud);
+								tmpArray.add(mud);
 							}
 						}
-
-						// Array list without duplicates
-						ArrayList<MapUserData> tmpArray = new ArrayList<MapUserData>(tempMapUserDataArray.values());
-
+						
 						mapKeyIsFoursquareId.put(foursquareId, tmpArray);
 					}
 
-
+					
 					// Reset table for new data
 					capDao.open();
 					capDao.deleteAllFromTable(CASPSQLiteDatabase.TABLE_MAP_USER_DATA); // reset table for new data
-
 
 
 					// Loop for creating markers on map, in this loop iterate thru all uniq foursquaresIds
 					for (Entry<String, ArrayList<MapUserData>> itemWithKeyFoursquareId : mapKeyIsFoursquareId.entrySet()){
 
 						int checkinsSum = 0;
+						int hereNowCount = 0;
 						String venueName = "";
 
 						// init for coordinates of created point
@@ -147,7 +149,8 @@ public class ActivityMap extends MapActivity{
 						// we need to sum checkins for every user who checked in foursquareId
 						for (MapUserData mud : itemWithKeyFoursquareId.getValue()){
 
-							checkinsSum += mud.getCheckInCount();
+							checkinsSum++;
+							hereNowCount += mud.getCheckedIn();
 
 							// no matter for loop, all items in loop have the same coordinates
 							lat = mud.getLat();
@@ -157,15 +160,26 @@ public class ActivityMap extends MapActivity{
 
 							// write data to database
 							capDao.putMapsUsersData(mud, itemWithKeyFoursquareId.getKey());
+							
+							Log.d("LOG", "db: " + itemWithKeyFoursquareId.getKey()+ " : " + mud.getNickName() + " chIn: " + mud.getCheckedIn() + "  herC: " + hereNowCount);
 						}
 
+						
+						// Create Pins, if we have checkedin user for foursquareId
 						GeoPoint gp = new GeoPoint((int)(lat*1E6), (int)(lng*1E6));
-						if (itemWithKeyFoursquareId.getValue().size()>1){
-							// for ActivityListPersons
-							createMarker(gp, itemWithKeyFoursquareId.getKey(), checkinsSum, venueName, true);
+						
+						if (hereNowCount > 0){
+							
+							createPin(gp, itemWithKeyFoursquareId.getKey(), hereNowCount);
 						} else {
-							// fpr ActivityUserDetails
-							createMarker(gp, itemWithKeyFoursquareId.getKey(), checkinsSum, venueName, false);
+							
+							if (itemWithKeyFoursquareId.getValue().size()>1){
+								// for ActivityListPersons
+								createMarker(gp, itemWithKeyFoursquareId.getKey(), checkinsSum, venueName, true);
+							} else {
+								// fpr ActivityUserDetails
+								createMarker(gp, itemWithKeyFoursquareId.getKey(), checkinsSum, venueName, false);
+							}
 						}
 					}
 					
@@ -212,6 +226,12 @@ public class ActivityMap extends MapActivity{
 			e.printStackTrace();
 			new CustomDialog(ActivityMap.this, "Info", "Location Manager error").show();
 		}
+		myLocationOverlay.runOnFirstFix(new Runnable() {
+			public void run() {
+				mapView.getController().animateTo(myLocationOverlay.getMyLocation());
+			}
+		});
+		
 		mapController = mapView.getController();
 		mapController.setZoom(12);
 
@@ -265,13 +285,17 @@ public class ActivityMap extends MapActivity{
 
 	/**
 	 * Create point on Map with data from MapUserdata
-	 * @param GeoPoint
-	 * @param MapUserData
+	 * @param point
+	 * @param foursquareIdKey
+	 * @param checkinsSum
+	 * @param venueName
+	 * @param isList
 	 */
 	private void createMarker(GeoPoint point, String foursquareIdKey, int checkinsSum, String venueName, boolean isList) {
 
 		if (foursquareIdKey!=null){
-
+			//Log.d("LOG", "create marker");
+			
 			String checkStr = checkinsSum == 1 ? " checkin in the last week" : " checkins in the last week";
 			venueName = AppCAP.cleanResponseString(venueName);
 
@@ -291,6 +315,24 @@ public class ActivityMap extends MapActivity{
 		}
 	}
 
+	
+	/**
+	 * Create pin on map, with number of checked in/out users
+	 * @param point
+	 * @param foursquareIdKey
+	 * @param hereNowCount
+	 */
+	private void createPin(GeoPoint point, String foursquareIdKey, int hereNowCount) {
+
+		if (foursquareIdKey!=null){
+
+			MyOverlayPin overlayitem = new MyOverlayPin(ActivityMap.this, point, MyOverlayPin.TYPE_RED_PIN, hereNowCount);
+
+			if (itemizedoverlay.size() > 0) {
+				mapView.getOverlays().add(overlayitem);
+			}
+		}
+	}
 
 	// We have user data from logged user, use it now...
 	public void useUserData(){

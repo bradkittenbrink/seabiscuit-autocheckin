@@ -298,37 +298,44 @@ public class ActivitySettings extends RootActivity{
 
 			if (resultCode == RESULT_OK) { 
 				Uri selectedImage = imageUri;
-				getContentResolver().notifyChange(selectedImage, null);
 
-				try{
-					OutputStream fOut = null;
+				if (selectedImage!=null){
+					getContentResolver().notifyChange(selectedImage, null);
 
-					Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
-					Bitmap resizedImage = GraphicUtils.resizeProfileImage(bitmap);
+					try{
+						OutputStream fOut = null;
 
-					File file = new File(new URI(selectedImage.toString()));
-					fOut = new FileOutputStream(file);
+						Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
+						Bitmap resizedImage = GraphicUtils.resizeProfileImage(bitmap);
 
-					// Set picture compression
-					resizedImage.compress(CompressFormat.JPEG, 70, fOut);
-					fOut.flush();
-					fOut.close();
+						File file = new File(new URI(selectedImage.toString()));
+						fOut = new FileOutputStream(file);
 
-				} catch (IOException e) {
-				} catch (URISyntaxException e) {
+						// Set picture compression
+						resizedImage.compress(CompressFormat.JPEG, 70, fOut);
+						fOut.flush();
+						fOut.close();
+
+					} catch (IOException e) {
+					} catch (URISyntaxException e) {
+					}
+					
+					// Upload user Photo
+					progressUploadPhoto.show();
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							resultPhotoUpload = AppCAP.getConnection().uploadUserProfilePhoto();
+							handler.sendEmptyMessage(HANDLE_UPLOAD_PROFILE_PHOTO);
+						}
+					}).start();
+					
+				} else {
+					new CustomDialog(ActivitySettings.this, "Info", "Unable to save picture! We are working on that...").show();
 				}
-
 			}
 
-			// Upload user Photo
-			progressUploadPhoto.show();
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					resultPhotoUpload = AppCAP.getConnection().uploadUserProfilePhoto();
-					handler.sendEmptyMessage(HANDLE_UPLOAD_PROFILE_PHOTO);
-				}
-			}).start();
+
 
 
 			break;

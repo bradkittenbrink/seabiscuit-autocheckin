@@ -74,7 +74,8 @@ public class AppCAP extends Application{
 	
 	public static String cleanResponseString(String data){
 
-		return data.replaceAll("\\+", " ").replaceAll("%28", "\"").replaceAll("%29", "\"");
+		return data.replaceAll("\\+", " ").replaceAll("%28", "\"").replaceAll("%29", "\"").replaceAll("%C4%8D", "c")
+				.replaceAll("%C4%87", "c");
 	}
 	
 	public static void setLocalUserPhotoURL(String url){
