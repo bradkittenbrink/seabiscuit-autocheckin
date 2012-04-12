@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Display;
-import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -15,12 +14,12 @@ import android.view.WindowManager;
 import android.widget.Scroller;
 
 
-public final class HorizontalPager extends ViewGroup {
+public final class HorizontalPagerModified extends ViewGroup {
 	/*
 	 * How long to animate between screens when programmatically setting with setCurrentScreen using
 	 * the animate parameter
 	 */
-	private static final int ANIMATION_SCREEN_SET_DURATION_MILLIS = 500;
+	private static final int ANIMATION_SCREEN_SET_DURATION_MILLIS = 800;
 	// What fraction (1/x) of the screen the user must swipe to indicate a page change
 	private static final int FRACTION_OF_SCREEN_WIDTH_FOR_SWIPE = 4;
 	private static final int INVALID_SCREEN = -1;
@@ -50,12 +49,12 @@ public final class HorizontalPager extends ViewGroup {
 	private int mLastSeenLayoutWidth = -1;
 
 
-	public HorizontalPager(final Context context) {
+	public HorizontalPagerModified(final Context context) {
 		super(context);
 		init();
 	}
 
-	public HorizontalPager(final Context context, final AttributeSet attrs) {
+	public HorizontalPagerModified(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 		init();
 	}
@@ -134,156 +133,6 @@ public final class HorizontalPager extends ViewGroup {
 		}
 	}
 
-	@Override
-	public boolean onInterceptTouchEvent(final MotionEvent ev) {
-
-		final int action = ev.getAction();
-		boolean intercept = false;
-
-		switch (action) {
-		case MotionEvent.ACTION_MOVE:
-
-			if (mTouchState == TOUCH_STATE_HORIZONTAL_SCROLLING) {
-
-				intercept = true;
-			} else if (mTouchState == TOUCH_STATE_VERTICAL_SCROLLING) {
-				// Let children handle the events for the duration of the scroll event.
-				intercept = false;
-			} else { // We haven't picked up a scroll event yet; check for one.
-
-
-				final float x = ev.getX();
-				final int xDiff = (int) Math.abs(x - mLastMotionX);
-				boolean xMoved = xDiff > mTouchSlop;
-
-				if (xMoved) {
-					// Scroll if the user moved far enough along the X axis
-					mTouchState = TOUCH_STATE_HORIZONTAL_SCROLLING;
-					mLastMotionX = x;
-				}
-
-				final float y = ev.getY();
-				final int yDiff = (int) Math.abs(y - mLastMotionY);
-				boolean yMoved = yDiff > mTouchSlop;
-
-				if (yMoved) {
-					mTouchState = TOUCH_STATE_VERTICAL_SCROLLING;
-				}
-			}
-
-			break;
-		case MotionEvent.ACTION_CANCEL:
-		case MotionEvent.ACTION_UP:
-			// Release the drag.
-			mTouchState = TOUCH_STATE_REST;
-			break;
-		case MotionEvent.ACTION_DOWN:
-
-			mLastMotionY = ev.getY();
-			mLastMotionX = ev.getX();
-			break;
-		default:
-			break;
-		}
-
-		return intercept;
-	}
-
-	@Override
-	public boolean onTouchEvent(final MotionEvent ev) {
-
-		if (mVelocityTracker == null) {
-			mVelocityTracker = VelocityTracker.obtain();
-		}
-		mVelocityTracker.addMovement(ev);
-
-		final int action = ev.getAction();
-		final float x = ev.getX();
-
-		switch (action) {
-		case MotionEvent.ACTION_DOWN:
-
-			if (!mScroller.isFinished()) {
-				mScroller.abortAnimation();
-			}
-
-			// Remember where the motion event started
-			mLastMotionX = x;
-
-			if (mScroller.isFinished()) {
-				mTouchState = TOUCH_STATE_REST;
-			} else {
-				mTouchState = TOUCH_STATE_HORIZONTAL_SCROLLING;
-			}
-
-			break;
-		case MotionEvent.ACTION_MOVE:
-			final int xDiff = (int) Math.abs(x - mLastMotionX);
-			boolean xMoved = xDiff > mTouchSlop;
-
-			if (xMoved) {
-				// Scroll if the user moved far enough along the X axis
-				mTouchState = TOUCH_STATE_HORIZONTAL_SCROLLING;
-			}
-
-			if (mTouchState == TOUCH_STATE_HORIZONTAL_SCROLLING) {
-				// Scroll to follow the motion event
-				final int deltaX = (int) (mLastMotionX - x);
-				mLastMotionX = x;
-				final int scrollX = getScrollX();
-
-				if (deltaX < 0) {
-					if (scrollX > 0) {
-						scrollBy(Math.max(-scrollX, deltaX), 0);
-					}
-				} else if (deltaX > 0) {
-					final int availableToScroll =
-							getChildAt(getChildCount() - 1).getRight() - scrollX - getWidth();
-
-					if (availableToScroll > 0) {
-						scrollBy(Math.min(availableToScroll, deltaX), 0);
-					}
-				}
-			}
-
-			break;
-
-		case MotionEvent.ACTION_UP:
-			if (mTouchState == TOUCH_STATE_HORIZONTAL_SCROLLING) {
-				final VelocityTracker velocityTracker = mVelocityTracker;
-				velocityTracker.computeCurrentVelocity(VELOCITY_UNIT_PIXELS_PER_SECOND,
-						mMaximumVelocity);
-				int velocityX = (int) velocityTracker.getXVelocity();
-
-				if (velocityX > mDensityAdjustedSnapVelocity && mCurrentScreen > 0) {
-					// Fling hard enough to move left
-					snapToScreen(mCurrentScreen - 1);
-				} else if (velocityX < -mDensityAdjustedSnapVelocity
-						&& mCurrentScreen < getChildCount() - 1) {
-					// Fling hard enough to move right
-					snapToScreen(mCurrentScreen + 1);
-				} else {
-					snapToDestination();
-				}
-
-				if (mVelocityTracker != null) {
-					mVelocityTracker.recycle();
-					mVelocityTracker = null;
-				}
-			}
-
-			mTouchState = TOUCH_STATE_REST;
-
-			break;
-		case MotionEvent.ACTION_CANCEL:
-			mTouchState = TOUCH_STATE_REST;
-			break;
-		default:
-			break;
-		}
-
-		return true;
-	}
 
 	@Override
 	public void computeScroll() {
@@ -357,7 +206,11 @@ public final class HorizontalPager extends ViewGroup {
 			mScroller.startScroll(getScrollX(), 0, delta, 0, (int) (Math.abs(delta)
 					/ (float) getWidth() * ANIMATION_SCREEN_SET_DURATION_MILLIS));
 		} else {
-			mScroller.startScroll(getScrollX(), 0, delta, 0, duration);
+			if (whichScreen==0){
+				mScroller.startScroll(getScrollX(), 0, delta + (getWidth()/4), 0, duration);
+			} else {
+				mScroller.startScroll(getScrollX(), 0, delta, 0, duration);
+			}
 		}
 
 		invalidate();

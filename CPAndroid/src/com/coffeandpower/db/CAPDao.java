@@ -1,6 +1,7 @@
 package com.coffeandpower.db;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -127,7 +128,81 @@ public class CAPDao {
 		return tempArray;
 	}
 
+	
+	/**
+	 * Get all map user data
+	 * @return
+	 */
+	public ArrayList<MapUserData> getMapsUsersData (){
 
+		ArrayList<MapUserData> tempArray = new ArrayList<MapUserData>();
+
+		Cursor c = database.rawQuery("SELECT * from " + CASPSQLiteDatabase.TABLE_MAP_USER_DATA , null);
+		if (c != null) {
+			while (c.moveToNext()) {
+
+				int checkInId = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_CHECK_IN_ID) == -1 ) ? 0 : c.getInt(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_CHECK_IN_ID)));
+				int userId= (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_USER_ID) == -1 ) ? 0 : c.getInt(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_USER_ID)));
+				int checkInCount = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_CHECK_IN_COUNT) == -1 ) ? 0 : c.getInt(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_CHECK_IN_COUNT)));
+				int checkedIn = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_CHECKED_IN) == -1 ) ? 0 : c.getInt(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_CHECKED_IN)));
+				String nickName = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_NICK_NAME) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_NICK_NAME)));
+				String statusText = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_STATUS_TEXT) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_STATUS_TEXT)));
+				String photo = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_PHOTO) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_PHOTO)));
+				String majorJobCategory = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_MAJOR_JOB) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_MAJOR_JOB)));
+				String minorJobCategory = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_MINOR_JOB) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_MINOR_JOB)));
+				String headLine = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_HEAD_LINE) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_HEAD_LINE)));
+				String fileName = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_FILE_NAME) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_FILE_NAME)));
+				String foursquareIdS = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_FOURSQUARE_ID) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_FOURSQUARE_ID)));
+				String venueName = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_VENUE_NAME) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_VENUE_NAME)));
+				String skills = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_SKILLS) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_SKILLS)));
+
+				String latS = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_LAT) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_LAT)));
+				String lngS = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_LNG) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_LNG)));
+				String metS = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_MET) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_MET)));
+
+				double lat = 0.0d;
+				double lng = 0.0d; 
+
+				try {
+					lat = Double.parseDouble(latS);
+					lng = Double.parseDouble(lngS);
+				} catch (NumberFormatException e){
+					e.printStackTrace();
+				}
+
+				boolean met = metS.equals("YES") ? true : false;
+
+				tempArray.add(new MapUserData(checkInId, userId, nickName, statusText, photo, majorJobCategory, minorJobCategory, 
+						headLine, fileName, lat, lng, checkedIn, foursquareIdS, venueName, checkInCount, skills, met));
+			}
+		}
+		c.close();
+
+		return tempArray;
+	}
+	
+	/**
+	 * Get all uniq foursquaresIds from visible part of map
+	 * @return
+	 */
+	public ArrayList<String> getAllFoursquaresIdsInBounds (){
+		
+		HashSet<String> tempSet = new HashSet<String>();
+		
+		Cursor c = database.rawQuery("SELECT * from " + CASPSQLiteDatabase.TABLE_MAP_USER_DATA, null);
+		if (c != null) {
+			while (c.moveToNext()) {
+
+				String foursquareIdS = (( c.getColumnIndex(CASPSQLiteDatabase.COLUMN_FOURSQUARE_ID) == -1 ) ? "" : c.getString(c.getColumnIndex(CASPSQLiteDatabase.COLUMN_FOURSQUARE_ID)));
+				tempSet.add(foursquareIdS);
+			}
+		}
+		c.close();
+		
+		return new ArrayList<String>(tempSet);
+	}
+
+	
 	/**
 	 * Delete all data from table
 	 * @param tableName

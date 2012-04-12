@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +27,16 @@ public class MyUsersAdapter extends BaseAdapter{
 	private int myLat;
 	private int myLng;
 
+	private boolean haveGrayHereNow;
+	private boolean haveGrayLast7;
+
 	public MyUsersAdapter(Activity context, ArrayList<MapUserData> mudArray, int myLat, int myLng){
 
 		this.inflater = context.getLayoutInflater();
 		this.myLat = myLat;
 		this.myLng = myLng;
 		this.imageLoader=new ImageLoader(context.getApplicationContext());
-		
+
 		if (mudArray!=null){
 			this.mudArray = mudArray;
 		} else {
@@ -62,9 +66,10 @@ public class MyUsersAdapter extends BaseAdapter{
 		public TextView textVenueName;
 		public TextView textDistance;
 		public TextView textCheckinsCount;
-		
+		public TextView textGrayLine;
+
 		public ImageView profileImage;
-		
+
 		public ViewHolder(View convertView){
 
 			this.textCheckinsCount = (TextView) convertView.findViewById(R.id.textview_checkin);
@@ -72,6 +77,7 @@ public class MyUsersAdapter extends BaseAdapter{
 			this.textStatus = (TextView) convertView.findViewById(R.id.textview_comment);
 			this.textVenueName = (TextView) convertView.findViewById(R.id.textview_place);
 			this.textNickName = (TextView) convertView.findViewById(R.id.textview_persone_nickname);
+			this.textGrayLine = (TextView) convertView.findViewById(R.id.textview_days);
 			this.profileImage = (ImageView) convertView.findViewById(R.id.imageview_image);
 		}
 	}
@@ -96,6 +102,9 @@ public class MyUsersAdapter extends BaseAdapter{
 		holder.textCheckinsCount.setText(checkStr);
 		holder.textVenueName.setText(AppCAP.cleanResponseString(mudArray.get(position).getVenueName()));
 
+		// Deafult gay line state is gone
+		//holder.textGrayLine.setVisibility(View.GONE);
+
 		float[] results = new float[1];
 		Location.distanceBetween(myLat / 1E6, myLng / 1E6, mudArray.get(position).getLat(), mudArray.get(position).getLng(), results);
 
@@ -109,10 +118,28 @@ public class MyUsersAdapter extends BaseAdapter{
 			distanceS = d + "km away";
 		}
 		holder.textDistance.setText(distanceS);
-		
+
+
+		// Check if we have hereNow user
+		Log.d("LOG", "test: " + mudArray.get(position).getCheckedIn()+":"+haveGrayHereNow + ":"+haveGrayLast7);
+		if (mudArray.get(position).getCheckedIn()==1 ){
+			holder.textGrayLine.setText("Checked In Now");
+			holder.textGrayLine.setVisibility(View.VISIBLE);
+			haveGrayHereNow = true;
+		} 
+		if (mudArray.get(position).getCheckedIn()==0 ){
+			// it was in last seven days
+			holder.textGrayLine.setText("Last 7 Days");
+			holder.textGrayLine.setVisibility(View.VISIBLE);
+			haveGrayLast7 = true;
+		}
+
+
 		// Try to load profile image
 		imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage);
-		
+
+
+		Log.d("LOG", "cehcId: " + mudArray.get(position).getCheckInId() + ":" +mudArray.get(position).getNickName() + "  :" + mudArray.get(position).getVenueName());
 		return convertView;
 	}
 

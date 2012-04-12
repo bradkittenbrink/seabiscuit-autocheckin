@@ -10,15 +10,20 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 
 	private ArrayList<MyOverlayItem> m_overlays = new ArrayList<MyOverlayItem>();
 
-	
+
 	public MyItemizedOverlay(Drawable defaultMarker, MapView mapView) {
 		super(boundCenter(defaultMarker), mapView);
 
 	}
 
 	public void addOverlay(MyOverlayItem overlay) {
-	    m_overlays.add(overlay);
-	    populate();
+		m_overlays.add(overlay);
+		populate();
+	}
+
+	public void remove (int position){
+		m_overlays.remove(position);
+		populate();
 	}
 
 	@Override
@@ -33,8 +38,8 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 
 	@Override
 	protected boolean onBalloonTap(int index, MyOverlayItem item) {
-		
+
 		return true;
 	}
-	
+
 }

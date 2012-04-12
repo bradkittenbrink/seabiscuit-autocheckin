@@ -92,11 +92,12 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/layout_popup_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/layout_name"
         android:layout_marginLeft="15dip"
-        android:background="@drawable/bg_balloon_left"
+        android:background="@drawable/bg_dialog"
         android:orientation="vertical"
         android:paddingLeft="5dip" >
 
@@ -105,7 +106,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:text="sdfsdfsd"
             android:textColor="#000000"
             android:textSize="15dip"
             android:textStyle="bold" />
@@ -115,7 +115,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:text="dfsdfs"
             android:textColor="#000000"
             android:textSize="15dip" />
     </LinearLayout>
@@ -129,22 +128,32 @@
         android:layoutAnimation="@anim/layout_random_fade"
         android:visibility="visible" >
 
-        <ImageView
-            android:id="@+id/imageview_face"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_margin="15dip"
-            android:background="@drawable/default_avatar50" />
+        <HorizontalScrollView
+            android:id="@+id/hor_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
 
-        <com.coffeeandpower.views.CustomFontView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dip"
-            android:layout_toRightOf="@+id/imageview_face"
-            android:text="Who&apos;s here now?"
-            android:textSize="20dip" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:id="@+id/inflate_users"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+                </LinearLayout>
+
+                <com.coffeeandpower.views.CustomFontView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dip"
+                    android:text="Who&apos;s here now?"
+                    android:textSize="20dip" />
+            </LinearLayout>
+        </HorizontalScrollView>
     </RelativeLayout>
 
     <RelativeLayout
@@ -171,6 +180,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textview_text"
             android:layout_marginLeft="20dip"
+            android:singleLine="true"
             android:layout_marginRight="20dip"
             android:hint="optional" />
 

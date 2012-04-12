@@ -35,7 +35,7 @@ import com.coffeeandpower.maps.MyOverlayItem;
 import com.coffeeandpower.maps.MyOverlayPin;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
-import com.coffeeandpower.views.HorizontalPager;
+import com.coffeeandpower.views.HorizontalPagerModified;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -54,7 +54,7 @@ public class ActivityMap extends MapActivity{
 	// Views
 	private CustomFontView textNickName;
 	private ProgressDialog progress;
-	private HorizontalPager pager;
+	private HorizontalPagerModified pager;
 
 
 	// Map items
@@ -108,9 +108,8 @@ public class ActivityMap extends MapActivity{
 					// Find all uniq foursquareIds
 					for (MapUserData mud:mapUsersArray){
 						setFoursquareIds.add(mud.getFoursquareId());
-						
-						Log.d("LOG", "array: " + mud.getFoursquareId()+ " : " + mud.getNickName() + " chIn: " + mud.getCheckedIn());
 
+						//Log.d("LOG", "array: " + mud.getFoursquareId()+ " : " + mud.getNickName() + " chIn: " + mud.getCheckedIn());
 					}
 
 					// Find all MapUserData objects for every foursquareId
@@ -118,18 +117,18 @@ public class ActivityMap extends MapActivity{
 
 						// Array list without duplicates
 						ArrayList<MapUserData> tmpArray = new ArrayList<MapUserData>();
-						
+
 						for (MapUserData mud:mapUsersArray){
 
 							if (mud.getFoursquareId().equals(foursquareId)){
 								tmpArray.add(mud);
 							}
 						}
-						
+
 						mapKeyIsFoursquareId.put(foursquareId, tmpArray);
 					}
 
-					
+
 					// Reset table for new data
 					capDao.open();
 					capDao.deleteAllFromTable(CASPSQLiteDatabase.TABLE_MAP_USER_DATA); // reset table for new data
@@ -160,19 +159,19 @@ public class ActivityMap extends MapActivity{
 
 							// write data to database
 							capDao.putMapsUsersData(mud, itemWithKeyFoursquareId.getKey());
-							
+
 							Log.d("LOG", "db: " + itemWithKeyFoursquareId.getKey()+ " : " + mud.getNickName() + " chIn: " + mud.getCheckedIn() + "  herC: " + hereNowCount);
 						}
 
-						
+
 						// Create Pins, if we have checkedin user for foursquareId
 						GeoPoint gp = new GeoPoint((int)(lat*1E6), (int)(lng*1E6));
-						
+
 						if (hereNowCount > 0){
-							
+
 							createPin(gp, itemWithKeyFoursquareId.getKey(), hereNowCount);
 						} else {
-							
+
 							if (itemWithKeyFoursquareId.getValue().size()>1){
 								// for ActivityListPersons
 								createMarker(gp, itemWithKeyFoursquareId.getKey(), checkinsSum, venueName, true);
@@ -182,7 +181,7 @@ public class ActivityMap extends MapActivity{
 							}
 						}
 					}
-					
+
 					capDao.close();
 					mapView.invalidate();
 				}
@@ -203,7 +202,7 @@ public class ActivityMap extends MapActivity{
 		setContentView(R.layout.activity_map);
 
 		// Views
-		pager = (HorizontalPager) findViewById(R.id.pager);
+		pager = (HorizontalPagerModified) findViewById(R.id.pager);
 		mapView = (MapView) findViewById(R.id.mapview);
 		textNickName = (CustomFontView) findViewById(R.id.text_nick_name);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
@@ -231,7 +230,7 @@ public class ActivityMap extends MapActivity{
 				mapView.getController().animateTo(myLocationOverlay.getMyLocation());
 			}
 		});
-		
+
 		mapController = mapView.getController();
 		mapController.setZoom(12);
 
@@ -271,7 +270,7 @@ public class ActivityMap extends MapActivity{
 		super.onResume();
 		myLocationOverlay.enableMyLocation();
 		mapController.setZoom(17);
-		
+
 		// Temp solution for black space below mapView
 		if (myLocationOverlay!=null){
 			if (myLocationOverlay.getMyLocation()!=null){
@@ -279,7 +278,7 @@ public class ActivityMap extends MapActivity{
 				mapController.setZoom(17);
 			}
 		}
-		
+
 	}
 
 
@@ -295,19 +294,19 @@ public class ActivityMap extends MapActivity{
 
 		if (foursquareIdKey!=null){
 			//Log.d("LOG", "create marker");
-			
+
 			String checkStr = checkinsSum == 1 ? " checkin in the last week" : " checkins in the last week";
 			venueName = AppCAP.cleanResponseString(venueName);
 
 			MyOverlayItem overlayitem = new MyOverlayItem(point, venueName, checkinsSum + checkStr);
 			overlayitem.setMapUserData(foursquareIdKey);
 			overlayitem.setAsList(isList);
-			
+
 			if (myLocationOverlay.getMyLocation()!=null){
-				
+
 				overlayitem.setMyLocationCoords(myLocationOverlay.getMyLocation().getLatitudeE6(), myLocationOverlay.getMyLocation().getLongitudeE6());
 			}
-			
+
 			itemizedoverlay.addOverlay(overlayitem);
 			if (itemizedoverlay.size() > 0) {
 				mapView.getOverlays().add(itemizedoverlay);
@@ -315,7 +314,7 @@ public class ActivityMap extends MapActivity{
 		}
 	}
 
-	
+
 	/**
 	 * Create pin on map, with number of checked in/out users
 	 * @param point
@@ -323,14 +322,13 @@ public class ActivityMap extends MapActivity{
 	 * @param hereNowCount
 	 */
 	private void createPin(GeoPoint point, String foursquareIdKey, int hereNowCount) {
+		Log.d("LOG", "createPin");
 
 		if (foursquareIdKey!=null){
 
 			MyOverlayPin overlayitem = new MyOverlayPin(ActivityMap.this, point, MyOverlayPin.TYPE_RED_PIN, hereNowCount);
 
-			if (itemizedoverlay.size() > 0) {
-				mapView.getOverlays().add(overlayitem);
-			}
+			mapView.getOverlays().add(overlayitem);
 		}
 	}
 
@@ -441,6 +439,10 @@ public class ActivityMap extends MapActivity{
 
 		((ImageView) findViewById(R.id.imagebutton_map_refresh_progress)).setAnimation(anim);
 
+		// Remove all markers from MapView
+		for (int i=itemizedoverlay.size(); i>0; i--){
+			itemizedoverlay.remove(i-1);
+		}
 		for (int i=mapView.getOverlays().size(); i>1; i--){
 			mapView.getOverlays().remove(i-1);
 		}
@@ -482,6 +484,14 @@ public class ActivityMap extends MapActivity{
 
 	public void onClickPeopleList (View v){
 
+		Intent intent = new Intent(this, ActivityListPersons.class);
+		
+		if (myLocationOverlay.getMyLocation()!=null){
+			intent.putExtra("lat", myLocationOverlay.getMyLocation().getLatitudeE6());
+			intent.putExtra("lng", myLocationOverlay.getMyLocation().getLongitudeE6());
+		}
+
+		startActivity(intent);
 	}
 
 

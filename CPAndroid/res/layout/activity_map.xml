@@ -172,7 +172,7 @@
 
     <!-- Horizontal Pager View -->
 
-    <com.coffeeandpower.views.HorizontalPager
+    <com.coffeeandpower.views.HorizontalPagerModified
         android:id="@+id/pager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
@@ -286,6 +286,6 @@
                 </RelativeLayout>
             </RelativeLayout>
         </LinearLayout>
-    </com.coffeeandpower.views.HorizontalPager>
+    </com.coffeeandpower.views.HorizontalPagerModified>
 
 </RelativeLayout>

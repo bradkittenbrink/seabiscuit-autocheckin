@@ -2,6 +2,7 @@ package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -27,6 +28,7 @@ import com.coffeeandpower.views.CustomFontView;
 public class ActivityListPersons extends ListActivity {
 
 	private static final int LIST_CONVERT_FINISHED = 1404;
+	private static final int LIST_USERS_IN_BOUNDS_FINISHED = 1405;
 
 	private ArrayList<MapUserData> arrayMapUserData;
 
@@ -35,12 +37,12 @@ public class ActivityListPersons extends ListActivity {
 	private CAPDao capDao;
 
 	private CustomFontView textTitle;
-	
+
 	private ProgressDialog progress;
 
 	private int myLat;
 	private int myLng;
-	
+
 	private Handler handler = new Handler(){
 
 		@Override
@@ -56,13 +58,31 @@ public class ActivityListPersons extends ListActivity {
 
 				if (arrayMapUserData!=null){
 					if (!arrayMapUserData.isEmpty()){
-						
+
 						textTitle.setText(AppCAP.cleanResponseString(arrayMapUserData.get(0).getVenueName()));
 						adapter = new MyUsersAdapter(ActivityListPersons.this, arrayMapUserData, myLat, myLng);
 						setListAdapter(adapter);
 						animateListView(getListView());
 					}
 				}
+
+				break;
+
+			case LIST_USERS_IN_BOUNDS_FINISHED:
+
+				progress.dismiss();
+				capDao.close();
+
+				if (arrayMapUserData!=null){
+					if (!arrayMapUserData.isEmpty()){
+
+						textTitle.setText("List");
+						adapter = new MyUsersAdapter(ActivityListPersons.this, arrayMapUserData, myLat, myLng);
+						setListAdapter(adapter);
+						animateListView(getListView());
+					}
+				}
+
 
 				break;
 			}
@@ -78,6 +98,7 @@ public class ActivityListPersons extends ListActivity {
 
 		// Views
 		textTitle = (CustomFontView) findViewById(R.id.textview_location_name);
+		textTitle.setText("List");
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
 
@@ -92,11 +113,11 @@ public class ActivityListPersons extends ListActivity {
 			final String foursquareId = extras.getString("mapuserdata");
 			myLat = extras.getInt("lat");
 			myLng = extras.getInt("lng");
-			
+
 			if (foursquareId!=null){
-				
+
 				progress.show();
-				
+
 				// It may take time...
 				new Thread(new Runnable() {
 					@Override
@@ -116,6 +137,70 @@ public class ActivityListPersons extends ListActivity {
 						handler.sendEmptyMessage(LIST_CONVERT_FINISHED);
 					}
 				}).start();
+
+			} else {
+
+				// Called form ActivityMap, onClickPeopleList, show list with users, form data collected with getCheckedInBoundsOverTime, 
+				// and stored in database. It may take time....
+
+				progress.show();
+
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+
+						ArrayList<String> foursquaresIds = capDao.getAllFoursquaresIdsInBounds();
+						if (foursquaresIds!=null){
+
+							arrayMapUserData = new ArrayList<MapUserData>();
+
+							ArrayList<MapUserData> arrayTemp = capDao.getMapsUsersData();
+							if (arrayTemp!=null){
+
+
+								// Get All users from selected foursquare id
+								HashSet<Integer> userIds = new HashSet<Integer>();
+								for (MapUserData mud:arrayTemp){
+									userIds.add(mud.getUserId());
+								}
+
+
+								// Find all checkins for single user in selected foursquareId
+								for (Integer userId:userIds){
+									ArrayList<MapUserData> tempA = new ArrayList<MapUserData>();
+
+									for (MapUserData mud:arrayTemp){
+										if (userId==mud.getUserId()){
+											tempA.add(mud);
+										}
+									}
+
+									// Iterate thru all user chckins, find highest and than here now
+									MapUserData singleUserMap = null;
+									int checkInId = 0;
+									for (MapUserData mud:tempA){
+										// find highest checkInId value
+										if (mud.getCheckInId()>checkInId){
+											checkInId = mud.getCheckInId();
+											singleUserMap = mud;
+										}
+									}
+									for (MapUserData mud:tempA){
+										// if herenow exist, than that value will be used
+										if (mud.getCheckedIn()==1){
+											singleUserMap = mud;
+										}
+									}
+
+									arrayMapUserData.add(singleUserMap);
+								}
+							}
+						}
+
+						handler.sendEmptyMessage(LIST_USERS_IN_BOUNDS_FINISHED);
+					}
+				}).start();
+
 
 			}
 		}
@@ -144,7 +229,7 @@ public class ActivityListPersons extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		
+
 		Intent intent = new Intent(ActivityListPersons.this, ActivityUserDetails.class);
 		intent.putExtra("mapuserobject", (MapUserData)adapter.getItem(position));
 		intent.putExtra("from_act", "list");
@@ -160,10 +245,17 @@ public class ActivityListPersons extends ListActivity {
 
 
 	public void onClickCheckIn (View v){
-		
+
+		if (myLat!=0 && myLng!=0){
+
+			Intent intent = new Intent(ActivityListPersons.this, ActivityCheckInList.class);
+			intent.putExtra("lat", myLat);
+			intent.putExtra("lng", myLng);
+			startActivity(intent);
+		}
 	}
-	
-	
+
+
 	public void onClickBack (View v){
 		onBackPressed();	
 	}
