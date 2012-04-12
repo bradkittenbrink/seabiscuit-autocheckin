@@ -443,9 +443,9 @@ public class HttpUtil {
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
-
+		
 		MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);  
-
+		
 		File file = new File(Environment.getExternalStorageDirectory() + ActivitySettings.IMAGE_FOLDER, "photo_profile.jpg");
 
 		try {
@@ -471,9 +471,9 @@ public class HttpUtil {
 					if (params!=null){
 						AppCAP.setLocalUserPhotoURL(params.optString("thumbnail"));
 						AppCAP.setLocalUserPhotoLargeURL(params.optString("picture"));
-					}
-
 				}
+
+                            }
 			}
 
 		} catch (UnsupportedEncodingException e) {
@@ -1179,7 +1179,88 @@ public class HttpUtil {
 
 	}
 
+	/**
+	 * Sign up for a new account using a 3rd party
+	 * @param userId
+	 * @param token
+	 * @return
+	 */
+	public DataHolder signupViaOAuthService(OAuthService service){
 
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		//HttpClient client = getThreadSafeClient();
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_SIGNUP);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>(7);
+
+		String serviceName = service.getServiceNameSignUp();
+		params.add(new BasicNameValuePair("action", "signup"));
+		params.add(new BasicNameValuePair("oauth_token", service.getAccessToken()));
+		params.add(new BasicNameValuePair("oauth_secret", service.getAccessTokenSecret()));
+		params.add(new BasicNameValuePair(serviceName + "_connect", "1"));
+		params.add(new BasicNameValuePair(serviceName + "_id", service.getUserId()));
+		params.add(new BasicNameValuePair("signupUsername", service.getUserName()));
+		params.add(new BasicNameValuePair("signupNickname", service.getUserNickName()));
+		params.add(new BasicNameValuePair("signupPassword", service.getUserPassword()));
+		params.add(new BasicNameValuePair("signupConfirm", service.getUserPassword()));		
+		params.add(new BasicNameValuePair("type", "json"));
+
+		try {
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_signup: " + EntityUtils.toString(post.getEntity())+":"+responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				Boolean succeeded = json.optBoolean("succeeded");
+				String mess = json.optString("message");
+
+				result.setResponseMessage(mess);
+
+				if (succeeded){
+
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+					return result;
+
+				} else {
+					result.setResponseCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
+					return result;
+				}
+			}
+
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+
+		}
+
+		return result;
+
+	}
+			
 	/**
 	 * Login 
 	 * @param userName
@@ -1267,6 +1348,90 @@ public class HttpUtil {
 		return result;
 	}
 
+	public DataHolder loginViaOAuthService(OAuthService service){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		//HttpClient client = getThreadSafeClient();
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_LOGIN);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>(4);
+
+		String serviceName = service.getServiceNameLogin();
+		String serviceSignUp = service.getServiceNameSignUp();
+		params.add(new BasicNameValuePair("action", "login" + serviceName));
+		params.add(new BasicNameValuePair("oauth_token", service.getAccessToken()));
+		params.add(new BasicNameValuePair("oauth_secret", service.getAccessTokenSecret()));
+		params.add(new BasicNameValuePair("login_" + serviceSignUp + "_connect", "1"));
+		params.add(new BasicNameValuePair("login_" + serviceSignUp + "_id", service.getUserId()));
+		params.add(new BasicNameValuePair("type", "json"));
+
+		try {
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_login: " + EntityUtils.toString(post.getEntity())+":"+responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				Boolean succeeded = json.optBoolean("succeeded");
+				String mess = json.optString("message");
+
+				result.setResponseMessage(mess);
+
+				if (succeeded){
+					/*
+					JSONObject paramsObj = json.optJSONObject("params");
+					if (paramsObj!=null){
+
+						JSONObject userObj = paramsObj.optJSONObject("user");
+						if (userObj!=null){
+
+							int userId = userObj.optInt("id");
+							String nickName = userObj.optString("nickname");
+
+							result.setObject(new User(userId, nickName));
+						}
+					}
+					 */
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+					return result;
+
+				} else {
+					result.setResponseCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
+					return result;
+				}
+			}
+
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+
+		}
+
+		return result;
+	}
 
 	/**
 	 * Logout current user

@@ -11,11 +11,14 @@ public class AppCAP extends Application{
 	
 	private static final String TAG_USER_EMAIL = "tag_user_email";
 	private static final String TAG_USER_EMAIL_PASSWORD = "tag_user_email_password";
+    private static final String TAG_USER_LINKEDIN_TOKEN = "tag_user_linkedin_token";
+	private static final String TAG_USER_LINKEDIN_TOKEN_SECRET = "tag_user_linkedin_token_secret";	
+	private static final String TAG_USER_LINKEDIN_ID = "tag_user_linkedin_id";	
 	private static final String TAG_USER_PHOT_URL = "tag_user_photo_url";
 	private static final String TAG_USER_PHOT_LARGE_URL = "tag_user_photo_large_url";
 	
 	public static final String URL_WEB_SERVICE = "https://coffeeandpower.com/"; // production
-	//public static final String URL_WEB_SERVICE = "https://staging.coffeeandpower.com/"; // staging
+	//public static final String URL_WEB_SERVICE = "http://staging.coffeeandpower.com/"; // staging	
 	public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
 	public static final String URL_LOGIN = "login.php";
 	public static final String URL_LOGOUT= "logout.php";
@@ -73,7 +76,7 @@ public class AppCAP extends Application{
 	}
 	
 	public static String cleanResponseString(String data){
-
+	
 		return data.replaceAll("\\+", " ").replaceAll("%28", "\"").replaceAll("%29", "\"").replaceAll("%C4%8D", "c")
 				.replaceAll("%C4%87", "c");
 	}
@@ -81,7 +84,7 @@ public class AppCAP extends Application{
 	public static void setLocalUserPhotoURL(String url){
 		getSharedPreferences().edit().putString(TAG_USER_PHOT_URL, url).commit();
 	}
-	
+
 	public static String getLocalUserPhotoURL (){
 		return getSharedPreferences().getString(TAG_USER_PHOT_URL, "");
 	}
@@ -94,11 +97,34 @@ public class AppCAP extends Application{
 		return getSharedPreferences().getString(TAG_USER_PHOT_LARGE_URL, "");
 	}
 	
+        public static String setUserLinkedInToken (){
+		return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN, "");
+	}
 	
+	public static String setUserLinkedInTokenSecret (){
+		return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN_SECRET, "");
+	}
 	
+	public static String setUserLinkedInID (){
+		return getSharedPreferences().getString(TAG_USER_LINKEDIN_ID, "");
+	}
 	
+	public static void setUserLinkedInDetails (String token, String tokenSecret, String id){
+		getSharedPreferences().edit().putString(TAG_USER_LINKEDIN_ID, id).commit();
+		getSharedPreferences().edit().putString(TAG_USER_LINKEDIN_TOKEN, token).commit();
+		getSharedPreferences().edit().putString(TAG_USER_LINKEDIN_TOKEN_SECRET, tokenSecret).commit();
+	}
 	
+	public static String getUserLinkedInID (){
+		return getSharedPreferences().getString(TAG_USER_LINKEDIN_ID, "");		
+	}
 	
+	public static String getUserLinkedInToken (){
+		return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN, "");		
+	}
 	
-	
+	public static String getUserLinkedInTokenSecret (){
+		return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN_SECRET, "");		
+	}	
+				
 }
