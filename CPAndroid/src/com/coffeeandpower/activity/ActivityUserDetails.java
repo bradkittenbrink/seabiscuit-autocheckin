@@ -1,6 +1,8 @@
 package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
@@ -8,14 +10,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +28,7 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.adapters.MyFavouritePlacesAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.MapUserData;
+import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
@@ -54,19 +54,8 @@ public class ActivityUserDetails extends MapActivity{
 	private MyItemizedOverlay2 itemizedoverlay;
 
 	// Views
-	private Button buttonTitle;
-
-	private CustomFontView textTitleNickName;
-	private CustomFontView textNickName;
-
 	private ProgressDialog progress;
 	private ProgressBar progressPhoto;
-
-	private TextView textStatus;
-	private TextView textJoinedDate;
-	private TextView textRate;
-	private TextView textEarned;
-	private TextView textSpent;
 
 	private ImageView imageProfile;
 
@@ -78,7 +67,9 @@ public class ActivityUserDetails extends MapActivity{
 	private DataHolder resultGetUserResume;
 	private DataHolder resultGetProfilePhoto;
 
+	// User Resume
 	private UserResume userResumeData;
+
 	private ArrayList<Venue> favouriteVenues;
 
 	private Handler handler = new Handler(){
@@ -144,18 +135,8 @@ public class ActivityUserDetails extends MapActivity{
 		super.onCreate(icicle);
 		setContentView(R.layout.activity_user_details);
 
-
 		// Views
 		favPlacesList = (ListView) findViewById(R.id.listview_favorite_places);
-		buttonTitle = (Button) findViewById(R.id.button_location_name);
-		textTitleNickName = (CustomFontView) findViewById(R.id.textview_user_name);
-		textStatus = (TextView) findViewById(R.id.textview_user_place);
-		textNickName = (CustomFontView) findViewById(R.id.textview_nick_name);
-		textJoinedDate = (TextView) findViewById(R.id.textview_date);
-		textEarned = (TextView) findViewById(R.id.textview_earned);
-		textRate = (TextView) findViewById(R.id.textview_rate);
-		textSpent = (TextView) findViewById(R.id.textview_spent);
-
 
 		mapView = (MapView) findViewById(R.id.mapview_user_details);
 		progressPhoto = (ProgressBar) findViewById(R.id.progressbar_photo);
@@ -219,9 +200,9 @@ public class ActivityUserDetails extends MapActivity{
 		// Set Views states
 		if (mud!=null){
 
-			textTitleNickName.setText(mud.getNickName());
-			textStatus.setText(AppCAP.cleanResponseString(mud.getStatusText()));
-			textNickName.setText(mud.getNickName());
+			((CustomFontView) findViewById(R.id.textview_user_name)).setText(mud.getNickName());
+			((TextView)findViewById(R.id.textview_user_status)).setText(AppCAP.cleanResponseString(mud.getStatusText()));
+			((CustomFontView) findViewById(R.id.textview_nick_name)).setText(mud.getNickName());
 		}
 
 
@@ -246,14 +227,56 @@ public class ActivityUserDetails extends MapActivity{
 
 		if (userResumeData!=null){
 			loadProfilePicture();
+
+			((TextView)findViewById(R.id.textview_date)).setText(userResumeData.getJoined());
+			((TextView)findViewById(R.id.textview_earned)).setText("$" + userResumeData.getTotalEarned());
+			((TextView)findViewById(R.id.textview_love)).setText(userResumeData.getReviewsLoveReceived());
+
+			((TextView)findViewById(R.id.textview_place)).setText(AppCAP.cleanResponseString(userResumeData.getVenueName()));
+			((TextView)findViewById(R.id.textview_street)).setText(AppCAP.cleanResponseString(userResumeData.getVenueAddress()));
+
 			
-			textJoinedDate.setText(userResumeData.getJoined());
-			textEarned.setText("$" + userResumeData.getTotalEarned());
-			textSpent.setText("$" + userResumeData.getTotalSpent());
+			if(amIHereNow(userResumeData)){
+				((CustomFontView)findViewById(R.id.box_title)).setText("Checked in ...");
+				((LinearLayout)findViewById(R.id.layout_available)).setVisibility(View.VISIBLE);
+				((TextView)findViewById(R.id.textview_minutes)).setVisibility(View.VISIBLE);
+				((TextView)findViewById(R.id.textview_minutes)).setText(getAvailableMins(userResumeData));
+				
+				if (userResumeData.getUsersHere()>1){
+					((LinearLayout)findViewById(R.id.layout_others_at_venue)).setVisibility(View.VISIBLE);
+					((TextView)findViewById(R.id.textview_others_here_now)).setText( 
+							userResumeData.getUsersHere() == 2 ? "1 other here now" : (userResumeData.getUsersHere()-1) +  " others here now");
+				}
+				
+			} else {
+				((CustomFontView)findViewById(R.id.box_title)).setText("Was checked in ...");
+
+				if (userResumeData.getUsersHere()>0){
+					((LinearLayout)findViewById(R.id.layout_others_at_venue)).setVisibility(View.VISIBLE);
+					((TextView)findViewById(R.id.textview_others_here_now)).setText( 
+							userResumeData.getUsersHere() == 1 ? "1 other here now" : userResumeData.getUsersHere() +  " others here now");
+				}
+			}
+			
+			// Check if user has Reviews
+			if (userResumeData.getReviewsTotal()>0){
+				
+				((LinearLayout)findViewById(R.id.layout_reviews)).setVisibility(View.VISIBLE);
+				
+				for (Review review:userResumeData.getReviews()){
+					
+					// Check if is it love review
+					if (review.getIsLove().equals("1")){
+						((LinearLayout)findViewById(R.id.layout_love_review)).setVisibility(View.VISIBLE);
+						((TextView)findViewById(R.id.textview_review_love)).setText(" from " + review.getAuthor() + ": \"" + review.getReview() + "\"");
+					}
+				}
+			}
+
 		}
 
 		if (favouriteVenues!=null){
-			
+
 			MyFavouritePlacesAdapter adapter = new MyFavouritePlacesAdapter(this, favouriteVenues);
 			favPlacesList.setAdapter(adapter);
 		}
@@ -353,6 +376,28 @@ public class ActivityUserDetails extends MapActivity{
 		}
 	}
 
+	/**
+	 * Get String with number of available minutes od checked in user
+	 * @param ur
+	 * @return
+	 */
+	private String getAvailableMins (UserResume ur){
+		Calendar checkoutCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+		long checkout = Long.parseLong(ur.getCheckOut());
+		int mins = (int) ((checkout - (checkoutCal.getTimeInMillis()/1000))/60);
+		return mins == 1 ? mins + " min" : mins + " mins";
+	}
+
+
+	/**
+	 * Check if I am checked in here
+	 */
+	private boolean amIHereNow(UserResume ur){
+		Calendar checkoutCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+		long checkout = Long.parseLong(ur.getCheckOut());
+
+		return checkout > checkoutCal.getTimeInMillis()/1000;
+	}
 
 	public void onClickChat (View v){
 

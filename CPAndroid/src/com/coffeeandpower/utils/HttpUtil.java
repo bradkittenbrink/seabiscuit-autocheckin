@@ -52,6 +52,7 @@ import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.MapUserData;
+import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserShort;
@@ -69,7 +70,7 @@ public class HttpUtil {
 		this.client = getThreadSafeClient();
 	}
 
-	
+
 	/**
 	 * Get Resume for user woth userId
 	 * @param userId
@@ -102,17 +103,17 @@ public class HttpUtil {
 
 				JSONObject json = new JSONObject(responseString);
 				if (json!=null){
-					
+
 					JSONObject payload = json.optJSONObject("payload");
 					if (payload!=null){
-						
+
 						String nickName = "";
 						String statusText = "";
 						String urlPhoto = "";
 						String urlPhotoLarge = "";
 						String joined = "";
 						String bio = "";
-						
+
 						// Stats
 						int totalEarned = 0;
 						int totalTipsEarned = 0;
@@ -128,23 +129,23 @@ public class HttpUtil {
 						int totalMissionsAsClient = 0;
 						int totalMissions = 0;
 						String totalFunded = "";
-						
+
 						String skillSet = "";
 						String hourlyBillingRate = "";
-						
+
 						// Verified
 						String verifiedLinkedIn = "";
 						String linkedInProfileLink = "";
 						String verifiedFacebook = "";
 						String facebookProfileLink = "";
 						String verifiedMobile = "";
-						
+
 						String trusted = "";
 						String jobTitle = "";
-						
+
 						// work
 						// education
-						
+
 						// Check In Data
 						int checkInId = 0;
 						int userId = 0;
@@ -167,16 +168,17 @@ public class HttpUtil {
 						String photoUrlUnUsed = ""; // Unused
 						String formattedPhone = "";
 						int usersHere = 0;
-						
+
 						// Reviews
 						String reviewsPage = "";
-						String reviewsTotal = "";
+						int reviewsTotal = 0;
 						String reviewsRecords = "";
 						String reviewsLoveReceived = "";
-						
+						ArrayList<Review> reviews = new ArrayList<Review>();
+
 						double locationLat = 0;
 						double locationLng = 0;
-						
+
 						//************* PARSE JSON ************************************************
 						nickName = payload.optString("nickname");
 						statusText = payload.optString("status_text");
@@ -188,13 +190,13 @@ public class HttpUtil {
 						hourlyBillingRate = payload.optString("hourly_biling_rate");
 						trusted = payload.optString("trusted");
 						jobTitle = payload.optString("job_title");
-						
+
 						JSONObject objLocation = payload.optJSONObject("location");
 						if (objLocation!=null){
 							locationLat = objLocation.optDouble("lat");
 							locationLng = objLocation.optDouble("lng");
 						}
-						
+
 						JSONObject objStats = payload.optJSONObject("stats");
 						if (objStats!=null){
 							totalEarned = objStats.optInt("totalEarned");
@@ -212,31 +214,31 @@ public class HttpUtil {
 							totalMissions = objStats.optInt("totalMissions");
 							totalFunded = objStats.optString("totalFunded");
 						}
-						
+
 						JSONObject objVerified = payload.optJSONObject("verified");
 						if (objVerified!=null){
-							
+
 							JSONObject objLinkedIn = objVerified.optJSONObject("linkedin");
 							if (objLinkedIn!=null){
 								verifiedLinkedIn = objLinkedIn.optString("verified");
 								linkedInProfileLink = objLinkedIn.optString("profileLink");
 							}
-							
+
 							JSONObject objFacebook = objVerified.optJSONObject("facebook");
 							if (objFacebook!=null){
 								verifiedFacebook = objFacebook.optString("verified");
 								facebookProfileLink = objFacebook.optString("profileLink");
 							}
-							
+
 							JSONObject objMobile = objVerified.optJSONObject("mobile");
 							if (objMobile!=null){
 								verifiedMobile = objMobile.optString("verified");
 							}
 						}
-						
+
 						JSONObject objCheckInData = payload.optJSONObject("checkin_data");
 						if (objCheckInData!=null){
-							
+
 							checkInId = objCheckInData.optInt("id");
 							userId = objCheckInData.optInt("userid");
 							lat = objCheckInData.optDouble("lat");
@@ -259,19 +261,19 @@ public class HttpUtil {
 							formattedPhone = objCheckInData.optString("formatted_phone");
 							usersHere = objCheckInData.optInt("users_here");
 						}
-						
+
 						// Check in history, I took only first TWO results, but maybe we need more than two....
 						JSONArray arrayCheckIn = payload.optJSONArray("checkin_history");
 						ArrayList<Venue> checkinhistoryArray = new ArrayList<Venue>();
 						if (arrayCheckIn!=null){
-							
+
 							for (int x=0; x<arrayCheckIn.length(); x++){
-								
+
 								if (x<2){
-									
+
 									JSONObject objFromArray = arrayCheckIn.optJSONObject(x);
 									if (objFromArray!=null){
-										
+
 										Venue venue = new Venue();
 										venue.setCheckinsCount(objFromArray.optInt("count"));
 										venue.setId(objFromArray.optString("foursquare_id"));
@@ -282,21 +284,45 @@ public class HttpUtil {
 										venue.setPostalCode(objFromArray.optString("zip"));
 										venue.setPhone(objFromArray.optString("phone"));
 										venue.setPhotoUrl(objFromArray.optString("photo_url"));
-										
+
 										checkinhistoryArray.add(venue);
 									}
 								}
 							}
 						}
-						
+
 						JSONObject objReview = payload.optJSONObject("reviews");
 						if (objReview!=null){
 							reviewsPage = objReview.optString("page");
 							reviewsLoveReceived = objReview.optString("love_received");
-							reviewsTotal = objReview.optString("total");
+							reviewsTotal = objReview.optInt("total");
 							reviewsRecords = objReview.optString("records");
+
+							JSONArray reviewsArray = objReview.optJSONArray("rows");
+							if (reviewsArray!=null){
+
+								for (int x=0; x<reviewsArray.length(); x++){
+
+									JSONObject objReviewFromArray = reviewsArray.optJSONObject(x);
+									if (objReviewFromArray!=null){
+										
+										reviews.add(new Review(objReviewFromArray.optInt("id"), 
+												objReviewFromArray.optString("author"), 
+												objReviewFromArray.optString("title"), 
+												objReviewFromArray.optString("type"), 
+												objReviewFromArray.optString("create_time"), 
+												objReviewFromArray.optString("skill"), 
+												objReviewFromArray.optString("rating"), 
+												objReviewFromArray.optString("is_love"), 
+												objReviewFromArray.optString("tip_amount"), 
+												objReviewFromArray.optString("review"), 
+												objReviewFromArray.optString("ratingImage"), 
+												objReviewFromArray.optString("relativeTime")));
+									}
+								}
+							}
 						}
-						
+
 						// [0] Object UserResume, [1] array list favourite checkin locatios
 						ArrayList<Object> tempHolder = new ArrayList<Object>();
 						tempHolder.add(new UserResume(nickName, statusText, urlPhoto, urlPhotoLarge, joined, bio, totalEarned, 
@@ -306,12 +332,12 @@ public class HttpUtil {
 								verifiedLinkedIn, linkedInProfileLink, verifiedFacebook, facebookProfileLink, verifiedMobile, trusted, 
 								jobTitle, checkInId, userId, lat, lng, checkInDate, checkIn, checkOutDate, checkOut, foursquare, 
 								foursquareId, venueName, venueAddress, city, state, zip, phone, icon, visible, photoUrlUnUsed, formattedPhone, 
-								usersHere, reviewsPage, reviewsTotal, reviewsRecords, reviewsLoveReceived, locationLat, locationLng));
+								usersHere, reviewsPage, reviewsTotal, reviewsRecords, reviewsLoveReceived, reviews, locationLat, locationLng));
 						tempHolder.add(checkinhistoryArray);
-						
+
 						result.setObject(tempHolder);
 					}
-					
+
 					return result;
 				}
 			}
@@ -334,8 +360,8 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Get user data with userID
 	 * @param userId
@@ -391,7 +417,7 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
+
 
 	/**
 	 * Get Bitmap (profile photos) from URL
@@ -444,9 +470,9 @@ public class HttpUtil {
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
-		
+
 		MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);  
-		
+
 		File file = new File(Environment.getExternalStorageDirectory() + ActivitySettings.IMAGE_FOLDER, "photo_profile.jpg");
 
 		try {
@@ -472,9 +498,9 @@ public class HttpUtil {
 					if (params!=null){
 						AppCAP.setLocalUserPhotoURL(params.optString("thumbnail"));
 						AppCAP.setLocalUserPhotoLargeURL(params.optString("picture"));
-				}
+					}
 
-                            }
+				}
 			}
 
 		} catch (UnsupportedEncodingException e) {
@@ -708,22 +734,22 @@ public class HttpUtil {
 
 				JSONObject json = new JSONObject(responseString);
 				if (json!=null){
-					
+
 					ArrayList<UserShort> usersArray = new ArrayList<UserShort>();
 
 					JSONObject objPayload = json.optJSONObject("payload");
 					if (objPayload!=null){
-						
+
 						int count = objPayload.optInt("count");  // I will use arratUsers.size() instead of count
-						
+
 						JSONArray arrayUsers = objPayload.optJSONArray("users");
 						if (arrayUsers!=null){
-							
+
 							for (int i=0; i<arrayUsers.length(); i++){
-								
+
 								JSONObject obj = arrayUsers.optJSONObject(i);
 								if (obj!=null){
-									
+
 									int id = obj.optInt("id");
 									String nickName = obj.optString("nickname");
 									String statusText = obj.optString("status_text");
@@ -731,13 +757,13 @@ public class HttpUtil {
 									String joinDate = obj.optString("join_date");
 									String imageURL = obj.optString("imageUrl");
 									String hourlyBilingRate = obj.optString("hourly_biling_rate");
-									
+
 									usersArray.add(new UserShort(id, nickName, statusText, about, joinDate, imageURL, hourlyBilingRate));
 								}
 							}
 						}
 					}
-					
+
 					result.setObject(usersArray);
 					return result;
 				}
@@ -1291,7 +1317,7 @@ public class HttpUtil {
 		return result;
 
 	}
-			
+
 	/**
 	 * Login 
 	 * @param userName

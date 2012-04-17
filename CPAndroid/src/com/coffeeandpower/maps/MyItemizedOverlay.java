@@ -21,13 +21,14 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 		populate();
 	}
 
-	public void remove (int position){
-		m_overlays.remove(position);
+	public void clear (){
+		m_overlays.clear();
 		populate();
 	}
 
 	@Override
 	protected MyOverlayItem createItem(int i) {
+		
 		return m_overlays.get(i);
 	}
 

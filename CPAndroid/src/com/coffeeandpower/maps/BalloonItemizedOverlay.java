@@ -3,6 +3,7 @@ package com.coffeeandpower.maps;
 import java.util.List;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -18,22 +19,22 @@ import com.google.android.maps.Overlay;
 
 public abstract class BalloonItemizedOverlay<Item extends MyOverlayItem> extends ItemizedOverlay<Item> {
 
-	
+
 	private BalloonOverlayView<Item> balloonView;
 	private Item currentFocussedItem;
-	
+
 	private int viewOffset;
 	private int currentFocussedIndex;
-	
+
 	final MapController mc;
-	
+
 	private MapView mapView;
 	private View clickRegion;
 
 
 	public BalloonItemizedOverlay(Drawable defaultMarker, MapView mapView) {
 		super(defaultMarker);
-		
+
 		this.mapView = mapView;
 		viewOffset = 0;
 		mc = mapView.getController();
@@ -42,7 +43,7 @@ public abstract class BalloonItemizedOverlay<Item extends MyOverlayItem> extends
 	public void setBalloonBottomOffset(int pixels) {
 		viewOffset = pixels;
 	}
-	
+
 	public int getBalloonBottomOffset() {
 		return viewOffset;
 	}
@@ -55,12 +56,14 @@ public abstract class BalloonItemizedOverlay<Item extends MyOverlayItem> extends
 
 	@Override
 	protected final boolean onTap(int index) {
-
+		Log.d("LOG", "index: " + index);
+		Log.d("LOG", "size(): " + size());
 		currentFocussedIndex = index;
-		currentFocussedItem = createItem(index);
-		createAndDisplayBalloonOverlay();
-		mc.animateTo(currentFocussedItem.getPoint());
-
+		if (size()>0){
+			currentFocussedItem = createItem(index);
+			createAndDisplayBalloonOverlay();
+			mc.animateTo(currentFocussedItem.getPoint());
+		}
 		return true;
 	}
 
@@ -164,7 +167,7 @@ public abstract class BalloonItemizedOverlay<Item extends MyOverlayItem> extends
 			balloonView.setData(currentFocussedItem);
 
 		GeoPoint point = currentFocussedItem.getPoint();
-		
+
 		MapView.LayoutParams params = new MapView.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, point,
 				MapView.LayoutParams.BOTTOM_CENTER);

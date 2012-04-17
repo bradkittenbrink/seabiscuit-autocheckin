@@ -1,37 +1,33 @@
 package com.coffeeandpower.utils;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.view.View;
 
 import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.activity.ActivityMap;
-import com.coffeeandpower.activity.ActivitySignInViaMail;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.views.CustomDialog;
 
-import android.app.Activity;
-import android.content.Intent;
-
 public class ActivityUtils {
-	
+
 	public static abstract class Action implements Runnable
 	{
 		protected DataHolder result;
 		protected OAuthService service;
 		protected ActivityUtils.ProgressHandler handler;
 		protected Runnable action;
-		
+
 		public DataHolder getResult() { return result; }
 	}
-	
+
 	public static class ProgressHandler extends Handler 
 	{
 		ProgressDialog progress;
 		DataHolder result;		
-				
+
 		public void setResult(DataHolder result_)
 		{
 			result = result_;
@@ -39,8 +35,8 @@ public class ActivityUtils {
 	}
 
 	public static class JoinProgressHandler extends ProgressHandler {
-		
-		
+
+
 		public JoinProgressHandler(Activity a)
 		{
 			progress = new ProgressDialog(a);
@@ -48,15 +44,15 @@ public class ActivityUtils {
 			progress.setMessage("Accessing Account...");
 			progress.show();			
 		}
-								
+
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
-			
-			
+
+
 			Activity a = progress.getOwnerActivity();
 			progress.dismiss();
-			
+
 			switch (msg.what){
 
 			case AppCAP.HTTP_ERROR:
@@ -71,10 +67,10 @@ public class ActivityUtils {
 			}
 		}
 	};
-	
-public static class LoginProgressHandler extends ProgressHandler {
-		
-		
+
+	public static class LoginProgressHandler extends ProgressHandler {
+
+
 		public LoginProgressHandler(Activity a)
 		{
 			progress = new ProgressDialog(a);
@@ -82,7 +78,7 @@ public static class LoginProgressHandler extends ProgressHandler {
 			progress.setMessage("Logging in...");
 			progress.show();			
 		}
-								
+
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
@@ -99,7 +95,7 @@ public static class LoginProgressHandler extends ProgressHandler {
 			case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:				
 				new CustomDialog(a, "Error", "Could not login").show();
 				break;
-				
+
 			case AppCAP.HTTP_REQUEST_SUCCEEDED:
 				Intent intent = new Intent(a, ActivityMap.class);							
 				a.startActivity(intent);

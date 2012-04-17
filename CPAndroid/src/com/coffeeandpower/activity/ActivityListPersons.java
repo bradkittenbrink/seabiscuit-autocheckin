@@ -166,6 +166,8 @@ public class ActivityListPersons extends ListActivity {
 
 
 								// Find all checkins for single user in selected foursquareId
+								boolean isFirstInList1 = false;
+								boolean isFirstInList0 = false;
 								for (Integer userId:userIds){
 									ArrayList<MapUserData> tempA = new ArrayList<MapUserData>();
 
@@ -189,6 +191,15 @@ public class ActivityListPersons extends ListActivity {
 										// if herenow exist, than that value will be used
 										if (mud.getCheckedIn()==1){
 											singleUserMap = mud;
+											if (!isFirstInList1){
+												singleUserMap.setFirstInList(true);
+												isFirstInList1 = !isFirstInList1;
+											} 
+										} else {
+											if (!isFirstInList0){
+												singleUserMap.setFirstInList(true);
+												isFirstInList0 = !isFirstInList0;
+											}
 										}
 									}
 

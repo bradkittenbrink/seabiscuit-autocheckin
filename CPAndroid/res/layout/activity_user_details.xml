@@ -90,7 +90,7 @@
                         android:orientation="vertical" >
 
                         <TextView
-                            android:id="@+id/textview_user_place"
+                            android:id="@+id/textview_user_status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="dsfsdf"
@@ -115,13 +115,14 @@
                     android:layoutAnimation="@anim/layout_random_fade"
                     android:orientation="vertical" >
 
-                    <TextView
+                    <com.coffeeandpower.views.CustomFontView
+                        android:id="@+id/box_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="5dip"
-                        android:text="CHECKED IN..."
+                        android:text="Loading ..."
                         android:textColor="#f2f1eb"
-                        android:textSize="18dip"
+                        android:textSize="23dip"
                         android:textStyle="bold" />
 
                     <View
@@ -149,7 +150,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="5dip"
-                            android:text="Odfsdf"
+                            android:singleLine="true"
                             android:textColor="#f2f1eb"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -159,8 +160,35 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="10dip"
-                        android:text="sdfsdf"
+                        android:singleLine="true"
                         android:textColor="#f2f1eb" />
+
+                    <LinearLayout
+                        android:id="@+id/layout_others_at_venue"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dip"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dip"
+                        android:visibility="gone" >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginBottom="2dip"
+                            android:background="@drawable/others_at_venue_iphone" />
+
+                        <TextView
+                            android:id="@+id/textview_others_here_now"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginLeft="5dip"
+                            android:singleLine="true"
+                            android:textColor="#f2f1eb"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
                     <View
                         android:layout_width="fill_parent"
@@ -168,11 +196,13 @@
                         android:background="#22ffffff" />
 
                     <LinearLayout
+                        android:id="@+id/layout_available"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dip"
                         android:orientation="horizontal"
-                        android:paddingLeft="10dip" >
+                        android:paddingLeft="10dip"
+                        android:visibility="gone" >
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -196,10 +226,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="10dip"
-                        android:text="48 mins"
                         android:textColor="#f2f1eb"
                         android:textSize="20dip"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <RelativeLayout
@@ -207,11 +237,11 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_marginBottom="0dip"
-                    android:paddingBottom="90dip"
                     android:background="@drawable/paper_texture"
-                    android:layoutAnimation="@anim/layout_random_fade" >
+                    android:layoutAnimation="@anim/layout_random_fade"
+                    android:paddingBottom="90dip" >
 
-                    <TextView
+                    <com.coffeeandpower.views.CustomFontView
                         android:id="@+id/textview_resume"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -219,8 +249,8 @@
                         android:layout_alignParentTop="true"
                         android:layout_margin="10dip"
                         android:text="RESUME"
-                        android:textColor="#62615f"
-                        android:textSize="20dip"
+                        android:textColor="#338585"
+                        android:textSize="22dip"
                         android:textStyle="bold" />
 
                     <View
@@ -316,11 +346,11 @@
                                 android:id="@+id/text_spent"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="SPENT:"
+                                android:text="LOVE:"
                                 android:textColor="#62615f" />
 
                             <TextView
-                                android:id="@+id/textview_spent"
+                                android:id="@+id/textview_love"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/text_spent"
@@ -329,65 +359,117 @@
                         </RelativeLayout>
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/dummy_joined"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/dummy_layout_1"
-                        android:layout_marginLeft="10dip"
-                        android:layout_marginTop="10dip"
-                        android:text="Joined:"
-                        android:textColor="#444444"
-                        android:textSize="16dip"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/textview_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/dummy_layout_1"
-                        android:layout_marginLeft="10dip"
-                        android:layout_marginTop="10dip"
-                        android:layout_toRightOf="@+id/dummy_joined"
-                        android:text="04.04.2012."
-                        android:textColor="#62615f"
-                        android:textSize="16dip" />
-
-                    <TextView
-                        android:id="@+id/textview_trusted"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/dummy_joined"
-                        android:layout_marginLeft="10dip"
-                        android:layout_marginTop="10dip"
-                        android:text="Trusted by 0 people"
-                        android:textColor="#444444"
-                        android:textSize="16dip"
-                        android:textStyle="bold" />
-
-                    <TextView
+                    <com.coffeeandpower.views.CustomFontView
                         android:id="@+id/textview_favorite_places"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/textview_trusted"
+                        android:layout_below="@+id/dummy_layout_1"
                         android:layout_marginLeft="10dip"
                         android:layout_marginTop="10dip"
                         android:text="Favorite places to work"
-                        android:textColor="#444444"
-                        android:textSize="16dip"
+                        android:textColor="#338585"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <ListView
                         android:id="@+id/listview_favorite_places"
                         android:layout_width="fill_parent"
-                        android:layout_height="150dip"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginRight="10dip"
-                        android:layout_marginLeft="5dip"
-                        android:layout_marginBottom="30dip"
+                        android:layout_height="225dp"
                         android:layout_below="@+id/textview_favorite_places"
-                        android:cacheColorHint="#00000000" >
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginLeft="5dip"
+                        android:layout_marginRight="10dip"
+                        android:cacheColorHint="#00000000"
+                        android:divider="#888888"
+                        android:dividerHeight="1dip" >
                     </ListView>
+
+                    <com.coffeeandpower.views.CustomFontView
+                        android:id="@+id/dummy_joined"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/listview_favorite_places"
+                        android:layout_marginLeft="10dip"
+                        android:text="Joined:"
+                        android:textColor="#444444"
+                        android:textSize="18dip"
+                        android:textStyle="bold" />
+
+                    <com.coffeeandpower.views.CustomFontView
+                        android:id="@+id/textview_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/listview_favorite_places"
+                        android:layout_marginLeft="10dip"
+                        android:layout_toRightOf="@+id/dummy_joined"
+                        android:textColor="#338585"
+                        android:textSize="18dip" />
+
+                    <View
+                        android:id="@+id/dummy_view_1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1dip"
+                        android:layout_below="@+id/textview_date"
+                        android:layout_marginLeft="5dip"
+                        android:layout_marginRight="10dip"
+                        android:layout_marginTop="5dip"
+                        android:background="#888888" />
+
+                    <LinearLayout
+                        android:id="@+id/layout_reviews"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/dummy_view_1"
+                        android:layout_marginTop="10dip"
+                        android:orientation="vertical"
+                        android:visibility="gone" >
+
+                        <com.coffeeandpower.views.CustomFontView
+                            android:id="@+id/textview_review_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dip"
+                            android:text="Reviews"
+                            android:textColor="#338585"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:id="@+id/dummy_view_2"
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dip"
+                            android:layout_below="@+id/textview_review_title"
+                            android:layout_marginLeft="5dip"
+                            android:layout_marginRight="10dip"
+                            android:layout_marginTop="5dip"
+                            android:background="#888888" />
+
+                        <LinearLayout
+                            android:id="@+id/layout_love_review"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dip"
+                            android:orientation="horizontal"
+                            android:paddingLeft="10dip"
+                            android:visibility="gone" >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginBottom="2dip"
+                                android:background="@drawable/send_love" />
+
+                            <TextView
+                                android:id="@+id/textview_review_love"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginLeft="5dip"
+                                android:textColor="#444444"
+                                android:textSize="18dip" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>

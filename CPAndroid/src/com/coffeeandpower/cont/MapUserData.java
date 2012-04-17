@@ -23,6 +23,17 @@ public class MapUserData implements Serializable{
 	private int checkInCount;
 	private String skills;
 	private boolean met;
+	private boolean isFirstInList;
+
+
+	public boolean isFirstInList() {
+		return isFirstInList;
+	}
+
+
+	public void setFirstInList(boolean isFirstInList) {
+		this.isFirstInList = isFirstInList;
+	}
 
 
 	public MapUserData(int checkInId, int userId, String nickName,

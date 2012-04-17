@@ -4,37 +4,42 @@
     android:layout_height="wrap_content"
     android:padding="5dip" >
 
+    <ImageView
+        android:id="@+id/imageview_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:background="@drawable/picture_coming_soon"
+        android:gravity="center_vertical|center_horizontal" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:orientation="vertical" >
+        android:layout_toRightOf="@+id/imageview_image"
+        android:orientation="vertical"
+        android:paddingLeft="5dp" >
 
-        <TextView
+        <com.coffeeandpower.views.CustomFontView
             android:id="@+id/textview_place"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#62615f" />
+            android:maxLines="2"
+            android:text="Omladinski Stadion"
+            android:textColor="#62615f"
+            android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/textview_street"
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_checkin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#62615f" />
-
-        <TextView
-            android:id="@+id/textview_city"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#62615f" />
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dip"
+            android:singleLine="true"
+            android:text="8 Checkins"
+            android:textColor="#62615f"
+            android:textSize="17sp" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/textview_checkin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dip"
-        android:textColor="#62615f" />
 
 </RelativeLayout>

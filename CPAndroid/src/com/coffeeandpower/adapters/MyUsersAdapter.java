@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.location.Location;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +25,6 @@ public class MyUsersAdapter extends BaseAdapter{
 
 	private int myLat;
 	private int myLng;
-
-	private boolean haveGrayHereNow;
-	private boolean haveGrayLast7;
 
 	public MyUsersAdapter(Activity context, ArrayList<MapUserData> mudArray, int myLat, int myLng){
 
@@ -95,15 +91,15 @@ public class MyUsersAdapter extends BaseAdapter{
 			holder = (ViewHolder)convertView.getTag();
 		}
 
-		String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray.get(position).getCheckInCount() + " Checkin" : mudArray.get(position).getCheckInCount() + " Checkins";
+		//String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray.get(position).getCheckInCount() + " Checkin" : mudArray.get(position).getCheckInCount() + " Checkins";
 
 		holder.textNickName.setText(mudArray.get(position).getNickName());
 		holder.textStatus.setText(AppCAP.cleanResponseString(mudArray.get(position).getStatusText()));
-		holder.textCheckinsCount.setText(checkStr);
+		//holder.textCheckinsCount.setText(checkStr);
 		holder.textVenueName.setText(AppCAP.cleanResponseString(mudArray.get(position).getVenueName()));
 
 		// Deafult gay line state is gone
-		//holder.textGrayLine.setVisibility(View.GONE);
+		holder.textGrayLine.setVisibility(View.GONE);
 
 		float[] results = new float[1];
 		Location.distanceBetween(myLat / 1E6, myLng / 1E6, mudArray.get(position).getLat(), mudArray.get(position).getLng(), results);
@@ -121,17 +117,15 @@ public class MyUsersAdapter extends BaseAdapter{
 
 
 		// Check if we have hereNow user
-		Log.d("LOG", "test: " + mudArray.get(position).getCheckedIn()+":"+haveGrayHereNow + ":"+haveGrayLast7);
-		if (mudArray.get(position).getCheckedIn()==1 ){
+		//Log.d("LOG", "test: " + mudArray.get(position).getCheckedIn()+":"+haveGrayHereNow + ":"+haveGrayLast7);
+		if (mudArray.get(position).getCheckedIn()==1 && mudArray.get(position).isFirstInList()){
 			holder.textGrayLine.setText("Checked In Now");
 			holder.textGrayLine.setVisibility(View.VISIBLE);
-			haveGrayHereNow = true;
 		} 
-		if (mudArray.get(position).getCheckedIn()==0 ){
+		if (mudArray.get(position).getCheckedIn()==0 && mudArray.get(position).isFirstInList()){
 			// it was in last seven days
 			holder.textGrayLine.setText("Last 7 Days");
 			holder.textGrayLine.setVisibility(View.VISIBLE);
-			haveGrayLast7 = true;
 		}
 
 
@@ -139,7 +133,7 @@ public class MyUsersAdapter extends BaseAdapter{
 		imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage);
 
 
-		Log.d("LOG", "cehcId: " + mudArray.get(position).getCheckInId() + ":" +mudArray.get(position).getNickName() + "  :" + mudArray.get(position).getVenueName());
+		//Log.d("LOG", "cehcId: " + mudArray.get(position).getCheckInId() + ":" +mudArray.get(position).getNickName() + "  :" + mudArray.get(position).getVenueName());
 		return convertView;
 	}
 

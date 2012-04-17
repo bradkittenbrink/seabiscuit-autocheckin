@@ -46,16 +46,16 @@ public class MyFavouritePlacesAdapter extends BaseAdapter{
 
 	public static class ViewHolder {
 		
-		public TextView textAddress;
+		//public TextView textAddress;
 		public TextView textVenueName;
-		public TextView textCityState;
+		//public TextView textCityState;
 		public TextView textCheckinsCount;
 
 		public ViewHolder(View convertView){
 		
 			this.textVenueName = (TextView) convertView.findViewById(R.id.textview_place);
-			this.textCityState = (TextView) convertView.findViewById(R.id.textview_city);
-			this.textAddress = (TextView) convertView.findViewById(R.id.textview_street);
+			//this.textCityState = (TextView) convertView.findViewById(R.id.textview_city);
+			//this.textAddress = (TextView) convertView.findViewById(R.id.textview_street);
 			this.textCheckinsCount = (TextView) convertView.findViewById(R.id.textview_checkin);
 		}
 	}
@@ -73,9 +73,9 @@ public class MyFavouritePlacesAdapter extends BaseAdapter{
 			holder = (ViewHolder)convertView.getTag();
 		}
 		
-		holder.textAddress.setText(AppCAP.cleanResponseString(venues.get(position).getAddress()));
+		//holder.textAddress.setText(AppCAP.cleanResponseString(venues.get(position).getAddress()));
 		holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(position).getName()));
-		holder.textCityState.setText(AppCAP.cleanResponseString(venues.get(position).getCity() + ", " + AppCAP.cleanResponseString(venues.get(position).getState())));
+		//holder.textCityState.setText(AppCAP.cleanResponseString(venues.get(position).getCity() + ", " + AppCAP.cleanResponseString(venues.get(position).getState())));
 		
 		if (venues.get(position).getCheckinsCount() > 1){
 			holder.textCheckinsCount.setText(venues.get(position).getCheckinsCount() + " Checkins");

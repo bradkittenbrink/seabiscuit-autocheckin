@@ -160,7 +160,7 @@ public class ActivityMap extends MapActivity{
 							// write data to database
 							capDao.putMapsUsersData(mud, itemWithKeyFoursquareId.getKey());
 
-							Log.d("LOG", "db: " + itemWithKeyFoursquareId.getKey()+ " : " + mud.getNickName() + " chIn: " + mud.getCheckedIn() + "  herC: " + hereNowCount);
+							//Log.d("LOG", "db: " + itemWithKeyFoursquareId.getKey()+ " : " + mud.getNickName() + " chIn: " + mud.getCheckedIn() + "  herC: " + hereNowCount);
 						}
 
 
@@ -440,13 +440,12 @@ public class ActivityMap extends MapActivity{
 		((ImageView) findViewById(R.id.imagebutton_map_refresh_progress)).setAnimation(anim);
 
 		// Remove all markers from MapView
-		for (int i=itemizedoverlay.size(); i>0; i--){
-			itemizedoverlay.remove(i-1);
-		}
+		itemizedoverlay.clear();
+		
 		for (int i=mapView.getOverlays().size(); i>1; i--){
 			mapView.getOverlays().remove(i-1);
 		}
-		mapView.postInvalidate();
+		mapView.invalidate();
 
 		RootActivity.log("ActivityMap_mapView.getOverlays().size=" + mapView.getOverlays().size());
 

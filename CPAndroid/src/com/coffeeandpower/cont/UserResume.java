@@ -1,5 +1,7 @@
 package com.coffeeandpower.cont;
 
+import java.util.ArrayList;
+
 public class UserResume {
 
 	private String nickName;
@@ -66,9 +68,10 @@ public class UserResume {
 	
 	// Reviews
 	private String reviewsPage;
-	private String reviewsTotal;
+	private int reviewsTotal;
 	private String reviewsRecords;
 	private String reviewsLoveReceived;
+	private ArrayList<Review> reviews;
 	
 	private double locationLat;
 	private double locationLng;
@@ -91,8 +94,8 @@ public class UserResume {
 			String venueName, String venueAddress, String city, String state,
 			String zip, String phone, String icon, String visible,
 			String photoUrlUnUsed, String formattedPhone, int usersHere,
-			String reviewsPage, String reviewsTotal, String reviewsRecords,
-			String reviewsLoveReceived, double locationLat, double locationLng) {
+			String reviewsPage, int reviewsTotal, String reviewsRecords,
+			String reviewsLoveReceived, ArrayList<Review> reviews, double locationLat, double locationLng) {
 
 		this.nickName = nickName;
 		this.statusText = statusText;
@@ -148,8 +151,19 @@ public class UserResume {
 		this.reviewsTotal = reviewsTotal;
 		this.reviewsRecords = reviewsRecords;
 		this.reviewsLoveReceived = reviewsLoveReceived;
+		this.reviews = reviews;
 		this.locationLat = locationLat;
 		this.locationLng = locationLng;
+	}
+
+
+	public ArrayList<Review> getReviews() {
+		return reviews;
+	}
+
+
+	public void setReviews(ArrayList<Review> reviews) {
+		this.reviews = reviews;
 	}
 
 
@@ -663,12 +677,12 @@ public class UserResume {
 	}
 
 
-	public String getReviewsTotal() {
+	public int getReviewsTotal() {
 		return reviewsTotal;
 	}
 
 
-	public void setReviewsTotal(String reviewsTotal) {
+	public void setReviewsTotal(int reviewsTotal) {
 		this.reviewsTotal = reviewsTotal;
 	}
 
