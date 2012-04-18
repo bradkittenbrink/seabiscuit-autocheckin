@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#333333" >
+
+    <RelativeLayout
+        android:id="@+id/dummy_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="45dip"
+        android:background="@drawable/header" >
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_contact_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Contact list"
+            android:textColor="#ffffff"
+            android:textSize="25dip" />
+
+        <Button
+            android:layout_width="41dip"
+            android:layout_height="28dip"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dip"
+            android:background="@drawable/btn_settings"
+            android:onClick="onClickBack" />
+    </RelativeLayout>
+
+</RelativeLayout>

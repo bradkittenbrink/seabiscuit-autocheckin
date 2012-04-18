@@ -36,11 +36,77 @@
             android:textSize="25dip" />
     </RelativeLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dummy_layout"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:padding="5dip" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dip"
+            android:onClick="onClickPeople"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dip"
+                android:src="@drawable/people_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="People"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dip"
+            android:onClick="onClickPlaces"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dip"
+                android:src="@drawable/places_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Places"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dummy_view"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_below="@+id/layout_tab"
+        android:background="#424242" />
+
+    <View
+        android:id="@+id/dummy_view_1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_below="@+id/dummy_view"
+        android:background="#2d2d2d" />
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dummy_layout"
+        android:layout_below="@+id/dummy_view_1"
         android:cacheColorHint="#00000000"
         android:divider="#808080"
         android:dividerHeight="1px" >

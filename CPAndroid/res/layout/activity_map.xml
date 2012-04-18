@@ -63,6 +63,26 @@
             android:text="Wallet"
             android:textColor="#dddddd"
             android:textSize="20sp" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#2d2d2d" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#494949" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_gray"
+            android:clickable="true"
+            android:onClick="onClickContactList"
+            android:padding="10dp"
+            android:text="Contact list"
+            android:textColor="#dddddd"
+            android:textSize="20sp" />
 
         <View
             android:layout_width="fill_parent"
@@ -227,7 +247,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dip"
-                    android:background="@drawable/btn_people"
+                    android:background="@drawable/btn_people_list"
                     android:onClick="onClickPeopleList" />
             </RelativeLayout>
 
