@@ -111,10 +111,10 @@ public class ActivitySignInViaMail extends RootActivity{
 				@Override
 				public void run() {
 					result = AppCAP.getConnection().login(userName, password);
-					if (result!=null){
-						handler.sendEmptyMessage(result.getResponseCode());
-					} else {
+					if (result.getResponseCode()==AppCAP.HTTP_ERROR){
 						handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+					} else {
+						handler.sendEmptyMessage(result.getResponseCode());
 					}
 				}
 			}).start();

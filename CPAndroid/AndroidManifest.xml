@@ -13,9 +13,9 @@
 
     <application
         android:name=".AppCAP"
+        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:debuggable="true" >
+        android:label="@string/app_name" >
         <uses-library
             android:name="com.google.android.maps"
             android:required="true" >
@@ -24,19 +24,23 @@
         <activity
             android:name=".activity.ActivityLoginPage"
             android:label="@string/app_name"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:launchMode="singleInstance">
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>           
+            </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" /> 
+                <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" /> 
-                <data android:scheme="x-oauthflow-linkedin" android:host="callback" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="callback"
+                    android:scheme="x-oauthflow-linkedin" />
             </intent-filter>
         </activity>
         <activity
@@ -78,6 +82,11 @@
         </activity>
         <activity
             android:name=".activity.ActivityUserDetails"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name=".activity.ActivityChat"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>

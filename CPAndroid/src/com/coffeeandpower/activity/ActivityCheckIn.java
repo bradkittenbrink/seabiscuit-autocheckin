@@ -191,10 +191,10 @@ public class ActivityCheckIn extends MapActivity{
 			@Override
 			public void run() {
 				resultGetUsersCheckedIn = AppCAP.getConnection().getUsersCheckedInAtFoursquareID(venue);
-				if (resultGetUsersCheckedIn!=null){
-					handler.sendEmptyMessage(GET_CHECKED_USERS);
-				} else {
+				if (resultGetUsersCheckedIn.getResponseCode()==AppCAP.HTTP_ERROR){
 					handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+				} else {
+					handler.sendEmptyMessage(GET_CHECKED_USERS);
 				}
 			}
 		}).start();
@@ -230,10 +230,10 @@ public class ActivityCheckIn extends MapActivity{
 			@Override
 			public void run() {
 				resultCheckIn = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString());
-				if (resultCheckIn!=null){
-					handler.sendEmptyMessage(resultCheckIn.getResponseCode());
-				} else {
+				if (resultCheckIn.getResponseCode()==AppCAP.HTTP_ERROR){
 					handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+				} else {
+					handler.sendEmptyMessage(resultCheckIn.getResponseCode());
 				}
 			}
 		}).start();

@@ -18,6 +18,7 @@
         android:id="@+id/textview_review_love"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:singleLine="true"
         android:layout_gravity="bottom"
         android:layout_marginLeft="5dip"
         android:textColor="#444444"

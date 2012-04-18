@@ -21,6 +21,7 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.adapters.MyVenuesAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Venue;
+import com.coffeeandpower.views.CustomDialog;
 import com.google.android.maps.GeoPoint;
 
 public class ActivityCheckInList extends ListActivity{
@@ -41,6 +42,10 @@ public class ActivityCheckInList extends ListActivity{
 			progress.dismiss();
 
 			switch (msg.what){
+
+			case AppCAP.HTTP_ERROR:
+				new CustomDialog(ActivityCheckInList.this, "Error", "Internet connection error").show();
+				break;
 
 			case RESPONSE_OK:
 
@@ -81,11 +86,12 @@ public class ActivityCheckInList extends ListActivity{
 				@Override
 				public void run() {
 					dh = AppCAP.getConnection().getVenuesCloseToLocation(gp, 20);
-					if (dh!=null){
-						handler.sendEmptyMessage(dh.getResponseCode());
-					} else {
+					if (dh.getResponseCode()==AppCAP.HTTP_ERROR){
 						handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+					} else {
+						handler.sendEmptyMessage(dh.getResponseCode());
 					}
+
 				}
 			}).start();
 		}

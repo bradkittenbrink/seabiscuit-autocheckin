@@ -50,6 +50,7 @@ import android.os.Environment;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivitySettings;
+import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
 import com.coffeeandpower.cont.MapUserData;
@@ -372,6 +373,7 @@ public class HttpUtil {
 								usersHere, reviewsPage, reviewsTotal, reviewsRecords, reviewsLoveReceived, reviews, education, work, locationLat, locationLng));
 						tempHolder.add(checkinhistoryArray);
 
+						result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 						result.setObject(tempHolder);
 					}
 
@@ -432,6 +434,7 @@ public class HttpUtil {
 				JSONObject json = new JSONObject(responseString);
 				if (json!=null){
 
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 					return result;
 				}
 			}
@@ -482,7 +485,8 @@ public class HttpUtil {
 			InputStream is = conn.getInputStream();
 
 			bmImg = BitmapFactory.decodeStream(is);
-
+			
+			result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 			result.setObject(bmImg);
 
 		} catch (IOException e) {
@@ -529,6 +533,7 @@ public class HttpUtil {
 
 				JSONObject json = new JSONObject(responseString);
 				if (json!=null){
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 					result.setObject(json.opt("message"));
 
 					JSONObject params = json.optJSONObject("params");
@@ -559,7 +564,142 @@ public class HttpUtil {
 		return result;
 	}
 
+	
+	/**
+	 * Sending love review
+	 * @param user
+	 * @param review
+	 * @return
+	 */
+	public DataHolder sendReview (UserResume user, String review){
 
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + "reviews.php");
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "makeMobileReview"));
+			params.add(new BasicNameValuePair("recipientID", URLEncoder.encode(user.getUserId()+"", "utf-8")));
+			params.add(new BasicNameValuePair("reviewText", URLEncoder.encode(review, "utf-8")));
+			if (user.getLat()!=0 && user.getLng()!=0){
+				params.add(new BasicNameValuePair("lat", URLEncoder.encode(user.getLat()+"", "utf-8")));
+				params.add(new BasicNameValuePair("lng", URLEncoder.encode(user.getLng()+"", "utf-8")));
+			}
+			if (ActivityUserDetails.isUserHereNow(user)){
+				params.add(new BasicNameValuePair("foursquare", URLEncoder.encode(user.getFoursquareId()+"", "utf-8")));
+			}
+			
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_sendReview: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					boolean res = json.optBoolean("succeeded");
+					result.setObject(res);
+
+					String message = json.optString("message");
+					result.setResponseMessage(message);
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Get chat history with user
+	 * @param user
+	 * @return
+	 */
+	public DataHolder getOneOnOneChatHistory (UserResume user){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "getOneOnOneChatHistory"));
+			params.add(new BasicNameValuePair("other_user", URLEncoder.encode(user.getUserId()+"", "utf-8")));
+			
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_getOneOnOneChatHistory: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					boolean res = json.optBoolean("succeeded");
+					result.setObject(res);
+
+					String message = json.optString("message");
+					result.setResponseMessage(message);
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
 	/**
 	 * Change user profile data
 	 * @param user
@@ -600,7 +740,7 @@ public class HttpUtil {
 
 					String message = json.optString("message");
 					result.setResponseMessage(message);
-
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 					return result;
 				}
 			}
@@ -706,6 +846,7 @@ public class HttpUtil {
 								}
 							}
 
+							result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 							result.setObject(mapUsersArray);
 						}
 
@@ -800,7 +941,7 @@ public class HttpUtil {
 							}
 						}
 					}
-
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 					result.setObject(usersArray);
 					return result;
 				}
@@ -858,6 +999,7 @@ public class HttpUtil {
 				JSONObject json = new JSONObject(responseString);
 				if (json!=null){
 
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 					return result;
 				}
 			}
@@ -1549,7 +1691,7 @@ public class HttpUtil {
 			RootActivity.log("HttpUtil_logout: " +responseString);
 
 			if (responseString!=null){
-
+				result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 			}
 
 

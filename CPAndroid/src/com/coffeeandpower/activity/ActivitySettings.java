@@ -69,6 +69,11 @@ public class ActivitySettings extends RootActivity{
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 
+			progresEmail.setVisibility(View.GONE);
+			progresNickName.setVisibility(View.GONE);
+			progressPhoto.setVisibility(View.GONE);
+			progressUploadPhoto.dismiss();
+			
 			switch (msg.what) {
 
 			case AppCAP.HTTP_ERROR:
@@ -76,20 +81,16 @@ public class ActivitySettings extends RootActivity{
 				break;
 
 			case HANDLE_EMAIL_CHANGE:
-				progresEmail.setVisibility(View.GONE);
 				textEmail.setVisibility(View.VISIBLE);
 				new CustomDialog(ActivitySettings.this, "Info", result.getResponseMessage()).show();
 				break;
 
 			case HANDLE_NICK_NAME_CHANGE:
-				progresNickName.setVisibility(View.GONE);
 				textNickName.setVisibility(View.VISIBLE);
 				new CustomDialog(ActivitySettings.this, "Info", result.getResponseMessage()).show();
 				break;
 
 			case HANDLE_USER_PROFILE_PHOTO:
-				progressPhoto.setVisibility(View.GONE);
-
 				if (resultPhotoDownload!=null){
 					if (resultPhotoDownload.getObject()!=null){
 						if (resultPhotoDownload.getObject() instanceof Bitmap){
@@ -103,7 +104,6 @@ public class ActivitySettings extends RootActivity{
 				break;
 
 			case HANDLE_UPLOAD_PROFILE_PHOTO:
-				progressUploadPhoto.dismiss();
 				if (resultPhotoUpload!=null){
 					if (resultPhotoUpload.getObject()!=null){
 						if (resultPhotoUpload.getObject() instanceof String){
@@ -187,10 +187,10 @@ public class ActivitySettings extends RootActivity{
 						@Override
 						public void run() {
 							result = AppCAP.getConnection().setUserProfileData(loggedUser, false);
-							if (result!=null){
-								handler.sendEmptyMessage(HANDLE_NICK_NAME_CHANGE);
-							} else {
+							if (result.getResponseCode()==AppCAP.HTTP_ERROR){
 								handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+							} else {
+								handler.sendEmptyMessage(HANDLE_NICK_NAME_CHANGE);
 							}
 						}
 					}).start();
@@ -230,10 +230,10 @@ public class ActivitySettings extends RootActivity{
 						@Override
 						public void run() {
 							result = AppCAP.getConnection().setUserProfileData(loggedUser, true);
-							if (result!=null){
-								handler.sendEmptyMessage(HANDLE_EMAIL_CHANGE);
-							} else {
+							if (result.getResponseCode()==AppCAP.HTTP_ERROR){
 								handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+							} else {
+								handler.sendEmptyMessage(HANDLE_EMAIL_CHANGE);
 							}
 						}
 					}).start();
@@ -257,7 +257,11 @@ public class ActivitySettings extends RootActivity{
 				@Override
 				public void run() {
 					resultPhotoDownload = HttpUtil.getBitmapFromURL(AppCAP.getLocalUserPhotoURL());
-					handler.sendEmptyMessage(HANDLE_USER_PROFILE_PHOTO);
+					if (resultPhotoDownload.getResponseCode()==AppCAP.HTTP_ERROR){
+						handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+					} else {
+						handler.sendEmptyMessage(HANDLE_USER_PROFILE_PHOTO);
+					}
 				}
 			}).start();
 		} else {
@@ -326,7 +330,11 @@ public class ActivitySettings extends RootActivity{
 						@Override
 						public void run() {
 							resultPhotoUpload = AppCAP.getConnection().uploadUserProfilePhoto();
-							handler.sendEmptyMessage(HANDLE_UPLOAD_PROFILE_PHOTO);
+							if (resultPhotoUpload.getResponseCode()==AppCAP.HTTP_ERROR){
+								handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+							} else {
+								handler.sendEmptyMessage(HANDLE_UPLOAD_PROFILE_PHOTO);
+							}
 						}
 					}).start();
 					

@@ -51,11 +51,11 @@ public class ActivityListPersons extends ListActivity {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 
+			progress.dismiss();
+			
 			switch (msg.what){
 
 			case LIST_CONVERT_FINISHED:
-
-				progress.dismiss();
 				capDao.close();
 
 				if (arrayMapUserData!=null){
@@ -71,8 +71,6 @@ public class ActivityListPersons extends ListActivity {
 				break;
 
 			case LIST_USERS_IN_BOUNDS_FINISHED:
-
-				progress.dismiss();
 				capDao.close();
 
 				if (arrayMapUserData!=null){

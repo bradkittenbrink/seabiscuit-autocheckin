@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -12,13 +14,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.LayoutAnimationController;
 import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageButton;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -52,6 +56,9 @@ public class ActivityUserDetails extends MapActivity{
 
 	private static final int HANDLE_GET_USER_RESUME = 1222; 
 	private static final int HANDLE_LOAD_PROFILE_PICTURE = 1223; 
+	private static final int HANDLE_SENDING_LOVE = 1224;
+
+	private static final int DIALOG_SEND_LOVE = 0;
 
 	private MapUserData mud;
 
@@ -70,9 +77,9 @@ public class ActivityUserDetails extends MapActivity{
 
 	private CAPDao capDao;
 
-	// User Data
 	private DataHolder resultGetUserResume;
 	private DataHolder resultGetProfilePhoto;
+	private DataHolder resultSendReview;
 
 	// User Resume
 	private UserResume userResumeData;
@@ -85,11 +92,15 @@ public class ActivityUserDetails extends MapActivity{
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 
+			progress.dismiss();
+			progressPhoto.setVisibility(View.GONE);
+			
 			switch (msg.what){
 
 			case AppCAP.HTTP_ERROR:
 				new CustomDialog(ActivityUserDetails.this, "Error", "Internet connection error").show();
 				break;
+
 
 			case HANDLE_GET_USER_RESUME:
 				if (resultGetUserResume!=null){
@@ -121,8 +132,8 @@ public class ActivityUserDetails extends MapActivity{
 				}
 				break;
 
+
 			case HANDLE_LOAD_PROFILE_PICTURE:
-				progressPhoto.setVisibility(View.GONE);
 				if (resultGetProfilePhoto!=null){
 					if (resultGetProfilePhoto.getObject()!=null){
 						if (resultGetProfilePhoto.getObject() instanceof Bitmap){
@@ -130,6 +141,13 @@ public class ActivityUserDetails extends MapActivity{
 							imageProfile.setImageBitmap((Bitmap) resultGetProfilePhoto.getObject());
 						}
 					}
+				}
+				break;
+
+
+			case HANDLE_SENDING_LOVE:
+				if (resultSendReview!=null){
+
 				}
 				break;
 			}
@@ -221,7 +239,11 @@ public class ActivityUserDetails extends MapActivity{
 				@Override
 				public void run() {
 					resultGetUserResume = AppCAP.getConnection().getResumeForUserId(mud.getUserId());
-					handler.sendEmptyMessage(HANDLE_GET_USER_RESUME);
+					if (resultGetUserResume.getResponseCode()==AppCAP.HTTP_ERROR){
+						handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+					} else {
+						handler.sendEmptyMessage(HANDLE_GET_USER_RESUME);
+					}
 				}
 			}).start();
 		}
@@ -243,7 +265,7 @@ public class ActivityUserDetails extends MapActivity{
 			((TextView)findViewById(R.id.textview_street)).setText(AppCAP.cleanResponseString(userResumeData.getVenueAddress()));
 
 
-			if(amIHereNow(userResumeData)){
+			if(isUserHereNow(userResumeData)){
 				((CustomFontView)findViewById(R.id.box_title)).setText("Checked in ...");
 				((LinearLayout)findViewById(R.id.layout_available)).setVisibility(View.VISIBLE);
 				((TextView)findViewById(R.id.textview_minutes)).setVisibility(View.VISIBLE);
@@ -285,7 +307,7 @@ public class ActivityUserDetails extends MapActivity{
 						LayoutInflater inflater = getLayoutInflater();
 						View v = inflater.inflate(R.layout.item_love_review, null);
 
-						((TextView)v.findViewById(R.id.textview_review_love)).setText(" from " + review.getAuthor() + ": \"" + review.getReview() + "\"");
+						((TextView)v.findViewById(R.id.textview_review_love)).setText(" from " + review.getAuthor() + ": \"" + AppCAP.cleanResponseString(review.getReview()) + "\"");
 						((LinearLayout)findViewById(R.id.love_inflate)).addView(v);
 					}
 				}
@@ -333,7 +355,11 @@ public class ActivityUserDetails extends MapActivity{
 			@Override
 			public void run() {
 				resultGetProfilePhoto = HttpUtil.getBitmapFromURL(userResumeData.getUrlPhoto());
-				handler.sendEmptyMessage(HANDLE_LOAD_PROFILE_PICTURE);
+				if (resultGetProfilePhoto.getResponseCode()==AppCAP.HTTP_ERROR){
+					handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+				} else {
+					handler.sendEmptyMessage(HANDLE_LOAD_PROFILE_PICTURE);
+				}
 			}
 		}).start();
 	}
@@ -390,14 +416,14 @@ public class ActivityUserDetails extends MapActivity{
 			animateView((RelativeLayout)findViewById(R.id.rel_buttons));
 
 			// Plus 
-            Animation anim = new RotateAnimation(360.0f, 0.0f, v.getWidth()/2, v.getHeight()/2);
-            anim.setDuration(700);
-            anim.setRepeatCount(0);
-            anim.setRepeatMode(Animation.REVERSE);
-            anim.setFillAfter(true);
-            v.setAnimation(anim);
-            v.setBackgroundResource(R.drawable.go_menu_button_minus);
-            
+			Animation anim = new RotateAnimation(360.0f, 0.0f, v.getWidth()/2, v.getHeight()/2);
+			anim.setDuration(700);
+			anim.setRepeatCount(0);
+			anim.setRepeatMode(Animation.REVERSE);
+			anim.setFillAfter(true);
+			v.setAnimation(anim);
+			v.setBackgroundResource(R.drawable.go_menu_button_minus);
+
 		} else {
 
 			((RelativeLayout)findViewById(R.id.rel_buttons)).setVisibility(View.GONE);
@@ -430,7 +456,7 @@ public class ActivityUserDetails extends MapActivity{
 	/**
 	 * Check if I am checked in here
 	 */
-	private boolean amIHereNow(UserResume ur){
+	public static boolean isUserHereNow(UserResume ur){
 		Calendar checkoutCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		long checkout = Long.parseLong(ur.getCheckOut());
 
@@ -438,7 +464,7 @@ public class ActivityUserDetails extends MapActivity{
 	}
 
 	public void onClickChat (View v){
-
+		startActivity(new Intent(ActivityUserDetails.this, ActivityChat.class));
 	}
 
 
@@ -452,7 +478,7 @@ public class ActivityUserDetails extends MapActivity{
 	}
 
 	public void onClickSendLove (View v){
-		Toast.makeText(this, "OnCLickLove", Toast.LENGTH_SHORT).show();
+		showDialog(DIALOG_SEND_LOVE);
 	}
 
 
@@ -481,5 +507,55 @@ public class ActivityUserDetails extends MapActivity{
 		return false;
 	}
 
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+
+		final Dialog dialog = new Dialog(ActivityUserDetails.this);
+
+		switch(id) {
+
+		case DIALOG_SEND_LOVE:
+
+			dialog.setContentView(R.layout.diloag_send_love);
+			//dialog.setTitle("Custom Dialog");
+
+			((Button)dialog.findViewById(R.id.btn_send)).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+
+					if (((EditText)dialog.findViewById(R.id.edit_review)).getText().toString().length()>0){
+						progress.setMessage("Sending love");
+						progress.show();
+						dialog.dismiss();
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								resultSendReview = AppCAP.getConnection().sendReview(userResumeData, ((EditText)dialog.findViewById(R.id.edit_review)).getText().toString());
+								if (resultSendReview.getResponseCode()==AppCAP.HTTP_ERROR){
+									handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+								} else {
+									handler.sendEmptyMessage(HANDLE_SENDING_LOVE);
+								}
+							}
+						}).start();
+					} else {
+						dialog.dismiss();
+						Toast.makeText(ActivityUserDetails.this, "Review can't be empty!", Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
+
+			((Button)dialog.findViewById(R.id.btn_cancel)).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+				}
+			});
+			break;
+		}
+
+		return dialog;
+	} 
 
 }

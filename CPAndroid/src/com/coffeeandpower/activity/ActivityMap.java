@@ -255,10 +255,10 @@ public class ActivityMap extends MapActivity{
 			@Override
 			public void run() {
 				result = AppCAP.getConnection().getUserData();
-				if (result!=null){
-					handler.sendEmptyMessage(result.getResponseCode());
-				} else {
+				if (result.getResponseCode()==AppCAP.HTTP_ERROR){
 					handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+				} else {
+					handler.sendEmptyMessage(result.getResponseCode());
 				}
 			}
 		}).start();
@@ -453,10 +453,10 @@ public class ActivityMap extends MapActivity{
 			@Override
 			public void run() {
 				resultMapDataSet = AppCAP.getConnection().getCheckedInBoundsOverTime(mapView);
-				if (resultMapDataSet!=null){
-					handler.sendEmptyMessage(GET_MAP_DATA_SET);
-				} else {
+				if (resultMapDataSet.getResponseCode()==AppCAP.HTTP_ERROR){
 					handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+				} else {
+					handler.sendEmptyMessage(GET_MAP_DATA_SET);
 				}
 			}
 		}).start();

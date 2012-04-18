@@ -126,10 +126,10 @@ public class ActivityJoin extends RootActivity{
 					@Override
 					public void run() {
 						result = AppCAP.getConnection().signup(userName, password, nickName);
-						if (result!=null){
-							handler.sendEmptyMessage(result.getResponseCode());
-						} else {
+						if (result.getResponseCode()==AppCAP.HTTP_ERROR){
 							handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+						} else {
+							handler.sendEmptyMessage(result.getResponseCode());
 						}
 					}
 				}).start();
