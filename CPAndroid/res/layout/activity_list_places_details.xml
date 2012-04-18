@@ -29,44 +29,11 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Chat Name"
+            android:text="Place Name"
             android:textColor="#ffffff"
             android:textSize="25dip" />
     </RelativeLayout>
-
-    <ListView
-        android:id="@+id/listview_chat"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/layout_chat"
-        android:layout_below="@+id/dummy_layout"
-        android:layout_marginBottom="10dip" >
-    </ListView>
-
-    <RelativeLayout
-        android:id="@+id/layout_chat"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
-
-        <EditText
-            android:id="@+id/edittext_chat"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dip"
-            android:layout_marginRight="5dip"
-            android:layout_toLeftOf="@+id/button_send"
-            android:hint="Type to chat"
-            android:singleLine="true" />
-
-        <Button
-            android:id="@+id/button_send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="5dip"
-            android:onClick="onClickSend"
-            android:text="Send" />
-    </RelativeLayout>
+    
+    
 
 </RelativeLayout>
