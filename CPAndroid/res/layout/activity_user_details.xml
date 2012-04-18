@@ -47,7 +47,7 @@
                 android:id="@+id/mapview_user_details"
                 android:layout_width="fill_parent"
                 android:layout_height="300dip"
-                android:apiKey="0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q" />
+                android:apiKey="0PV0Dp_6Dj6M_WBuUrThj9-fW3btGy9kxl83wgQ" />
 
             <LinearLayout
                 android:layout_width="fill_parent"

@@ -334,7 +334,7 @@ public class ActivityMap extends MapActivity{
 
 	// We have user data from logged user, use it now...
 	public void useUserData(){
-
+		AppCAP.setLoggedInUserId(loggedUser.getUserId());
 		textNickName.setText(loggedUser.getNickName());
 	}
 

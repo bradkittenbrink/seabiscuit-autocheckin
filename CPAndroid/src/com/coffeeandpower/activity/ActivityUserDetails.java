@@ -483,6 +483,10 @@ public class ActivityUserDetails extends MapActivity{
 		showDialog(DIALOG_SEND_LOVE);
 	}
 
+	public void onClickCheckIn (View v){
+		
+	}
+
 
 	public void onClickBack (View v){
 

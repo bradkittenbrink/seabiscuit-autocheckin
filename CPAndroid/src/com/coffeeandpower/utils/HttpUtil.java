@@ -565,9 +565,61 @@ public class HttpUtil {
 		return result;
 	}
 
+	
+	/**
+	 * Send One on One chat message
+	 * @param userId
+	 * @param message
+	 * @return
+	 */
+	public DataHolder sendOneOnOneChatMessage (int userId, String message){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "oneOnOneChatFromMobile"));
+			params.add(new BasicNameValuePair("message", URLEncoder.encode(message, "utf-8")));
+			params.add(new BasicNameValuePair("toUserId", URLEncoder.encode(userId+"", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_sendOneOnOneChatMessage: " + responseString);
+
+			if (responseString!=null){
+
+				if (responseString.equals("0")){
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
 
 	/**
-	 * Sending love review
+	 * Send love review
 	 * @param user
 	 * @param review
 	 * @return
