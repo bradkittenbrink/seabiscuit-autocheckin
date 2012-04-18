@@ -10,9 +10,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LayoutAnimationController;
 import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
@@ -20,19 +23,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.coffeandpower.db.CAPDao;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.adapters.MyFavouritePlacesAdapter;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.Education;
 import com.coffeeandpower.cont.MapUserData;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
 import com.coffeeandpower.utils.HttpUtil;
+import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.google.android.maps.GeoPoint;
@@ -235,19 +242,19 @@ public class ActivityUserDetails extends MapActivity{
 			((TextView)findViewById(R.id.textview_place)).setText(AppCAP.cleanResponseString(userResumeData.getVenueName()));
 			((TextView)findViewById(R.id.textview_street)).setText(AppCAP.cleanResponseString(userResumeData.getVenueAddress()));
 
-			
+
 			if(amIHereNow(userResumeData)){
 				((CustomFontView)findViewById(R.id.box_title)).setText("Checked in ...");
 				((LinearLayout)findViewById(R.id.layout_available)).setVisibility(View.VISIBLE);
 				((TextView)findViewById(R.id.textview_minutes)).setVisibility(View.VISIBLE);
 				((TextView)findViewById(R.id.textview_minutes)).setText(getAvailableMins(userResumeData));
-				
+
 				if (userResumeData.getUsersHere()>1){
 					((LinearLayout)findViewById(R.id.layout_others_at_venue)).setVisibility(View.VISIBLE);
 					((TextView)findViewById(R.id.textview_others_here_now)).setText( 
 							userResumeData.getUsersHere() == 2 ? "1 other here now" : (userResumeData.getUsersHere()-1) +  " others here now");
 				}
-				
+
 			} else {
 				((CustomFontView)findViewById(R.id.box_title)).setText("Was checked in ...");
 
@@ -257,19 +264,46 @@ public class ActivityUserDetails extends MapActivity{
 							userResumeData.getUsersHere() == 1 ? "1 other here now" : userResumeData.getUsersHere() +  " others here now");
 				}
 			}
-			
+
 			// Check if user has Reviews
 			if (userResumeData.getReviewsTotal()>0){
-				
+
 				((LinearLayout)findViewById(R.id.layout_reviews)).setVisibility(View.VISIBLE);
-				
+
+
+				// Check if we have love review
+				if (!userResumeData.getReviewsLoveReceived().equals("0")){
+					((LinearLayout)findViewById(R.id.love_inflate)).setVisibility(View.VISIBLE);
+				}
+
+
 				for (Review review:userResumeData.getReviews()){
-					
-					// Check if is it love review
+
+					// Find all love reviews
 					if (review.getIsLove().equals("1")){
-						((LinearLayout)findViewById(R.id.layout_love_review)).setVisibility(View.VISIBLE);
-						((TextView)findViewById(R.id.textview_review_love)).setText(" from " + review.getAuthor() + ": \"" + review.getReview() + "\"");
+
+						LayoutInflater inflater = getLayoutInflater();
+						View v = inflater.inflate(R.layout.item_love_review, null);
+
+						((TextView)v.findViewById(R.id.textview_review_love)).setText(" from " + review.getAuthor() + ": \"" + review.getReview() + "\"");
+						((LinearLayout)findViewById(R.id.love_inflate)).addView(v);
 					}
+				}
+			}
+
+
+			// Check if user have Education Data
+			if (!userResumeData.getEducation().isEmpty()){
+
+				((LinearLayout)findViewById(R.id.layout_edu_review)).setVisibility(View.VISIBLE);
+
+				for (Education edu:userResumeData.getEducation()){
+
+					LayoutInflater inflater = getLayoutInflater();
+					View view = inflater.inflate(R.layout.item_education_review, null);
+
+					((TextView)view.findViewById(R.id.textview_review_edu)).setText(edu.getSchool() + " " + edu.getStartDate() + "-" + edu.getEndDate());
+					((LinearLayout)findViewById(R.id.edu_inflate)).addView(view);
 				}
 			}
 
@@ -279,6 +313,13 @@ public class ActivityUserDetails extends MapActivity{
 
 			MyFavouritePlacesAdapter adapter = new MyFavouritePlacesAdapter(this, favouriteVenues);
 			favPlacesList.setAdapter(adapter);
+			favPlacesList.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					Utils.setListViewHeightBasedOnChildren(favPlacesList);
+				}
+			}, 400);
+
 		}
 	}
 
@@ -322,47 +363,44 @@ public class ActivityUserDetails extends MapActivity{
 	}
 
 
+	private void animateView(RelativeLayout v){
+		AnimationSet set = new AnimationSet(true);
+
+		Animation animation = new AlphaAnimation(0.0f, 1.0f);
+		animation.setDuration(150);
+		set.addAnimation(animation);
+
+		animation = new TranslateAnimation(
+				Animation.RELATIVE_TO_SELF, 0.0f,Animation.RELATIVE_TO_SELF, 0.0f,
+				Animation.RELATIVE_TO_SELF, -1.0f,Animation.RELATIVE_TO_SELF, 0.0f
+				);
+		animation.setDuration(300);
+		set.addAnimation(animation);
+
+		LayoutAnimationController controller = new LayoutAnimationController(set, 0.5f);       
+		v.setLayoutAnimation(controller);
+	}
+
+
 	private void startButtonsAnim (View v, boolean isPlus) {
 
 		if (isPlus){
 
-			((ImageButton)findViewById(R.id.imagebutton_paid)).setVisibility(View.VISIBLE);
-			((ImageButton)findViewById(R.id.imagebutton_chat)).setVisibility(View.VISIBLE);
-			((ImageButton)findViewById(R.id.imagebutton_f2f)).setVisibility(View.VISIBLE);
+			((RelativeLayout)findViewById(R.id.rel_buttons)).setVisibility(View.VISIBLE);
+			animateView((RelativeLayout)findViewById(R.id.rel_buttons));
 
 			// Plus 
-			Animation anim = new RotateAnimation(360.0f, 0.0f, v.getWidth()/2, v.getHeight()/2);
-			anim.setDuration(700);
-			anim.setRepeatCount(0);
-			anim.setRepeatMode(Animation.REVERSE);
-			anim.setFillAfter(true);
-			v.setAnimation(anim);
-			v.setBackgroundResource(R.drawable.go_menu_button_minus);
-
-
-			// Paid
-			Animation animT = new TranslateAnimation(0, 0, 0, -80);
-			animT.setDuration(500);
-			animT.setFillAfter(true);
-			((ImageButton)findViewById(R.id.imagebutton_paid)).startAnimation(animT);
-
-			// Chat
-			Animation animT1 = new TranslateAnimation(0, 0, 0, -160);
-			animT1.setDuration(500);
-			animT1.setFillAfter(true);
-			((ImageButton)findViewById(R.id.imagebutton_chat)).startAnimation(animT1);
-
-			// f2f
-			Animation animT2 = new TranslateAnimation(0, 0, 0, -240);
-			animT2.setDuration(500);
-			animT2.setFillAfter(true);
-			((ImageButton)findViewById(R.id.imagebutton_f2f)).startAnimation(animT2);
-
+            Animation anim = new RotateAnimation(360.0f, 0.0f, v.getWidth()/2, v.getHeight()/2);
+            anim.setDuration(700);
+            anim.setRepeatCount(0);
+            anim.setRepeatMode(Animation.REVERSE);
+            anim.setFillAfter(true);
+            v.setAnimation(anim);
+            v.setBackgroundResource(R.drawable.go_menu_button_minus);
+            
 		} else {
 
-			((ImageButton)findViewById(R.id.imagebutton_paid)).setVisibility(View.GONE);
-			((ImageButton)findViewById(R.id.imagebutton_chat)).setVisibility(View.GONE);
-			((ImageButton)findViewById(R.id.imagebutton_f2f)).setVisibility(View.GONE);
+			((RelativeLayout)findViewById(R.id.rel_buttons)).setVisibility(View.GONE);
 
 			// Plus 
 			Animation anim = new RotateAnimation(0.0f, 360.0f, v.getWidth()/2, v.getHeight()/2);
@@ -411,6 +449,10 @@ public class ActivityUserDetails extends MapActivity{
 
 	public void onClickF2F (View v){
 
+	}
+
+	public void onClickSendLove (View v){
+		Toast.makeText(this, "OnCLickLove", Toast.LENGTH_SHORT).show();
 	}
 
 

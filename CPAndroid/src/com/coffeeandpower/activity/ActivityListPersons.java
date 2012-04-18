@@ -1,6 +1,8 @@
 package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -208,6 +210,16 @@ public class ActivityListPersons extends ListActivity {
 							}
 						}
 
+						Collections.sort(arrayMapUserData, new Comparator<MapUserData>() {
+							@Override
+							public int compare(MapUserData m1, MapUserData m2) {
+								if (m1.getCheckedIn()>m2.getCheckedIn()){
+									return -1;
+								}
+								return 1;
+							}
+						});
+						
 						handler.sendEmptyMessage(LIST_USERS_IN_BOUNDS_FINISHED);
 					}
 				}).start();

@@ -71,7 +71,10 @@ public class UserResume {
 	private int reviewsTotal;
 	private String reviewsRecords;
 	private String reviewsLoveReceived;
+	
 	private ArrayList<Review> reviews;
+	private ArrayList<Education> education;
+	private ArrayList<Work> work;
 	
 	private double locationLat;
 	private double locationLng;
@@ -95,7 +98,8 @@ public class UserResume {
 			String zip, String phone, String icon, String visible,
 			String photoUrlUnUsed, String formattedPhone, int usersHere,
 			String reviewsPage, int reviewsTotal, String reviewsRecords,
-			String reviewsLoveReceived, ArrayList<Review> reviews, double locationLat, double locationLng) {
+			String reviewsLoveReceived, ArrayList<Review> reviews, ArrayList<Education> education,
+			ArrayList<Work> work, double locationLat, double locationLng) {
 
 		this.nickName = nickName;
 		this.statusText = statusText;
@@ -154,6 +158,8 @@ public class UserResume {
 		this.reviews = reviews;
 		this.locationLat = locationLat;
 		this.locationLng = locationLng;
+		this.education = education;
+		this.work = work;
 	}
 
 
@@ -726,7 +732,24 @@ public class UserResume {
 		this.locationLng = locationLng;
 	}
 	
-	
+	public ArrayList<Education> getEducation() {
+		return education;
+	}
+
+
+	public void setEducation(ArrayList<Education> education) {
+		this.education = education;
+	}
+
+
+	public ArrayList<Work> getWork() {
+		return work;
+	}
+
+
+	public void setWork(ArrayList<Work> work) {
+		this.work = work;
+	}
 	
 	
 }

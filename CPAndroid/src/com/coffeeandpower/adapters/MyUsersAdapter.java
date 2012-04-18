@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,7 +118,6 @@ public class MyUsersAdapter extends BaseAdapter{
 
 
 		// Check if we have hereNow user
-		//Log.d("LOG", "test: " + mudArray.get(position).getCheckedIn()+":"+haveGrayHereNow + ":"+haveGrayLast7);
 		if (mudArray.get(position).getCheckedIn()==1 && mudArray.get(position).isFirstInList()){
 			holder.textGrayLine.setText("Checked In Now");
 			holder.textGrayLine.setVisibility(View.VISIBLE);
@@ -133,7 +133,7 @@ public class MyUsersAdapter extends BaseAdapter{
 		imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage);
 
 
-		//Log.d("LOG", "cehcId: " + mudArray.get(position).getCheckInId() + ":" +mudArray.get(position).getNickName() + "  :" + mudArray.get(position).getVenueName());
+		//Log.d("LOG", "cehc: " + mudArray.get(position).getNickName() + "  :" + mudArray.get(position).isFirstInList() + ":" + mudArray.get(position).getCheckedIn());
 		return convertView;
 	}
 

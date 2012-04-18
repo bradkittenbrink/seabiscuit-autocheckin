@@ -51,12 +51,14 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.Education;
 import com.coffeeandpower.cont.MapUserData;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserShort;
 import com.coffeeandpower.cont.Venue;
+import com.coffeeandpower.cont.Work;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 
@@ -174,8 +176,11 @@ public class HttpUtil {
 						int reviewsTotal = 0;
 						String reviewsRecords = "";
 						String reviewsLoveReceived = "";
+						
 						ArrayList<Review> reviews = new ArrayList<Review>();
-
+						ArrayList<Education> education = new ArrayList<Education>();
+						ArrayList<Work> work = new ArrayList<Work>();
+						
 						double locationLat = 0;
 						double locationLng = 0;
 
@@ -269,7 +274,7 @@ public class HttpUtil {
 
 							for (int x=0; x<arrayCheckIn.length(); x++){
 
-								if (x<2){
+								if (x<3){
 
 									JSONObject objFromArray = arrayCheckIn.optJSONObject(x);
 									if (objFromArray!=null){
@@ -322,6 +327,38 @@ public class HttpUtil {
 								}
 							}
 						}
+						
+						// Get Education data
+						JSONArray arrayEdu = payload.optJSONArray("education");
+						if (arrayEdu!=null){
+							
+							for (int x=0; x<arrayEdu.length(); x++){
+								
+								JSONObject objEdu = arrayEdu.optJSONObject(x);
+								if (objEdu!=null){
+									education.add(new Education(objEdu.optString("school"), 
+											objEdu.optInt("startDate"), 
+											objEdu.optInt("endDate"), 
+											objEdu.optString("concentrations"), 
+											objEdu.optString("degree")));
+								}
+							}
+						}
+						
+						// Get Work data
+						JSONArray arrayWork = payload.optJSONArray("work");
+						if (arrayWork!=null){
+							
+							for (int x=0; x<arrayWork.length(); x++){
+								
+								JSONObject objWork = arrayWork.optJSONObject(x);
+								if (objWork!=null){
+									
+									// code
+								}
+							}
+						}
+						
 
 						// [0] Object UserResume, [1] array list favourite checkin locatios
 						ArrayList<Object> tempHolder = new ArrayList<Object>();
@@ -332,7 +369,7 @@ public class HttpUtil {
 								verifiedLinkedIn, linkedInProfileLink, verifiedFacebook, facebookProfileLink, verifiedMobile, trusted, 
 								jobTitle, checkInId, userId, lat, lng, checkInDate, checkIn, checkOutDate, checkOut, foursquare, 
 								foursquareId, venueName, venueAddress, city, state, zip, phone, icon, visible, photoUrlUnUsed, formattedPhone, 
-								usersHere, reviewsPage, reviewsTotal, reviewsRecords, reviewsLoveReceived, reviews, locationLat, locationLng));
+								usersHere, reviewsPage, reviewsTotal, reviewsRecords, reviewsLoveReceived, reviews, education, work, locationLat, locationLng));
 						tempHolder.add(checkinhistoryArray);
 
 						result.setObject(tempHolder);
