@@ -51,6 +51,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.activity.ActivityUserDetails;
+import com.coffeeandpower.cont.ChatMessage;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
 import com.coffeeandpower.cont.MapUserData;
@@ -177,11 +178,11 @@ public class HttpUtil {
 						int reviewsTotal = 0;
 						String reviewsRecords = "";
 						String reviewsLoveReceived = "";
-						
+
 						ArrayList<Review> reviews = new ArrayList<Review>();
 						ArrayList<Education> education = new ArrayList<Education>();
 						ArrayList<Work> work = new ArrayList<Work>();
-						
+
 						double locationLat = 0;
 						double locationLng = 0;
 
@@ -311,7 +312,7 @@ public class HttpUtil {
 
 									JSONObject objReviewFromArray = reviewsArray.optJSONObject(x);
 									if (objReviewFromArray!=null){
-										
+
 										reviews.add(new Review(objReviewFromArray.optInt("id"), 
 												objReviewFromArray.optString("author"), 
 												objReviewFromArray.optString("title"), 
@@ -328,13 +329,13 @@ public class HttpUtil {
 								}
 							}
 						}
-						
+
 						// Get Education data
 						JSONArray arrayEdu = payload.optJSONArray("education");
 						if (arrayEdu!=null){
-							
+
 							for (int x=0; x<arrayEdu.length(); x++){
-								
+
 								JSONObject objEdu = arrayEdu.optJSONObject(x);
 								if (objEdu!=null){
 									education.add(new Education(objEdu.optString("school"), 
@@ -345,21 +346,21 @@ public class HttpUtil {
 								}
 							}
 						}
-						
+
 						// Get Work data
 						JSONArray arrayWork = payload.optJSONArray("work");
 						if (arrayWork!=null){
-							
+
 							for (int x=0; x<arrayWork.length(); x++){
-								
+
 								JSONObject objWork = arrayWork.optJSONObject(x);
 								if (objWork!=null){
-									
+
 									// code
 								}
 							}
 						}
-						
+
 
 						// [0] Object UserResume, [1] array list favourite checkin locatios
 						ArrayList<Object> tempHolder = new ArrayList<Object>();
@@ -485,7 +486,7 @@ public class HttpUtil {
 			InputStream is = conn.getInputStream();
 
 			bmImg = BitmapFactory.decodeStream(is);
-			
+
 			result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 			result.setObject(bmImg);
 
@@ -564,7 +565,7 @@ public class HttpUtil {
 		return result;
 	}
 
-	
+
 	/**
 	 * Sending love review
 	 * @param user
@@ -592,7 +593,7 @@ public class HttpUtil {
 			if (ActivityUserDetails.isUserHereNow(user)){
 				params.add(new BasicNameValuePair("foursquare", URLEncoder.encode(user.getFoursquareId()+"", "utf-8")));
 			}
-			
+
 			post.setEntity(new UrlEncodedFormEntity(params));
 
 			// Execute HTTP Post Request
@@ -635,14 +636,14 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Get chat history with user
-	 * @param user
+	 * @param userId
 	 * @return
 	 */
-	public DataHolder getOneOnOneChatHistory (UserResume user){
+	public DataHolder getOneOnOneChatHistory (int userId){
 
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
@@ -654,8 +655,8 @@ public class HttpUtil {
 
 		try {
 			params.add(new BasicNameValuePair("action", "getOneOnOneChatHistory"));
-			params.add(new BasicNameValuePair("other_user", URLEncoder.encode(user.getUserId()+"", "utf-8")));
-			
+			params.add(new BasicNameValuePair("other_user", URLEncoder.encode(userId+"", "utf-8")));
+
 			post.setEntity(new UrlEncodedFormEntity(params));
 
 			// Execute HTTP Post Request
@@ -670,13 +671,34 @@ public class HttpUtil {
 				JSONObject json = new JSONObject(responseString);
 				if (json!=null){
 
-					boolean res = json.optBoolean("succeeded");
-					result.setObject(res);
+					if (json.optInt("error")==0){
+						
+						ArrayList<ChatMessage> messages = new ArrayList<ChatMessage>();
+						JSONArray arrayChat = json.optJSONArray("chat");
+						if (arrayChat!=null){
 
-					String message = json.optString("message");
-					result.setResponseMessage(message);
-					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
-					return result;
+							for (int x=0; x<arrayChat.length(); x++){
+								
+								JSONObject objMess = arrayChat.optJSONObject(x);
+								if (objMess!=null){
+									messages.add(new ChatMessage(objMess.optInt("id"), 
+											objMess.optInt("user_id"), 
+											objMess.optString("entry_text"), 
+											objMess.optString("nickname"), 
+											objMess.optString("date"), 
+											objMess.optString("photo_url"), 
+											objMess.optInt("receiving_user_id"), 
+											objMess.optInt("offer_id")));	
+								}
+							}
+						}
+						result.setObject(messages);
+						result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+						return result;
+					} else {
+						result.setResponseCode(AppCAP.HTTP_ERROR);
+						result.setResponseMessage("Error loading chat...");
+					}
 				}
 			}
 
@@ -698,8 +720,8 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Change user profile data
 	 * @param user

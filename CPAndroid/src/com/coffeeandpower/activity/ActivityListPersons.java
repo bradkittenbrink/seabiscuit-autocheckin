@@ -276,7 +276,10 @@ public class ActivityListPersons extends ListActivity {
 		}
 	}
 
-
+	public void onClickPlaces (View v){
+		
+	}
+	
 	public void onClickBack (View v){
 		onBackPressed();	
 	}

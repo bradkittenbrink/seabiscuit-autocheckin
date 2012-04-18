@@ -401,6 +401,11 @@ public class ActivityMap extends MapActivity{
 	}
 
 
+	public void onClickContactList (View v) {
+		
+	}
+	
+	
 	public void onClickCheckIn (View v){
 
 		if (myLocationOverlay.getMyLocation()!=null){

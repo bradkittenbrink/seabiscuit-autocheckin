@@ -94,7 +94,7 @@ public class ActivityUserDetails extends MapActivity{
 
 			progress.dismiss();
 			progressPhoto.setVisibility(View.GONE);
-			
+
 			switch (msg.what){
 
 			case AppCAP.HTTP_ERROR:
@@ -464,7 +464,9 @@ public class ActivityUserDetails extends MapActivity{
 	}
 
 	public void onClickChat (View v){
-		startActivity(new Intent(ActivityUserDetails.this, ActivityChat.class));
+		startActivity(new Intent(ActivityUserDetails.this, ActivityChat.class)
+		.putExtra("user_id", userResumeData.getUserId())
+		.putExtra("nick_name", userResumeData.getNickName()));
 	}
 
 
