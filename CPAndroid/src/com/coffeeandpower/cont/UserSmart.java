@@ -3,7 +3,7 @@ package com.coffeeandpower.cont;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public class MapUserData implements Serializable{
+public class UserSmart implements Serializable{
 
 
 	private int checkInId;
@@ -36,7 +36,7 @@ public class MapUserData implements Serializable{
 	}
 
 
-	public MapUserData(int checkInId, int userId, String nickName,
+	public UserSmart(int checkInId, int userId, String nickName,
 			String statusText, String photo, String majorJobCategory,
 			String minorJobCategory, String headLine, String fileName,
 			double lat, double lng, int checkedIn, String foursquareId,

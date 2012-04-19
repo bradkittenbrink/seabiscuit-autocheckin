@@ -37,7 +37,7 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.adapters.MyFavouritePlacesAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
-import com.coffeeandpower.cont.MapUserData;
+import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.Venue;
@@ -60,7 +60,7 @@ public class ActivityUserDetails extends MapActivity{
 
 	private static final int DIALOG_SEND_LOVE = 0;
 
-	private MapUserData mud;
+	private UserSmart mud;
 
 	// Map items
 	private MapView mapView;
@@ -192,7 +192,7 @@ public class ActivityUserDetails extends MapActivity{
 				if (fromAct.equals("map")){
 					// From Map
 
-					ArrayList<MapUserData> tempArray = capDao.getMapsUsersData(foursquareId);
+					ArrayList<UserSmart> tempArray = capDao.getMapsUsersData(foursquareId);
 					capDao.close();
 
 					if (!tempArray.isEmpty()){
@@ -201,7 +201,7 @@ public class ActivityUserDetails extends MapActivity{
 				} else {
 
 					// From list
-					mud = (MapUserData) extras.getSerializable("mapuserobject");
+					mud = (UserSmart) extras.getSerializable("mapuserobject");
 				}
 			}
 		}

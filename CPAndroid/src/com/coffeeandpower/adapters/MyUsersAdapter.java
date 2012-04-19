@@ -14,19 +14,19 @@ import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
-import com.coffeeandpower.cont.MapUserData;
+import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.imageutil.ImageLoader;
 
 public class MyUsersAdapter extends BaseAdapter{
 
-	private ArrayList<MapUserData> mudArray;
+	private ArrayList<UserSmart> mudArray;
 	private LayoutInflater inflater;
 	public ImageLoader imageLoader;
 
-	private int myLat;
-	private int myLng;
+	private double myLat;
+	private double myLng;
 
-	public MyUsersAdapter(Activity context, ArrayList<MapUserData> mudArray, int myLat, int myLng){
+	public MyUsersAdapter(Activity context, ArrayList<UserSmart> mudArray, double myLat, double myLng){
 
 		this.inflater = context.getLayoutInflater();
 		this.myLat = myLat;
@@ -36,7 +36,7 @@ public class MyUsersAdapter extends BaseAdapter{
 		if (mudArray!=null){
 			this.mudArray = mudArray;
 		} else {
-			this.mudArray = new ArrayList<MapUserData>();
+			this.mudArray = new ArrayList<UserSmart>();
 		}
 	}
 
@@ -102,7 +102,7 @@ public class MyUsersAdapter extends BaseAdapter{
 		holder.textGrayLine.setVisibility(View.GONE);
 
 		float[] results = new float[1];
-		Location.distanceBetween(myLat / 1E6, myLng / 1E6, mudArray.get(position).getLat(), mudArray.get(position).getLng(), results);
+		Location.distanceBetween(myLat, myLng, mudArray.get(position).getLat(), mudArray.get(position).getLng(), results);
 
 		String distanceS = "";
 		DecimalFormat oneDForm = new DecimalFormat("#.#");
@@ -127,12 +127,9 @@ public class MyUsersAdapter extends BaseAdapter{
 			holder.textGrayLine.setVisibility(View.VISIBLE);
 		}
 
-
 		// Try to load profile image
 		imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage);
 
-
-		//Log.d("LOG", "cehc: " + mudArray.get(position).getNickName() + "  :" + mudArray.get(position).isFirstInList() + ":" + mudArray.get(position).getCheckedIn());
 		return convertView;
 	}
 

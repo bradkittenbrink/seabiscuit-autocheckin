@@ -28,7 +28,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.cont.MapUserData;
+import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.maps.MyItemizedOverlay;
 import com.coffeeandpower.maps.MyOverlayItem;
@@ -97,16 +97,16 @@ public class ActivityMap extends MapActivity{
 				if (resultMapDataSet.getObject()!=null){
 
 					@SuppressWarnings("unchecked")
-					ArrayList<MapUserData> mapUsersArray = (ArrayList<MapUserData>) resultMapDataSet.getObject();
+					ArrayList<UserSmart> mapUsersArray = (ArrayList<UserSmart>) resultMapDataSet.getObject();
 
 					RootActivity.log("ActivityMap_mapUsersArray.size()=" + mapUsersArray.size());
 
 					// < Key, Value >  = < foursquareId, >
-					HashMap<String, ArrayList<MapUserData>> mapKeyIsFoursquareId = new HashMap<String, ArrayList<MapUserData>>();
+					HashMap<String, ArrayList<UserSmart>> mapKeyIsFoursquareId = new HashMap<String, ArrayList<UserSmart>>();
 					HashSet<String> setFoursquareIds = new HashSet<String>();
 
 					// Find all uniq foursquareIds
-					for (MapUserData mud:mapUsersArray){
+					for (UserSmart mud:mapUsersArray){
 						setFoursquareIds.add(mud.getFoursquareId());
 
 						//Log.d("LOG", "array: " + mud.getFoursquareId()+ " : " + mud.getNickName() + " chIn: " + mud.getCheckedIn());
@@ -116,9 +116,9 @@ public class ActivityMap extends MapActivity{
 					for (String foursquareId:setFoursquareIds){
 
 						// Array list without duplicates
-						ArrayList<MapUserData> tmpArray = new ArrayList<MapUserData>();
+						ArrayList<UserSmart> tmpArray = new ArrayList<UserSmart>();
 
-						for (MapUserData mud:mapUsersArray){
+						for (UserSmart mud:mapUsersArray){
 
 							if (mud.getFoursquareId().equals(foursquareId)){
 								tmpArray.add(mud);
@@ -135,7 +135,7 @@ public class ActivityMap extends MapActivity{
 
 
 					// Loop for creating markers on map, in this loop iterate thru all uniq foursquaresIds
-					for (Entry<String, ArrayList<MapUserData>> itemWithKeyFoursquareId : mapKeyIsFoursquareId.entrySet()){
+					for (Entry<String, ArrayList<UserSmart>> itemWithKeyFoursquareId : mapKeyIsFoursquareId.entrySet()){
 
 						int checkinsSum = 0;
 						int hereNowCount = 0;
@@ -146,7 +146,7 @@ public class ActivityMap extends MapActivity{
 						double lng = 0.0d;
 
 						// we need to sum checkins for every user who checked in foursquareId
-						for (MapUserData mud : itemWithKeyFoursquareId.getValue()){
+						for (UserSmart mud : itemWithKeyFoursquareId.getValue()){
 
 							checkinsSum++;
 							hereNowCount += mud.getCheckedIn();
@@ -347,7 +347,7 @@ public class ActivityMap extends MapActivity{
 			//int lng = (int) (location.getLongitude() * 1E6);
 			//GeoPoint point = new GeoPoint(lat, lng);
 
-			//RootActivity.log("ActivityMap locationChanged: " + lat+":"+lng);
+			//Log.d("LOG", "ActivityMap locationChanged: " + location.getLatitude()+":"+location.getLongitude());
 		}
 
 		@Override
@@ -487,17 +487,47 @@ public class ActivityMap extends MapActivity{
 
 
 	public void onClickPeopleList (View v){
-
 		Intent intent = new Intent(this, ActivityListPersons.class);
 		
 		if (myLocationOverlay.getMyLocation()!=null){
-			intent.putExtra("lat", myLocationOverlay.getMyLocation().getLatitudeE6());
-			intent.putExtra("lng", myLocationOverlay.getMyLocation().getLongitudeE6());
+			intent.putExtra("user_lat", myLocationOverlay.getMyLocation().getLatitudeE6());
+			intent.putExtra("user_lng", myLocationOverlay.getMyLocation().getLongitudeE6());
 		}
+		
+		Double[] data = getSWAndNECoordinatesBounds(mapView);
+		intent.putExtra("sw_lat", data[0]);
+		intent.putExtra("sw_lng", data[1]);
+		intent.putExtra("ne_lat", data[2]);
+		intent.putExtra("ne_lng", data[3]);
+		
+		intent.putExtra("type", "form_activity");
 
 		startActivity(intent);
 	}
 
+	
+	/**
+	 * [0]sw_lat; [1]sw_lng; [2]ne_lat; [3]ne_lng;
+	 * @param map
+	 * @return
+	 */
+	private Double[] getSWAndNECoordinatesBounds (MapView map){
+		Double[] data = new Double[4];
+		
+		GeoPoint pointCenterMap = mapView.getMapCenter();
+		int lngSpan = mapView.getLongitudeSpan();
+		int latSpan = mapView.getLatitudeSpan();
+
+		GeoPoint sw = new GeoPoint(pointCenterMap.getLatitudeE6() - latSpan/2, pointCenterMap.getLongitudeE6() - lngSpan/2);
+		GeoPoint ne = new GeoPoint(pointCenterMap.getLatitudeE6() + latSpan/2, pointCenterMap.getLongitudeE6() + lngSpan/2);
+
+		data[0] = sw.getLatitudeE6() / 1E6; // sw_lat
+		data[1] = sw.getLongitudeE6()/ 1E6; // sw_lng
+		data[2] = ne.getLatitudeE6() / 1E6; // ne_lat
+		data[3] = ne.getLongitudeE6()/ 1E6; // ne_lng
+		
+		return data;
+	}
 
 	@Override
 	public void onBackPressed() {

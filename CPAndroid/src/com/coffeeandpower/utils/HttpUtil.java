@@ -54,12 +54,14 @@ import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.cont.ChatMessage;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
-import com.coffeeandpower.cont.MapUserData;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserShort;
+import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
+import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.cont.Work;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -565,7 +567,7 @@ public class HttpUtil {
 		return result;
 	}
 
-	
+
 	/**
 	 * Send One on One chat message
 	 * @param userId
@@ -616,7 +618,7 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
+
 
 	/**
 	 * Send love review
@@ -724,13 +726,13 @@ public class HttpUtil {
 				if (json!=null){
 
 					if (json.optInt("error")==0){
-						
+
 						ArrayList<ChatMessage> messages = new ArrayList<ChatMessage>();
 						JSONArray arrayChat = json.optJSONArray("chat");
 						if (arrayChat!=null){
 
 							for (int x=0; x<arrayChat.length(); x++){
-								
+
 								JSONObject objMess = arrayChat.optJSONObject(x);
 								if (objMess!=null){
 									messages.add(new ChatMessage(objMess.optInt("id"), 
@@ -890,7 +892,7 @@ public class HttpUtil {
 						JSONArray payload = json.optJSONArray("payload");
 						if (payload!=null){
 
-							ArrayList<MapUserData> mapUsersArray = new ArrayList<MapUserData>();
+							ArrayList<UserSmart> mapUsersArray = new ArrayList<UserSmart>();
 
 							for (int m=0; m<payload.length(); m++){
 
@@ -915,7 +917,7 @@ public class HttpUtil {
 									String skills = item.optString("skills");
 									boolean met = item.optBoolean("met");
 
-									mapUsersArray.add(new MapUserData(checkInId, userId, nickName, statusText, photo, majorJobCategory, minorJobCategory, 
+									mapUsersArray.add(new UserSmart(checkInId, userId, nickName, statusText, photo, majorJobCategory, minorJobCategory, 
 											headLine, fileName, lat, lng, checkedIn, foursquareId, venueName, checkInCount, skills, met));
 								}
 							}
@@ -952,6 +954,180 @@ public class HttpUtil {
 		return result;
 	}
 
+
+	/**
+	 * Get Venues And Users With Checkins In Bounds During Interval
+	 * @param data
+	 * @return Object[]   [0]venues   [1]users
+	 */
+	public DataHolder getVenuesAndUsersWithCheckinsInBoundsDuringInterval (double data[], int numberOfDays){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		String userLat = "";
+		String userLng = "";
+
+		if (data[4]!=0 && data[5]!=0){
+			userLat = "&user_lat=" + data[4];
+			userLng = "&user_lng=" + data[5];
+		}
+
+		HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API + 
+				"?action=getVenuesAndUsersWithCheckinsInBoundsDuringInterval" + 
+				"&sw_lat=" + data[0] + 
+				"&sw_lng=" + data[1] + 
+				"&ne_lat=" + data[2] + 
+				"&ne_lng=" + data[3] + 
+				"&checked_in_since=" + (System.currentTimeMillis() /1000 - (86400 * numberOfDays)) + 
+				userLat + 
+				userLng +
+				"&version=0.1");
+
+		try {
+
+			// Execute HTTP Get Request
+			HttpResponse response = client.execute(get);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_getVenuesAndUsersWithCheckinsInBoundsDuringInterval: " + responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					JSONObject objPayload = json.optJSONObject("payload");
+					if (objPayload!=null){
+
+						// Array Venues
+						ArrayList<VenueSmart> venues = new ArrayList<VenueSmart>();
+						JSONArray arrayVenues = objPayload.optJSONArray("venues");
+						if (arrayVenues!=null){
+							for (int x=0; x<arrayVenues.length(); x++){
+
+								JSONObject objVenue = arrayVenues.optJSONObject(x);
+								if (objVenue!=null){
+
+									ArrayList<CheckinData> arrayCheckins = new ArrayList<VenueSmart.CheckinData>();
+									JSONObject objUsersFromVenue = objVenue.optJSONObject("users");
+									if (objUsersFromVenue!=null){
+
+										JSONArray userIds = objUsersFromVenue.names();
+										if (userIds!=null){
+
+											for (int y=0; y<userIds.length(); y++){
+
+												JSONObject o = objUsersFromVenue.optJSONObject(userIds.getString(y));
+												if (o!=null){
+													int userId = 0;
+													try{
+														userId = Integer.parseInt(userIds.getString(y));
+													} catch(NumberFormatException e){}
+
+													arrayCheckins.add(new CheckinData(userId, 
+															o.optInt("checkin_count"), 
+															o.optInt("checked_in")));
+												}
+											}
+										}
+									}
+
+									venues.add(new VenueSmart(objVenue.optString("name"), 
+											objVenue.optString("address"), 
+											objVenue.optString("city"), 
+											objVenue.optString("state"), 
+											objVenue.optString("distance"), 
+											objVenue.optString("foursquare"), 
+											objVenue.optInt("checkins"), 
+											objVenue.optInt("checkins_for_week"),
+											objVenue.optInt("checkins_for_interval"),
+											objVenue.optString("photo_url"),
+											objVenue.optString("phone"), 
+											objVenue.optString("formatted_phone"), 
+											objVenue.optDouble("lat"), 
+											objVenue.optDouble("lng"), 
+											arrayCheckins));
+								}
+							}
+						}
+
+						// Array Users
+						ArrayList<UserSmart> users = new ArrayList<UserSmart>();
+						JSONArray arrayUsers = objPayload.optJSONArray("users");
+						if (arrayUsers!=null){
+							
+							boolean isFirstInList1 = false;
+							boolean isFirstInList0 = false;
+							
+							for (int x=0; x<arrayUsers.length(); x++){
+								JSONObject objUser = arrayUsers.optJSONObject(x);
+								if (objUser!=null){
+
+									UserSmart singleUserMap =  new UserSmart(
+											objUser.optInt("checkin_id"), 
+											objUser.optInt("id"),
+											objUser.optString("nickname"),
+											objUser.optString("status_text"), 
+											objUser.optString("photo"),
+											objUser.optString("major_job_category"),
+											objUser.optString("minor_job_category"), 
+											// smarterer_name !?!?!?!??!
+											objUser.optString("headline"), 
+											objUser.optString("filename"), 
+											objUser.optDouble("lat"),
+											objUser.optDouble("lng"), 
+											objUser.optInt("checked_in"), 
+											objUser.optString("foursquare"), 
+											objUser.optString("venue_name"),
+											objUser.optInt("checkin_count"), 
+											objUser.optString("skills"),
+											objUser.optBoolean("met"));
+									
+									// if herenow exist, than that value will be used
+									if (singleUserMap.getCheckedIn()==1){
+										if (!isFirstInList1){
+											singleUserMap.setFirstInList(true);
+											isFirstInList1 = !isFirstInList1;
+										} 
+									} else {
+										if (!isFirstInList0){
+											singleUserMap.setFirstInList(true);
+											isFirstInList0 = !isFirstInList0;
+										}
+									}
+									
+									users.add(singleUserMap);
+								}
+							}
+						}
+
+						result.setObject(new Object[]{venues, users});
+					}
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
 
 
 	/**

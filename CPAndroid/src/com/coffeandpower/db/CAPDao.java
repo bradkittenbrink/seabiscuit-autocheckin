@@ -9,7 +9,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.coffeeandpower.cont.MapUserData;
+import com.coffeeandpower.cont.UserSmart;
 
 public class CAPDao {
 
@@ -37,11 +37,11 @@ public class CAPDao {
 
 	/**
 	 * Put getCheckedInBoundsOverTime data into database, with uniq foursquareId, in this case COLUMN_CONTROL_FQS_ID
-	 * @param MapUserData object
+	 * @param UserSmart object
 	 * @param foursquareId
 	 * @return
 	 */
-	public boolean putMapsUsersData (MapUserData mud, String foursquareId){
+	public boolean putMapsUsersData (UserSmart mud, String foursquareId){
 
 		ContentValues cv = new ContentValues();
 
@@ -80,9 +80,9 @@ public class CAPDao {
 	 * @param foursquareId
 	 * @return
 	 */
-	public ArrayList<MapUserData> getMapsUsersData (String foursquareId){
+	public ArrayList<UserSmart> getMapsUsersData (String foursquareId){
 
-		ArrayList<MapUserData> tempArray = new ArrayList<MapUserData>();
+		ArrayList<UserSmart> tempArray = new ArrayList<UserSmart>();
 
 		Cursor c = database.rawQuery("SELECT * from " + CASPSQLiteDatabase.TABLE_MAP_USER_DATA + " WHERE " + CASPSQLiteDatabase.COLUMN_CONTROL_FQS_ID + "='" + foursquareId + "'", null);
 		if (c != null) {
@@ -119,7 +119,7 @@ public class CAPDao {
 
 				boolean met = metS.equals("YES") ? true : false;
 
-				tempArray.add(new MapUserData(checkInId, userId, nickName, statusText, photo, majorJobCategory, minorJobCategory, 
+				tempArray.add(new UserSmart(checkInId, userId, nickName, statusText, photo, majorJobCategory, minorJobCategory, 
 						headLine, fileName, lat, lng, checkedIn, foursquareIdS, venueName, checkInCount, skills, met));
 			}
 		}
@@ -133,9 +133,9 @@ public class CAPDao {
 	 * Get all map user data
 	 * @return
 	 */
-	public ArrayList<MapUserData> getMapsUsersData (){
+	public ArrayList<UserSmart> getMapsUsersData (){
 
-		ArrayList<MapUserData> tempArray = new ArrayList<MapUserData>();
+		ArrayList<UserSmart> tempArray = new ArrayList<UserSmart>();
 
 		Cursor c = database.rawQuery("SELECT * from " + CASPSQLiteDatabase.TABLE_MAP_USER_DATA , null);
 		if (c != null) {
@@ -172,7 +172,7 @@ public class CAPDao {
 
 				boolean met = metS.equals("YES") ? true : false;
 
-				tempArray.add(new MapUserData(checkInId, userId, nickName, statusText, photo, majorJobCategory, minorJobCategory, 
+				tempArray.add(new UserSmart(checkInId, userId, nickName, statusText, photo, majorJobCategory, minorJobCategory, 
 						headLine, fileName, lat, lng, checkedIn, foursquareIdS, venueName, checkInCount, skills, met));
 			}
 		}

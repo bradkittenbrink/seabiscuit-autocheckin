@@ -67,12 +67,10 @@ public class ActivityCheckInList extends ListActivity{
 		// Views
 		progress = new ProgressDialog(ActivityCheckInList.this);
 
-
 		// Views state
 		progress.setMessage("Loading nearby places...");
 
-
-		// Getdata from Intent
+		// Get data from Intent
 		Bundle extras = getIntent().getExtras();
 		if (extras!=null){
 
