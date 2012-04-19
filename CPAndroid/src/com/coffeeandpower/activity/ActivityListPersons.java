@@ -132,6 +132,7 @@ public class ActivityListPersons extends ListActivity {
 					getUsersAndVenues();
 				} else {
 
+					
 				}
 			}
 		}
