@@ -32,6 +32,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
             android:gravity="center"
+            android:clickable="true"
             android:onClick="onClickMap"
             android:orientation="vertical" >
 
@@ -39,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:drawableTop="@drawable/btn_map"
+                android:drawableTop="@drawable/tab_map_a"
                 android:gravity="center"
                 android:text="Map" />
         </LinearLayout>
@@ -50,6 +51,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
             android:gravity="center"
+            android:clickable="true"
             android:onClick="onClickPlaces"
             android:orientation="vertical" >
 
