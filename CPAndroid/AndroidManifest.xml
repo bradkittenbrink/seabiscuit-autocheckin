@@ -56,12 +56,17 @@
             android:windowSoftInputMode="stateAlwaysVisible" >
         </activity>
         <activity
-            android:name=".activity.ActivityMap"
+            android:name=".tab.activities.ActivityMap"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityCheckInList"
+            android:name=".tab.activities.ActivityPeopleAndPlaces"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name=".tab.activities.ActivityContacts"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
@@ -76,7 +81,7 @@
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityListPersons"
+            android:name=".tab.activities.ActivityPeopleAndPlaces"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>

@@ -32,6 +32,7 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
+import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.utils.GraphicUtils;
 import com.coffeeandpower.utils.HttpUtil;
 import com.coffeeandpower.views.CustomDialog;

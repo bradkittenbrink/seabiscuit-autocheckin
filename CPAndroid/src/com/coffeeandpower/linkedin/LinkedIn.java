@@ -8,10 +8,10 @@ import java.util.EnumSet;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.activity.ActivityLoginPage;
-import com.coffeeandpower.activity.ActivityMap;
 import com.coffeeandpower.activity.ActivitySignInViaMail;
+import com.coffeeandpower.inter.OAuthService;
+import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.utils.ActivityUtils;
-import com.coffeeandpower.utils.OAuthService;
 import com.coffeeandpower.utils.HttpUtil;
 
 import android.app.Activity;

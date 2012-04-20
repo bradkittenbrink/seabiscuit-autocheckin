@@ -13,6 +13,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.views.CustomDialog;
 
 public class ActivitySignInViaMail extends RootActivity{

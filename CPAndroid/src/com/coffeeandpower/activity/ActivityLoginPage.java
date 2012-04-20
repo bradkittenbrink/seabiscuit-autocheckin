@@ -1,7 +1,6 @@
 package com.coffeeandpower.activity;
 
 import com.coffeeandpower.utils.ActivityUtils;
-import com.coffeeandpower.utils.OAuthService;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.view.View;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.inter.OAuthService;
 import com.coffeeandpower.linkedin.LinkedIn;
 
 
@@ -36,6 +36,10 @@ public class ActivityLoginPage extends RootActivity {
 	}
 
 
+	public void onClickLater (View v){
+		
+	}
+	
 
 	@Override
 	public void onBackPressed() {
@@ -43,20 +47,11 @@ public class ActivityLoginPage extends RootActivity {
 	}
 
 
-	public void onClickFacebook (View v){
-
-	}
-
-
-	public void onClickTwitter (View v){
-
-	}
-
-
+	/*
 	public void onClickMail (View v){
-		
 		startActivity(new Intent(ActivityLoginPage.this, ActivitySignInViaMail.class));
 	}
+	*/
 
     public void onClickLinkedIn(View v){
     	lastAuthorize = new LinkedIn();

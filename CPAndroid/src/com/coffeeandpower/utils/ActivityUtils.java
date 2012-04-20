@@ -7,8 +7,9 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.activity.ActivityMap;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.inter.OAuthService;
+import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.views.CustomDialog;
 
 public class ActivityUtils {

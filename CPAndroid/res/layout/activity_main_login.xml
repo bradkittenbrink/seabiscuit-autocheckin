@@ -2,49 +2,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg_default"
+    android:background="#ff333333"
     android:layoutAnimation="@anim/layout_animation_row_right_slide"
     android:orientation="vertical" >
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="60dip"
-        android:layout_marginLeft="40dip"
-        android:background="@drawable/login_facebook"
-        android:onClick="onClickFacebook" />
-
-    <ImageButton
-        android:id="@+id/imagebutton_twitter"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btn_later"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dip"
-        android:background="@drawable/login_linkedin"
+        android:layout_marginBottom="15dp"
+        android:onClick="onClickLater"
+        android:text="Later" />
+
+    <TextView
+        android:id="@+id/text_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_later"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"
+        android:gravity="center"
+        android:text="Connect with LinkedIn \n to start using C&amp;P"
+        android:textSize="16sp" />
+
+    <ImageButton
+        android:id="@+id/btn_linked_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/text_connect"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dip"
+        android:background="@drawable/btn_linked_in"
         android:onClick="onClickLinkedIn" />
 
-    <ImageButton
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="60dip"
-        android:layout_marginRight="40dip"
-        android:background="@drawable/login_mail"
-        android:onClick="onClickMail" />
-
-    <com.coffeeandpower.views.CustomFontView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/imagebutton_twitter"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dip"
-        android:text="CONNECT WITH..."
-        android:textColor="#909090"
-        android:textSize="26dip"
-        android:typeface="sans" />
+        android:layout_marginTop="40dp"
+        android:src="@drawable/candp_logo" />
 
 </RelativeLayout>

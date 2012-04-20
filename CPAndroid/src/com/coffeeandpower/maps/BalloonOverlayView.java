@@ -12,8 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.coffeeandpower.R;
-import com.coffeeandpower.activity.ActivityListPersons;
 import com.coffeeandpower.activity.ActivityUserDetails;
+import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 
 
 
@@ -55,7 +55,7 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 					if (isList){
 
 						// List
-						Intent intent = new Intent(context, ActivityListPersons.class);
+						Intent intent = new Intent(context, ActivityPeopleAndPlaces.class);
 						intent.putExtra("mapuserdata", foursquareIdKey);
 						// my location
 						intent.putExtra("lat", lat);

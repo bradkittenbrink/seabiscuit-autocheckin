@@ -1,4 +1,4 @@
-package com.coffeeandpower.activity;
+package com.coffeeandpower.tab.activities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,16 +15,21 @@ import android.widget.ListView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
+import com.coffeeandpower.activity.ActivityCheckInList;
+import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.adapters.MyPlacesAdapter;
 import com.coffeeandpower.adapters.MyUsersAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.inter.TabMenu;
+import com.coffeeandpower.inter.UserMenu;
+import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 
-public class ActivityListPersons extends ListActivity {
+public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, UserMenu{
 
 	private static final int HANDLE_GET_USERS_AND_VENUES = 1404;
 
@@ -44,6 +49,8 @@ public class ActivityListPersons extends ListActivity {
 
 	private boolean isPeopleList;
 
+	private UserAndTabMenu menu;
+
 	{
 		data = new double[6];
 		// default view is People List
@@ -61,7 +68,7 @@ public class ActivityListPersons extends ListActivity {
 			switch (msg.what){
 
 			case AppCAP.HTTP_ERROR:
-				new CustomDialog(ActivityListPersons.this, "Error", "Internet connection error").show();
+				new CustomDialog(ActivityPeopleAndPlaces.this, "Error", "Internet connection error").show();
 				break;
 
 			case HANDLE_GET_USERS_AND_VENUES:
@@ -84,7 +91,7 @@ public class ActivityListPersons extends ListActivity {
 					}
 
 					// Set default People view
-					adapterUsers = new MyUsersAdapter(ActivityListPersons.this, arrayUsers, userLat, userLng);
+					adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
 					setListAdapter(adapterUsers);
 					Utils.animateListView(getListView());
 				}
@@ -98,6 +105,9 @@ public class ActivityListPersons extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_show_persons);
+
+		// User and Tab Menu
+		menu = new UserAndTabMenu(this);
 
 		// Default View
 		((CustomFontView) findViewById(R.id.textview_location_name)).setText("People");
@@ -132,7 +142,7 @@ public class ActivityListPersons extends ListActivity {
 					getUsersAndVenues();
 				} else {
 
-					
+
 				}
 			}
 		}
@@ -144,13 +154,13 @@ public class ActivityListPersons extends ListActivity {
 		super.onListItemClick(l, v, position, id);
 
 		if (isPeopleList){
-			Intent intent = new Intent(ActivityListPersons.this, ActivityUserDetails.class);
+			Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityUserDetails.class);
 			intent.putExtra("mapuserobject", (UserSmart)adapterUsers.getItem(position));
 			intent.putExtra("from_act", "list");
 			startActivity(intent);
 			onBackPressed();
 		} else {
-			
+
 		}
 	}
 
@@ -161,32 +171,7 @@ public class ActivityListPersons extends ListActivity {
 	}
 
 
-	public void onClickCheckIn (View v){
-		if (userLat!=0 && userLng!=0){
-			Intent intent = new Intent(ActivityListPersons.this, ActivityCheckInList.class);
-			intent.putExtra("lat", (int)(userLat * 1E6));
-			intent.putExtra("lng", (int)(userLng * 1E6));
-			startActivity(intent);
-		}
-	}
 
-
-	public void onClickPlaces (View v){
-		isPeopleList = false;
-		((CustomFontView) findViewById(R.id.textview_location_name)).setText("Place");
-		adapterPlaces = new MyPlacesAdapter(ActivityListPersons.this, arrayVenues, userLat, userLng);
-		setListAdapter(adapterPlaces);
-		Utils.animateListView(getListView());
-	}
-
-
-	public void onClickPeople (View v){
-		isPeopleList = true;
-		((CustomFontView) findViewById(R.id.textview_location_name)).setText("People");
-		adapterUsers = new MyUsersAdapter(ActivityListPersons.this, arrayUsers, userLat, userLng);
-		setListAdapter(adapterUsers);
-		Utils.animateListView(getListView());
-	}
 
 
 	private void getUsersAndVenues (){
@@ -219,5 +204,66 @@ public class ActivityListPersons extends ListActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+	}
+
+	@Override
+	public void onClickEnterInviteCode(View v) {
+		menu.onClickEnterInviteCode(v);		
+	}
+
+	@Override
+	public void onClickWallet(View v) {
+		menu.onClickWallet(v);
+
+	}
+
+	@Override
+	public void onClickSettings(View v) {
+		menu.onClickSettings(v);
+
+	}
+
+	@Override
+	public void onClickLogout(View v) {
+		menu.onClickLogout(v);
+
+	}
+
+	@Override
+	public void onClickMap(View v) {
+		menu.onClickMap(v);
+
+	}
+
+	@Override
+	public void onClickContacts(View v) {
+		menu.onClickContacts(v);
+	}
+
+	public void onClickCheckIn (View v){
+		if (userLat!=0 && userLng!=0){
+			Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityCheckInList.class);
+			intent.putExtra("lat", (int)(userLat * 1E6));
+			intent.putExtra("lng", (int)(userLng * 1E6));
+			startActivity(intent);
+		}
+	}
+
+
+	public void onClickPlaces (View v){
+		isPeopleList = false;
+		((CustomFontView) findViewById(R.id.textview_location_name)).setText("Place");
+		adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
+		setListAdapter(adapterPlaces);
+		Utils.animateListView(getListView());
+	}
+
+
+	public void onClickPeople (View v){
+		isPeopleList = true;
+		((CustomFontView) findViewById(R.id.textview_location_name)).setText("People");
+		adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
+		setListAdapter(adapterUsers);
+		Utils.animateListView(getListView());
 	}
 }

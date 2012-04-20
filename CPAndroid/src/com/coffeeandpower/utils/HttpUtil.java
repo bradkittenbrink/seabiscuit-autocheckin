@@ -63,6 +63,7 @@ import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.cont.Work;
+import com.coffeeandpower.inter.OAuthService;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 

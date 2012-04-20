@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <!-- Setting Layout View -->
@@ -63,6 +63,7 @@
             android:text="Wallet"
             android:textColor="#dddddd"
             android:textSize="20sp" />
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="1px"
@@ -189,123 +190,4 @@
             android:textOff=""
             android:textOn="" />
     </RelativeLayout>
-
-    <!-- Horizontal Pager View -->
-
-    <com.coffeeandpower.views.HorizontalPagerModified
-        android:id="@+id/pager"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
-
-        <!-- FIRST VIEW -->
-
-        <RelativeLayout
-            android:id="@+id/dummy_vertical_line"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-            <View
-                android:layout_width="15dip"
-                android:layout_height="fill_parent"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/map_shadow" />
-        </RelativeLayout>
-
-        <!-- SECOND VIEW -->
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical" >
-
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="45dip"
-                android:background="@drawable/header" >
-
-                <Button
-                    android:layout_width="41dip"
-                    android:layout_height="28dip"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dip"
-                    android:background="@drawable/btn_settings"
-                    android:onClick="onClickSettings" />
-
-                <com.coffeeandpower.views.CustomFontView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:text="C&amp;P"
-                    android:textColor="#ffffff"
-                    android:textSize="25dip" />
-
-                <Button
-                    android:layout_width="41dip"
-                    android:layout_height="28dip"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dip"
-                    android:background="@drawable/btn_people_list"
-                    android:onClick="onClickPeopleList" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" >
-
-                <com.google.android.maps.MapView
-                    android:id="@+id/mapview"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:apiKey="0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q"
-                    android:clickable="true" />
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/btn_check_in"
-                    android:onClick="onClickCheckIn" />
-
-                <ImageButton
-                    android:id="@+id/map_btn_locate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:background="@drawable/btn_map_locate"
-                    android:onClick="onClickLocateMe" />
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@+id/map_btn_locate" >
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:background="@drawable/btn_map_refresh"
-                        android:onClick="onClickRefresh" />
-
-                    <ImageButton
-                        android:id="@+id/imagebutton_map_refresh_progress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:background="@drawable/btn_map_refresh_progress"
-                        android:onClick="onClickRefresh" />
-                </RelativeLayout>
-            </RelativeLayout>
-        </LinearLayout>
-    </com.coffeeandpower.views.HorizontalPagerModified>
-
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.coffeeandpower.activity;
+package com.coffeeandpower.tab.activities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,12 +27,17 @@ import com.coffeandpower.db.CASPSQLiteDatabase;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.activity.ActivityCheckInList;
+import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.User;
+import com.coffeeandpower.inter.TabMenu;
+import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.maps.MyItemizedOverlay;
 import com.coffeeandpower.maps.MyOverlayItem;
 import com.coffeeandpower.maps.MyOverlayPin;
+import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
@@ -42,7 +47,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 
-public class ActivityMap extends MapActivity{
+public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_MAP = 1;
@@ -50,6 +55,8 @@ public class ActivityMap extends MapActivity{
 
 	private static final int ACTIVITY_ACCOUNT_SETTINGS = 1888;
 	public static final int ACCOUNT_CHANGED = 1900;
+
+	private UserAndTabMenu menu;
 
 	// Views
 	private CustomFontView textNickName;
@@ -173,7 +180,7 @@ public class ActivityMap extends MapActivity{
 						} else {
 
 							if (itemWithKeyFoursquareId.getValue().size()>1){
-								// for ActivityListPersons
+								// for ActivityPeopleAndPlaces
 								createMarker(gp, itemWithKeyFoursquareId.getKey(), checkinsSum, venueName, true);
 							} else {
 								// fpr ActivityUserDetails
@@ -199,7 +206,10 @@ public class ActivityMap extends MapActivity{
 	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
-		setContentView(R.layout.activity_map);
+		setContentView(R.layout.tab_activity_map);
+
+		// User and Tab Menu
+		menu = new UserAndTabMenu(this);
 
 		// Views
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
@@ -402,10 +412,10 @@ public class ActivityMap extends MapActivity{
 
 
 	public void onClickContactList (View v) {
-		
+
 	}
-	
-	
+
+
 	public void onClickCheckIn (View v){
 
 		if (myLocationOverlay.getMyLocation()!=null){
@@ -446,7 +456,7 @@ public class ActivityMap extends MapActivity{
 
 		// Remove all markers from MapView
 		itemizedoverlay.clear();
-		
+
 		for (int i=mapView.getOverlays().size(); i>1; i--){
 			mapView.getOverlays().remove(i-1);
 		}
@@ -487,25 +497,25 @@ public class ActivityMap extends MapActivity{
 
 
 	public void onClickPeopleList (View v){
-		Intent intent = new Intent(this, ActivityListPersons.class);
-		
+		Intent intent = new Intent(this, ActivityPeopleAndPlaces.class);
+
 		if (myLocationOverlay.getMyLocation()!=null){
 			intent.putExtra("user_lat", myLocationOverlay.getMyLocation().getLatitudeE6());
 			intent.putExtra("user_lng", myLocationOverlay.getMyLocation().getLongitudeE6());
 		}
-		
+
 		Double[] data = getSWAndNECoordinatesBounds(mapView);
 		intent.putExtra("sw_lat", data[0]);
 		intent.putExtra("sw_lng", data[1]);
 		intent.putExtra("ne_lat", data[2]);
 		intent.putExtra("ne_lng", data[3]);
-		
+
 		intent.putExtra("type", "form_activity");
 
 		startActivity(intent);
 	}
 
-	
+
 	/**
 	 * [0]sw_lat; [1]sw_lng; [2]ne_lat; [3]ne_lng;
 	 * @param map
@@ -513,7 +523,7 @@ public class ActivityMap extends MapActivity{
 	 */
 	private Double[] getSWAndNECoordinatesBounds (MapView map){
 		Double[] data = new Double[4];
-		
+
 		GeoPoint pointCenterMap = mapView.getMapCenter();
 		int lngSpan = mapView.getLongitudeSpan();
 		int latSpan = mapView.getLatitudeSpan();
@@ -525,7 +535,7 @@ public class ActivityMap extends MapActivity{
 		data[1] = sw.getLongitudeE6()/ 1E6; // sw_lng
 		data[2] = ne.getLatitudeE6() / 1E6; // ne_lat
 		data[3] = ne.getLongitudeE6()/ 1E6; // ne_lng
-		
+
 		return data;
 	}
 
@@ -545,6 +555,31 @@ public class ActivityMap extends MapActivity{
 	protected void onDestroy() {
 		super.onDestroy();
 		myLocationOverlay.disableMyLocation();
+	}
+
+	@Override
+	public void onClickEnterInviteCode(View v) {
+		menu.onClickEnterInviteCode(v);
+	}
+
+	@Override
+	public void onClickMap(View v) {
+		menu.onClickMap(v);
+	}
+
+	@Override
+	public void onClickPlaces(View v) {
+		menu.onClickPlaces(v);
+	}
+
+	@Override
+	public void onClickPeople(View v) {
+		menu.onClickPeople(v);
+	}
+
+	@Override
+	public void onClickContacts(View v) {
+		menu.onClickContacts(v);
 	}
 
 

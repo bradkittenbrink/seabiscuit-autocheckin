@@ -1,6 +1,5 @@
-package com.coffeeandpower.utils;
+package com.coffeeandpower.inter;
 
-import android.app.Activity;
 import android.content.Intent;
 
 public interface OAuthService {
