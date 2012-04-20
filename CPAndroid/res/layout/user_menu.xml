@@ -37,9 +37,9 @@
             android:layout_height="wrap_content"
             android:background="@drawable/btn_gray"
             android:clickable="true"
-            android:onClick="onClickAccountSettings"
+            android:onClick="onClickEnterInviteCode"
             android:padding="10dp"
-            android:text="Settings"
+            android:text="Enter invite code"
             android:textColor="#dddddd"
             android:textSize="20sp" />
 
@@ -79,9 +79,9 @@
             android:layout_height="wrap_content"
             android:background="@drawable/btn_gray"
             android:clickable="true"
-            android:onClick="onClickContactList"
+            android:onClick="onClickSettings"
             android:padding="10dp"
-            android:text="Contact list"
+            android:text="Settings"
             android:textColor="#dddddd"
             android:textSize="20sp" />
 

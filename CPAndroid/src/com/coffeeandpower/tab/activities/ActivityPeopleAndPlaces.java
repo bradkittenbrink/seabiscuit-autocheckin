@@ -15,7 +15,6 @@ import android.widget.ListView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
-import com.coffeeandpower.activity.ActivityCheckInList;
 import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.adapters.MyPlacesAdapter;
 import com.coffeeandpower.adapters.MyUsersAdapter;
@@ -28,15 +27,20 @@ import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
+import com.coffeeandpower.views.HorizontalPagerModified;
 
 public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, UserMenu{
 
+	private static final int SCREEN_SETTINGS = 0;
+	private static final int SCREEN_USER = 1;
 	private static final int HANDLE_GET_USERS_AND_VENUES = 1404;
 
 	private MyUsersAdapter adapterUsers;
 	private MyPlacesAdapter adapterPlaces;
 
 	private ProgressDialog progress;
+
+	private HorizontalPagerModified pager;
 
 	private DataHolder result;
 
@@ -104,12 +108,15 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_list_show_persons);
+		setContentView(R.layout.tab_activity_people_and_places);
 
 		// User and Tab Menu
 		menu = new UserAndTabMenu(this);
 
 		// Default View
+		pager = (HorizontalPagerModified) findViewById(R.id.pager);
+		pager.setCurrentScreen(SCREEN_USER, false);
+
 		((CustomFontView) findViewById(R.id.textview_location_name)).setText("People");
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
@@ -121,7 +128,7 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 			// Check is it click from Activity or Balloon
 			String type = extras.getString("type");
 			if (type!=null){
-				if (type.equals("form_activity")){
+				if (type.equals("from_tab")){
 
 					data[0] = extras.getDouble("sw_lat");
 					data[1] = extras.getDouble("sw_lng");
@@ -170,8 +177,14 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 		super.onResume();
 	}
 
-
-
+	
+	public void onClickMenu (View v){
+		if (pager.getCurrentScreen()==SCREEN_USER){
+			pager.setCurrentScreen(SCREEN_SETTINGS, true);
+		} else {
+			pager.setCurrentScreen(SCREEN_USER, true);
+		}
+	}
 
 
 	private void getUsersAndVenues (){
@@ -231,24 +244,14 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 
 	@Override
 	public void onClickMap(View v) {
-		menu.onClickMap(v);
-
+		//menu.onClickMap(v);
+		finish();
 	}
 
 	@Override
 	public void onClickContacts(View v) {
 		menu.onClickContacts(v);
 	}
-
-	public void onClickCheckIn (View v){
-		if (userLat!=0 && userLng!=0){
-			Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityCheckInList.class);
-			intent.putExtra("lat", (int)(userLat * 1E6));
-			intent.putExtra("lng", (int)(userLng * 1E6));
-			startActivity(intent);
-		}
-	}
-
 
 	public void onClickPlaces (View v){
 		isPeopleList = false;
@@ -265,5 +268,10 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 		adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
 		setListAdapter(adapterUsers);
 		Utils.animateListView(getListView());
+	}
+
+	@Override
+	public void onClickCheckIn(View v) {
+		menu.onClickCheckIn(v);
 	}
 }

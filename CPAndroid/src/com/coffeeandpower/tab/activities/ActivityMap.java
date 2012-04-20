@@ -27,11 +27,9 @@ import com.coffeandpower.db.CASPSQLiteDatabase;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.activity.ActivityCheckInList;
-import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.User;
+import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.maps.MyItemizedOverlay;
@@ -377,7 +375,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	}
 
 
-	public void onClickSettings (View v){
+	public void onClickMenu (View v){
 
 		if (pager.getCurrentScreen()==SCREEN_MAP){
 			pager.setCurrentScreen(SCREEN_SETTINGS, true);
@@ -390,9 +388,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 	public void onClickAccountSettings (View v){
 
-		Intent intent = new Intent(ActivityMap.this, ActivitySettings.class);
-		intent.putExtra("user_obj", loggedUser);
-		startActivityForResult(intent, ACTIVITY_ACCOUNT_SETTINGS);
+
 	}
 
 
@@ -413,18 +409,6 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 	public void onClickContactList (View v) {
 
-	}
-
-
-	public void onClickCheckIn (View v){
-
-		if (myLocationOverlay.getMyLocation()!=null){
-
-			Intent intent = new Intent(ActivityMap.this, ActivityCheckInList.class);
-			intent.putExtra("lat", myLocationOverlay.getMyLocation().getLatitudeE6());
-			intent.putExtra("lng", myLocationOverlay.getMyLocation().getLongitudeE6());
-			startActivity(intent);
-		}
 	}
 
 
@@ -475,6 +459,9 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 				}
 			}
 		}).start();
+		
+		// For every refresh save Map coordinates
+		AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
 	}
 
 
@@ -496,33 +483,13 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	}
 
 
-	public void onClickPeopleList (View v){
-		Intent intent = new Intent(this, ActivityPeopleAndPlaces.class);
-
-		if (myLocationOverlay.getMyLocation()!=null){
-			intent.putExtra("user_lat", myLocationOverlay.getMyLocation().getLatitudeE6());
-			intent.putExtra("user_lng", myLocationOverlay.getMyLocation().getLongitudeE6());
-		}
-
-		Double[] data = getSWAndNECoordinatesBounds(mapView);
-		intent.putExtra("sw_lat", data[0]);
-		intent.putExtra("sw_lng", data[1]);
-		intent.putExtra("ne_lat", data[2]);
-		intent.putExtra("ne_lng", data[3]);
-
-		intent.putExtra("type", "form_activity");
-
-		startActivity(intent);
-	}
-
-
 	/**
 	 * [0]sw_lat; [1]sw_lng; [2]ne_lat; [3]ne_lng;
 	 * @param map
 	 * @return
 	 */
-	private Double[] getSWAndNECoordinatesBounds (MapView map){
-		Double[] data = new Double[4];
+	private double[] getSWAndNECoordinatesBounds (MapView map){
+		double[] data = new double[6];
 
 		GeoPoint pointCenterMap = mapView.getMapCenter();
 		int lngSpan = mapView.getLongitudeSpan();
@@ -535,7 +502,13 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 		data[1] = sw.getLongitudeE6()/ 1E6; // sw_lng
 		data[2] = ne.getLatitudeE6() / 1E6; // ne_lat
 		data[3] = ne.getLongitudeE6()/ 1E6; // ne_lng
-
+		data[4] = 0;
+		data[5] = 0;
+		
+		if (myLocationOverlay.getMyLocation()!=null){
+			data[4] = myLocationOverlay.getMyLocation().getLatitudeE6() / 1E6;
+			data[5] = myLocationOverlay.getMyLocation().getLongitudeE6() / 1E6;
+		}
 		return data;
 	}
 
@@ -580,6 +553,16 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	@Override
 	public void onClickContacts(View v) {
 		menu.onClickContacts(v);
+	}
+
+	@Override
+	public void onClickSettings(View v) {
+		menu.onClickSettings(v);		
+	}
+
+	@Override
+	public void onClickCheckIn(View v) {
+		menu.onClickCheckIn(v);
 	}
 
 

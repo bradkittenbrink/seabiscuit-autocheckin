@@ -4,52 +4,81 @@
     android:layout_height="fill_parent"
     android:background="#2d2d2d" >
 
-    <RelativeLayout
-        android:id="@+id/dummy_layout"
+    <include
+        android:id="@+id/user_menu"
+        layout="@layout/user_menu" />
+
+    <!-- Horizontal Pager View -->
+
+    <com.coffeeandpower.views.HorizontalPagerModified
+        android:id="@+id/pager"
         android:layout_width="fill_parent"
-        android:layout_height="45dip"
-        android:background="@drawable/header" >
+        android:layout_height="fill_parent" >
 
-        <Button android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dip"
-            android:background="@drawable/rounded_border"
-            android:onClick="onClickBack"
-            android:padding="8dip"
-            android:text="C&amp;P"
-            android:textColor="#ffffff" />
+        <!-- FIRST VIEW -->
 
-        <com.coffeeandpower.views.CustomFontView
-            android:id="@+id/textview_location_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/btn_back"
-            android:paddingLeft="5dp"
-            android:text="sdfsdcs"
-            android:textColor="#ffffff"
-            android:textSize="25dip" />
-    </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/dummy_vertical_line"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
 
-    <ListView
-        android:id="@android:id/list"
-        android:layout_below="@+id/dummy_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:divider="#ffdddddd"
-        android:cacheColorHint="#00000000" >
-    </ListView>
+            <View
+                android:layout_width="15dip"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/map_shadow" />
+        </RelativeLayout>
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/check_in"
-        android:onClick="onClickCheckIn" />
+        <!-- SECOND VIEW -->
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:background="#2d2d2d" >
+
+            <RelativeLayout
+                android:id="@+id/dummy_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="45dip"
+                android:background="@drawable/header" >
+
+                <Button
+                    android:layout_width="41dip"
+                    android:layout_height="28dip"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dip"
+                    android:background="@drawable/btn_settings"
+                    android:onClick="onClickMenu" />
+
+                <com.coffeeandpower.views.CustomFontView
+                    android:id="@+id/textview_location_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="5dp"
+                    android:text="sdfsdcs"
+                    android:textColor="#ffffff"
+                    android:textSize="25dip" />
+            </RelativeLayout>
+
+            <include
+                android:id="@+id/tab_bar"
+                android:layout_alignParentBottom="true"
+                layout="@layout/tab_bar" />
+
+            <ListView
+                android:id="@android:id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/tab_bar"
+                android:layout_below="@+id/dummy_layout"
+                android:cacheColorHint="#00000000"
+                android:divider="#ffdddddd" >
+            </ListView>
+        </RelativeLayout>
+    </com.coffeeandpower.views.HorizontalPagerModified>
 
 </RelativeLayout>

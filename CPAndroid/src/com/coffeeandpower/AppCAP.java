@@ -20,6 +20,7 @@ public class AppCAP extends Application{
 	private static final String TAG_USER_PHOT_URL = "tag_user_photo_url";
 	private static final String TAG_USER_PHOT_LARGE_URL = "tag_user_photo_large_url";
 	private static final String TAG_LOGGED_IN_USER_ID = "tag_logged_in_user_id";
+	private static final String TAG_USER_COORDINATES = "tag_user_coordinates";
 
 	public static final String URL_WEB_SERVICE = "https://coffeeandpower.com/"; // production
 	//public static final String URL_WEB_SERVICE = "http://staging.coffeeandpower.com/"; // staging	
@@ -134,8 +135,37 @@ public class AppCAP extends Application{
 	public static void setLoggedInUserId (int userId){
 		getSharedPreferences().edit().putInt(TAG_LOGGED_IN_USER_ID, userId).commit();
 	}
-	
+
 	public static int getLoggedInUserId (){
 		return getSharedPreferences().getInt(TAG_LOGGED_IN_USER_ID, 0);
 	}
+
+	public static void setUserCoordinates (double[] data){
+		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES+"sw_lat", (float)data[0]).commit();
+		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES+"sw_lng", (float)data[1]).commit();
+		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES+"ne_lat", (float)data[2]).commit();
+		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES+"ne_lng", (float)data[3]).commit();
+		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES+"user_lat", (float)data[4]).commit();
+		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES+"user_lng", (float)data[5]).commit();
+	}
+
+	public static double[] getUserCoordinates (){
+		double[] data = new double[6];
+		data[0] = (double)getSharedPreferences().getFloat(TAG_USER_COORDINATES+"sw_lat", 0);
+		data[1] = (double)getSharedPreferences().getFloat(TAG_USER_COORDINATES+"sw_lng", 0);
+		data[2] = (double)getSharedPreferences().getFloat(TAG_USER_COORDINATES+"ne_lat", 0);
+		data[3] = (double)getSharedPreferences().getFloat(TAG_USER_COORDINATES+"ne_lng", 0);
+		data[4] = (double)getSharedPreferences().getFloat(TAG_USER_COORDINATES+"user_lat", 0);
+		data[5] = (double)getSharedPreferences().getFloat(TAG_USER_COORDINATES+"user_lng", 0);
+		return data;
+	}
+
+
+
+
+
+
+
+
+
 }
