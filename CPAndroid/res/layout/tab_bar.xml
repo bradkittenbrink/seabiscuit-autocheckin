@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_alignParentBottom="true" >
+
+    <View
+        android:id="@+id/view_1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_marginTop="18dip"
+        android:background="#000000" />
+
+    <View
+        android:id="@+id/view_2"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_below="@+id/view_1"
+        android:background="#424242" />
+
+    <LinearLayout
+        android:id="@+id/tab_bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dip"
+        android:layout_below="@+id/view_2"
+        android:background="@drawable/bg_tab_bar"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_tabbar_press"
+            android:clickable="true"
+            android:drawableTop="@drawable/btn_map"
+            android:gravity="center"
+            android:onClick="onClickMap"
+            android:text="Map" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_tabbar_press"
+            android:clickable="true"
+            android:drawableTop="@drawable/tab_places_a"
+            android:gravity="center"
+            android:onClick="onClickPlaces"
+            android:text="Places" />
+
+        <ImageView
+            android:layout_width="0dip"
+            android:layout_height="30dip"
+            android:layout_weight="1"
+            android:background="@drawable/tab_check_out"
+            android:gravity="center"
+            android:visibility="invisible" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_tabbar_press"
+            android:clickable="true"
+            android:drawableTop="@drawable/tab_people_a"
+            android:gravity="center"
+            android:onClick="onClickPeople"
+            android:text="People" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_tabbar_press"
+            android:clickable="true"
+            android:drawableTop="@drawable/tab_contacts_a"
+            android:gravity="center"
+            android:onClick="onClickConctacts"
+            android:text="Contacts" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:drawableTop="@drawable/tab_check_in"
+        android:gravity="center"
+        android:onClick="onClickCheckIn"
+        android:text="Check In" />
+
+</RelativeLayout>
