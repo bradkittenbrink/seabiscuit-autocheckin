@@ -41,7 +41,7 @@
             android:id="@+id/imageview_mapview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:apiKey="0PV0Dp_6Dj6M_WBuUrThj9-fW3btGy9kxl83wgQ" />
+            android:apiKey="0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q" />
 
         <TextView
             android:layout_width="fill_parent"
