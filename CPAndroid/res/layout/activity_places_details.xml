@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:id="@+id/dummy_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="45dip"
+        android:background="@drawable/header" >
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:background="@drawable/rounded_border"
+            android:onClick="onClickBack"
+            android:padding="8dip"
+            android:text="Back"
+            android:textColor="#ffffff" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_chat_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Place Name"
+            android:textColor="#ffffff"
+            android:textSize="25dip" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dummy_layout" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/layout_top"
+                android:layout_width="fill_parent"
+                android:layout_height="250dip"
+                android:background="@drawable/picture_coming_soon_rectangle" >
+
+                <LinearLayout
+                    android:id="@+id/dummy_layout_1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dip"
+                    android:layout_alignParentBottom="true"
+                    android:background="#99000000"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/textview_place_name"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="asdasdasdasd"
+                        android:textColor="#ffffff"
+                        android:textSize="25dip"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textview_place_address"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="asdasdasdasd"
+                        android:textColor="#ffffff"
+                        android:textSize="20dip" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_top"
+                android:background="@drawable/texture_first_aid_kit" >
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="10dip"
+                    android:background="@drawable/header_shadow" />
+                
+                <RelativeLayout 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_silver"
+                    
+                    ></RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/textview_place_check_in"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Check in"
+                        android:textColor="#656565"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/imagebutton_check_in"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/check_in_big" />
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
