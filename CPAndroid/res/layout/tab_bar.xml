@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_alignParentBottom="true" >
 
     <View
@@ -26,27 +26,41 @@
         android:background="@drawable/bg_tab_bar"
         android:orientation="horizontal" >
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
-            android:clickable="true"
-            android:drawableTop="@drawable/btn_map"
             android:gravity="center"
             android:onClick="onClickMap"
-            android:text="Map" />
+            android:orientation="vertical" >
 
-        <TextView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:drawableTop="@drawable/btn_map"
+                android:gravity="center"
+                android:text="Map" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
-            android:clickable="true"
-            android:drawableTop="@drawable/tab_places_a"
             android:gravity="center"
             android:onClick="onClickPlaces"
-            android:text="Places" />
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:drawableTop="@drawable/tab_places_a"
+                android:gravity="center"
+                android:text="Places" />
+        </LinearLayout>
 
         <ImageView
             android:layout_width="0dip"
@@ -56,27 +70,41 @@
             android:gravity="center"
             android:visibility="invisible" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
-            android:clickable="true"
-            android:drawableTop="@drawable/tab_people_a"
             android:gravity="center"
             android:onClick="onClickPeople"
-            android:text="People" />
+            android:orientation="vertical" >
 
-        <TextView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:drawableTop="@drawable/tab_people_a"
+                android:gravity="center"
+                android:text="People" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
-            android:clickable="true"
-            android:drawableTop="@drawable/tab_contacts_a"
             android:gravity="center"
-            android:onClick="onClickConctacts"
-            android:text="Contacts" />
+            android:onClick="onClickContacts"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:drawableTop="@drawable/tab_contacts_a"
+                android:gravity="center"
+                android:text="Contacts" />
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
