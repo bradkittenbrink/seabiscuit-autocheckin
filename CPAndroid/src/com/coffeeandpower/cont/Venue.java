@@ -38,27 +38,6 @@ public class Venue implements Serializable{
 		this("","","","",0,0,0,"","","","","","","",0,0,0,0,"","");
 	}
 	
-	/**
-	 * Venue constructor
-	 * @param id
-	 * @param name
-	 * @param address
-	 * @param crossStreet
-	 * @param lat
-	 * @param lng
-	 * @param distance
-	 * @param postalCode
-	 * @param city
-	 * @param state
-	 * @param country
-	 * @param categoryName
-	 * @param categoryPluralName
-	 * @param categoryShortName
-	 * @param checkinsCount
-	 * @param usersCount
-	 * @param tipCount
-	 * @param hereNowCount
-	 */
 	public Venue(String id, String name, String address, String crossStreet,
 			double lat, double lng, int distance, String postalCode,
 			String city, String state, String country, String categoryName,
@@ -251,6 +230,5 @@ public class Venue implements Serializable{
 		this.photoUrl = photoUrl;
 	}
 
-	
 
 }
