@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 public class AppCAP extends Application{
 
 	// Google maps api key for debug Kep:  0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q
+	// Google maps api key for debug Tengai home:   0PV0Dp_6Dj6M_WBuUrThj9-fW3btGy9kxl83wgQ
 
 	public static final String TAG = "CoffeeAndPower";
 
