@@ -39,7 +39,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
                 android:drawableTop="@drawable/tab_map_a"
                 android:gravity="center"
                 android:text="Map" />
@@ -58,7 +57,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
                 android:drawableTop="@drawable/tab_places_a"
                 android:gravity="center"
                 android:text="Places" />
@@ -84,7 +82,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
                 android:drawableTop="@drawable/tab_people_a"
                 android:gravity="center"
                 android:text="People" />
@@ -102,7 +99,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
                 android:drawableTop="@drawable/tab_contacts_a"
                 android:gravity="center"
                 android:text="Contacts" />
