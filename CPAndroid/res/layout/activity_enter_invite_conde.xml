@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#333333"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:layout_width="96dip"
+        android:layout_height="96dip"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dip"
+        android:background="@drawable/plug_logo" />
+
+    <EditText
+        android:layout_width="240dip"
+        android:layout_height="140dip"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/invite_code_background"
+        android:capitalize="characters"
+        android:padding="25dip"
+        android:layout_marginTop="10dip"
+        android:text="dfgdfg"
+        android:textColor="#cecece"
+        android:textSize="40dip" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dip"
+        android:text="Enter invite code from \nnearby C&amp;P user" />
+    
+    <Button 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_turquoise"
+        android:text="Later"
+        android:textColor="#ffffff"
+        android:layout_marginTop="20dip"
+        android:paddingLeft="20dip"
+        android:paddingTop="10dip"
+        android:paddingRight="20dip"
+        android:paddingBottom="10dip"
+        android:layout_gravity="center_horizontal"
+        />
+
+</LinearLayout>

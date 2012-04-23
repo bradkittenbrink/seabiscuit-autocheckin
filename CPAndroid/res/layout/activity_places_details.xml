@@ -76,6 +76,12 @@
                         android:textColor="#ffffff"
                         android:textSize="20dip" />
                 </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="10dip"
+                    android:layout_above="@+id/dummy_layout_1"
+                    android:background="@drawable/header_shadow_rotated" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -88,13 +94,14 @@
                     android:layout_width="fill_parent"
                     android:layout_height="10dip"
                     android:background="@drawable/header_shadow" />
-                
-                <RelativeLayout 
+
+                <!-- item list worked -->
+
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/btn_silver"
-                    
-                    ></RelativeLayout>
+                    android:background="@drawable/bg_silver" >
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"

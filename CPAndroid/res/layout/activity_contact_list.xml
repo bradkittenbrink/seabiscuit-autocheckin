@@ -30,4 +30,15 @@
             android:onClick="onClickBack" />
     </RelativeLayout>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/contacts_blank_slate" />
+
+    <include
+        android:id="@+id/tab_bar"
+        android:layout_alignParentBottom="true"
+        layout="@layout/tab_bar" />
+
 </RelativeLayout>

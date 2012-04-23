@@ -58,7 +58,6 @@
                     android:text="C&amp;P"
                     android:textColor="#ffffff"
                     android:textSize="25dip" />
-
             </RelativeLayout>
 
             <RelativeLayout
