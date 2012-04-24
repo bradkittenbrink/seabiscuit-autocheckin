@@ -414,5 +414,13 @@ public class ActivitySettings extends RootActivity{
 	protected void onDestroy() {
 		super.onDestroy();
 	}
+	
+	public void onClickJobCategory (View v){
+		
+	}
+	
+	public void onClickSmartererBadges (View v){
+		
+	}
 
 }
