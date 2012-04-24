@@ -346,7 +346,7 @@
                                 android:id="@+id/text_spent"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="LOVE:"
+                                android:text="PROPS:"
                                 android:textColor="#62615f" />
 
                             <TextView
@@ -366,7 +366,7 @@
                         android:layout_below="@+id/dummy_layout_1"
                         android:layout_marginLeft="10dip"
                         android:layout_marginTop="10dip"
-                        android:text="Favorite places to work"
+                        android:text="Often works at..."
                         android:textColor="#338585"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -510,55 +510,58 @@
         android:background="@drawable/go_button_iphone"
         android:onClick="onClickPlus" />
 
-    <RelativeLayout android:id="@+id/rel_buttons"
+    <RelativeLayout
+        android:id="@+id/rel_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/imagebutton_plus"
-        android:visibility="gone"
-        android:layout_alignParentLeft="true" >
+        android:layout_alignParentLeft="true"
+        android:visibility="gone" >
 
         <ImageButton
-            android:id="@+id/imagebutton_send_love"
+            android:id="@+id/imagebutton_contacts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:background="@drawable/btn_black_love"
-            android:onClick="onClickSendLove" />
-
-        <ImageButton
-            android:id="@+id/imagebutton_f2f"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/imagebutton_send_love"
-            android:background="@drawable/btn_black_f2f"
-            android:onClick="onClickF2F" />
-
-        <ImageButton
-            android:id="@+id/imagebutton_paid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imagebutton_f2f"
-            android:background="@drawable/btn_black_paid"
-            android:onClick="onClickPaid" />
+            android:background="@drawable/btn_black_contacts"
+            android:onClick="onClickContacts" />
 
         <ImageButton
             android:id="@+id/imagebutton_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imagebutton_paid"
-            android:layout_marginBottom="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/imagebutton_contacts"
             android:background="@drawable/btn_black_chat"
             android:onClick="onClickChat" />
+
+        <ImageButton
+            android:id="@+id/imagebutton_thumb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imagebutton_chat"
+            android:background="@drawable/btn_black_thumb"
+            android:onClick="onClickThumb" />
+
+        <ImageButton
+            android:id="@+id/imagebutton_paid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imagebutton_thumb"
+            android:layout_marginBottom="100dp"
+            android:background="@drawable/btn_black_paid"
+            android:onClick="onClickPaid" />
     </RelativeLayout>
 
-    <ImageButton
+    <!--
+          <ImageButton
         android:id="@+id/imagebutton_check_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/check_in"
-        android:onClick="onClickCheckIn" />
+        android:onClick="onClickCheckIn" />
+    -->
 
 </RelativeLayout>

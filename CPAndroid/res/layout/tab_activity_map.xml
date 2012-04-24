@@ -80,16 +80,15 @@
                     android:layout_marginRight="5dp" >
 
                     <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dip"
+                        android:layout_height="41dip"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/btn_map_refresh"
-                        android:onClick="onClickRefresh" />
+                        android:background="@drawable/btn_map_refresh" />
 
                     <ImageButton
                         android:id="@+id/imagebutton_map_refresh_progress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="24dip"
+                        android:layout_height="24dip"
                         android:layout_centerInParent="true"
                         android:background="@drawable/btn_map_refresh_progress"
                         android:onClick="onClickRefresh" />
@@ -97,8 +96,8 @@
 
                 <ImageButton
                     android:id="@+id/map_btn_locate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dip"
+                    android:layout_height="41dip"
                     android:layout_alignParentTop="true"
                     android:layout_toLeftOf="@+id/rel_refresh"
                     android:background="@drawable/btn_map_locate"

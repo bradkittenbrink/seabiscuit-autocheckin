@@ -138,14 +138,27 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <TextView
+    <RelativeLayout
+        android:id="@+id/layout_check_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:clickable="true"
-        android:drawableTop="@drawable/btn_tab_check_in_out"
-        android:gravity="center"
-        android:onClick="onClickCheckIn"
-        android:text="Check In" />
+        android:onClick="onClickCheckIn" >
+
+        <TextView
+            android:id="@+id/textview_check_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/btn_tab_check_in_out"
+            android:gravity="center"
+            android:text="Check In" />
+
+        <ImageView
+            android:id="@+id/imageview_check_in_clock_hand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/check_in_clock_hand" />
+    </RelativeLayout>
 
 </RelativeLayout>
