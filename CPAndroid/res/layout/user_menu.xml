@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:layout_marginLeft="5dip"
-                android:background="@drawable/drop_down"
+                android:background="@drawable/btn_drop_down"
                 android:gravity="left|center_vertical"
                 android:paddingLeft="10dip"
                 android:text="in city"

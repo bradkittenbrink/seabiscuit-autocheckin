@@ -109,16 +109,24 @@
                 android:padding="10dip"
                 android:text="Profile Photo" />
 
-            <ImageView
-                android:id="@+id/imageview_your_face_here"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_margin="5dip"
                 android:layout_marginRight="10dip"
-                android:background="@drawable/default_avatar25"
+                android:background="#ffffff"
                 android:onClick="onClickPhoto"
-                android:visibility="visible" />
+                android:padding="1dip"
+                android:visibility="visible" >
+
+                <ImageView
+                    android:id="@+id/imageview_your_face_here"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/default_avatar25" />
+            </RelativeLayout>
 
             <ProgressBar
                 android:id="@+id/progress_photo"
@@ -126,7 +134,7 @@
                 android:layout_height="25dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="15dip"
+                android:layout_marginRight="10dip"
                 android:visibility="visible" />
         </RelativeLayout>
 
@@ -180,6 +188,58 @@
                 android:singleLine="true"
                 android:textColor="#ffffffff"
                 android:textSize="15sp" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="#444444" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickJobCategory" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:padding="10dip"
+                android:text="Job Category" />
+
+            <ImageView
+                android:layout_width="11dip"
+                android:layout_height="16dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dip"
+                android:background="@drawable/list_arrow_dark_black" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="#444444" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickSmartererBadges" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:padding="10dip"
+                android:text="Smarterer Badges" />
+
+            <ImageView
+                android:layout_width="11dip"
+                android:layout_height="16dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dip"
+                android:background="@drawable/list_arrow_dark_black" />
         </RelativeLayout>
     </LinearLayout>
 

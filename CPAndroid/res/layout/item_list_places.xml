@@ -79,9 +79,9 @@
     </LinearLayout>
     
     <ImageView 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/wallet_arrow"
+        android:layout_width="11dip"
+        android:layout_height="16dip"
+        android:background="@drawable/list_arrow_dark_black"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         />
