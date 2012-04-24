@@ -1,4 +1,4 @@
-package com.coffeeandpower.activity;
+package com.coffeeandpower.tab.activities;
 
 import java.util.ArrayList;
 
@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
+import com.coffeeandpower.activity.ActivityCheckIn;
 import com.coffeeandpower.adapters.MyVenuesAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Venue;

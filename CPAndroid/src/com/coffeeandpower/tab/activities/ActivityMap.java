@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -20,6 +21,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coffeandpower.db.CAPDao;
@@ -208,6 +211,9 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 		// User and Tab Menu
 		menu = new UserAndTabMenu(this);
+		((RelativeLayout)findViewById(R.id.rel_map)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+		((ImageView)findViewById(R.id.imageview_map)).setImageResource(R.drawable.tab_map_pressed);
+		((TextView)findViewById(R.id.text_map)).setTextColor(Color.WHITE);
 
 		// Views
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
@@ -386,32 +392,6 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	}
 
 
-	public void onClickAccountSettings (View v){
-
-
-	}
-
-
-	public void onClickWallet (View v){
-
-		Toast.makeText(this, "onClickWallet", Toast.LENGTH_SHORT).show();
-	}
-
-
-	public void onClickLogout (View v){
-
-		//HttpUtil.logout();
-		AppCAP.setUserEmail("");
-		onBackPressed();
-		Toast.makeText(this, "onClickLogout", Toast.LENGTH_SHORT).show();
-	}
-
-
-	public void onClickContactList (View v) {
-
-	}
-
-
 	public void onClickLocateMe (View v) {
 		if (myLocationOverlay!=null){
 			if (myLocationOverlay.getMyLocation()!=null){
@@ -537,7 +517,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 	@Override
 	public void onClickMap(View v) {
-		menu.onClickMap(v);
+		//menu.onClickMap(v);
 	}
 
 	@Override
@@ -565,5 +545,16 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 		menu.onClickCheckIn(v);
 	}
 
+	public void onClickWallet (View v){
+		Toast.makeText(this, "onClickWallet", Toast.LENGTH_SHORT).show();
+	}
+
+
+	public void onClickLogout (View v){
+		//HttpUtil.logout();
+		AppCAP.setUserEmail("");
+		onBackPressed();
+		Toast.makeText(this, "onClickLogout", Toast.LENGTH_SHORT).show();
+	}
 
 }

@@ -7,14 +7,19 @@ import java.util.Comparator;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
+import com.coffeeandpower.activity.ActivityPlaceDetails;
 import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.adapters.MyPlacesAdapter;
 import com.coffeeandpower.adapters.MyUsersAdapter;
@@ -54,6 +59,8 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 	private boolean isPeopleList;
 
 	private UserAndTabMenu menu;
+	
+	private String type;
 
 	{
 		data = new double[6];
@@ -93,18 +100,35 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 							}
 						});
 					}
-
-					// Set default People view
-					adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
-					setListAdapter(adapterUsers);
-					Utils.animateListView(getListView());
+					
+					if (type.equals("people")){
+						setPeopleList();
+					} else {
+						setPlaceList();
+					}
+					
 				}
+				
 				break;
 			}
 		}
 	};
 
+	private void setPeopleList (){
+		adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
+		setListAdapter(adapterUsers);
+		Utils.animateListView(getListView());
+	}
 
+	private void setPlaceList (){
+		isPeopleList = false;
+		((CustomFontView) findViewById(R.id.textview_location_name)).setText("Place");
+		adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
+		setListAdapter(adapterPlaces);
+		Utils.animateListView(getListView());
+	}
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -125,10 +149,22 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 		Bundle extras = getIntent().getExtras();
 		if (extras!=null){
 
+			// Check is it People or Places List
+			type = extras.getString("type");
+			if (type.equals("people")){
+				((RelativeLayout)findViewById(R.id.rel_people)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+				((ImageView)findViewById(R.id.imageview_people)).setImageResource(R.drawable.tab_people_pressed);
+				((TextView)findViewById(R.id.text_people)).setTextColor(Color.WHITE);
+			} else {
+				((RelativeLayout)findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+				((ImageView)findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
+				((TextView)findViewById(R.id.text_places)).setTextColor(Color.WHITE);
+			}
+			
 			// Check is it click from Activity or Balloon
-			String type = extras.getString("type");
-			if (type!=null){
-				if (type.equals("from_tab")){
+			String from = extras.getString("from");
+			if (from!=null){
+				if (from.equals("from_tab")){
 
 					data[0] = extras.getDouble("sw_lat");
 					data[1] = extras.getDouble("sw_lng");
@@ -167,7 +203,7 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 			startActivity(intent);
 			onBackPressed();
 		} else {
-
+			Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
 		}
 	}
 
@@ -251,23 +287,18 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 	@Override
 	public void onClickContacts(View v) {
 		menu.onClickContacts(v);
+		finish();
 	}
 
 	public void onClickPlaces (View v){
-		isPeopleList = false;
-		((CustomFontView) findViewById(R.id.textview_location_name)).setText("Place");
-		adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
-		setListAdapter(adapterPlaces);
-		Utils.animateListView(getListView());
+		menu.onClickPlaces(v);
+		finish();
 	}
 
 
 	public void onClickPeople (View v){
-		isPeopleList = true;
-		((CustomFontView) findViewById(R.id.textview_location_name)).setText("People");
-		adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
-		setListAdapter(adapterUsers);
-		Utils.animateListView(getListView());
+		menu.onClickPeople(v);
+		finish();
 	}
 
 	@Override

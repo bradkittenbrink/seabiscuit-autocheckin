@@ -2,15 +2,14 @@ package com.coffeeandpower.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 
 import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.activity.ActivityCheckInList;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
-import com.coffeeandpower.tab.activities.ActivityMap;
+import com.coffeeandpower.tab.activities.ActivityCheckInList;
+import com.coffeeandpower.tab.activities.ActivityContacts;
 import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 
 public class UserAndTabMenu implements UserMenu, TabMenu{
@@ -30,7 +29,19 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	@Override
 	public void onClickPlaces(View v) {
+		double[] data = new double[6];
+		data = AppCAP.getUserCoordinates();
 
+		Intent intent = new Intent(context, ActivityPeopleAndPlaces.class);
+		intent.putExtra("sw_lat", data[0]);
+		intent.putExtra("sw_lng", data[1]);
+		intent.putExtra("ne_lat", data[2]);
+		intent.putExtra("ne_lng", data[3]);
+		intent.putExtra("user_lat", data[4]);
+		intent.putExtra("user_lng", data[5]);
+		intent.putExtra("from", "from_tab");
+		intent.putExtra("type", "place");
+		context.startActivity(intent);
 
 	}
 
@@ -62,14 +73,15 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 		intent.putExtra("ne_lng", data[3]);
 		intent.putExtra("user_lat", data[4]);
 		intent.putExtra("user_lng", data[5]);
-		intent.putExtra("type", "from_tab");
+		intent.putExtra("from", "from_tab");
+		intent.putExtra("type", "people");
 		context.startActivity(intent);
 	}
 
 	@Override
 	public void onClickContacts(View v) {
-		// TODO Auto-generated method stub
-
+		Intent intent = new Intent(context, ActivityContacts.class);
+		context.startActivity(intent);
 	}
 
 	@Override
@@ -86,9 +98,8 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	@Override
 	public void onClickSettings(View v) {
-		//Intent intent = new Intent(context, ActivitySettings.class);
-		//intent.putExtra("user_obj", loggedUser);
-		//startActivityForResult(intent, ACTIVITY_ACCOUNT_SETTINGS);
+		Intent intent = new Intent(context, ActivitySettings.class);
+		context.startActivity(intent);
 	}
 
 	@Override

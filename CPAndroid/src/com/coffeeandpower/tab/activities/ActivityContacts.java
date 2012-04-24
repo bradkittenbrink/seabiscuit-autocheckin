@@ -1,25 +1,51 @@
 package com.coffeeandpower.tab.activities;
 
+import com.coffeeandpower.R;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.utils.UserAndTabMenu;
+import com.coffeeandpower.views.HorizontalPagerModified;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class ActivityContacts extends Activity implements TabMenu, UserMenu{
 
+	private static final int SCREEN_SETTINGS = 0;
+	private static final int SCREEN_USER = 1;
+			
+	private HorizontalPagerModified pager;
+	
 	private UserAndTabMenu menu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		setContentView(R.layout.tab_activity_contacts);
+		
+		// Horizontal Pager
+		pager = (HorizontalPagerModified) findViewById(R.id.pager);
+		pager.setCurrentScreen(SCREEN_USER, false);
+		
 		// User and Tab Menu
 		menu = new UserAndTabMenu(this);
+		((RelativeLayout)findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+		((ImageView)findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_pressed);
+		((TextView)findViewById(R.id.text_contacts)).setTextColor(Color.WHITE);
 	}
 
+	public void onClickMenu (View v){
+		if (pager.getCurrentScreen()==SCREEN_USER){
+			pager.setCurrentScreen(SCREEN_SETTINGS, true);
+		} else {
+			pager.setCurrentScreen(SCREEN_USER, true);
+		}
+	}
 
 	@Override
 	protected void onResume() {
@@ -67,12 +93,14 @@ public class ActivityContacts extends Activity implements TabMenu, UserMenu{
 
 	@Override
 	public void onClickMap(View v) {
-		menu.onClickMap(v);
+		//menu.onClickMap(v);
+		finish();
 	}
 
 	@Override
 	public void onClickPlaces(View v) {
 		menu.onClickPlaces(v);
+		finish();
 	}
 
 	@Override
@@ -83,11 +111,12 @@ public class ActivityContacts extends Activity implements TabMenu, UserMenu{
 	@Override
 	public void onClickPeople(View v) {
 		menu.onClickPeople(v);
+		finish();
 	}
 
 	@Override
 	public void onClickContacts(View v) {
-		menu.onClickContacts(v);
+		//menu.onClickContacts(v);
 	}
 
 }

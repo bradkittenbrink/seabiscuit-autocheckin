@@ -190,7 +190,7 @@ public class ActivityCheckIn extends MapActivity{
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				resultGetUsersCheckedIn = AppCAP.getConnection().getUsersCheckedInAtFoursquareID(venue);
+				resultGetUsersCheckedIn = AppCAP.getConnection().getUsersCheckedInAtFoursquareID(venue.getId());
 				if (resultGetUsersCheckedIn.getResponseCode()==AppCAP.HTTP_ERROR){
 					handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 				} else {
@@ -291,10 +291,5 @@ public class ActivityCheckIn extends MapActivity{
 	protected void onDestroy() {
 		super.onDestroy();
 	}
-
-
-
-
-
 
 }

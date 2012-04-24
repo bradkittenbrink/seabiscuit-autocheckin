@@ -12,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.cont.VenueSmart;
 
@@ -96,8 +97,8 @@ public class MyPlacesAdapter extends BaseAdapter{
 		}
 		
 		holder.textDistance.setText(distanceS);
-		holder.textAddress.setText(venues.get(position).getAddress());
-		holder.textVenueName.setText(venues.get(position).getName());
+		holder.textAddress.setText(AppCAP.cleanResponseString(venues.get(position).getAddress()));
+		holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(position).getName()));
 		
 		holder.textCheckins.setText(venues.get(position).getCheckinsForInterval() + " checkins");
 		

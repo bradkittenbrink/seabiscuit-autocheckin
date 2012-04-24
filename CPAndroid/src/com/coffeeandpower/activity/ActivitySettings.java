@@ -64,6 +64,7 @@ public class ActivitySettings extends RootActivity{
 	private DataHolder result;
 	private DataHolder resultPhotoDownload;
 	private DataHolder resultPhotoUpload;
+	private DataHolder resultLoggedUser;
 
 	private Handler handler = new Handler(){
 		@Override
@@ -74,7 +75,7 @@ public class ActivitySettings extends RootActivity{
 			progresNickName.setVisibility(View.GONE);
 			progressPhoto.setVisibility(View.GONE);
 			progressUploadPhoto.dismiss();
-			
+
 			switch (msg.what) {
 
 			case AppCAP.HTTP_ERROR:
@@ -104,6 +105,13 @@ public class ActivitySettings extends RootActivity{
 				}
 				break;
 
+			case AppCAP.HTTP_REQUEST_SUCCEEDED:
+				if (resultLoggedUser.getObject()!=null){
+					loggedUser = (User) resultLoggedUser.getObject();
+					useUserData();
+				}
+				break;
+
 			case HANDLE_UPLOAD_PROFILE_PHOTO:
 				if (resultPhotoUpload!=null){
 					if (resultPhotoUpload.getObject()!=null){
@@ -124,15 +132,6 @@ public class ActivitySettings extends RootActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
 
-
-		// Get User Obj from intent
-		Bundle bundle = getIntent().getExtras();
-		if (bundle!=null){
-
-			loggedUser = (User) bundle.getSerializable("user_obj");
-		}
-
-
 		// Views
 		textNickName = (EditText) findViewById(R.id.edit_nickname);
 		textEmail = (EditText) findViewById(R.id.edit_email);
@@ -144,11 +143,7 @@ public class ActivitySettings extends RootActivity{
 		progressPhoto = (ProgressBar) findViewById(R.id.progress_photo);
 		progressUploadPhoto = new ProgressDialog(this);
 
-		// Set views
-		if (loggedUser!=null){
-			textNickName.setText(loggedUser.getNickName());
-			textEmail.setText(loggedUser.getUserName());
-		}
+
 		imageClearEmailField.setVisibility(View.GONE);
 		imageClearNickNameField.setVisibility(View.GONE);
 		progresEmail.setVisibility(View.GONE);
@@ -167,6 +162,20 @@ public class ActivitySettings extends RootActivity{
 			}
 		});
 
+		// Get logged user
+		progresNickName.setVisibility(View.GONE);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				resultLoggedUser = AppCAP.getConnection().getUserData();
+				if (resultLoggedUser.getResponseCode()==AppCAP.HTTP_ERROR){
+					handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+				} else {
+					handler.sendEmptyMessage(resultLoggedUser.getResponseCode());
+				}
+			}
+		}).start();
+
 
 		// Load profile image if exist
 		loadProfilePhoto();
@@ -182,19 +191,21 @@ public class ActivitySettings extends RootActivity{
 					textNickName.setVisibility(View.GONE);
 					progresNickName.setVisibility(View.VISIBLE);
 
-					loggedUser.setNickName(textNickName.getText().toString());
+					if (loggedUser!=null){
+						loggedUser.setNickName(textNickName.getText().toString());
 
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							result = AppCAP.getConnection().setUserProfileData(loggedUser, false);
-							if (result.getResponseCode()==AppCAP.HTTP_ERROR){
-								handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-							} else {
-								handler.sendEmptyMessage(HANDLE_NICK_NAME_CHANGE);
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								result = AppCAP.getConnection().setUserProfileData(loggedUser, false);
+								if (result.getResponseCode()==AppCAP.HTTP_ERROR){
+									handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+								} else {
+									handler.sendEmptyMessage(HANDLE_NICK_NAME_CHANGE);
+								}
 							}
-						}
-					}).start();
+						}).start();
+					}
 					break;
 
 				default:
@@ -225,19 +236,21 @@ public class ActivitySettings extends RootActivity{
 					textEmail.setVisibility(View.GONE);
 					progresEmail.setVisibility(View.VISIBLE);
 
-					loggedUser.setUserName(textEmail.getText().toString());
+					if (loggedUser!=null){
+						loggedUser.setUserName(textEmail.getText().toString());
 
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							result = AppCAP.getConnection().setUserProfileData(loggedUser, true);
-							if (result.getResponseCode()==AppCAP.HTTP_ERROR){
-								handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-							} else {
-								handler.sendEmptyMessage(HANDLE_EMAIL_CHANGE);
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								result = AppCAP.getConnection().setUserProfileData(loggedUser, true);
+								if (result.getResponseCode()==AppCAP.HTTP_ERROR){
+									handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+								} else {
+									handler.sendEmptyMessage(HANDLE_EMAIL_CHANGE);
+								}
 							}
-						}
-					}).start();
+						}).start();
+					}
 					break;
 
 				default:
@@ -248,8 +261,23 @@ public class ActivitySettings extends RootActivity{
 		});
 	}
 
-	private void loadProfilePhoto(){
 
+	/**
+	 *  Use user data in GUI
+	 */
+	private void useUserData(){
+		// Set views
+		if (loggedUser!=null){
+			textNickName.setText(loggedUser.getNickName());
+			textEmail.setText(loggedUser.getUserName());
+		}
+	}
+
+
+	/**
+	 * Load profile photo
+	 */
+	private void loadProfilePhoto(){
 		if (AppCAP.getLocalUserPhotoURL().length()>5){
 
 			progressPhoto.setVisibility(View.VISIBLE);
@@ -324,7 +352,7 @@ public class ActivitySettings extends RootActivity{
 					} catch (IOException e) {
 					} catch (URISyntaxException e) {
 					}
-					
+
 					// Upload user Photo
 					progressUploadPhoto.show();
 					new Thread(new Runnable() {
@@ -338,7 +366,7 @@ public class ActivitySettings extends RootActivity{
 							}
 						}
 					}).start();
-					
+
 				} else {
 					new CustomDialog(ActivitySettings.this, "Info", "Unable to save picture! We are working on that...").show();
 				}
@@ -384,7 +412,6 @@ public class ActivitySettings extends RootActivity{
 
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
 

@@ -1136,7 +1136,7 @@ public class HttpUtil {
 	 * @param venue
 	 * @return
 	 */
-	public DataHolder getUsersCheckedInAtFoursquareID (Venue venue){
+	public DataHolder getUsersCheckedInAtFoursquareID (String foursquareId){
 
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
@@ -1148,7 +1148,7 @@ public class HttpUtil {
 
 		try {
 			params.add(new BasicNameValuePair("action", "getUsersCheckedIn"));
-			params.add(new BasicNameValuePair("foursquare", URLEncoder.encode(venue.getId()+"", "utf-8")));
+			params.add(new BasicNameValuePair("foursquare", URLEncoder.encode(foursquareId+"", "utf-8")));
 
 			post.setEntity(new UrlEncodedFormEntity(params));
 
