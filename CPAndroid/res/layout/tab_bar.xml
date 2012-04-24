@@ -32,7 +32,8 @@
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
-            android:gravity="center" >
+            android:gravity="center"
+            android:onClick="onClickMap" >
 
             <ImageView
                 android:id="@+id/imageview_map"
@@ -55,7 +56,8 @@
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
-            android:gravity="center" >
+            android:gravity="center"
+            android:onClick="onClickPlaces" >
 
             <ImageView
                 android:id="@+id/imageview_places"
@@ -108,6 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
+            android:clickable="true"
             android:onClick="onClickContacts"
             android:orientation="vertical" >
 
@@ -121,8 +124,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/imageview_contacts"
+                android:layout_centerHorizontal="true"
                 android:text="Contacts" />
         </RelativeLayout>
     </LinearLayout>
@@ -131,6 +134,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:clickable="true"
         android:drawableTop="@drawable/tab_check_in"
         android:gravity="center"
         android:onClick="onClickCheckIn"
