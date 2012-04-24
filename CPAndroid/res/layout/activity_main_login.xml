@@ -13,8 +13,10 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp"
+        android:background="@drawable/button_gray"
         android:onClick="onClickLater"
-        android:text="Later" />
+        android:text="Later"
+        android:textColor="#ffffff" />
 
     <TextView
         android:id="@+id/text_connect"

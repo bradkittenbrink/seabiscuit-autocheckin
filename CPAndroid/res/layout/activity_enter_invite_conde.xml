@@ -16,10 +16,10 @@
         android:layout_width="240dip"
         android:layout_height="140dip"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dip"
         android:background="@drawable/invite_code_background"
         android:capitalize="characters"
         android:padding="25dip"
-        android:layout_marginTop="10dip"
         android:text="dfgdfg"
         android:textColor="#cecece"
         android:textSize="40dip" />
@@ -30,19 +30,18 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dip"
         android:text="Enter invite code from \nnearby C&amp;P user" />
-    
-    <Button 
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_turquoise"
-        android:text="Later"
-        android:textColor="#ffffff"
-        android:layout_marginTop="20dip"
-        android:paddingLeft="20dip"
-        android:paddingTop="10dip"
-        android:paddingRight="20dip"
-        android:paddingBottom="10dip"
         android:layout_gravity="center_horizontal"
-        />
+        android:layout_marginTop="20dip"
+        android:background="@drawable/button_turquoise"
+        android:paddingBottom="10dip"
+        android:paddingLeft="20dip"
+        android:paddingRight="20dip"
+        android:paddingTop="10dip"
+        android:text="Later"
+        android:textColor="#ffffff" />
 
 </LinearLayout>
