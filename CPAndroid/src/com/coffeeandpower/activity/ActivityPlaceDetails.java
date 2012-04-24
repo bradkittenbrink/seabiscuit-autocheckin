@@ -5,10 +5,13 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.coffeeandpower.AppCAP;
@@ -19,6 +22,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
+import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
@@ -118,6 +122,27 @@ public class ActivityPlaceDetails extends RootActivity{
 			getUsersAndVenues();
 		}
 		
+		
+		// On item list click
+		listHereNow.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+				Intent intent = new Intent(ActivityPlaceDetails.this, ActivityUserDetails.class);
+				intent.putExtra("mapuserobject", arrayUsersHereNow.get(position));
+				intent.putExtra("from_act", "list");
+				startActivity(intent);
+			}
+		});
+		
+		listWereHere.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+				Intent intent = new Intent(ActivityPlaceDetails.this, ActivityUserDetails.class);
+				intent.putExtra("mapuserobject", arrayUsersWereHere.get(position));
+				intent.putExtra("from_act", "list");
+				startActivity(intent);
+			}
+		});
 		
 	}
 

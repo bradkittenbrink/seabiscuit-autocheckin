@@ -86,6 +86,7 @@ public class ActivityCheckIn extends MapActivity{
 
 			case AppCAP.HTTP_REQUEST_SUCCEEDED:
 				setResult(AppCAP.ACT_QUIT);
+				AppCAP.setUserCheckedIn(true);
 				ActivityCheckIn.this.finish();
 				break;
 

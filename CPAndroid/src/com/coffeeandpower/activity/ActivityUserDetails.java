@@ -23,6 +23,7 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -37,9 +38,9 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.adapters.MyFavouritePlacesAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
-import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.UserResume;
+import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
 import com.coffeeandpower.utils.HttpUtil;
@@ -228,6 +229,13 @@ public class ActivityUserDetails extends MapActivity{
 			((CustomFontView) findViewById(R.id.textview_user_name)).setText(mud.getNickName());
 			((TextView)findViewById(R.id.textview_user_status)).setText(AppCAP.cleanResponseString(mud.getStatusText()));
 			((CustomFontView) findViewById(R.id.textview_nick_name)).setText(mud.getNickName());
+
+			// If current user looking at own page, hide "plus" button
+			if (mud.getUserId()==AppCAP.getLoggedInUserId()){
+				((ImageButton)findViewById(R.id.imagebutton_plus)).setVisibility(View.GONE);
+				((RelativeLayout)findViewById(R.id.rel_buttons)).setVisibility(View.GONE);
+			}
+
 		}
 
 
@@ -484,7 +492,7 @@ public class ActivityUserDetails extends MapActivity{
 	}
 
 	public void onClickCheckIn (View v){
-		
+
 	}
 
 

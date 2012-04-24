@@ -29,6 +29,7 @@ import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.utils.UserAndTabMenu;
+import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
@@ -113,7 +114,19 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 			}
 		}
 	};
-
+	
+	
+	/**
+	 * Check if user is checked in or not
+	 */
+	private void checkUserState(){
+		if (AppCAP.isUserCheckedIn()){
+			((TextView)findViewById(R.id.textview_check_in)).setText("Check Out");
+		} else {
+			((TextView)findViewById(R.id.textview_check_in)).setText("Check In");
+		}
+	}
+	
 	private void setPeopleList (){
 		adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
 		setListAdapter(adapterUsers);
@@ -135,7 +148,14 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 		setContentView(R.layout.tab_activity_people_and_places);
 
 		// User and Tab Menu
+		checkUserState();
 		menu = new UserAndTabMenu(this);
+		menu.setOnUserStateChanged(new OnUserStateChanged() {
+			@Override
+			public void onCheckOut() {
+				checkUserState();
+			}
+		});
 
 		// Default View
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
@@ -170,16 +190,9 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 					data[1] = extras.getDouble("sw_lng");
 					data[2] = extras.getDouble("ne_lat");
 					data[3] = extras.getDouble("ne_lng");
-					data[4] = 0;
-					data[5] = 0;
+					data[4] = extras.getDouble("user_lat");
+					data[5] = extras.getDouble("user_lng");
 
-					int ulat = extras.getInt("user_lat");
-					int ulng = extras.getInt("user_lng");
-
-					if (ulat!=0 && ulng!=0){
-						data[4] = ulat / 1E6;
-						data[5] = ulng / 1E6;
-					}
 					userLat = data[4];
 					userLng = data[5];
 					getUsersAndVenues();
@@ -214,6 +227,7 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 	@Override
 	protected void onResume() {
 		super.onResume();
+		checkUserState();
 	}
 
 	

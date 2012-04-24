@@ -1,4 +1,3 @@
-
 package com.coffeeandpower.maps;
 
 import android.content.Context;
@@ -11,10 +10,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
-import com.coffeeandpower.activity.ActivityUserDetails;
-import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
-
+import com.coffeeandpower.activity.ActivityPlaceDetails;
 
 
 public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout {
@@ -25,12 +23,7 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 	private TextView snippet;
 
 	private String foursquareIdKey;
-	
-	private boolean isList;
 
-	private int lat;
-	private int lng;
-	
 	public BalloonOverlayView(final Context context, int balloonBottomOffset) {
 
 		super(context);
@@ -49,25 +42,12 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 		ImageView next = (ImageView) v.findViewById(R.id.close_img_button);
 		next.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				
+
 				if (foursquareIdKey!=null){
-
-					if (isList){
-
-						// List
-						Intent intent = new Intent(context, ActivityPeopleAndPlaces.class);
-						intent.putExtra("mapuserdata", foursquareIdKey);
-						// my location
-						intent.putExtra("lat", lat);
-						intent.putExtra("lng", lng);
-						context.startActivity(intent);
-					} else {
-
-						Intent intent = new Intent(context, ActivityUserDetails.class);
-						intent.putExtra("mapuserdata", foursquareIdKey);
-						intent.putExtra("from_act", "map");
-						context.startActivity(intent);
-					}
+					Intent intent = new Intent(context, ActivityPlaceDetails.class);
+					intent.putExtra("foursquare_id", foursquareIdKey);
+					intent.putExtra("coords", AppCAP.getUserCoordinates());
+					context.startActivity(intent);
 				}
 				layout.setVisibility(GONE);
 			}
@@ -83,11 +63,7 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 	public void setData(Item item) {
 
 		this.foursquareIdKey = item.getFoursquareIdKey();
-		this.isList = item.isList();
-		this.lat = item.getMyLatitude();
-		this.lng = item.getMyLongitude();
-		
-		
+
 		layout.setVisibility(VISIBLE);
 
 		if (item.getTitle() != null) {

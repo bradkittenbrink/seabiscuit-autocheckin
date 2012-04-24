@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,16 +21,16 @@ public class MyPlacesAdapter extends BaseAdapter{
 
 	private ArrayList<VenueSmart> venues;
 	private LayoutInflater inflater;
-	
+
 	private double myLat;
 	private double myLng;
-	
+
 	public MyPlacesAdapter(Activity context, ArrayList<VenueSmart> venues, double myLat, double myLng){
-		
+
 		this.inflater = context.getLayoutInflater();
 		this.myLat = myLat;
 		this.myLng = myLng;
-		
+
 		if (venues!=null){
 			this.venues = venues;
 		} else {
@@ -53,7 +54,7 @@ public class MyPlacesAdapter extends BaseAdapter{
 	}
 
 	public static class ViewHolder {
-		
+
 		public ImageView image;
 		public TextView textVenueName;
 		public TextView textAddress;
@@ -61,7 +62,7 @@ public class MyPlacesAdapter extends BaseAdapter{
 		public TextView textCheckins;
 
 		public ViewHolder(View convertView){
-		
+
 			this.textAddress = (TextView) convertView.findViewById(R.id.textview_place_adderes);
 			this.textDistance = (TextView) convertView.findViewById(R.id.textview_how_far);
 			this.textVenueName = (TextView) convertView.findViewById(R.id.textview_place_name);
@@ -69,12 +70,12 @@ public class MyPlacesAdapter extends BaseAdapter{
 			this.image = (ImageView) convertView.findViewById(R.id.imageview_image_places);
 		}
 	}
-	
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		
+
 		ViewHolder holder; 
-		
+
 		if (convertView == null){
 			convertView = inflater.inflate(R.layout.item_list_places, null);
 			holder = new ViewHolder(convertView);
@@ -95,13 +96,18 @@ public class MyPlacesAdapter extends BaseAdapter{
 			float d = Float.valueOf(oneDForm.format(results[0]/1000));
 			distanceS = d + "km";
 		}
-		
+
 		holder.textDistance.setText(distanceS);
 		holder.textAddress.setText(AppCAP.cleanResponseString(venues.get(position).getAddress()));
 		holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(position).getName()));
-		
-		holder.textCheckins.setText(venues.get(position).getCheckinsForInterval() + " people this week");
-		
+
+		if (venues.get(position).getCheckins()!=0){
+			String sc = venues.get(position).getCheckins()==1 ? "1 person here now" : venues.get(position).getCheckins() + " persons here now";
+			holder.textCheckins.setText(sc);
+		} else {
+			holder.textCheckins.setText(venues.get(position).getCheckinsForInterval() + " people this week");
+		}
+
 		return convertView;
 	}
 

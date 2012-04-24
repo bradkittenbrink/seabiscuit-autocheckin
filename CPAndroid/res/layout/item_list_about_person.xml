@@ -52,7 +52,6 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="20dp"
                     android:singleLine="true"
-                    android:text="tengai"
                     android:textColor="#ffdddddd"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -63,9 +62,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
                     android:singleLine="true"
-                    android:text="igram fudbal"
                     android:textColor="#ffffffff"
-                    android:textSize="12sp" />
+                    android:textSize="14sp" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -83,8 +81,7 @@
                         android:layout_weight="0.5"
                         android:gravity="bottom"
                         android:singleLine="true"
-                        android:text="olimpiski Stadion"
-                        android:textSize="10sp" />
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/textview_how_far"
@@ -93,9 +90,8 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         android:singleLine="true"
-                        android:text="0.3km"
                         android:textColor="#ffffffff"
-                        android:textSize="10sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>

@@ -39,6 +39,7 @@ import com.coffeeandpower.maps.MyItemizedOverlay;
 import com.coffeeandpower.maps.MyOverlayItem;
 import com.coffeeandpower.maps.MyOverlayPin;
 import com.coffeeandpower.utils.UserAndTabMenu;
+import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
@@ -141,7 +142,9 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 					capDao.open();
 					capDao.deleteAllFromTable(CASPSQLiteDatabase.TABLE_MAP_USER_DATA); // reset table for new data
 
-
+					// Use to determinate, am i checked in
+					boolean yesIam = false;
+					
 					// Loop for creating markers on map, in this loop iterate thru all uniq foursquaresIds
 					for (Entry<String, ArrayList<UserSmart>> itemWithKeyFoursquareId : mapKeyIsFoursquareId.entrySet()){
 
@@ -168,25 +171,29 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 							// write data to database
 							capDao.putUserSmartData(mud, itemWithKeyFoursquareId.getKey());
 
-							//Log.d("LOG", "db: " + itemWithKeyFoursquareId.getKey()+ " : " + mud.getNickName() + " chIn: " + mud.getCheckedIn() + "  herC: " + hereNowCount);
+							// Check if current user is checked in
+							if (AppCAP.getLoggedInUserId()==mud.getUserId()){
+								if (mud.getCheckedIn()==1){
+									yesIam = true;
+								}
+							} 
 						}
-
-
+						
+						if (yesIam){
+							AppCAP.setUserCheckedIn(true);
+						} else {
+							AppCAP.setUserCheckedIn(false);
+						}
+						checkUserState();
+						
+						
 						// Create Pins, if we have checkedin user for foursquareId
 						GeoPoint gp = new GeoPoint((int)(lat*1E6), (int)(lng*1E6));
 
 						if (hereNowCount > 0){
-
 							createPin(gp, itemWithKeyFoursquareId.getKey(), hereNowCount);
 						} else {
-
-							if (itemWithKeyFoursquareId.getValue().size()>1){
-								// for ActivityPeopleAndPlaces
-								createMarker(gp, itemWithKeyFoursquareId.getKey(), checkinsSum, venueName, true);
-							} else {
-								// fpr ActivityUserDetails
-								createMarker(gp, itemWithKeyFoursquareId.getKey(), checkinsSum, venueName, false);
-							}
+							createMarker(gp, itemWithKeyFoursquareId.getKey(), checkinsSum, venueName);
 						}
 					}
 
@@ -199,6 +206,18 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 	};
 
+	/**
+	 * Check if user is checked in or not
+	 */
+	private void checkUserState(){
+		if (AppCAP.isUserCheckedIn()){
+			((TextView)findViewById(R.id.textview_check_in)).setText("Check Out");
+		} else {
+			((TextView)findViewById(R.id.textview_check_in)).setText("Check In");
+		}
+	}
+	
+	
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
@@ -211,6 +230,17 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 		// User and Tab Menu
 		menu = new UserAndTabMenu(this);
+		menu.setOnUserStateChanged(new OnUserStateChanged() {
+		
+			@Override
+			public void onCheckOut() {
+				checkUserState();
+				
+				// Refresh Data
+				refreshMapDataSet(findViewById(R.id.imagebutton_map_refresh_progress));
+			}
+		});
+		
 		((RelativeLayout)findViewById(R.id.rel_map)).setBackgroundResource(R.drawable.bg_tabbar_selected);
 		((ImageView)findViewById(R.id.imageview_map)).setImageResource(R.drawable.tab_map_pressed);
 		((TextView)findViewById(R.id.text_map)).setTextColor(Color.WHITE);
@@ -242,6 +272,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 		myLocationOverlay.runOnFirstFix(new Runnable() {
 			public void run() {
 				mapView.getController().animateTo(myLocationOverlay.getMyLocation());
+				AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
 			}
 		});
 
@@ -293,6 +324,8 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 			}
 		}
 
+		// Refresh Data
+		refreshMapDataSet(findViewById(R.id.imagebutton_map_refresh_progress));
 	}
 
 
@@ -304,7 +337,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	 * @param venueName
 	 * @param isList
 	 */
-	private void createMarker(GeoPoint point, String foursquareIdKey, int checkinsSum, String venueName, boolean isList) {
+	private void createMarker(GeoPoint point, String foursquareIdKey, int checkinsSum, String venueName) {
 
 		if (foursquareIdKey!=null){
 			//Log.d("LOG", "create marker");
@@ -314,10 +347,8 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 			MyOverlayItem overlayitem = new MyOverlayItem(point, venueName, checkinsSum + checkStr);
 			overlayitem.setMapUserData(foursquareIdKey);
-			overlayitem.setAsList(isList);
 
 			if (myLocationOverlay.getMyLocation()!=null){
-
 				overlayitem.setMyLocationCoords(myLocationOverlay.getMyLocation().getLatitudeE6(), myLocationOverlay.getMyLocation().getLongitudeE6());
 			}
 
@@ -439,7 +470,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 				}
 			}
 		}).start();
-		
+
 		// For every refresh save Map coordinates
 		AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
 	}
@@ -484,7 +515,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 		data[3] = ne.getLongitudeE6()/ 1E6; // ne_lng
 		data[4] = 0;
 		data[5] = 0;
-		
+
 		if (myLocationOverlay.getMyLocation()!=null){
 			data[4] = myLocationOverlay.getMyLocation().getLatitudeE6() / 1E6;
 			data[5] = myLocationOverlay.getMyLocation().getLongitudeE6() / 1E6;

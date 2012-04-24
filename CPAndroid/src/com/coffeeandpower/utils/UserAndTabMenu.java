@@ -1,29 +1,73 @@
 package com.coffeeandpower.utils;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.activity.ActivitySettings;
+import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.tab.activities.ActivityCheckInList;
 import com.coffeeandpower.tab.activities.ActivityContacts;
 import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
+import com.coffeeandpower.views.CustomDialog;
 
 public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	private Context context;
 
+	private ProgressDialog progress;
+
+	private DataHolder result;
+
+	public interface OnUserStateChanged{
+		public void onCheckOut();
+	}
+	
+	OnUserStateChanged userState = new OnUserStateChanged() {
+		@Override
+		public void onCheckOut() {}
+	};
+	
+	public void setOnUserStateChanged(OnUserStateChanged userState){
+		this.userState = userState;
+	}
+	
 	public UserAndTabMenu (Context context){
 		this.context = context;
+		this.progress = new ProgressDialog(context);
 	}
 
+	private Handler handler =  new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+
+			progress.dismiss();
+
+			switch (msg.what){
+			case AppCAP.HTTP_ERROR:
+				new CustomDialog(context, "Error", result.getResponseMessage()).show();
+				break;
+				
+			case AppCAP.HTTP_REQUEST_SUCCEEDED:
+				AppCAP.setUserCheckedIn(false);
+				userState.onCheckOut();
+				break;
+			}
+		}
+
+	};
 
 	@Override
 	public void onClickMap(View v) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -47,17 +91,47 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	@Override
 	public void onClickCheckIn(View v) {
-		double[] data = new double[6];
-		data = AppCAP.getUserCoordinates();
-		
-		double userLat = data[4];
-		double userLng = data[5];
-		
-		if (userLat!=0 && userLng!=0){
-			Intent intent = new Intent(context, ActivityCheckInList.class);
-			intent.putExtra("lat", (int)(userLat * 1E6));
-			intent.putExtra("lng", (int)(userLng * 1E6));
-			context.startActivity(intent);
+
+		if (AppCAP.isUserCheckedIn()){
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(context);
+			builder.setTitle("Check Out");
+			builder.setMessage("Are you sure you want to be checked out?")
+			.setCancelable(false)
+			.setPositiveButton("Check Out", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					progress.setMessage("Checking out...");
+					progress.show();
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							result = AppCAP.getConnection().checkOut();
+							handler.sendEmptyMessage(result.getResponseCode());
+						}
+					}).start();
+				}
+			})
+			.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
+
+		} else {
+			double[] data = new double[6];
+			data = AppCAP.getUserCoordinates();
+
+			double userLat = data[4];
+			double userLng = data[5];
+
+			if (userLat!=0 && userLng!=0){
+				Intent intent = new Intent(context, ActivityCheckInList.class);
+				intent.putExtra("lat", (int)(userLat * 1E6));
+				intent.putExtra("lng", (int)(userLng * 1E6));
+				context.startActivity(intent);
+			}
 		}
 	}
 
@@ -86,13 +160,11 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	@Override
 	public void onClickEnterInviteCode(View v) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void onClickWallet(View v) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -104,7 +176,6 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	@Override
 	public void onClickLogout(View v) {
-		// TODO Auto-generated method stub
 
 	}
 

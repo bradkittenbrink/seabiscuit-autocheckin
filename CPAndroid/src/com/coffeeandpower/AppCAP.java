@@ -21,6 +21,7 @@ public class AppCAP extends Application{
 	private static final String TAG_USER_PHOT_LARGE_URL = "tag_user_photo_large_url";
 	private static final String TAG_LOGGED_IN_USER_ID = "tag_logged_in_user_id";
 	private static final String TAG_USER_COORDINATES = "tag_user_coordinates";
+	private static final String TAG_IS_USER_CHECKED_IN = "tag_is_user_checked_in";
 
 	public static final String URL_WEB_SERVICE = "https://coffeeandpower.com/"; // production
 	//public static final String URL_WEB_SERVICE = "http://staging.coffeeandpower.com/"; // staging	
@@ -160,7 +161,13 @@ public class AppCAP extends Application{
 		return data;
 	}
 
-
+	public static boolean isUserCheckedIn (){
+		return getSharedPreferences().getBoolean(TAG_IS_USER_CHECKED_IN, false);
+	}
+	
+	public static void setUserCheckedIn (boolean set){
+		getSharedPreferences().edit().putBoolean(TAG_IS_USER_CHECKED_IN, set).commit();
+	}
 
 
 
