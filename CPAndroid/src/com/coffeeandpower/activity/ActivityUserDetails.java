@@ -192,7 +192,7 @@ public class ActivityUserDetails extends MapActivity{
 				if (fromAct.equals("map")){
 					// From Map
 
-					ArrayList<UserSmart> tempArray = capDao.getMapsUsersData(foursquareId);
+					ArrayList<UserSmart> tempArray = capDao.getUserSmartData(foursquareId);
 					capDao.close();
 
 					if (!tempArray.isEmpty()){

@@ -1,32 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="10dip"
+    android:layout_height="100dp"
     android:background="@drawable/bg_silver" >
-
-    <com.coffeeandpower.views.CustomFontView
-        android:id="@+id/textview_other"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dip"
-        android:layout_marginTop="5dip"
-        android:layout_marginRight="10dip"
-        android:text="dsfsdf"
-        android:textStyle="bold"
-        android:textColor="#108086" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textview_other"
         android:padding="10dip" >
 
         <ImageView
             android:id="@+id/imageview_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/default_avatar50" />
+            android:background="@drawable/default_avatar100" />
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -38,22 +25,25 @@
             android:orientation="vertical" >
 
             <TextView
+                android:id="@+id/text_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Borivoje"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/job_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#6f6f6f"
-                android:text="Mafijash" />
+                android:textSize="13sp"
+                android:textColor="#6f6f6f" />
 
             <TextView
+                android:id="@+id/text_checkins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#6f6f6f"
-                android:text="1 ubijen na listi" />
+                android:textSize="13sp"
+                android:textColor="#6f6f6f" />
         </LinearLayout>
     </RelativeLayout>
 

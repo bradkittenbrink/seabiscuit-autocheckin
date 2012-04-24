@@ -166,7 +166,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 							venueName = mud.getVenueName();
 
 							// write data to database
-							capDao.putMapsUsersData(mud, itemWithKeyFoursquareId.getKey());
+							capDao.putUserSmartData(mud, itemWithKeyFoursquareId.getKey());
 
 							//Log.d("LOG", "db: " + itemWithKeyFoursquareId.getKey()+ " : " + mud.getNickName() + " chIn: " + mud.getCheckedIn() + "  herC: " + hereNowCount);
 						}

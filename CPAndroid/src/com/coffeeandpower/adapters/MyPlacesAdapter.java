@@ -100,7 +100,7 @@ public class MyPlacesAdapter extends BaseAdapter{
 		holder.textAddress.setText(AppCAP.cleanResponseString(venues.get(position).getAddress()));
 		holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(position).getName()));
 		
-		holder.textCheckins.setText(venues.get(position).getCheckinsForInterval() + " checkins");
+		holder.textCheckins.setText(venues.get(position).getCheckinsForInterval() + " people this week");
 		
 		return convertView;
 	}

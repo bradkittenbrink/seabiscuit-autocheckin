@@ -41,7 +41,7 @@ public class CAPDao {
 	 * @param foursquareId
 	 * @return
 	 */
-	public boolean putMapsUsersData (UserSmart mud, String foursquareId){
+	public boolean putUserSmartData (UserSmart mud, String foursquareId){
 
 		ContentValues cv = new ContentValues();
 
@@ -80,7 +80,7 @@ public class CAPDao {
 	 * @param foursquareId
 	 * @return
 	 */
-	public ArrayList<UserSmart> getMapsUsersData (String foursquareId){
+	public ArrayList<UserSmart> getUserSmartData (String foursquareId){
 
 		ArrayList<UserSmart> tempArray = new ArrayList<UserSmart>();
 
@@ -133,7 +133,7 @@ public class CAPDao {
 	 * Get all map user data
 	 * @return
 	 */
-	public ArrayList<UserSmart> getMapsUsersData (){
+	public ArrayList<UserSmart> getstartUserData (){
 
 		ArrayList<UserSmart> tempArray = new ArrayList<UserSmart>();
 

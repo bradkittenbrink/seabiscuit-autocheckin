@@ -28,19 +28,19 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Place Name"
+            android:singleLine="true"
             android:textColor="#ffffff"
             android:textSize="25dip" />
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_below="@+id/dummy_layout" >
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:orientation="vertical" >
 
             <RelativeLayout
@@ -57,24 +57,24 @@
                     android:background="#99000000"
                     android:orientation="vertical" >
 
-                    <TextView
+                    <com.coffeeandpower.views.CustomFontView
                         android:id="@+id/textview_place_name"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="asdasdasdasd"
+                        android:singleLine="true"
                         android:textColor="#ffffff"
-                        android:textSize="25dip"
+                        android:textSize="24dip"
                         android:textStyle="bold" />
 
-                    <TextView
+                    <com.coffeeandpower.views.CustomFontView
                         android:id="@+id/textview_place_address"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="asdasdasdasd"
+                        android:singleLine="true"
                         android:textColor="#ffffff"
-                        android:textSize="20dip" />
+                        android:textSize="16dip" />
                 </LinearLayout>
 
                 <View
@@ -86,27 +86,65 @@
 
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_top"
+                android:layout_height="fill_parent"
                 android:background="@drawable/texture_first_aid_kit" >
 
                 <View
+                    android:id="@+id/shadow_view"
                     android:layout_width="fill_parent"
                     android:layout_height="10dip"
                     android:background="@drawable/header_shadow" />
 
                 <!-- item list worked -->
 
-                <RelativeLayout
+                <com.coffeeandpower.views.CustomFontView
+                    android:id="@+id/textview_here"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/shadow_view"
+                    android:layout_marginLeft="15dip"
+                    android:layout_marginTop="5dip"
+                    android:text="Here now..."
+                    android:textColor="#108086"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <ListView
+                    android:id="@+id/list_here_now"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_silver" >
-                </RelativeLayout>
+                    android:layout_below="@+id/textview_here"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/bg_silver"
+                    android:cacheColorHint="#00000000"
+                    android:divider="#ffdddddd" />
+
+                <com.coffeeandpower.views.CustomFontView
+                    android:id="@+id/textview_worked"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/list_here_now"
+                    android:layout_marginLeft="15dip"
+                    android:layout_marginTop="5dip"
+                    android:text="Have worked here..."
+                    android:textColor="#108086"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <ListView
+                    android:id="@+id/list_were_here"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textview_worked"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/bg_silver"
+                    android:cacheColorHint="#00000000"
+                    android:divider="#ffdddddd" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
+                    android:layout_below="@+id/list_were_here"
                     android:layout_centerHorizontal="true"
                     android:orientation="vertical" >
 
@@ -123,7 +161,9 @@
                         android:id="@+id/imagebutton_check_in"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/check_in_big" />
+                        android:background="@drawable/check_in_big"
+                        android:clickable="true"
+                        android:onClick="onClickCheckIn" />
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>

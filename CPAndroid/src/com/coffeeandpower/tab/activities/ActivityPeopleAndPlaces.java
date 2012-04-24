@@ -204,6 +204,9 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 			onBackPressed();
 		} else {
 			Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
+			intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
+			intent.putExtra("coords", data);
+			startActivity(intent);
 		}
 	}
 
