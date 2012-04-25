@@ -19,6 +19,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -213,6 +214,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	private void checkUserState(){
 		if (AppCAP.isUserCheckedIn()){
 			((TextView)findViewById(R.id.textview_check_in)).setText("Check Out");
+			//((ImageView)findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityMap.this, R.anim.rotate_indefinitely));
 		} else {
 			((TextView)findViewById(R.id.textview_check_in)).setText("Check In");
 		}

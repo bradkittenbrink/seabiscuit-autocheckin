@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,7 +46,6 @@ import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
-import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.utils.HttpUtil;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
@@ -497,7 +497,7 @@ public class ActivityUserDetails extends MapActivity{
 
 
 	public void onClickSendContact (View v){
-
+		AppCAP.getConnection().sendF2FInvite(mud.getUserId());
 	}
 
 	public void onClickSendProp (View v){

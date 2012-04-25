@@ -416,7 +416,8 @@ public class ActivitySettings extends RootActivity{
 	}
 	
 	public void onClickJobCategory (View v){
-		
+		Intent intent = new Intent(this, ActivityJobCategory.class);
+		startActivity(intent);
 	}
 	
 	public void onClickSmartererBadges (View v){

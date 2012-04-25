@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.activity.ActivitySettings;
+import com.coffeeandpower.activity.ActivityWallet;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
@@ -170,7 +171,8 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	@Override
 	public void onClickWallet(View v) {
-
+		Intent intent = new Intent(context, ActivityWallet.class);
+		context.startActivity(intent);
 	}
 
 	@Override

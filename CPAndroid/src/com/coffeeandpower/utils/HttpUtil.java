@@ -1353,7 +1353,7 @@ public class HttpUtil {
 
 		try {
 			params.add(new BasicNameValuePair("action", "f2fInvite"));
-			params.add(new BasicNameValuePair("greeter_id", URLEncoder.encode(userId + "", "utf-8")));
+			params.add(new BasicNameValuePair("greeted_id", URLEncoder.encode(userId + "", "utf-8")));
 
 			post.setEntity(new UrlEncodedFormEntity(params));
 
