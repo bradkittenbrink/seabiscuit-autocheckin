@@ -23,13 +23,13 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.coffeandpower.db.CAPDao;
 import com.coffeandpower.db.CASPSQLiteDatabase;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserSmart;
@@ -48,6 +48,7 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.urbanairship.UAirship;
 
 public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
@@ -144,7 +145,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 					// Use to determinate, am i checked in
 					boolean yesIam = false;
-					
+
 					// Loop for creating markers on map, in this loop iterate thru all uniq foursquaresIds
 					for (Entry<String, ArrayList<UserSmart>> itemWithKeyFoursquareId : mapKeyIsFoursquareId.entrySet()){
 
@@ -178,15 +179,15 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 								}
 							} 
 						}
-						
+
 						if (yesIam){
 							AppCAP.setUserCheckedIn(true);
 						} else {
 							AppCAP.setUserCheckedIn(false);
 						}
 						checkUserState();
-						
-						
+
+
 						// Create Pins, if we have checkedin user for foursquareId
 						GeoPoint gp = new GeoPoint((int)(lat*1E6), (int)(lng*1E6));
 
@@ -216,8 +217,8 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 			((TextView)findViewById(R.id.textview_check_in)).setText("Check In");
 		}
 	}
-	
-	
+
+
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
@@ -231,16 +232,22 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 		// User and Tab Menu
 		menu = new UserAndTabMenu(this);
 		menu.setOnUserStateChanged(new OnUserStateChanged() {
-		
+
 			@Override
 			public void onCheckOut() {
 				checkUserState();
-				
+
 				// Refresh Data
 				refreshMapDataSet(findViewById(R.id.imagebutton_map_refresh_progress));
 			}
+
+			@Override
+			public void onLogOut() {
+				onBackPressed();
+				startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
+			}
 		});
-		
+
 		((RelativeLayout)findViewById(R.id.rel_map)).setBackgroundResource(R.drawable.bg_tabbar_selected);
 		((ImageView)findViewById(R.id.imageview_map)).setImageResource(R.drawable.tab_map_pressed);
 		((TextView)findViewById(R.id.text_map)).setTextColor(Color.WHITE);
@@ -313,19 +320,26 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	@Override
 	protected void onResume() {
 		super.onResume();
-		myLocationOverlay.enableMyLocation();
-		mapController.setZoom(17);
 
-		// Temp solution for black space below mapView
-		if (myLocationOverlay!=null){
-			if (myLocationOverlay.getMyLocation()!=null){
-				mapController.animateTo(myLocationOverlay.getMyLocation());
-				mapController.setZoom(17);
+		if (AppCAP.shouldFinishActMap()){
+			onBackPressed();
+			AppCAP.setShouldFinishActMap(false);
+		} else {
+
+			myLocationOverlay.enableMyLocation();
+			mapController.setZoom(17);
+
+			// Temp solution for black space below mapView
+			if (myLocationOverlay!=null){
+				if (myLocationOverlay.getMyLocation()!=null){
+					mapController.animateTo(myLocationOverlay.getMyLocation());
+					mapController.setZoom(17);
+				}
 			}
-		}
 
-		// Refresh Data
-		refreshMapDataSet(findViewById(R.id.imagebutton_map_refresh_progress));
+			// Refresh Data
+			refreshMapDataSet(findViewById(R.id.imagebutton_map_refresh_progress));
+		}
 	}
 
 
@@ -380,6 +394,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	// We have user data from logged user, use it now...
 	public void useUserData(){
 		AppCAP.setLoggedInUserId(loggedUser.getUserId());
+		AppCAP.setLoggedInUserNickname(loggedUser.getNickName());
 		textNickName.setText(loggedUser.getNickName());
 	}
 
@@ -484,11 +499,9 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 		switch (requestCode){
 
 		case ACTIVITY_ACCOUNT_SETTINGS:
-
 			if (resultCode==ACCOUNT_CHANGED){
 				getUserData();
 			}
-
 			break;
 		}
 	}
@@ -577,15 +590,27 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	}
 
 	public void onClickWallet (View v){
-		Toast.makeText(this, "onClickWallet", Toast.LENGTH_SHORT).show();
+		menu.onClickWallet(v);
 	}
 
 
 	public void onClickLogout (View v){
-		//HttpUtil.logout();
-		AppCAP.setUserEmail("");
-		onBackPressed();
-		Toast.makeText(this, "onClickLogout", Toast.LENGTH_SHORT).show();
+		menu.onClickLogout(v);
 	}
+
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		UAirship.shared().getAnalytics().activityStarted(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		UAirship.shared().getAnalytics().activityStopped(this);
+	}
+
+
 
 }

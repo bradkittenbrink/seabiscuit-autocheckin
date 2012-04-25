@@ -524,7 +524,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:background="@drawable/btn_black_contacts"
-            android:onClick="onClickContacts" />
+            android:onClick="onClickSendContact" />
 
         <ImageButton
             android:id="@+id/imagebutton_chat"
@@ -541,7 +541,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/imagebutton_chat"
             android:background="@drawable/btn_black_thumb"
-            android:onClick="onClickThumb" />
+            android:onClick="onClickSendProp" />
 
         <ImageButton
             android:id="@+id/imagebutton_paid"

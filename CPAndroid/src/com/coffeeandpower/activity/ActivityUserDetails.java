@@ -21,6 +21,8 @@ import android.view.animation.AnimationSet;
 import android.view.animation.LayoutAnimationController;
 import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -43,6 +45,7 @@ import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
+import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.utils.HttpUtil;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
@@ -57,9 +60,9 @@ public class ActivityUserDetails extends MapActivity{
 
 	private static final int HANDLE_GET_USER_RESUME = 1222; 
 	private static final int HANDLE_LOAD_PROFILE_PICTURE = 1223; 
-	private static final int HANDLE_SENDING_LOVE = 1224;
+	private static final int HANDLE_SENDING_PROP = 1224;
 
-	private static final int DIALOG_SEND_LOVE = 0;
+	private static final int DIALOG_SEND_PROP = 0;
 
 	private UserSmart mud;
 
@@ -146,7 +149,7 @@ public class ActivityUserDetails extends MapActivity{
 				break;
 
 
-			case HANDLE_SENDING_LOVE:
+			case HANDLE_SENDING_PROP:
 				if (resultSendReview!=null){
 
 				}
@@ -163,6 +166,16 @@ public class ActivityUserDetails extends MapActivity{
 
 		// Views
 		favPlacesList = (ListView) findViewById(R.id.listview_favorite_places);
+		favPlacesList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+				
+				Intent intent = new Intent(ActivityUserDetails.this, ActivityPlaceDetails.class);
+				intent.putExtra("foursquare_id", favouriteVenues.get(position).getId());
+				intent.putExtra("coords", AppCAP.getUserCoordinates());
+				startActivity(intent);
+			}
+		});
 
 		mapView = (MapView) findViewById(R.id.mapview_user_details);
 		progressPhoto = (ProgressBar) findViewById(R.id.progressbar_photo);
@@ -483,16 +496,12 @@ public class ActivityUserDetails extends MapActivity{
 	}
 
 
-	public void onClickF2F (View v){
+	public void onClickSendContact (View v){
 
 	}
 
-	public void onClickSendLove (View v){
-		showDialog(DIALOG_SEND_LOVE);
-	}
-
-	public void onClickCheckIn (View v){
-
+	public void onClickSendProp (View v){
+		showDialog(DIALOG_SEND_PROP);
 	}
 
 
@@ -529,8 +538,7 @@ public class ActivityUserDetails extends MapActivity{
 
 		switch(id) {
 
-		case DIALOG_SEND_LOVE:
-
+		case DIALOG_SEND_PROP:
 			dialog.setContentView(R.layout.diloag_send_love);
 			//dialog.setTitle("Custom Dialog");
 
@@ -539,7 +547,7 @@ public class ActivityUserDetails extends MapActivity{
 				public void onClick(View v) {
 
 					if (((EditText)dialog.findViewById(R.id.edit_review)).getText().toString().length()>0){
-						progress.setMessage("Sending love");
+						progress.setMessage("Sending...");
 						progress.show();
 						dialog.dismiss();
 						new Thread(new Runnable() {
@@ -549,7 +557,7 @@ public class ActivityUserDetails extends MapActivity{
 								if (resultSendReview.getResponseCode()==AppCAP.HTTP_ERROR){
 									handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 								} else {
-									handler.sendEmptyMessage(HANDLE_SENDING_LOVE);
+									handler.sendEmptyMessage(HANDLE_SENDING_PROP);
 								}
 							}
 						}).start();

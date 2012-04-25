@@ -67,8 +67,6 @@ public class ActivityCheckIn extends MapActivity{
 
 	{
 		checkInDuration = 1; 	// default 1 hour checkin duration, slider sets other values
-
-
 	}
 
 	private Handler handler = new Handler(){
@@ -91,9 +89,7 @@ public class ActivityCheckIn extends MapActivity{
 				break;
 
 			case GET_CHECKED_USERS:
-				
 				if (resultGetUsersCheckedIn.getObject()!=null){
-					
 					if (resultGetUsersCheckedIn.getObject() instanceof ArrayList<?>){
 						
 						checkedInUsers = (ArrayList<UserShort>) resultGetUsersCheckedIn.getObject();
@@ -242,9 +238,7 @@ public class ActivityCheckIn extends MapActivity{
 
 	
 	private void populateUsersIfExist() {
-		
 		if (checkedInUsers!=null){
-				
 			if (checkedInUsers.size()>0){
 				
 				layoutCheckedInUsers.setVisibility(View.VISIBLE);
@@ -273,7 +267,7 @@ public class ActivityCheckIn extends MapActivity{
 						}
 					});
 					
-					imageLoader.DisplayImage(checkedInUsers.get(i).getImageURL(), image);
+					imageLoader.DisplayImage(checkedInUsers.get(i).getImageURL(), image, R.drawable.default_avatar50);
 					layoutForInflate.addView(image);
 
 				}
@@ -283,7 +277,6 @@ public class ActivityCheckIn extends MapActivity{
 	
 	
 	public void onClickBack (View v) {
-
 		onBackPressed();
 	}
 

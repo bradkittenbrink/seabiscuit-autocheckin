@@ -1144,7 +1144,7 @@ public class HttpUtil {
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>(2);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 		try {
 			params.add(new BasicNameValuePair("action", "getUsersCheckedIn"));
@@ -1216,9 +1216,659 @@ public class HttpUtil {
 		}
 		return result;
 	}
+	
+	
+	/**
+	 * Send contact request to userId
+	 * @param userId
+	 * @return
+	 */
+	public DataHolder sendContactRequestToUserId (int userId){
 
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "sendContactRequest"));
+			params.add(new BasicNameValuePair("acceptor_id", URLEncoder.encode(userId + "", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_sendContactRequestToUserId: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+
+	/**
+	 * Send accept contact request from userId
+	 * @param userId
+	 * @return
+	 */
+	public DataHolder sendAcceptContactRequestFromUserId (int userId){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "acceptContactRequest"));
+			params.add(new BasicNameValuePair("initiator_id", URLEncoder.encode(userId + "", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_sendAcceptContactRequestFromUserId: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+	
+	/**
+	 * Send F2F invite
+	 * @param userId
+	 * @return
+	 */
+	public DataHolder sendF2FInvite (int userId){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "f2fInvite"));
+			params.add(new BasicNameValuePair("greeter_id", URLEncoder.encode(userId + "", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_sendF2FInvite: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Send F2F accept
+	 * @param userId
+	 * @return
+	 */
+	public DataHolder sendF2FAccept (int userId){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "f2fAccept"));
+			params.add(new BasicNameValuePair("greeter_id", URLEncoder.encode(userId + "", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_sendF2FAccept: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Send F2F decline
+	 * @param userId
+	 * @return
+	 */
+	public DataHolder sendF2FDecline (int userId){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "f2fDecline"));
+			params.add(new BasicNameValuePair("greeter_id", URLEncoder.encode(userId + "", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_sendF2FDecline: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Send F2F verify
+	 * @param userId
+	 * @param password
+	 * @return
+	 */
+	public DataHolder sendF2FVerify (int userId, String password){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "f2fVerify"));
+			params.add(new BasicNameValuePair("greeter_id", URLEncoder.encode(userId + "", "utf-8")));
+			params.add(new BasicNameValuePair("password", URLEncoder.encode(password +"", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_sendF2FVerify: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+	
+	/**
+	 * Get contact list
+	 * @return
+	 */
+	public DataHolder getContactList (){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "getContactList"));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_getContactList: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+	
+	/**
+	 * Get invitation code for specified location
+	 * @param lat
+	 * @param lng
+	 * @return
+	 */
+	public DataHolder getInvitationCodeForLocation (double lat, double lng){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "getInvitationCode"));
+			params.add(new BasicNameValuePair("lat", URLEncoder.encode(lat+"", "utf-8")));
+			params.add(new BasicNameValuePair("lng", URLEncoder.encode(lng +"", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_getInvitationCodeForLocation: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+	
+	/**
+	 * Enter Invitation code
+	 * @param invitationCode
+	 * @param lat
+	 * @param lng
+	 * @return
+	 */
+	public DataHolder enterInvitationCode (String invitationCode, double lat, double lng){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "enterInvitationCode"));
+			params.add(new BasicNameValuePair("lat", URLEncoder.encode(lat+"", "utf-8")));
+			params.add(new BasicNameValuePair("lng", URLEncoder.encode(lng +"", "utf-8")));
+			params.add(new BasicNameValuePair("invite_code", URLEncoder.encode(invitationCode +"", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_enterInvitationCode: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+
+	/**
+	 * Save User Job Category
+	 * @param majorJobCategory
+	 * @param minorJobCategory
+	 * @return
+	 */
+	public DataHolder saveUserJobCategory (String majorJobCategory, String minorJobCategory){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "updateJobCategories"));
+			params.add(new BasicNameValuePair("major_job_category", URLEncoder.encode(majorJobCategory +"", "utf-8")));
+			params.add(new BasicNameValuePair("minor_job_category", URLEncoder.encode(minorJobCategory +"", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_saveUserMajorJobCategory: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+
+	/**
+	 * Save user smarterer name
+	 * @param name
+	 * @return
+	 */
+	public DataHolder saveUserSmartererName (String name){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "saveUserSmartererName"));
+			params.add(new BasicNameValuePair("name", URLEncoder.encode(name +"", "utf-8")));
+
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_saveUserSmartererName: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					return result;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
 	/**
 	 * Check out user from location
 	 * @return
@@ -1231,7 +1881,7 @@ public class HttpUtil {
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>(1);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 		try {
 			params.add(new BasicNameValuePair("action", "checkout"));
@@ -1250,7 +1900,7 @@ public class HttpUtil {
 				JSONObject json = new JSONObject(responseString);
 				if (json!=null){
 
-					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+					result.setResponseCode(UserAndTabMenu.HANDLE_CHECK_OUT);
 					return result;
 				}
 			}
@@ -1287,7 +1937,7 @@ public class HttpUtil {
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>(13);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 		try {
 			params.add(new BasicNameValuePair("action", "checkin"));
@@ -1517,7 +2167,7 @@ public class HttpUtil {
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>(1);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("action", "getUserData"));
 
 		try {
@@ -1603,7 +2253,7 @@ public class HttpUtil {
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_SIGNUP);
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>(7);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 		params.add(new BasicNameValuePair("action", "signup"));
 		params.add(new BasicNameValuePair("signupUsername", userName));
@@ -1681,7 +2331,7 @@ public class HttpUtil {
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_SIGNUP);
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>(7);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 		String serviceName = service.getServiceNameSignUp();
 		params.add(new BasicNameValuePair("action", "signup"));
@@ -1763,7 +2413,7 @@ public class HttpUtil {
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_LOGIN);
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>(4);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 		params.add(new BasicNameValuePair("action", "login"));
 		params.add(new BasicNameValuePair("username", userName));
@@ -1844,7 +2494,7 @@ public class HttpUtil {
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_LOGIN);
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>(4);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 		String serviceName = service.getServiceNameLogin();
 		String serviceSignUp = service.getServiceNameSignUp();
@@ -1916,48 +2566,6 @@ public class HttpUtil {
 			return result;
 
 		}
-
-		return result;
-	}
-
-	/**
-	 * Logout current user
-	 * @return
-	 */
-	public DataHolder logout(){
-
-		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
-
-		//HttpClient client = getThreadSafeClient();
-		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-
-		HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_LOGOUT);
-
-		try {
-			// Execute HTTP Get Request
-			HttpResponse response = client.execute(get);
-			HttpEntity resEntity = response.getEntity();  
-
-			String responseString = EntityUtils.toString(resEntity); 
-			RootActivity.log("HttpUtil_logout: " +responseString);
-
-			if (responseString!=null){
-				result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
-			}
-
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			return result;
-
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-			return result;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			return result;
-		} 
 
 		return result;
 	}

@@ -46,8 +46,12 @@
             <RelativeLayout
                 android:id="@+id/layout_top"
                 android:layout_width="fill_parent"
-                android:layout_height="250dip"
-                android:background="@drawable/picture_coming_soon_rectangle" >
+                android:layout_height="250dip" >
+                <ImageView
+                    android:id="@+id/image_view"
+                    android:layout_width="fill_parent"
+                    android:layout_height="250dip"
+                    android:src="@drawable/picture_coming_soon_rectangle" />
 
                 <LinearLayout
                     android:id="@+id/dummy_layout_1"

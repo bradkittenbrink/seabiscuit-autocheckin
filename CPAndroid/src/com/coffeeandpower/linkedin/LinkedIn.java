@@ -6,25 +6,17 @@ package com.coffeeandpower.linkedin;
 
 import java.util.EnumSet;
 
-import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.activity.ActivityLoginPage;
-import com.coffeeandpower.activity.ActivitySignInViaMail;
-import com.coffeeandpower.inter.OAuthService;
-import com.coffeeandpower.tab.activities.ActivityMap;
-import com.coffeeandpower.utils.ActivityUtils;
-import com.coffeeandpower.utils.HttpUtil;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.inter.OAuthService;
 import com.google.code.linkedinapi.client.LinkedInApiClient;
 import com.google.code.linkedinapi.client.LinkedInApiClientFactory;
 import com.google.code.linkedinapi.client.oauth.LinkedInAccessToken;
 import com.google.code.linkedinapi.client.oauth.LinkedInOAuthService;
 import com.google.code.linkedinapi.client.oauth.LinkedInOAuthServiceFactory;
 import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
-
 import com.google.code.linkedinapi.schema.Person;
 
 /**

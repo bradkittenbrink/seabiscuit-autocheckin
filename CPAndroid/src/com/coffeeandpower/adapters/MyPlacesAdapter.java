@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.location.Location;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,13 @@ import android.widget.TextView;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.imageutil.ImageLoader;
 
 public class MyPlacesAdapter extends BaseAdapter{
 
 	private ArrayList<VenueSmart> venues;
 	private LayoutInflater inflater;
+	public ImageLoader imageLoader;
 
 	private double myLat;
 	private double myLng;
@@ -30,6 +31,7 @@ public class MyPlacesAdapter extends BaseAdapter{
 		this.inflater = context.getLayoutInflater();
 		this.myLat = myLat;
 		this.myLng = myLng;
+		this.imageLoader=new ImageLoader(context.getApplicationContext());
 
 		if (venues!=null){
 			this.venues = venues;
@@ -107,6 +109,9 @@ public class MyPlacesAdapter extends BaseAdapter{
 		} else {
 			holder.textCheckins.setText(venues.get(position).getCheckinsForInterval() + " people this week");
 		}
+		
+		// Try to load image
+		imageLoader.DisplayImage(venues.get(position).getPhotoURL(), holder.image, R.drawable.picture_coming_soon);
 
 		return convertView;
 	}

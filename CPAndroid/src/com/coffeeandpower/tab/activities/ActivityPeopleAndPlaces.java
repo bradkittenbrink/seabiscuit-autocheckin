@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
+import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.activity.ActivityPlaceDetails;
 import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.adapters.MyPlacesAdapter;
@@ -147,6 +148,8 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tab_activity_people_and_places);
 
+		((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
+		
 		// User and Tab Menu
 		checkUserState();
 		menu = new UserAndTabMenu(this);
@@ -154,6 +157,12 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 			@Override
 			public void onCheckOut() {
 				checkUserState();
+			}
+
+			@Override
+			public void onLogOut() {
+				onBackPressed();
+				startActivity(new Intent(ActivityPeopleAndPlaces.this, ActivityLoginPage.class));
 			}
 		});
 
@@ -292,7 +301,7 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 	@Override
 	public void onClickLogout(View v) {
 		menu.onClickLogout(v);
-
+		AppCAP.setShouldFinishActMap(true);
 	}
 
 	@Override

@@ -128,7 +128,7 @@ public class MyUsersAdapter extends BaseAdapter{
 		}
 
 		// Try to load profile image
-		imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage);
+		imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage, R.drawable.default_avatar50);
 
 		return convertView;
 	}

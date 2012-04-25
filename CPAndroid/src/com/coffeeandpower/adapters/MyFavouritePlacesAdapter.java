@@ -7,21 +7,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.cont.Venue;
+import com.coffeeandpower.imageutil.ImageLoader;
 
 public class MyFavouritePlacesAdapter extends BaseAdapter{
 
 	private ArrayList<Venue> venues;
 	private LayoutInflater inflater;
-	
+	public ImageLoader imageLoader;
+
 	public MyFavouritePlacesAdapter(Activity context, ArrayList<Venue> venues){
-		
+
 		this.inflater = context.getLayoutInflater();
-		
+		this.imageLoader=new ImageLoader(context.getApplicationContext());
+
 		if (venues!=null){
 			this.venues = venues;
 		} else {
@@ -45,26 +49,24 @@ public class MyFavouritePlacesAdapter extends BaseAdapter{
 	}
 
 	public static class ViewHolder {
-		
-		//public TextView textAddress;
+
+		public ImageView image;
 		public TextView textVenueName;
-		//public TextView textCityState;
 		public TextView textCheckinsCount;
 
 		public ViewHolder(View convertView){
-		
+
 			this.textVenueName = (TextView) convertView.findViewById(R.id.textview_place);
-			//this.textCityState = (TextView) convertView.findViewById(R.id.textview_city);
-			//this.textAddress = (TextView) convertView.findViewById(R.id.textview_street);
+			this.image = (ImageView) convertView.findViewById(R.id.imageview_image);
 			this.textCheckinsCount = (TextView) convertView.findViewById(R.id.textview_checkin);
 		}
 	}
-	
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		
+
 		ViewHolder holder; 
-		
+
 		if (convertView == null){
 			convertView = inflater.inflate(R.layout.item_list_favorite_places, null);
 			holder = new ViewHolder(convertView);
@@ -72,16 +74,17 @@ public class MyFavouritePlacesAdapter extends BaseAdapter{
 		} else {
 			holder = (ViewHolder)convertView.getTag();
 		}
-		
-		//holder.textAddress.setText(AppCAP.cleanResponseString(venues.get(position).getAddress()));
+
 		holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(position).getName()));
-		//holder.textCityState.setText(AppCAP.cleanResponseString(venues.get(position).getCity() + ", " + AppCAP.cleanResponseString(venues.get(position).getState())));
-		
+
 		if (venues.get(position).getCheckinsCount() > 1){
 			holder.textCheckinsCount.setText(venues.get(position).getCheckinsCount() + " Checkins");
 		} else {
 			holder.textCheckinsCount.setText(venues.get(position).getCheckinsCount() + " Checkin");
 		}
+
+		// Try to load image
+		imageLoader.DisplayImage(venues.get(position).getPhotoUrl(), holder.image, R.drawable.picture_coming_soon);
 
 		return convertView;
 	}

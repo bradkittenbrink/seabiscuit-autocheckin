@@ -1,9 +1,12 @@
 package com.coffeeandpower;
 
-import com.coffeeandpower.utils.HttpUtil;
-
 import android.app.Application;
 import android.content.SharedPreferences;
+
+import com.coffeeandpower.urbanairship.IntentReceiver;
+import com.coffeeandpower.utils.HttpUtil;
+import com.urbanairship.UAirship;
+import com.urbanairship.push.PushManager;
 
 public class AppCAP extends Application{
 
@@ -20,8 +23,10 @@ public class AppCAP extends Application{
 	private static final String TAG_USER_PHOT_URL = "tag_user_photo_url";
 	private static final String TAG_USER_PHOT_LARGE_URL = "tag_user_photo_large_url";
 	private static final String TAG_LOGGED_IN_USER_ID = "tag_logged_in_user_id";
+	private static final String TAG_LOGGED_IN_USER_NICKNAME = "tag_logged_in_user_nickname";
 	private static final String TAG_USER_COORDINATES = "tag_user_coordinates";
 	private static final String TAG_IS_USER_CHECKED_IN = "tag_is_user_checked_in";
+	private static final String TAG_SHOULD_FINISH_ACTIVITY_MAP = "tag_sgould_finish_activity_map";
 
 	public static final String URL_WEB_SERVICE = "https://coffeeandpower.com/"; // production
 	//public static final String URL_WEB_SERVICE = "http://staging.coffeeandpower.com/"; // staging	
@@ -55,6 +60,14 @@ public class AppCAP extends Application{
 		super.onCreate();
 
 		this.http = new HttpUtil();
+		
+		UAirship.takeOff(this);
+		PushManager.enablePush();
+		PushManager.shared().setIntentReceiver(IntentReceiver.class);
+	}
+	
+    public void onStop() {
+		UAirship.land();
 	}
 
 	public static HttpUtil getConnection(){
@@ -140,6 +153,14 @@ public class AppCAP extends Application{
 	public static int getLoggedInUserId (){
 		return getSharedPreferences().getInt(TAG_LOGGED_IN_USER_ID, 0);
 	}
+	
+	public static void setLoggedInUserNickname (String nickname){
+		getSharedPreferences().edit().putString(TAG_LOGGED_IN_USER_NICKNAME, nickname).commit();
+	}
+	
+	public static String getLoggedInUserNickname (){
+		return getSharedPreferences().getString(TAG_LOGGED_IN_USER_NICKNAME, "");
+	}
 
 	public static void setUserCoordinates (double[] data){
 		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES+"sw_lat", (float)data[0]).commit();
@@ -169,7 +190,13 @@ public class AppCAP extends Application{
 		getSharedPreferences().edit().putBoolean(TAG_IS_USER_CHECKED_IN, set).commit();
 	}
 
-
+	public static boolean shouldFinishActMap (){
+		return getSharedPreferences().getBoolean(TAG_SHOULD_FINISH_ACTIVITY_MAP, false);
+	}
+	
+	public static void setShouldFinishActMap (boolean set){
+		getSharedPreferences().edit().putBoolean(TAG_SHOULD_FINISH_ACTIVITY_MAP, set).commit();
+	}
 
 
 

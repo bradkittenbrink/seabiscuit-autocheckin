@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -20,9 +21,11 @@ import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyUserSmartAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
-import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
+import com.coffeeandpower.imageutil.ImageLoader;
+import com.coffeeandpower.tab.activities.ActivityCheckInList;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
@@ -47,6 +50,8 @@ public class ActivityPlaceDetails extends RootActivity{
 	
 	private ListView listWereHere;
 	private ListView listHereNow;
+	
+	private ImageLoader imageLoader;
 
 	private double data[];
 
@@ -107,6 +112,8 @@ public class ActivityPlaceDetails extends RootActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_places_details);
 
+		imageLoader = new ImageLoader(this);
+		
 		// Viewvs
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
@@ -168,6 +175,9 @@ public class ActivityPlaceDetails extends RootActivity{
 			((CustomFontView)findViewById(R.id.textview_place_name)).setText(AppCAP.cleanResponseString(selectedVenue.getName()));
 			((CustomFontView)findViewById(R.id.textview_place_address)).setText(AppCAP.cleanResponseString(selectedVenue.getAddress()));
 			
+			// Try to load image
+			imageLoader.DisplayImage(selectedVenue.getPhotoURL(), (ImageView)findViewById(R.id.image_view), R.drawable.picture_coming_soon_rectangle);
+			
 			arrayUsersInVenue = selectedVenue.getArrayCheckins();
 			for (CheckinData cd:arrayUsersInVenue){
 				if (cd.getCheckedIn()==1){
@@ -227,7 +237,21 @@ public class ActivityPlaceDetails extends RootActivity{
 
 	
 	public void onClickCheckIn (View v){
-		//
+		if (selectedVenue!=null){
+			
+			Venue venue = new Venue();
+			venue.setAddress(AppCAP.cleanResponseString(selectedVenue.getAddress()));
+			venue.setCity(AppCAP.cleanResponseString(selectedVenue.getCity()));
+			venue.setId(selectedVenue.getFoursquareId());
+			venue.setName(AppCAP.cleanResponseString(selectedVenue.getName()));
+			venue.setLat(selectedVenue.getLat());
+			venue.setLng(selectedVenue.getLng());
+			venue.setState(AppCAP.cleanResponseString(selectedVenue.getState()));
+			
+			Intent intent = new Intent (ActivityPlaceDetails.this, ActivityCheckIn.class);
+			intent.putExtra("venue", venue);
+			startActivity(intent);
+		}
 	}
 	
 	

@@ -20,6 +20,9 @@ import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.views.CustomDialog;
 
 public class UserAndTabMenu implements UserMenu, TabMenu{
+	
+	public static final int HANDLE_CHECK_OUT = 1800;
+	public static final int HANDLE_LOG_OUT = 1801;
 
 	private Context context;
 
@@ -29,11 +32,13 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	public interface OnUserStateChanged{
 		public void onCheckOut();
+		public void onLogOut();
 	}
 	
 	OnUserStateChanged userState = new OnUserStateChanged() {
 		@Override
 		public void onCheckOut() {}
+		public void onLogOut() {}
 	};
 	
 	public void setOnUserStateChanged(OnUserStateChanged userState){
@@ -57,7 +62,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 				new CustomDialog(context, "Error", result.getResponseMessage()).show();
 				break;
 				
-			case AppCAP.HTTP_REQUEST_SUCCEEDED:
+			case HANDLE_CHECK_OUT:
 				AppCAP.setUserCheckedIn(false);
 				userState.onCheckOut();
 				break;
@@ -176,7 +181,12 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	@Override
 	public void onClickLogout(View v) {
-
+		AppCAP.setLoggedInUserId(0);
+		AppCAP.setLocalUserPhotoLargeURL("");
+		AppCAP.setLocalUserPhotoURL("");
+		AppCAP.setLoggedInUserNickname("");
+		AppCAP.setUserLinkedInDetails("", "", "");
+		userState.onLogOut();
 	}
 
 }

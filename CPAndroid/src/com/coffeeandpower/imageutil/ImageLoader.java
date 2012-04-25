@@ -29,18 +29,18 @@ public class ImageLoader {
 
 	private Map<ImageView, String> imageViews=Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
 
-	final int defaultAvatar = R.drawable.default_avatar50;
-
 	ExecutorService executorService; 
 
+	private int defaultImage;
+	
 	public ImageLoader(Context context){
 		fileCache=new CacheFile(context);
 		executorService=Executors.newFixedThreadPool(5);
 	}
 
 
-	public void DisplayImage(String url, ImageView imageView){
-
+	public void DisplayImage(String url, ImageView imageView, int defaultImageRes){
+		this.defaultImage = defaultImageRes;
 		imageViews.put(imageView, url);
 		Bitmap bitmap=memoryCache.get(url);
 
@@ -48,7 +48,7 @@ public class ImageLoader {
 			imageView.setImageBitmap(bitmap);
 		} else {
 			queuePhoto(url, imageView);
-			imageView.setImageResource(defaultAvatar);
+			imageView.setImageResource(defaultImageRes);
 		}
 	}
 
@@ -170,7 +170,7 @@ public class ImageLoader {
 			if(bitmap!=null)
 				photoToLoad.imageView.setImageBitmap(bitmap);
 			else
-				photoToLoad.imageView.setImageResource(defaultAvatar);
+				photoToLoad.imageView.setImageResource(defaultImage);
 		}
 	}
 

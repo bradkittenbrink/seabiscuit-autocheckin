@@ -49,7 +49,6 @@ public class ActivityCheckInList extends ListActivity{
 				break;
 
 			case RESPONSE_OK:
-
 				if (dh.getObject()!=null){
 					adapter = new MyVenuesAdapter(ActivityCheckInList.this, (ArrayList<Venue>) dh.getObject());
 					setListAdapter(adapter);
@@ -90,7 +89,6 @@ public class ActivityCheckInList extends ListActivity{
 					} else {
 						handler.sendEmptyMessage(dh.getResponseCode());
 					}
-
 				}
 			}).start();
 		}
