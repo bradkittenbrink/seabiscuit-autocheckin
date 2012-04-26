@@ -8,7 +8,7 @@
         android:id="@+id/view_1"
         android:layout_width="fill_parent"
         android:layout_height="1dip"
-        android:layout_marginTop="18dip"
+        android:layout_marginTop="25dip"
         android:background="#000000" />
 
     <View
@@ -146,12 +146,19 @@
         android:clickable="true"
         android:onClick="onClickCheckIn" >
 
+        <ImageView
+            android:id="@+id/imageview_check_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_tab_check_in_out" />
+
         <TextView
             android:id="@+id/textview_check_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableTop="@drawable/btn_tab_check_in_out"
-            android:gravity="center"
+            android:layout_below="@+id/imageview_check_in"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-15dip"
             android:text="Check In" />
 
         <ImageView

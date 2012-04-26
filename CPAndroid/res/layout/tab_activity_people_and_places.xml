@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#2d2d2d" >
+    android:background="#333333" >
 
     <include
         android:id="@+id/user_menu"
@@ -35,7 +35,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:background="#2d2d2d" >
+            android:background="#333333" >
 
             <RelativeLayout
                 android:id="@+id/dummy_layout"
@@ -76,7 +76,8 @@
                 android:layout_above="@+id/tab_bar"
                 android:layout_below="@+id/dummy_layout"
                 android:cacheColorHint="#00000000"
-                android:divider="#ffdddddd" >
+                android:dividerHeight="1dip"
+                android:divider="#4a4a4a" >
             </ListView>
         </RelativeLayout>
     </com.coffeeandpower.views.HorizontalPagerModified>

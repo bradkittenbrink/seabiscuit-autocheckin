@@ -42,6 +42,7 @@
         android:paddingRight="20dip"
         android:paddingTop="10dip"
         android:text="Later"
+        android:onClick="onClickInviteLater"
         android:textColor="#ffffff" />
 
 </LinearLayout>
