@@ -10,6 +10,7 @@ import android.os.Message;
 import android.view.View;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.activity.ActivityWallet;
 import com.coffeeandpower.cont.DataHolder;
@@ -166,7 +167,8 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	@Override
 	public void onClickEnterInviteCode(View v) {
-
+		Intent intent = new Intent(context, ActivityEnterInviteCode.class);
+		context.startActivity(intent);
 	}
 
 	@Override

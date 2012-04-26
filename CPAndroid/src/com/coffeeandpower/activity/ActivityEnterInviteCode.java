@@ -14,7 +14,7 @@ public class ActivityEnterInviteCode extends Activity {
 	}
 	
 	public void onClickInviteLater (View v){
-		
+		onBackPressed();
 	}
 
 }

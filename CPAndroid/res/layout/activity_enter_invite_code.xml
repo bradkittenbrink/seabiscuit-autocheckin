@@ -20,7 +20,7 @@
         android:background="@drawable/invite_code_background"
         android:capitalize="characters"
         android:padding="25dip"
-        android:text="dfgdfg"
+        android:text=""
         android:textColor="#cecece"
         android:textSize="40dip" />
 
