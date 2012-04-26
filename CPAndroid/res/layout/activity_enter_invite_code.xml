@@ -13,12 +13,14 @@
         android:background="@drawable/plug_logo" />
 
     <EditText
+        android:id="@+id/edit_text"
         android:layout_width="240dip"
         android:layout_height="140dip"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dip"
         android:background="@drawable/invite_code_background"
         android:capitalize="characters"
+        android:imeOptions="actionSend"
         android:padding="25dip"
         android:text=""
         android:textColor="#cecece"
@@ -37,12 +39,12 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dip"
         android:background="@drawable/button_turquoise"
+        android:onClick="onClickInviteLater"
         android:paddingBottom="10dip"
         android:paddingLeft="20dip"
         android:paddingRight="20dip"
         android:paddingTop="10dip"
         android:text="Later"
-        android:onClick="onClickInviteLater"
         android:textColor="#ffffff" />
 
 </LinearLayout>

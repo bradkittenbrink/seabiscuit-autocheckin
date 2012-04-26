@@ -2,6 +2,7 @@ package com.coffeeandpower.activity;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
+import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -9,6 +10,9 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import android.webkit.JsResult;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -109,8 +113,10 @@ public class ActivityAddFunds extends RootActivity{
 				CookieSyncManager.getInstance().sync();  
 			}  
 			WebSettings webSettings = webView.getSettings();  
-			webSettings.setJavaScriptEnabled(true);  
+			webSettings.setJavaScriptEnabled(true);
 			webSettings.setPluginsEnabled(true);
+			webSettings.setLoadsImagesAutomatically(true);
+			webSettings.setSupportZoom(false);
 
 			webView.setWebViewClient(new WebViewClient() { 
 				@Override
@@ -124,11 +130,32 @@ public class ActivityAddFunds extends RootActivity{
 					super.onPageStarted(view, url, favicon);
 					progress.show();
 				}
+				
+				@Override
+				public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+					super.onReceivedError(view, errorCode, description, failingUrl);
+					Log.d("LOG", "onReceivedError: " + errorCode+":"+description);
+				}
+
+				@Override
+				public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+					super.onReceivedSslError(view, handler, error);
+					Log.d("LOG", "onReceivedSslError: " + error.getPrimaryError());
+				}
+
 				@Override  
 				public boolean shouldOverrideUrlLoading(WebView view, String url) {  
-					return super.shouldOverrideUrlLoading(view, url);  
+					return true;  
 				}  
-			});  
+			}); 
+			
+			webView.setWebChromeClient(new WebChromeClient(){
+			    @Override
+			    public boolean onJsAlert(WebView view, String url, String message,JsResult result) {
+			        Log.e("LOG", "JSAlert" + message);
+			        return false;         
+			    }
+			});
 			webView.loadUrl(AppCAP.URL_FUNDS);  
 		}  
 	}
