@@ -27,10 +27,13 @@ public class AppCAP extends Application{
 	private static final String TAG_USER_COORDINATES = "tag_user_coordinates";
 	private static final String TAG_IS_USER_CHECKED_IN = "tag_is_user_checked_in";
 	private static final String TAG_SHOULD_FINISH_ACTIVITY_MAP = "tag_sgould_finish_activity_map";
-
+	private static final String TAG_COOKIE_STRING = "tag_cookie_string";
+	
+	
 	public static final String URL_WEB_SERVICE = "https://coffeeandpower.com/"; // production
 	//public static final String URL_WEB_SERVICE = "http://staging.coffeeandpower.com/"; // staging	
 	public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
+	public static final String URL_FUNDS = "http://www.coffeeandpower.com/m/?ios#addFundsiPhone";
 	public static final String URL_LOGIN = "login.php";
 	public static final String URL_LOGOUT= "logout.php";
 	public static final String URL_SIGNUP= "signup.php";
@@ -198,7 +201,13 @@ public class AppCAP extends Application{
 		getSharedPreferences().edit().putBoolean(TAG_SHOULD_FINISH_ACTIVITY_MAP, set).commit();
 	}
 
-
+	public static String getCookieString (){
+		return getSharedPreferences().getString(TAG_COOKIE_STRING, "");
+	}
+	
+	public static void setCookieString (String cookie){
+		getSharedPreferences().edit().putString(TAG_COOKIE_STRING, cookie).commit();
+	}
 
 
 

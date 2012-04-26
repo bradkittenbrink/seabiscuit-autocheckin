@@ -160,6 +160,11 @@
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
+            android:name=".activity.ActivityAddFunds"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
             android:name=".activity.ActivityJobCategory"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >

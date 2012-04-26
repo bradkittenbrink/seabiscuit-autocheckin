@@ -20,7 +20,6 @@ import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -29,10 +28,12 @@ import org.apache.http.conn.scheme.LayeredSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SocketFactory;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
@@ -46,19 +47,23 @@ import org.json.JSONObject;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.activity.ActivityUserDetails;
+import com.coffeeandpower.activity.ActivityWallet;
 import com.coffeeandpower.cont.ChatMessage;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
 import com.coffeeandpower.cont.Review;
+import com.coffeeandpower.cont.Transaction;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserShort;
 import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.cont.UserTransaction;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
@@ -69,7 +74,7 @@ import com.google.android.maps.MapView;
 
 public class HttpUtil {
 
-	private HttpClient client;
+	private AbstractHttpClient client;
 
 
 	public HttpUtil(){
@@ -2153,6 +2158,87 @@ public class HttpUtil {
 		return result;
 	}
 
+	/**
+	 * Get User transaction data
+	 * @return
+	 */
+	public DataHolder getUserTransactionData (){
+
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("action", "getTransactionData"));
+
+		try {
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_getUserTrasactionData: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+
+					JSONObject objPayload = json.optJSONObject("payload");
+					if (objPayload!=null){
+						ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+						
+						// Implement Transactions here !!!!!!!!!!!!!
+						//
+						//
+						
+						result.setResponseCode(ActivityWallet.HANDLE_GET_TRANSACTION_DATA);
+						result.setObject(new UserTransaction(
+								objPayload.optInt("userid"), 
+								objPayload.optString("nickname"), 
+								objPayload.optString("username"), 
+								objPayload.optString("status_text"), 
+								objPayload.optString("status"), 
+								objPayload.optString("active"), 
+								objPayload.optString("photo"), 
+								objPayload.optString("photo_large"), 
+								objPayload.optDouble("lat"), 
+								objPayload.optDouble("lng"), 
+								objPayload.optInt("favorite_enabled"), 
+								objPayload.optInt("favorite_count"), 
+								objPayload.optInt("my_favorite_count"), 
+								objPayload.optInt("money_received"), 
+								objPayload.optInt("offers_paid"), 
+								objPayload.optInt("balance"), 
+								transactions));
+					}
+					return result;
+				}
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
 
 	/**
 	 * Get user data for logged user
@@ -2162,7 +2248,6 @@ public class HttpUtil {
 
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
-		//HttpClient client = getThreadSafeClient();
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
@@ -2181,6 +2266,17 @@ public class HttpUtil {
 			String responseString = EntityUtils.toString(resEntity); 
 			RootActivity.log("HttpUtil_getUserData: " +responseString);
 
+			// Save cookies to share session with WebView
+			client.getCookieStore().getCookies();
+			List<Cookie> cookies = client.getCookieStore().getCookies();
+			String cookieString = "";
+			for (int i = 0; i < cookies.size(); i++) {
+			    Cookie cookie = cookies.get(i);
+			    cookieString += cookie.getName() +"="+cookie.getValue();//+"; domain="+cookie.getDomain();
+			}
+			AppCAP.setCookieString(cookieString);
+			Log.d("LOG", "Cookie: " + AppCAP.getCookieString());
+			
 			if (responseString!=null){
 
 				JSONObject json = new JSONObject(responseString);
