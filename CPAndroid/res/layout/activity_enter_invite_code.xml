@@ -21,6 +21,7 @@
         android:background="@drawable/invite_code_background"
         android:capitalize="characters"
         android:imeOptions="actionSend"
+        android:singleLine="true"
         android:padding="25dip"
         android:text=""
         android:textColor="#cecece"

@@ -77,4 +77,9 @@
         android:paddingLeft="10dip"
         android:text="other" />
 
+    <include
+        android:id="@+id/picker"
+        android:layout_alignParentBottom="true"
+        layout="@layout/kan_kan_black" />
+
 </RelativeLayout>

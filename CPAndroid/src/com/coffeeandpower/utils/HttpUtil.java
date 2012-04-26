@@ -51,6 +51,8 @@ import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.activity.ActivityEnterInviteCode;
+import com.coffeeandpower.activity.ActivityJobCategory;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.activity.ActivityWallet;
@@ -1063,10 +1065,10 @@ public class HttpUtil {
 						ArrayList<UserSmart> users = new ArrayList<UserSmart>();
 						JSONArray arrayUsers = objPayload.optJSONArray("users");
 						if (arrayUsers!=null){
-							
+
 							boolean isFirstInList1 = false;
 							boolean isFirstInList0 = false;
-							
+
 							for (int x=0; x<arrayUsers.length(); x++){
 								JSONObject objUser = arrayUsers.optJSONObject(x);
 								if (objUser!=null){
@@ -1090,7 +1092,7 @@ public class HttpUtil {
 											objUser.optInt("checkin_count"), 
 											objUser.optString("skills"),
 											objUser.optBoolean("met"));
-									
+
 									// if herenow exist, than that value will be used
 									if (singleUserMap.getCheckedIn()==1){
 										if (!isFirstInList1){
@@ -1103,7 +1105,7 @@ public class HttpUtil {
 											isFirstInList0 = !isFirstInList0;
 										}
 									}
-									
+
 									users.add(singleUserMap);
 								}
 							}
@@ -1221,8 +1223,8 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Send contact request to userId
 	 * @param userId
@@ -1279,8 +1281,8 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
+
+
 
 	/**
 	 * Send accept contact request from userId
@@ -1338,9 +1340,9 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Send F2F invite
 	 * @param userId
@@ -1397,8 +1399,8 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Send F2F accept
 	 * @param userId
@@ -1455,8 +1457,8 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Send F2F decline
 	 * @param userId
@@ -1513,8 +1515,8 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Send F2F verify
 	 * @param userId
@@ -1573,9 +1575,9 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Get contact list
 	 * @return
@@ -1630,9 +1632,9 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Get invitation code for specified location
 	 * @param lat
@@ -1691,9 +1693,9 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Enter Invitation code
 	 * @param invitationCode
@@ -1731,7 +1733,12 @@ public class HttpUtil {
 				JSONObject json = new JSONObject(responseString);
 				if (json!=null){
 
-					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					if (json.optBoolean("error")){
+						result.setResponseCode(AppCAP.HTTP_ERROR);
+						result.setResponseMessage(json.optString("payload"));
+					} else {
+						result.setResponseCode(ActivityEnterInviteCode.HANDLE_ENTER_INV_CODE); 
+					}
 					return result;
 				}
 			}
@@ -1754,7 +1761,7 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
+
 
 	/**
 	 * Save User Job Category
@@ -1791,7 +1798,13 @@ public class HttpUtil {
 				JSONObject json = new JSONObject(responseString);
 				if (json!=null){
 
-					result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change this
+					if (json.optBoolean("error")){
+						result.setResponseCode(AppCAP.HTTP_ERROR);
+						result.setResponseMessage(json.optString("payload"));
+					} else {
+						result.setResponseCode(ActivityJobCategory.HANDLE_UPLOAD_JOBS_INFO);
+						result.setResponseMessage(json.optString("payload"));
+					}
 					return result;
 				}
 			}
@@ -1814,7 +1827,7 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
+
 
 	/**
 	 * Save user smarterer name
@@ -1872,8 +1885,8 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Check out user from location
 	 * @return
@@ -2191,11 +2204,11 @@ public class HttpUtil {
 					JSONObject objPayload = json.optJSONObject("payload");
 					if (objPayload!=null){
 						ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-						
+
 						// Implement Transactions here !!!!!!!!!!!!!
 						//
 						//
-						
+
 						result.setResponseCode(ActivityWallet.HANDLE_GET_TRANSACTION_DATA);
 						result.setObject(new UserTransaction(
 								objPayload.optInt("userid"), 
@@ -2237,8 +2250,8 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
-	
+
+
 
 	/**
 	 * Get user data for logged user
@@ -2271,12 +2284,12 @@ public class HttpUtil {
 			List<Cookie> cookies = client.getCookieStore().getCookies();
 			String cookieString = "";
 			for (int i = 0; i < cookies.size(); i++) {
-			    Cookie cookie = cookies.get(i);
-			    cookieString += cookie.getName() +"="+cookie.getValue();//+"; domain="+cookie.getDomain();
+				Cookie cookie = cookies.get(i);
+				cookieString += cookie.getName() +"="+cookie.getValue();//+"; domain="+cookie.getDomain();
 			}
 			AppCAP.setCookieString(cookieString);
 			Log.d("LOG", "Cookie: " + AppCAP.getCookieString());
-			
+
 			if (responseString!=null){
 
 				JSONObject json = new JSONObject(responseString);
