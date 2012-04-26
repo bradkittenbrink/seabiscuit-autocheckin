@@ -12,7 +12,7 @@
         android:layout_marginTop="30dip"
         android:background="@drawable/plug_logo" />
 
-    <EditText
+    <com.coffeeandpower.views.CustomEditText
         android:id="@+id/edit_text"
         android:layout_width="240dip"
         android:layout_height="140dip"
