@@ -50,7 +50,7 @@
                     android:id="@+id/textview_persone_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="20dp"
+                    android:paddingTop="10dp"
                     android:singleLine="true"
                     android:textColor="#ffdddddd"
                     android:textSize="22sp"
@@ -69,7 +69,7 @@
                     android:id="@+id/textview_comment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
+                    android:paddingTop="5dp"
                     android:singleLine="true"
                     android:textColor="#ffffffff"
                     android:textSize="14sp" />
@@ -81,7 +81,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="5dip"
                     android:orientation="horizontal"
-                    android:paddingTop="10dp" >
+                    android:paddingTop="5dp" >
 
                     <TextView
                         android:id="@+id/textview_place"
