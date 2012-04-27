@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
+import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.PushManager;
 
@@ -66,7 +67,13 @@ public class AppCAP extends Application{
 
 		this.http = new HttpUtil();
 		
-		UAirship.takeOff(this);
+        AirshipConfigOptions options = AirshipConfigOptions.loadDefaultOptions(this);
+
+        options.inProduction = true;
+        options.productionAppKey = "DQAAAOEAAABPLTbkOKCU8j0PSaEEbaqXx9jNmIFsml39M5B8D-FkGUImvGtcHfILEFFa7hv4Y5KyI7jHkqlkjf8tEuGWaUGmexz-QZ8g0JhnRFpFTu02TxmjkHssTcdSFTglYHSmkgD23hv8EYKbl6V8i-iidpmuXIslHGRkbpGnEMZ24622Xl6cC1IV_8xBhEbd4bPqWgNp0xXs8Sc1NtNLNQ9gYRl4G3_nza92Lvg35aJObTeD2ziCUDNO5IJv4psxGvyq4ONy0vixfquzLTl6IMtksnJuVrDXWRjV3sAozFer3KDnvd_hVRUxtK8nRggfdapaaTA";
+        options.productionAppSecret = "KZgM05o9RQi666y5GbTD-Q";
+		
+        UAirship.takeOff(this, options);
 		PushManager.enablePush();
 		PushManager.shared().setIntentReceiver(IntentReceiver.class);
 	}
