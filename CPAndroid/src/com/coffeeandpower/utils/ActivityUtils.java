@@ -98,6 +98,7 @@ public class ActivityUtils {
 				break;
 
 			case AppCAP.HTTP_REQUEST_SUCCEEDED:
+				AppCAP.setLoggedIn(true);
 				Intent intent = new Intent(a, ActivityMap.class);							
 				a.startActivity(intent);
 				a.finish();

@@ -1,5 +1,6 @@
 package com.coffeeandpower.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,9 +9,14 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.R;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
+import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.activity.ActivityWallet;
 import com.coffeeandpower.cont.DataHolder;
@@ -22,7 +28,7 @@ import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.views.CustomDialog;
 
 public class UserAndTabMenu implements UserMenu, TabMenu{
-	
+
 	public static final int HANDLE_CHECK_OUT = 1800;
 	public static final int HANDLE_LOG_OUT = 1801;
 
@@ -36,20 +42,31 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 		public void onCheckOut();
 		public void onLogOut();
 	}
-	
+
 	OnUserStateChanged userState = new OnUserStateChanged() {
 		@Override
 		public void onCheckOut() {}
 		public void onLogOut() {}
 	};
-	
+
 	public void setOnUserStateChanged(OnUserStateChanged userState){
 		this.userState = userState;
 	}
-	
+
 	public UserAndTabMenu (Context context){
 		this.context = context;
 		this.progress = new ProgressDialog(context);
+
+		// If user is not logged in
+		if (!AppCAP.isLoggedIn()){
+			View v = ((Activity) context).findViewById(R.id.btn_menu);
+			RelativeLayout r = (RelativeLayout) ((Activity) context).findViewById(R.id.rel_log_in);
+			RelativeLayout r1 = (RelativeLayout) ((Activity) context).findViewById(R.id.rel_contacts);
+			
+			if (v!=null){ v.setVisibility(View.GONE);}
+			if (r!=null){ r.setVisibility(View.VISIBLE);}
+			if (r1!=null){ r1.setVisibility(View.GONE);}
+		}
 	}
 
 	private Handler handler =  new Handler(){
@@ -63,7 +80,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 			case AppCAP.HTTP_ERROR:
 				new CustomDialog(context, "Error", result.getResponseMessage()).show();
 				break;
-				
+
 			case HANDLE_CHECK_OUT:
 				AppCAP.setUserCheckedIn(false);
 				userState.onCheckOut();
@@ -99,23 +116,15 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 	@Override
 	public void onClickCheckIn(View v) {
 
-		if (AppCAP.isUserCheckedIn()){
-
+		if (!AppCAP.isLoggedIn()){
 			AlertDialog.Builder builder = new AlertDialog.Builder(context);
-			builder.setTitle("Check Out");
-			builder.setMessage("Are you sure you want to be checked out?")
+			builder.setMessage("You must be a member to use this feature.")
 			.setCancelable(false)
-			.setPositiveButton("Check Out", new DialogInterface.OnClickListener() {
+			.setPositiveButton("LOGIN", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					progress.setMessage("Checking out...");
-					progress.show();
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							result = AppCAP.getConnection().checkOut();
-							handler.sendEmptyMessage(result.getResponseCode());
-						}
-					}).start();
+					dialog.cancel();
+					context.startActivity(new Intent(context, ActivityLoginPage.class));
+					((Activity) context).finish();
 				}
 			})
 			.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -127,17 +136,46 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 			alert.show();
 
 		} else {
-			double[] data = new double[6];
-			data = AppCAP.getUserCoordinates();
+			if (AppCAP.isUserCheckedIn()){
 
-			double userLat = data[4];
-			double userLng = data[5];
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
+				builder.setTitle("Check Out");
+				builder.setMessage("Are you sure you want to be checked out?")
+				.setCancelable(false)
+				.setPositiveButton("Check Out", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						progress.setMessage("Checking out...");
+						progress.show();
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								result = AppCAP.getConnection().checkOut();
+								handler.sendEmptyMessage(result.getResponseCode());
+							}
+						}).start();
+					}
+				})
+				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
 
-			if (userLat!=0 && userLng!=0){
-				Intent intent = new Intent(context, ActivityCheckInList.class);
-				intent.putExtra("lat", (int)(userLat * 1E6));
-				intent.putExtra("lng", (int)(userLng * 1E6));
-				context.startActivity(intent);
+			} else {
+				double[] data = new double[6];
+				data = AppCAP.getUserCoordinates();
+
+				double userLat = data[4];
+				double userLng = data[5];
+
+				if (userLat!=0 && userLng!=0){
+					Intent intent = new Intent(context, ActivityCheckInList.class);
+					intent.putExtra("lat", (int)(userLat * 1E6));
+					intent.putExtra("lng", (int)(userLng * 1E6));
+					context.startActivity(intent);
+				}
 			}
 		}
 	}

@@ -29,6 +29,8 @@ public class AppCAP extends Application{
 	private static final String TAG_SHOULD_FINISH_ACTIVITY_MAP = "tag_sgould_finish_activity_map";
 	private static final String TAG_COOKIE_STRING = "tag_cookie_string";
 	
+	private static final String TAG_IS_LOGGED_IN = "tag_is_logged_in";
+	
 	
 	public static final String URL_WEB_SERVICE = "https://coffeeandpower.com/"; // production
 	//public static final String URL_WEB_SERVICE = "http://staging.coffeeandpower.com/"; // staging	
@@ -209,6 +211,13 @@ public class AppCAP extends Application{
 		getSharedPreferences().edit().putString(TAG_COOKIE_STRING, cookie).commit();
 	}
 
-
+	public static void setLoggedIn (boolean set){
+		getSharedPreferences().edit().putBoolean(TAG_IS_LOGGED_IN, set).commit();
+	}
+	
+	public static boolean isLoggedIn (){
+		return getSharedPreferences().getBoolean(TAG_IS_LOGGED_IN, false);
+	}
+	
 
 }

@@ -1,5 +1,6 @@
 package com.coffeeandpower.activity;
 
+import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.utils.ActivityUtils;
 
 import android.content.Intent;
@@ -37,7 +38,9 @@ public class ActivityLoginPage extends RootActivity {
 
 
 	public void onClickLater (View v){
-		
+		AppCAP.setLoggedIn(false);
+		startActivity(new Intent(ActivityLoginPage.this, ActivityMap.class));
+		onBackPressed();
 	}
 	
 

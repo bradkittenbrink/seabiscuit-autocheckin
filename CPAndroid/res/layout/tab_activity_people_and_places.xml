@@ -43,7 +43,7 @@
                 android:layout_height="45dip"
                 android:background="@drawable/header" >
 
-                <Button
+                <Button android:id="@+id/btn_menu"
                     android:layout_width="41dip"
                     android:layout_height="28dip"
                     android:layout_alignParentLeft="true"
