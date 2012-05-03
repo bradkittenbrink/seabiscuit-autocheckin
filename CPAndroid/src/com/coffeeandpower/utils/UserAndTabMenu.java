@@ -9,9 +9,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
@@ -115,7 +113,6 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	@Override
 	public void onClickCheckIn(View v) {
-
 		if (!AppCAP.isLoggedIn()){
 			AlertDialog.Builder builder = new AlertDialog.Builder(context);
 			builder.setMessage("You must be a member to use this feature.")

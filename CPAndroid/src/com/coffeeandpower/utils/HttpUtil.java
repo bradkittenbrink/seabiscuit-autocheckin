@@ -855,6 +855,7 @@ public class HttpUtil {
 	 * @param venue
 	 * @return
 	 */
+	/*
 	public DataHolder getCheckedInBoundsOverTime (MapView mapView){
 
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
@@ -961,8 +962,9 @@ public class HttpUtil {
 		}
 		return result;
 	}
+	*/
 
-
+	
 	/**
 	 * Get Venues And Users With Checkins In Bounds During Interval
 	 * @param data
@@ -991,7 +993,7 @@ public class HttpUtil {
 				userLat + 
 				userLng +
 				"&version=0.1");
-
+		//Log.d("LOG", "time interval: " + (System.currentTimeMillis() /1000 - (86400 * numberOfDays)));
 		try {
 
 			// Execute HTTP Get Request

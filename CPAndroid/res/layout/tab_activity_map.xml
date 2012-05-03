@@ -41,7 +41,8 @@
                 android:layout_height="45dip"
                 android:background="@drawable/header" >
 
-                <Button android:id="@+id/btn_menu"
+                <Button
+                    android:id="@+id/btn_menu"
                     android:layout_width="41dip"
                     android:layout_height="28dip"
                     android:layout_alignParentLeft="true"
@@ -83,15 +84,16 @@
                         android:layout_width="40dip"
                         android:layout_height="41dip"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/btn_map_refresh" />
+                        android:background="@drawable/btn_map_refresh"
+                        android:clickable="true"
+                        android:onClick="onClickRefresh" />
 
-                    <ImageButton
+                    <ImageView
                         android:id="@+id/imagebutton_map_refresh_progress"
                         android:layout_width="24dip"
                         android:layout_height="24dip"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/btn_map_refresh_progress"
-                        android:onClick="onClickRefresh" />
+                        android:src="@drawable/map_refresh_progress_arrow" />
                 </RelativeLayout>
 
                 <ImageButton

@@ -1,9 +1,7 @@
 package com.coffeeandpower.tab.activities;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map.Entry;
+import java.util.List;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,7 +15,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
@@ -25,8 +25,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.coffeandpower.db.CAPDao;
-import com.coffeandpower.db.CASPSQLiteDatabase;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
@@ -34,11 +32,13 @@ import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
+import com.coffeeandpower.maps.BalloonItemizedOverlay;
 import com.coffeeandpower.maps.MyItemizedOverlay;
 import com.coffeeandpower.maps.MyOverlayItem;
-import com.coffeeandpower.maps.MyOverlayPin;
+import com.coffeeandpower.maps.PinDrawable;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.views.CustomDialog;
@@ -49,6 +49,7 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.Overlay;
 import com.urbanairship.UAirship;
 
 public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
@@ -66,6 +67,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	private CustomFontView textNickName;
 	private ProgressDialog progress;
 	private HorizontalPagerModified pager;
+	private ImageView imageRefresh;
 
 
 	// Map items
@@ -80,8 +82,6 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 	private DataHolder result;
 	private DataHolder resultMapDataSet;
-
-	private CAPDao capDao;
 
 	private Handler handler = new Handler(){
 
@@ -107,100 +107,40 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 			case GET_MAP_DATA_SET:
 				if (resultMapDataSet.getObject()!=null){
 
-					@SuppressWarnings("unchecked")
-					ArrayList<UserSmart> mapUsersArray = (ArrayList<UserSmart>) resultMapDataSet.getObject();
+					if (resultMapDataSet.getObject() instanceof Object[]){
 
-					RootActivity.log("ActivityMap_mapUsersArray.size()=" + mapUsersArray.size());
+						Object[] obj = (Object[]) resultMapDataSet.getObject();
 
-					// < Key, Value >  = < foursquareId, >
-					HashMap<String, ArrayList<UserSmart>> mapKeyIsFoursquareId = new HashMap<String, ArrayList<UserSmart>>();
-					HashSet<String> setFoursquareIds = new HashSet<String>();
+						ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0]; 
+						ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
 
-					// Find all uniq foursquareIds
-					for (UserSmart mud:mapUsersArray){
-						setFoursquareIds.add(mud.getFoursquareId());
+						for (VenueSmart venue:arrayVenues){
+							// Create Pins, if we have checkedin user for foursquareId
+							GeoPoint gp = new GeoPoint((int)(venue.getLat()*1E6), (int)(venue.getLng()*1E6));
 
-						//Log.d("LOG", "array: " + mud.getFoursquareId()+ " : " + mud.getNickName() + " chIn: " + mud.getCheckedIn());
-					}
-
-					// Find all MapUserData objects for every foursquareId
-					for (String foursquareId:setFoursquareIds){
-
-						// Array list without duplicates
-						ArrayList<UserSmart> tmpArray = new ArrayList<UserSmart>();
-
-						for (UserSmart mud:mapUsersArray){
-
-							if (mud.getFoursquareId().equals(foursquareId)){
-								tmpArray.add(mud);
+							if (venue.getCheckins() > 0 ){
+								createMarker(gp, venue.getFoursquareId(), venue.getCheckins(), venue.getName(), true);
+							} else if (venue.getCheckinsForWeek()>0){
+								createMarker(gp, venue.getFoursquareId(), venue.getCheckinsForWeek(), venue.getName(), false); // !!! getCheckinsForWeek
 							}
 						}
 
-						mapKeyIsFoursquareId.put(foursquareId, tmpArray);
-					}
-
-
-					// Reset table for new data
-					capDao.open();
-					capDao.deleteAllFromTable(CASPSQLiteDatabase.TABLE_MAP_USER_DATA); // reset table for new data
-
-					// Use to determinate, am i checked in
-					boolean yesIam = false;
-
-					// Loop for creating markers on map, in this loop iterate thru all uniq foursquaresIds
-					for (Entry<String, ArrayList<UserSmart>> itemWithKeyFoursquareId : mapKeyIsFoursquareId.entrySet()){
-
-						int checkinsSum = 0;
-						int hereNowCount = 0;
-						String venueName = "";
-
-						// init for coordinates of created point
-						double lat = 0.0d;
-						double lng = 0.0d;
-
-						// we need to sum checkins for every user who checked in foursquareId
-						for (UserSmart mud : itemWithKeyFoursquareId.getValue()){
-
-							checkinsSum++;
-							hereNowCount += mud.getCheckedIn();
-
-							// no matter for loop, all items in loop have the same coordinates
-							lat = mud.getLat();
-							lng = mud.getLng();
-
-							venueName = mud.getVenueName();
-
-							// write data to database
-							capDao.putUserSmartData(mud, itemWithKeyFoursquareId.getKey());
-
-							// Check if current user is checked in
-							if (AppCAP.getLoggedInUserId()==mud.getUserId()){
-								if (mud.getCheckedIn()==1){
-									yesIam = true;
+						for (UserSmart user:arrayUsers){
+							if (user.getUserId()==AppCAP.getLoggedInUserId()){
+								if (user.getCheckedIn()==1){
+									AppCAP.setUserCheckedIn(true);
+								} else {
+									AppCAP.setUserCheckedIn(false);
 								}
-							} 
+							}
 						}
 
-						if (yesIam){
-							AppCAP.setUserCheckedIn(true);
-						} else {
-							AppCAP.setUserCheckedIn(false);
+						if (itemizedoverlay.size() > 0) {
+							mapView.getOverlays().add(itemizedoverlay);
 						}
 						checkUserState();
-
-
-						// Create Pins, if we have checkedin user for foursquareId
-						GeoPoint gp = new GeoPoint((int)(lat*1E6), (int)(lng*1E6));
-
-						if (hereNowCount > 0){
-							createPin(gp, itemWithKeyFoursquareId.getKey(), hereNowCount);
-						} else {
-							createMarker(gp, itemWithKeyFoursquareId.getKey(), checkinsSum, venueName);
-						}
+						mapView.invalidate();
 					}
-
-					capDao.close();
-					mapView.invalidate();
 				}
 				break;
 			}
@@ -231,6 +171,23 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 		super.onCreate(icicle);
 		setContentView(R.layout.tab_activity_map);
 
+
+		// Views
+		pager = (HorizontalPagerModified) findViewById(R.id.pager);
+		mapView = (MapView) findViewById(R.id.mapview);
+		textNickName = (CustomFontView) findViewById(R.id.text_nick_name);
+		imageRefresh = (ImageView)findViewById(R.id.imagebutton_map_refresh_progress);
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		progress = new ProgressDialog(ActivityMap.this);
+		Drawable drawable = this.getResources().getDrawable(R.drawable.people_marker_turquoise_circle);
+		itemizedoverlay = new MyItemizedOverlay(drawable, mapView);
+
+
+		// Views states
+		pager.setCurrentScreen(SCREEN_MAP, false);
+		progress.setMessage("Getting user data...");
+
+
 		// User and Tab Menu
 		menu = new UserAndTabMenu(this);
 		menu.setOnUserStateChanged(new OnUserStateChanged() {
@@ -240,7 +197,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 				checkUserState();
 
 				// Refresh Data
-				refreshMapDataSet(findViewById(R.id.imagebutton_map_refresh_progress));
+				refreshMapDataSet();
 			}
 
 			@Override
@@ -253,20 +210,6 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 		((RelativeLayout)findViewById(R.id.rel_map)).setBackgroundResource(R.drawable.bg_tabbar_selected);
 		((ImageView)findViewById(R.id.imageview_map)).setImageResource(R.drawable.tab_map_pressed);
 		((TextView)findViewById(R.id.text_map)).setTextColor(Color.WHITE);
-
-		// Views
-		pager = (HorizontalPagerModified) findViewById(R.id.pager);
-		mapView = (MapView) findViewById(R.id.mapview);
-		textNickName = (CustomFontView) findViewById(R.id.text_nick_name);
-		myLocationOverlay = new MyLocationOverlay(this, mapView);
-		progress = new ProgressDialog(ActivityMap.this);
-		Drawable drawable = this.getResources().getDrawable(R.drawable.people_marker_turquoise_circle);
-		itemizedoverlay = new MyItemizedOverlay(drawable, mapView);
-
-
-		// Views states
-		pager.setCurrentScreen(SCREEN_MAP, false);
-		progress.setMessage("Getting user data...");
 
 
 		// Set others
@@ -282,6 +225,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 			public void run() {
 				mapView.getController().animateTo(myLocationOverlay.getMyLocation());
 				AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
+				refreshMapDataSet();
 			}
 		});
 
@@ -289,14 +233,47 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 		mapController.setZoom(12);
 
 
-		// Database control
-		capDao = new CAPDao(this);
-
-
 		// User is logged in, get user data
 		getUserData();
 
+
+		// Listener for autorefresh map
+		mapView.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+
+				switch (event.getAction()) {
+
+				case MotionEvent.ACTION_DOWN:
+					firstX = event.getX();
+					firstY = event.getY();
+					break;
+
+
+				case MotionEvent.ACTION_CANCEL:
+					if (event.getX()>firstX+10 || event.getX()<firstX-10 || event.getY()>firstY+10 || event.getY()<firstY-10){
+						refreshMapDataSet();
+						firstX = event.getX();
+						firstY = event.getY();
+					}
+
+					break;
+
+				case MotionEvent.ACTION_UP:
+					if (event.getX()>firstX+10 || event.getX()<firstX-10 || event.getY()>firstY+10 || event.getY()<firstY-10){
+						refreshMapDataSet();
+						firstX = event.getX();
+						firstY = event.getY();
+					}
+					hideBaloons();
+					break;
+				}
+				return false;
+			}
+		});
 	}
+	float firstX = 0;
+	float firstY = 0;
 
 
 	/**
@@ -340,7 +317,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 			}
 
 			// Refresh Data
-			refreshMapDataSet(findViewById(R.id.imagebutton_map_refresh_progress));
+			refreshMapDataSet();
 		}
 	}
 
@@ -353,12 +330,16 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	 * @param venueName
 	 * @param isList
 	 */
-	private void createMarker(GeoPoint point, String foursquareIdKey, int checkinsSum, String venueName) {
-
+	private void createMarker(GeoPoint point, String foursquareIdKey, int checkinsSum, String venueName, boolean isPin) {
 		if (foursquareIdKey!=null){
 			//Log.d("LOG", "create marker");
 
-			String checkStr = checkinsSum == 1 ? " checkin in the last week" : " checkins in the last week";
+			String checkStr = "";
+			if (!isPin){
+				checkStr = checkinsSum == 1 ? " checkin in the last week" : " checkins in the last week";
+			} else {
+				checkStr = checkinsSum == 1 ? " person here now" : " persons here now";
+			}
 			venueName = AppCAP.cleanResponseString(venueName);
 
 			MyOverlayItem overlayitem = new MyOverlayItem(point, venueName, checkinsSum + checkStr);
@@ -368,30 +349,24 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 				overlayitem.setMyLocationCoords(myLocationOverlay.getMyLocation().getLatitudeE6(), myLocationOverlay.getMyLocation().getLongitudeE6());
 			}
 
-			itemizedoverlay.addOverlay(overlayitem);
-			if (itemizedoverlay.size() > 0) {
-				mapView.getOverlays().add(itemizedoverlay);
+			// Pin or marker
+			if (isPin){
+				overlayitem.setPin(true);
+				overlayitem.setMarker(getPinDrawable(checkinsSum, point));
 			}
+
+			itemizedoverlay.addOverlay(overlayitem);			
 		}
 	}
 
 
-	/**
-	 * Create pin on map, with number of checked in/out users
-	 * @param point
-	 * @param foursquareIdKey
-	 * @param hereNowCount
-	 */
-	private void createPin(GeoPoint point, String foursquareIdKey, int hereNowCount) {
-		Log.d("LOG", "createPin");
-
-		if (foursquareIdKey!=null){
-
-			MyOverlayPin overlayitem = new MyOverlayPin(ActivityMap.this, point, MyOverlayPin.TYPE_RED_PIN, hereNowCount);
-
-			mapView.getOverlays().add(overlayitem);
-		}
+	private Drawable getPinDrawable (int checkinsNum, GeoPoint gp){
+		PinDrawable icon = new PinDrawable(this, checkinsNum);
+		icon.setBounds(0,-icon.getIntrinsicHeight(),icon.getIntrinsicWidth() , 0);
+		//icon.setBounds(0,0,icon.getIntrinsicWidth() , icon.getIntrinsicHeight());
+		return icon;
 	}
+
 
 	// We have user data from logged user, use it now...
 	public void useUserData(){
@@ -430,7 +405,6 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 
 	public void onClickMenu (View v){
-
 		if (pager.getCurrentScreen()==SCREEN_MAP){
 			pager.setCurrentScreen(SCREEN_SETTINGS, true);
 		} else {
@@ -451,20 +425,28 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 
 	public void onClickRefresh (View v) {
-
-		refreshMapDataSet(v);
+		refreshMapDataSet();
 	}
 
+	public void hideBaloons(){
+		List<Overlay> mapOverlays = mapView.getOverlays();
+		for (Overlay overlay : mapOverlays) {
+			if (overlay instanceof BalloonItemizedOverlay<?>) {
+				((BalloonItemizedOverlay<?>) overlay).hideBalloon();
+			}
+		}
+	}
 
-	private void refreshMapDataSet(View v){
-
-		Animation anim = new RotateAnimation(360.0f, 0.0f, v.getWidth()/2, v.getHeight()/2);
+	private void refreshMapDataSet(){
+		Animation anim = new RotateAnimation(360.0f, 0.0f, 36/2, 36/2); // imageRefresh.getWidth()/2, imageRefresh.getHeight()/2, does'n work on first load !????
 		anim.setDuration(1000);
 		anim.setRepeatCount(0);
 		anim.setRepeatMode(Animation.REVERSE);
 		anim.setFillAfter(true);
+		imageRefresh.setAnimation(anim);
 
-		((ImageView) findViewById(R.id.imagebutton_map_refresh_progress)).setAnimation(anim);
+		Log.d("LOG", "refresh: " + (imageRefresh.getWidth()/2) + ":" + (imageRefresh.getHeight()/2));
+		hideBaloons();
 
 		// Remove all markers from MapView
 		itemizedoverlay.clear();
@@ -472,14 +454,13 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 		for (int i=mapView.getOverlays().size(); i>1; i--){
 			mapView.getOverlays().remove(i-1);
 		}
-		mapView.invalidate();
 
-		RootActivity.log("ActivityMap_mapView.getOverlays().size=" + mapView.getOverlays().size());
+		//RootActivity.log("ActivityMap_mapView.getOverlays().size=" + mapView.getOverlays().size());
 
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				resultMapDataSet = AppCAP.getConnection().getCheckedInBoundsOverTime(mapView);
+				resultMapDataSet = AppCAP.getConnection().getVenuesAndUsersWithCheckinsInBoundsDuringInterval(getSWAndNECoordinatesBounds(mapView), 7); // for last 7 days
 				if (resultMapDataSet.getResponseCode()==AppCAP.HTTP_ERROR){
 					handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 				} else {
@@ -547,7 +528,6 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	@Override
 	protected void onPause() {
 		super.onPause();
-		capDao.close();
 	}
 
 	@Override

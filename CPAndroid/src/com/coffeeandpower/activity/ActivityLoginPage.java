@@ -1,17 +1,19 @@
 package com.coffeeandpower.activity;
 
-import com.coffeeandpower.tab.activities.ActivityMap;
-import com.coffeeandpower.utils.ActivityUtils;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.inter.OAuthService;
 import com.coffeeandpower.linkedin.LinkedIn;
+import com.coffeeandpower.tab.activities.ActivityMap;
+import com.coffeeandpower.utils.ActivityUtils;
 
 
 public class ActivityLoginPage extends RootActivity {
@@ -23,6 +25,14 @@ public class ActivityLoginPage extends RootActivity {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_login);
+		
+		// Continue session...
+		if (!AppCAP.getUserLinkedInID().equals("")){
+			((TextView)findViewById(R.id.text_connect)).setVisibility(View.GONE);
+			((ImageButton)findViewById(R.id.btn_linked_in)).setVisibility(View.GONE);
+			((Button)findViewById(R.id.btn_later)).setVisibility(View.GONE);
+			connectLinkedIn();
+		}
 	}
 
 	@Override
@@ -55,8 +65,7 @@ public class ActivityLoginPage extends RootActivity {
 		startActivity(new Intent(ActivityLoginPage.this, ActivitySignInViaMail.class));
 	}
 	*/
-
-    public void onClickLinkedIn(View v){
+	private void connectLinkedIn(){
     	lastAuthorize = new LinkedIn();
     	lastAuthorize.initialize((String)getResources().getText(R.string.linkedInApiKey),
 								 (String)getResources().getText(R.string.linkedInApiSec));
@@ -78,6 +87,10 @@ public class ActivityLoginPage extends RootActivity {
 					null)						 
 			).start();
     	}
+	}
+	
+    public void onClickLinkedIn(View v){
+    	connectLinkedIn();
     }
 
     protected void onNewIntent(Intent intent) {

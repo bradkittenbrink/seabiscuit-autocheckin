@@ -13,16 +13,18 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 
 	public MyItemizedOverlay(Drawable defaultMarker, MapView mapView) {
 		super(boundCenter(defaultMarker), mapView);
-
+		populate();
 	}
 
 	public void addOverlay(MyOverlayItem overlay) {
 		m_overlays.add(overlay);
+		setLastFocusedIndex(-1);
 		populate();
 	}
 
 	public void clear (){
 		m_overlays.clear();
+		setLastFocusedIndex(-1);
 		populate();
 	}
 

@@ -63,6 +63,7 @@ public class MyUsersAdapter extends BaseAdapter{
 		public TextView textDistance;
 		public TextView textCheckinsCount;
 		public TextView textGrayLine;
+		//public TextView textJobName;
 
 		public ImageView profileImage;
 
@@ -75,6 +76,7 @@ public class MyUsersAdapter extends BaseAdapter{
 			this.textNickName = (TextView) convertView.findViewById(R.id.textview_persone_nickname);
 			this.textGrayLine = (TextView) convertView.findViewById(R.id.textview_days);
 			this.profileImage = (ImageView) convertView.findViewById(R.id.imageview_image);
+			//this.textJobName = (TextView) convertView.findViewById(R.id.job_name);
 		}
 	}
 
@@ -115,6 +117,8 @@ public class MyUsersAdapter extends BaseAdapter{
 		}
 		holder.textDistance.setText(distanceS);
 
+		// Job name
+	//	holder.textJobName.setText(mudArray.get(position).getMajorJobCategory());
 
 		// Check if we have hereNow user
 		if (mudArray.get(position).getCheckedIn()==1 && mudArray.get(position).isFirstInList()){

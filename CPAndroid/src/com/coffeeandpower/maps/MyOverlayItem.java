@@ -7,7 +7,7 @@ public class MyOverlayItem extends OverlayItem{
 
 	private String foursquareIdKey;
 	
-	private boolean res;
+	private boolean isPin;
 	
 	private int lat;
 	private int lng;
@@ -18,39 +18,31 @@ public class MyOverlayItem extends OverlayItem{
 	}
 
 	public void setMapUserData (String foursquareIdKey){
-		
 		this.foursquareIdKey = foursquareIdKey;
 	}
 	
 	public String getFoursquareIdKey(){
-		
 		return foursquareIdKey;
 	}
 	
-	public void setAsList (boolean res){
-		
-		this.res = res;
-	}
-	
-	public boolean isList(){
-		
-		return res;
-	}
-	
 	public void setMyLocationCoords(int lat, int lng){
-		
 		this.lat = lat;
-		this.lng = lng;
-				
+		this.lng = lng;		
 	}
 	
+	public boolean isPin() {
+		return isPin;
+	}
+
+	public void setPin(boolean isPin) {
+		this.isPin = isPin;
+	}
+
 	public int getMyLatitude(){
-		
 		return lat;
 	}
 	
 	public int getMyLongitude(){
-		
 		return lng;
 	}
 }

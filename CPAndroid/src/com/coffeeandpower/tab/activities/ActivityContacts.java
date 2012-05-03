@@ -1,6 +1,5 @@
 package com.coffeeandpower.tab.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,7 +18,7 @@ import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 
-public class ActivityContacts extends Activity implements TabMenu, UserMenu{
+public class ActivityContacts extends ActivityLoginPage implements TabMenu, UserMenu{
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_USER = 1;
@@ -29,7 +28,7 @@ public class ActivityContacts extends Activity implements TabMenu, UserMenu{
 	private UserAndTabMenu menu;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tab_activity_contacts);
 
@@ -55,10 +54,32 @@ public class ActivityContacts extends Activity implements TabMenu, UserMenu{
 			}
 		});
 
-		((RelativeLayout)findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-		((ImageView)findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_pressed);
+		if (AppCAP.isLoggedIn()){
+			((RelativeLayout)findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+			((ImageView)findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_pressed);
+			
+		} else {
+			setContentView(R.layout.tab_activity_login);
+			((RelativeLayout)findViewById(R.id.rel_log_in)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+			((ImageView)findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_login_pressed);
+			
+			RelativeLayout r = (RelativeLayout)findViewById(R.id.rel_log_in);
+			RelativeLayout r1 = (RelativeLayout)findViewById(R.id.rel_contacts);
+			
+			if (r!=null){ r.setVisibility(View.VISIBLE);}
+			if (r1!=null){ r1.setVisibility(View.GONE);}
+		}
+
 		((TextView)findViewById(R.id.text_contacts)).setTextColor(Color.WHITE);
 	}
+	
+	
+	@Override
+	public void onClickLinkedIn(View v) {
+		super.onClickLinkedIn(v);
+		//this.onBackPressed(); !!!!!   FINISH THIS!!!!!!
+	}
+
 
 	/**
 	 * Check if user is checked in or not

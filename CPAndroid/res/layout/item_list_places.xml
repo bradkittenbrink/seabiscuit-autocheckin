@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
             android:singleLine="true"
-            android:textColor="#ffdddddd"
+            android:textColor="#ffffffff"
             android:textSize="20sp"
             android:textStyle="bold" />
 

@@ -12,7 +12,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,7 +34,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.coffeandpower.db.CAPDao;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.adapters.MyFavouritePlacesAdapter;
@@ -78,8 +76,6 @@ public class ActivityUserDetails extends MapActivity{
 	private ImageView imageProfile;
 
 	private ListView favPlacesList;
-
-	private CAPDao capDao;
 
 	private DataHolder resultGetUserResume;
 	private DataHolder resultGetProfilePhoto;
@@ -185,14 +181,8 @@ public class ActivityUserDetails extends MapActivity{
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading");
 
-
 		// Views state
 		progressPhoto.setVisibility(View.GONE);
-
-		// Database controler
-		capDao = new CAPDao(this);
-		capDao.open();
-
 
 		// Get data from intent 
 		Bundle extras = getIntent().getExtras();
@@ -202,18 +192,7 @@ public class ActivityUserDetails extends MapActivity{
 			String fromAct = extras.getString("from_act");
 
 			if (fromAct!=null){
-
-				if (fromAct.equals("map")){
-					// From Map
-
-					ArrayList<UserSmart> tempArray = capDao.getUserSmartData(foursquareId);
-					capDao.close();
-
-					if (!tempArray.isEmpty()){
-						mud = tempArray.get(0);
-					}
-				} else {
-
+				if (fromAct.equals("list")){
 					// From list
 					mud = (UserSmart) extras.getSerializable("mapuserobject");
 				}

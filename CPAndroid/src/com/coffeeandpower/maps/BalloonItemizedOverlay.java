@@ -3,7 +3,6 @@ package com.coffeeandpower.maps;
 import java.util.List;
 
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -56,8 +55,6 @@ public abstract class BalloonItemizedOverlay<Item extends MyOverlayItem> extends
 
 	@Override
 	protected final boolean onTap(int index) {
-		Log.d("LOG", "index: " + index);
-		Log.d("LOG", "size(): " + size());
 		currentFocussedIndex = index;
 		if (size()>0){
 			currentFocussedItem = createItem(index);
@@ -78,7 +75,7 @@ public abstract class BalloonItemizedOverlay<Item extends MyOverlayItem> extends
 	}
 
 
-	protected void hideBalloon() {
+	public void hideBalloon() {
 		if (balloonView != null) {
 			balloonView.setVisibility(View.GONE);
 		}

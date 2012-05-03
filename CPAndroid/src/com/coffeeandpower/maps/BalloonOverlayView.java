@@ -21,13 +21,16 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 
 	private TextView title;
 	private TextView snippet;
+	
+	private int balloonBottomOffset;
 
 	private String foursquareIdKey;
 
 	public BalloonOverlayView(final Context context, int balloonBottomOffset) {
-
 		super(context);
 
+		this.balloonBottomOffset = balloonBottomOffset;
+		
 		setPadding(10, 0, 10, balloonBottomOffset);
 		layout = new LinearLayout(context);
 		layout.setVisibility(VISIBLE);
@@ -61,11 +64,16 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 
 
 	public void setData(Item item) {
-
 		this.foursquareIdKey = item.getFoursquareIdKey();
 
 		layout.setVisibility(VISIBLE);
 
+		if (item.isPin()){
+			setPadding(10, 0, 10, 68);
+		} else {
+			setPadding(10, 0, 10, balloonBottomOffset);
+		}
+		
 		if (item.getTitle() != null) {
 			title.setVisibility(VISIBLE);
 			title.setText(item.getTitle());
