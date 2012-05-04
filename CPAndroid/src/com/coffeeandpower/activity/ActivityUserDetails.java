@@ -324,7 +324,15 @@ public class ActivityUserDetails extends MapActivity{
 					LayoutInflater inflater = getLayoutInflater();
 					View view = inflater.inflate(R.layout.item_education_review, null);
 
-					((TextView)view.findViewById(R.id.textview_review_edu)).setText(edu.getSchool() + " " + edu.getStartDate() + "-" + edu.getEndDate());
+					String school = edu.getSchool().contains("null") ? "" : edu.getSchool();
+					String startDate = (edu.getStartDate()+"").contains("null") ? "" : edu.getStartDate()+"";
+					String endDate = (edu.getEndDate()+"").contains("null") ? "" : edu.getEndDate()+"";
+					String degree = edu.getDegree().contains("null") ? "" : edu.getDegree();
+					String concentration = edu.getConcentrations().contains("null") ? "" : edu.getConcentrations();
+							
+					((TextView)view.findViewById(R.id.textview_review_edu)).setText(school + " " + startDate + "-" + endDate);
+					((TextView)view.findViewById(R.id.textview_review_degree)).setText(degree);
+					((TextView)view.findViewById(R.id.textview_review_concentrations)).setText(concentration);
 					((LinearLayout)findViewById(R.id.edu_inflate)).addView(view);
 				}
 			}
