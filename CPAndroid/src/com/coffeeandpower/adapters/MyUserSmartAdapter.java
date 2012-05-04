@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.imageutil.ImageLoader;
@@ -75,15 +76,21 @@ public class MyUserSmartAdapter extends BaseAdapter{
 		} else {
 			holder = (ViewHolder)convertView.getTag();
 		}
-		
-		holder.textNickName.setText(mudArray.get(position).getNickName());
+
 		holder.textJobName.setText(mudArray.get(position).getHeadLine());
 		
-		String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray.get(position).getCheckInCount() + " Checkin" : mudArray.get(position).getCheckInCount() + " Checkins";
-		holder.textCheckins.setText(checkStr);
+		if (AppCAP.isLoggedIn()){
+			holder.textNickName.setText(mudArray.get(position).getNickName());
+	
+			String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray.get(position).getCheckInCount() + " Checkin" : mudArray.get(position).getCheckInCount() + " Checkins";
+			holder.textCheckins.setText(checkStr);
 
-		// Try to load profile image
-		imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage,R.drawable.default_avatar50);
+			// Try to load profile image
+			imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage,R.drawable.default_avatar50);
+		} else {
+			holder.textNickName.setText("Name Hidden");
+			imageLoader.DisplayImage("", holder.profileImage,R.drawable.default_avatar50_login);
+		}
 
 		return convertView;
 	}

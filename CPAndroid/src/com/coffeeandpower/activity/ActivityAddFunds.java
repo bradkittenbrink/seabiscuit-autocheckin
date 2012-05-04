@@ -38,43 +38,6 @@ public class ActivityAddFunds extends RootActivity{
 
 		webView = (WebView)findViewById(R.id.web_view);
 		new WebViewTask().execute(); 
-
-		/*
-		webView.setWebViewClient(new WebViewClient(){
-			@Override
-			public void onPageFinished(WebView view, String url) {
-				super.onPageFinished(view, url);
-				progress.dismiss();
-			}
-
-			@Override
-			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				super.onPageStarted(view, url, favicon);
-				progress.show();
-			}
-
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
-				return true;
-			}
-
-		});
-
-		WebSettings webSettings = webView.getSettings();
-		webSettings.setBlockNetworkImage(false);
-		webSettings.setLoadsImagesAutomatically(true);
-		webSettings.setPluginsEnabled(true);
-
-		CookieManager.getInstance().setAcceptCookie(true);
-
-		//webSettings.setJavaScriptEnabled(true);
-		//webSettings.setUserAgentString("Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1C25 Safari/419.3");
-		webSettings.setUserAgent(0);
-
-		// Load Url
-		webView.loadUrl(AppCAP.URL_FUNDS);
-		 */
 	}
 
 
@@ -145,7 +108,7 @@ public class ActivityAddFunds extends RootActivity{
 
 				@Override  
 				public boolean shouldOverrideUrlLoading(WebView view, String url) {  
-					return true;  
+					return false;  
 				}  
 			}); 
 			

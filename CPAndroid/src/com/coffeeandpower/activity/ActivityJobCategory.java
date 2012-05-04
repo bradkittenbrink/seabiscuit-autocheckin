@@ -21,31 +21,33 @@ import com.coffeeandpower.views.CustomDialog;
 public class ActivityJobCategory extends RootActivity{
 
 	public static final int HANDLE_UPLOAD_JOBS_INFO = 1500;
-	
+
 	private View timePickerLayout;
 
 	private ArrayWheelAdapter<String> jobAdapter;
-	
+
 	private boolean isMajorSelected;
-	
+
 	private String selectedMajorJob;
 	private String selectedMinorJob;
-	
+
 	private DataHolder result;
-	
+
 	private ProgressDialog progress;
-	
+
 	{
 		isMajorSelected = false;
+		selectedMajorJob = "";
+		selectedMinorJob = "";
 	}
 
 	private Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
-			
+
 			progress.dismiss();
-			
+
 			switch (msg.what) {
 			case AppCAP.HTTP_ERROR:
 				new CustomDialog(ActivityJobCategory.this, "Error", result.getResponseMessage()).show();
@@ -55,13 +57,13 @@ public class ActivityJobCategory extends RootActivity{
 				Toast.makeText(ActivityJobCategory.this, result.getResponseMessage(), Toast.LENGTH_SHORT).show();
 				break;
 			}
-			
+
 			// Finish Activity after upload data
 			finish();
 		}
-		
+
 	};
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,7 +72,7 @@ public class ActivityJobCategory extends RootActivity{
 		getTimePickerLayout().setVisibility(View.GONE);
 		progress = new ProgressDialog(this);
 		progress.setMessage("Uploading...");
-		
+
 		// Kan Kan Wheel adapter
 		final WheelView wheelView = (WheelView)findViewById(R.id.wheel_jobs);
 		jobAdapter = new ArrayWheelAdapter<String>(this, new String[] {"engineering", "design", "marketing", "legal", "finance", "admin", "investor", "business development", "other"});
@@ -119,7 +121,7 @@ public class ActivityJobCategory extends RootActivity{
 	public void onClickCancel (View v){
 		getTimePickerLayout().setVisibility(View.GONE);
 	}
-	
+
 	public void onClickDone (View v){
 		if (isMajorSelected){
 			((Button)findViewById(R.id.button_major)).setText(selectedMajorJob);
@@ -130,17 +132,22 @@ public class ActivityJobCategory extends RootActivity{
 	}
 
 	private void uploadJobs (){
-		progress.show();
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				result = AppCAP.getConnection().saveUserJobCategory(selectedMajorJob, selectedMinorJob);
-				handler.sendEmptyMessage(result.getResponseCode());
-			}
-		}).start();
+
+		if (selectedMajorJob.length()>0 || selectedMinorJob.length()>0){
+			progress.show();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					result = AppCAP.getConnection().saveUserJobCategory(selectedMajorJob, selectedMinorJob);
+					handler.sendEmptyMessage(result.getResponseCode());
+				}
+			}).start();
+		} else {
+			finish();
+		}
 	}
-	
-	
+
+
 	@Override
 	protected void onResume() {
 		super.onResume();

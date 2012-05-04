@@ -19,18 +19,26 @@ import com.coffeeandpower.utils.ActivityUtils;
 public class ActivityLoginPage extends RootActivity {
 
 	OAuthService lastAuthorize = null; 
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_login);
 		
+		AppCAP.setShouldFinishActivities(false);
+		
 		// Continue session...
 		if (!AppCAP.getUserLinkedInID().equals("")){
 			((TextView)findViewById(R.id.text_connect)).setVisibility(View.GONE);
 			((ImageButton)findViewById(R.id.btn_linked_in)).setVisibility(View.GONE);
 			((Button)findViewById(R.id.btn_later)).setVisibility(View.GONE);
+			connectLinkedIn();
+		}
+		
+		// Start loging in process from Contacts Activity
+		if (AppCAP.isStartingLoginPageFromContacts()){
+			AppCAP.setStartLoginPageFromContacts(false);
 			connectLinkedIn();
 		}
 	}
@@ -49,6 +57,7 @@ public class ActivityLoginPage extends RootActivity {
 
 	public void onClickLater (View v){
 		AppCAP.setLoggedIn(false);
+		AppCAP.setShouldFinishActivities(false);
 		startActivity(new Intent(ActivityLoginPage.this, ActivityMap.class));
 		onBackPressed();
 	}
@@ -90,10 +99,11 @@ public class ActivityLoginPage extends RootActivity {
 	}
 	
     public void onClickLinkedIn(View v){
+    	AppCAP.setShouldFinishActivities(false);
     	connectLinkedIn();
     }
 
-    protected void onNewIntent(Intent intent) {
+    public void onNewIntent(Intent intent) {
     	String verifier = intent.getData().getQueryParameter("oauth_verifier");
         if (lastAuthorize == null)
         	return;

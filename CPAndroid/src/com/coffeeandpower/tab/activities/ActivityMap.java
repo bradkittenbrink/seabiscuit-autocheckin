@@ -45,14 +45,13 @@ import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.urbanairship.UAirship;
 
-public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
+public class ActivityMap extends RootActivity implements TabMenu, UserMenu{
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_MAP = 1;
@@ -162,11 +161,6 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 
 	@Override
-	protected boolean isRouteDisplayed() {
-		return false;
-	}
-
-	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.tab_activity_map);
@@ -185,7 +179,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 		// Views states
 		pager.setCurrentScreen(SCREEN_MAP, false);
-		progress.setMessage("Getting user data...");
+		progress.setMessage("Loading...");
 
 
 		// User and Tab Menu
@@ -203,6 +197,7 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 			@Override
 			public void onLogOut() {
 				onBackPressed();
+				// Map Activity is root, so start Login Activity from here
 				startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
 			}
 		});
@@ -234,8 +229,9 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 
 		// User is logged in, get user data
-		getUserData();
-
+		if (AppCAP.isLoggedIn()){
+			getUserData();
+		}
 
 		// Listener for autorefresh map
 		mapView.setOnTouchListener(new OnTouchListener() {
@@ -280,7 +276,6 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	 * Get user data from server
 	 */
 	private void getUserData(){
-
 		progress.show();
 		new Thread(new Runnable() {
 			@Override
@@ -300,9 +295,10 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	protected void onResume() {
 		super.onResume();
 
-		if (AppCAP.shouldFinishActMap()){
+		if (AppCAP.shouldFinishActivities()){
+			// Map Activity is root, so start Login Activity from here
+			startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
 			onBackPressed();
-			AppCAP.setShouldFinishActMap(false);
 		} else {
 
 			myLocationOverlay.enableMyLocation();
@@ -332,8 +328,6 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	 */
 	private void createMarker(GeoPoint point, String foursquareIdKey, int checkinsSum, String venueName, boolean isPin) {
 		if (foursquareIdKey!=null){
-			//Log.d("LOG", "create marker");
-
 			String checkStr = "";
 			if (!isPin){
 				checkStr = checkinsSum == 1 ? " checkin in the last week" : " checkins in the last week";
@@ -363,7 +357,6 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	private Drawable getPinDrawable (int checkinsNum, GeoPoint gp){
 		PinDrawable icon = new PinDrawable(this, checkinsNum);
 		icon.setBounds(0,-icon.getIntrinsicHeight(),icon.getIntrinsicWidth() , 0);
-		//icon.setBounds(0,0,icon.getIntrinsicWidth() , icon.getIntrinsicHeight());
 		return icon;
 	}
 
@@ -377,7 +370,6 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 
 	public class GeoUpdateHandler implements LocationListener {
-
 		@Override
 		public void onLocationChanged(Location location) {
 			//int lat = (int) (location.getLatitude() * 1E6);
@@ -532,8 +524,14 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
 		myLocationOverlay.disableMyLocation();
+
+		if (AppCAP.shouldFinishActivities() && AppCAP.shouldStartLogIn()){
+			startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
+			AppCAP.setShouldStartLogIn(false);
+		}
+		
+		super.onDestroy();
 	}
 
 	@Override
@@ -549,16 +547,19 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 	@Override
 	public void onClickPlaces(View v) {
 		menu.onClickPlaces(v);
+		//finish();
 	}
 
 	@Override
 	public void onClickPeople(View v) {
 		menu.onClickPeople(v);
+		//finish();
 	}
 
 	@Override
 	public void onClickContacts(View v) {
 		menu.onClickContacts(v);
+		//finish();
 	}
 
 	@Override
@@ -568,7 +569,11 @@ public class ActivityMap extends MapActivity implements TabMenu, UserMenu{
 
 	@Override
 	public void onClickCheckIn(View v) {
-		menu.onClickCheckIn(v);
+		if (AppCAP.isLoggedIn()){
+			menu.onClickCheckIn(v);
+		} else {
+			showDialog(DIALOG_MUST_BE_A_MEMBER);
+		}
 	}
 
 	public void onClickWallet (View v){

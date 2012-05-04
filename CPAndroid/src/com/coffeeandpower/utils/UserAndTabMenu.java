@@ -14,7 +14,6 @@ import android.widget.RelativeLayout;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
-import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.activity.ActivityWallet;
 import com.coffeeandpower.cont.DataHolder;
@@ -60,7 +59,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 			View v = ((Activity) context).findViewById(R.id.btn_menu);
 			RelativeLayout r = (RelativeLayout) ((Activity) context).findViewById(R.id.rel_log_in);
 			RelativeLayout r1 = (RelativeLayout) ((Activity) context).findViewById(R.id.rel_contacts);
-			
+
 			if (v!=null){ v.setVisibility(View.GONE);}
 			if (r!=null){ r.setVisibility(View.VISIBLE);}
 			if (r1!=null){ r1.setVisibility(View.GONE);}
@@ -90,7 +89,8 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	@Override
 	public void onClickMap(View v) {
-
+		//Intent intent = new Intent(context, ActivityMap.class);							
+		//context.startActivity(intent);
 	}
 
 	@Override
@@ -113,15 +113,22 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	@Override
 	public void onClickCheckIn(View v) {
-		if (!AppCAP.isLoggedIn()){
+		if (AppCAP.isUserCheckedIn()){
 			AlertDialog.Builder builder = new AlertDialog.Builder(context);
-			builder.setMessage("You must be a member to use this feature.")
+			builder.setTitle("Check Out");
+			builder.setMessage("Are you sure you want to be checked out?")
 			.setCancelable(false)
-			.setPositiveButton("LOGIN", new DialogInterface.OnClickListener() {
+			.setPositiveButton("Check Out", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-					context.startActivity(new Intent(context, ActivityLoginPage.class));
-					((Activity) context).finish();
+					progress.setMessage("Checking out...");
+					progress.show();
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							result = AppCAP.getConnection().checkOut();
+							handler.sendEmptyMessage(result.getResponseCode());
+						}
+					}).start();
 				}
 			})
 			.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -133,49 +140,21 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 			alert.show();
 
 		} else {
-			if (AppCAP.isUserCheckedIn()){
+			double[] data = new double[6];
+			data = AppCAP.getUserCoordinates();
 
-				AlertDialog.Builder builder = new AlertDialog.Builder(context);
-				builder.setTitle("Check Out");
-				builder.setMessage("Are you sure you want to be checked out?")
-				.setCancelable(false)
-				.setPositiveButton("Check Out", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						progress.setMessage("Checking out...");
-						progress.show();
-						new Thread(new Runnable() {
-							@Override
-							public void run() {
-								result = AppCAP.getConnection().checkOut();
-								handler.sendEmptyMessage(result.getResponseCode());
-							}
-						}).start();
-					}
-				})
-				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				});
-				AlertDialog alert = builder.create();
-				alert.show();
+			double userLat = data[4];
+			double userLng = data[5];
 
-			} else {
-				double[] data = new double[6];
-				data = AppCAP.getUserCoordinates();
-
-				double userLat = data[4];
-				double userLng = data[5];
-
-				if (userLat!=0 && userLng!=0){
-					Intent intent = new Intent(context, ActivityCheckInList.class);
-					intent.putExtra("lat", (int)(userLat * 1E6));
-					intent.putExtra("lng", (int)(userLng * 1E6));
-					context.startActivity(intent);
-				}
+			if (userLat!=0 && userLng!=0){
+				Intent intent = new Intent(context, ActivityCheckInList.class);
+				intent.putExtra("lat", (int)(userLat * 1E6));
+				intent.putExtra("lng", (int)(userLng * 1E6));
+				context.startActivity(intent);
 			}
 		}
 	}
+
 
 	@Override
 	public void onClickPeople(View v) {
@@ -225,6 +204,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 		AppCAP.setLocalUserPhotoURL("");
 		AppCAP.setLoggedInUserNickname("");
 		AppCAP.setUserLinkedInDetails("", "", "");
+		AppCAP.setShouldFinishActivities(true);
 		userState.onLogOut();
 	}
 

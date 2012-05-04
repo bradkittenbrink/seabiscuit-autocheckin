@@ -1,6 +1,5 @@
 package com.coffeeandpower.tab.activities;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
+import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
@@ -18,7 +18,7 @@ import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 
-public class ActivityContacts extends ActivityLoginPage implements TabMenu, UserMenu{
+public class ActivityContacts extends RootActivity implements TabMenu, UserMenu{
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_USER = 1;
@@ -26,6 +26,7 @@ public class ActivityContacts extends ActivityLoginPage implements TabMenu, User
 	private HorizontalPagerModified pager;
 
 	private UserAndTabMenu menu;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,10 +44,7 @@ public class ActivityContacts extends ActivityLoginPage implements TabMenu, User
 		menu.setOnUserStateChanged(new OnUserStateChanged() {
 
 			@Override
-			public void onLogOut() {
-				onBackPressed();
-				startActivity(new Intent(ActivityContacts.this, ActivityLoginPage.class));
-			}
+			public void onLogOut() {}
 
 			@Override
 			public void onCheckOut() {
@@ -57,27 +55,27 @@ public class ActivityContacts extends ActivityLoginPage implements TabMenu, User
 		if (AppCAP.isLoggedIn()){
 			((RelativeLayout)findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_selected);
 			((ImageView)findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_pressed);
-			
+
 		} else {
 			setContentView(R.layout.tab_activity_login);
 			((RelativeLayout)findViewById(R.id.rel_log_in)).setBackgroundResource(R.drawable.bg_tabbar_selected);
 			((ImageView)findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_login_pressed);
-			
+
 			RelativeLayout r = (RelativeLayout)findViewById(R.id.rel_log_in);
 			RelativeLayout r1 = (RelativeLayout)findViewById(R.id.rel_contacts);
-			
+
 			if (r!=null){ r.setVisibility(View.VISIBLE);}
 			if (r1!=null){ r1.setVisibility(View.GONE);}
 		}
 
 		((TextView)findViewById(R.id.text_contacts)).setTextColor(Color.WHITE);
 	}
-	
-	
-	@Override
+
+
 	public void onClickLinkedIn(View v) {
-		super.onClickLinkedIn(v);
-		//this.onBackPressed(); !!!!!   FINISH THIS!!!!!!
+		AppCAP.setShouldFinishActivities(true);
+		AppCAP.setStartLoginPageFromContacts(true);
+		onBackPressed();
 	}
 
 
@@ -103,6 +101,10 @@ public class ActivityContacts extends ActivityLoginPage implements TabMenu, User
 	@Override
 	protected void onResume() {
 		super.onResume();
+
+		if (AppCAP.shouldFinishActivities()){
+			onBackPressed();
+		}
 	}
 
 
@@ -142,12 +144,12 @@ public class ActivityContacts extends ActivityLoginPage implements TabMenu, User
 	@Override
 	public void onClickLogout(View v) {
 		menu.onClickLogout(v);
-		AppCAP.setShouldFinishActMap(true);
+		onBackPressed();
 	}
 
 	@Override
 	public void onClickMap(View v) {
-		//menu.onClickMap(v);
+		menu.onClickMap(v);
 		finish();
 	}
 
@@ -159,7 +161,11 @@ public class ActivityContacts extends ActivityLoginPage implements TabMenu, User
 
 	@Override
 	public void onClickCheckIn(View v) {
-		menu.onClickCheckIn(v);
+		if (AppCAP.isLoggedIn()){
+			menu.onClickCheckIn(v);
+		} else {
+			showDialog(DIALOG_MUST_BE_A_MEMBER);
+		}
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,6 +11,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -19,7 +20,7 @@ import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
-import com.coffeeandpower.activity.ActivityLoginPage;
+import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityPlaceDetails;
 import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.adapters.MyPlacesAdapter;
@@ -36,7 +37,7 @@ import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 
-public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, UserMenu{
+public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, UserMenu{
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_USER = 1;
@@ -46,6 +47,8 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 	private MyPlacesAdapter adapterPlaces;
 
 	private ProgressDialog progress;
+
+	private ListView listView;
 
 	private HorizontalPagerModified pager;
 
@@ -61,7 +64,7 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 	private boolean isPeopleList;
 
 	private UserAndTabMenu menu;
-	
+
 	private String type;
 
 	{
@@ -102,21 +105,21 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 							}
 						});
 					}
-					
+
 					if (type.equals("people")){
 						setPeopleList();
 					} else {
 						setPlaceList();
 					}
-					
+
 				}
-				
+
 				break;
 			}
 		}
 	};
-	
-	
+
+
 	/**
 	 * Check if user is checked in or not
 	 */
@@ -127,29 +130,62 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 			((TextView)findViewById(R.id.textview_check_in)).setText("Check In");
 		}
 	}
-	
+
 	private void setPeopleList (){
 		adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
-		setListAdapter(adapterUsers);
-		Utils.animateListView(getListView());
+		listView.setAdapter(adapterUsers);
+		Utils.animateListView(listView);
 	}
 
 	private void setPlaceList (){
 		isPeopleList = false;
 		((CustomFontView) findViewById(R.id.textview_location_name)).setText("Place");
 		adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
-		setListAdapter(adapterPlaces);
-		Utils.animateListView(getListView());
+		listView.setAdapter(adapterPlaces);
+		Utils.animateListView(listView);
 	}
-	
-	
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tab_activity_people_and_places);
 
 		((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
-		
+
+		// Default View
+		pager = (HorizontalPagerModified) findViewById(R.id.pager);
+		pager.setCurrentScreen(SCREEN_USER, false);
+
+		((CustomFontView) findViewById(R.id.textview_location_name)).setText("People");
+		progress = new ProgressDialog(this);
+		progress.setMessage("Loading...");
+
+		listView = (ListView)findViewById(R.id.list);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,long arg3) {
+				if (isPeopleList){
+					if (!AppCAP.isLoggedIn()){
+						showDialog(DIALOG_MUST_BE_A_MEMBER);
+					} else {
+						Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityUserDetails.class);
+						intent.putExtra("mapuserobject", (UserSmart)adapterUsers.getItem(position));
+						intent.putExtra("from_act", "list");
+						startActivity(intent);
+						onBackPressed();
+					}
+				} else {
+					Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
+					intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
+					intent.putExtra("coords", data);
+					startActivity(intent);
+				}
+
+			}
+		});
+
+
 		// User and Tab Menu
 		checkUserState();
 		menu = new UserAndTabMenu(this);
@@ -160,19 +196,10 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 			}
 
 			@Override
-			public void onLogOut() {
-				onBackPressed();
-				startActivity(new Intent(ActivityPeopleAndPlaces.this, ActivityLoginPage.class));
-			}
+			public void onLogOut() {}
 		});
 
-		// Default View
-		pager = (HorizontalPagerModified) findViewById(R.id.pager);
-		pager.setCurrentScreen(SCREEN_USER, false);
 
-		((CustomFontView) findViewById(R.id.textview_location_name)).setText("People");
-		progress = new ProgressDialog(this);
-		progress.setMessage("Loading...");
 
 		// Get data from intent
 		Bundle extras = getIntent().getExtras();
@@ -189,7 +216,7 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 				((ImageView)findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
 				((TextView)findViewById(R.id.text_places)).setTextColor(Color.WHITE);
 			}
-			
+
 			// Check is it click from Activity or Balloon
 			String from = extras.getString("from");
 			if (from!=null){
@@ -214,32 +241,19 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 
 	}
 
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-
-		if (isPeopleList){
-			Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityUserDetails.class);
-			intent.putExtra("mapuserobject", (UserSmart)adapterUsers.getItem(position));
-			intent.putExtra("from_act", "list");
-			startActivity(intent);
-			onBackPressed();
-		} else {
-			Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
-			intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
-			intent.putExtra("coords", data);
-			startActivity(intent);
-		}
-	}
-
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		checkUserState();
+
+		if (AppCAP.shouldFinishActivities()){
+			onBackPressed();
+		} else {
+			checkUserState();
+		}
 	}
 
-	
+
 	public void onClickMenu (View v){
 		if (pager.getCurrentScreen()==SCREEN_USER){
 			pager.setCurrentScreen(SCREEN_SETTINGS, true);
@@ -301,12 +315,12 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 	@Override
 	public void onClickLogout(View v) {
 		menu.onClickLogout(v);
-		AppCAP.setShouldFinishActMap(true);
+		onBackPressed();
 	}
 
 	@Override
 	public void onClickMap(View v) {
-		//menu.onClickMap(v);
+		menu.onClickMap(v);
 		finish();
 	}
 
@@ -329,6 +343,10 @@ public class ActivityPeopleAndPlaces extends ListActivity implements TabMenu, Us
 
 	@Override
 	public void onClickCheckIn(View v) {
-		menu.onClickCheckIn(v);
+		if (AppCAP.isLoggedIn()){
+			menu.onClickCheckIn(v);
+		} else {
+			showDialog(DIALOG_MUST_BE_A_MEMBER);
+		}
 	}
 }

@@ -63,7 +63,7 @@ public class MyUsersAdapter extends BaseAdapter{
 		public TextView textDistance;
 		public TextView textCheckinsCount;
 		public TextView textGrayLine;
-		//public TextView textJobName;
+		public TextView textJobName;
 
 		public ImageView profileImage;
 
@@ -76,7 +76,7 @@ public class MyUsersAdapter extends BaseAdapter{
 			this.textNickName = (TextView) convertView.findViewById(R.id.textview_persone_nickname);
 			this.textGrayLine = (TextView) convertView.findViewById(R.id.textview_days);
 			this.profileImage = (ImageView) convertView.findViewById(R.id.imageview_image);
-			//this.textJobName = (TextView) convertView.findViewById(R.id.job_name);
+			this.textJobName = (TextView) convertView.findViewById(R.id.textview_major_job);
 		}
 	}
 
@@ -93,14 +93,23 @@ public class MyUsersAdapter extends BaseAdapter{
 			holder = (ViewHolder)convertView.getTag();
 		}
 
-		//String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray.get(position).getCheckInCount() + " Checkin" : mudArray.get(position).getCheckInCount() + " Checkins";
+		if (AppCAP.isLoggedIn()){
+			holder.textNickName.setText(mudArray.get(position).getNickName());
+			imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage, R.drawable.default_avatar50);
+		} else {
+			holder.textNickName.setText("Name Hidden");
+			imageLoader.DisplayImage("", holder.profileImage, R.drawable.default_avatar50_login);
+		}
 
-		holder.textNickName.setText(mudArray.get(position).getNickName());
-		holder.textStatus.setText(AppCAP.cleanResponseString(mudArray.get(position).getStatusText()));
-		//holder.textCheckinsCount.setText(checkStr);
+		if (mudArray.get(position).getStatusText()!=null && mudArray.get(position).getStatusText().length()>0){
+			holder.textStatus.setText("\"" + AppCAP.cleanResponseString(mudArray.get(position).getStatusText()) + "\"");
+		} else {
+			holder.textStatus.setText("");
+		}
 		holder.textVenueName.setText(AppCAP.cleanResponseString(mudArray.get(position).getVenueName()));
+		holder.textJobName.setText(mudArray.get(position).getMajorJobCategory());
 
-		// Deafult gay line state is gone
+		// Deafult gray line state is gone
 		holder.textGrayLine.setVisibility(View.GONE);
 
 		float[] results = new float[1];
@@ -110,15 +119,13 @@ public class MyUsersAdapter extends BaseAdapter{
 		DecimalFormat oneDForm = new DecimalFormat("#.#");
 		if (results[0] < 100){
 			float d = Float.valueOf(oneDForm.format(results[0]));
-			distanceS = d + "m away";
+			distanceS = d + "m";
 		} else {
 			float d = Float.valueOf(oneDForm.format(results[0]/1000));
-			distanceS = d + "km away";
+			distanceS = d + "km";
 		}
 		holder.textDistance.setText(distanceS);
 
-		// Job name
-	//	holder.textJobName.setText(mudArray.get(position).getMajorJobCategory());
 
 		// Check if we have hereNow user
 		if (mudArray.get(position).getCheckedIn()==1 && mudArray.get(position).isFirstInList()){
@@ -131,8 +138,6 @@ public class MyUsersAdapter extends BaseAdapter{
 			holder.textGrayLine.setVisibility(View.VISIBLE);
 		}
 
-		// Try to load profile image
-		imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage, R.drawable.default_avatar50);
 
 		return convertView;
 	}

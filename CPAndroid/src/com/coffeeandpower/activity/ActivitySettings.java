@@ -421,7 +421,7 @@ public class ActivitySettings extends RootActivity{
 	}
 	
 	public void onClickSmartererBadges (View v){
-		
+		startActivity(new Intent(this, ActivitySmarterer.class));
 	}
 
 }

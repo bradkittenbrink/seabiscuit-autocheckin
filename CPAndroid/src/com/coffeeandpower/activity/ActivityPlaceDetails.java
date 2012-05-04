@@ -11,8 +11,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.coffeeandpower.AppCAP;
@@ -25,7 +25,6 @@ import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.imageutil.ImageLoader;
-import com.coffeeandpower.tab.activities.ActivityCheckInList;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
@@ -47,10 +46,10 @@ public class ActivityPlaceDetails extends RootActivity{
 	private ArrayList<UserSmart> arrayUsersWereHere;
 
 	private VenueSmart selectedVenue;
-	
+
 	private ListView listWereHere;
 	private ListView listHereNow;
-	
+
 	private ImageLoader imageLoader;
 
 	private double data[];
@@ -59,8 +58,8 @@ public class ActivityPlaceDetails extends RootActivity{
 		arrayUsersHereNow = new ArrayList<UserSmart>();
 		arrayUsersWereHere = new ArrayList<UserSmart>();
 	}
-	
-	
+
+
 	private Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
@@ -113,13 +112,13 @@ public class ActivityPlaceDetails extends RootActivity{
 		setContentView(R.layout.activity_places_details);
 
 		imageLoader = new ImageLoader(this);
-		
+
 		// Viewvs
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
 		listHereNow = (ListView)findViewById(R.id.list_here_now);
 		listWereHere = (ListView)findViewById(R.id.list_were_here);
-		
+
 		// Get foursquareId from Intent
 		Bundle bundle = getIntent().getExtras();
 		if (bundle!=null){
@@ -128,29 +127,37 @@ public class ActivityPlaceDetails extends RootActivity{
 
 			getUsersAndVenues();
 		}
-		
-		
+
+
 		// On item list click
 		listHereNow.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-				Intent intent = new Intent(ActivityPlaceDetails.this, ActivityUserDetails.class);
-				intent.putExtra("mapuserobject", arrayUsersHereNow.get(position));
-				intent.putExtra("from_act", "list");
-				startActivity(intent);
+				if (AppCAP.isLoggedIn()){
+					Intent intent = new Intent(ActivityPlaceDetails.this, ActivityUserDetails.class);
+					intent.putExtra("mapuserobject", arrayUsersHereNow.get(position));
+					intent.putExtra("from_act", "list");
+					startActivity(intent);
+				} else {
+					showDialog(DIALOG_MUST_BE_A_MEMBER);
+				}
 			}
 		});
-		
+
 		listWereHere.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-				Intent intent = new Intent(ActivityPlaceDetails.this, ActivityUserDetails.class);
-				intent.putExtra("mapuserobject", arrayUsersWereHere.get(position));
-				intent.putExtra("from_act", "list");
-				startActivity(intent);
+				if (AppCAP.isLoggedIn()){
+					Intent intent = new Intent(ActivityPlaceDetails.this, ActivityUserDetails.class);
+					intent.putExtra("mapuserobject", arrayUsersWereHere.get(position));
+					intent.putExtra("from_act", "list");
+					startActivity(intent);
+				} else {
+					showDialog(DIALOG_MUST_BE_A_MEMBER);
+				}
 			}
 		});
-		
+
 	}
 
 	private void getUsersAndVenues (){
@@ -174,10 +181,10 @@ public class ActivityPlaceDetails extends RootActivity{
 			((CustomFontView)findViewById(R.id.textview_chat_name)).setText(AppCAP.cleanResponseString(selectedVenue.getName()));
 			((CustomFontView)findViewById(R.id.textview_place_name)).setText(AppCAP.cleanResponseString(selectedVenue.getName()));
 			((CustomFontView)findViewById(R.id.textview_place_address)).setText(AppCAP.cleanResponseString(selectedVenue.getAddress()));
-			
+
 			// Try to load image
 			imageLoader.DisplayImage(selectedVenue.getPhotoURL(), (ImageView)findViewById(R.id.image_view), R.drawable.picture_coming_soon_rectangle);
-			
+
 			arrayUsersInVenue = selectedVenue.getArrayCheckins();
 			for (CheckinData cd:arrayUsersInVenue){
 				if (cd.getCheckedIn()==1){
@@ -188,7 +195,7 @@ public class ActivityPlaceDetails extends RootActivity{
 					arrayUsersWereHere.add(getUserById(cd.getUserId()));
 				}
 			}
-			
+
 			// Create adapters and populate Lists
 			if (arrayUsersHereNow.isEmpty()){
 				listHereNow.setVisibility(View.GONE);
@@ -216,11 +223,11 @@ public class ActivityPlaceDetails extends RootActivity{
 				}, 400);
 				Utils.animateListView(listWereHere);
 			}
-			
+
 		}
 	}
 
-	
+
 	private UserSmart getUserById (int userId){
 		for (UserSmart us:arrayUsers){
 			if (us.getUserId()==userId){
@@ -229,32 +236,35 @@ public class ActivityPlaceDetails extends RootActivity{
 		}
 		return null;
 	}
-	
-	
+
+
 	public void onClickBack (View v){
 		onBackPressed();
 	}
 
-	
+
 	public void onClickCheckIn (View v){
-		if (selectedVenue!=null){
-			
-			Venue venue = new Venue();
-			venue.setAddress(AppCAP.cleanResponseString(selectedVenue.getAddress()));
-			venue.setCity(AppCAP.cleanResponseString(selectedVenue.getCity()));
-			venue.setId(selectedVenue.getFoursquareId());
-			venue.setName(AppCAP.cleanResponseString(selectedVenue.getName()));
-			venue.setLat(selectedVenue.getLat());
-			venue.setLng(selectedVenue.getLng());
-			venue.setState(AppCAP.cleanResponseString(selectedVenue.getState()));
-			
-			Intent intent = new Intent (ActivityPlaceDetails.this, ActivityCheckIn.class);
-			intent.putExtra("venue", venue);
-			startActivity(intent);
+		if (AppCAP.isLoggedIn()){
+			if (selectedVenue!=null){
+				Venue venue = new Venue();
+				venue.setAddress(AppCAP.cleanResponseString(selectedVenue.getAddress()));
+				venue.setCity(AppCAP.cleanResponseString(selectedVenue.getCity()));
+				venue.setId(selectedVenue.getFoursquareId());
+				venue.setName(AppCAP.cleanResponseString(selectedVenue.getName()));
+				venue.setLat(selectedVenue.getLat());
+				venue.setLng(selectedVenue.getLng());
+				venue.setState(AppCAP.cleanResponseString(selectedVenue.getState()));
+
+				Intent intent = new Intent (ActivityPlaceDetails.this, ActivityCheckIn.class);
+				intent.putExtra("venue", venue);
+				startActivity(intent);
+			}
+		} else {
+			showDialog(DIALOG_MUST_BE_A_MEMBER);
 		}
 	}
-	
-	
+
+
 	@Override
 	protected void onResume() {
 		super.onResume();

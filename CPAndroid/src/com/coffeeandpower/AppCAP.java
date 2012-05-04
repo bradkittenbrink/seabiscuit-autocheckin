@@ -1,12 +1,14 @@
 package com.coffeeandpower;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
-import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.PushManager;
 import com.urbanairship.push.PushPreferences;
@@ -30,7 +32,9 @@ public class AppCAP extends Application{
 	private static final String TAG_USER_COORDINATES = "tag_user_coordinates";
 	private static final String TAG_IS_USER_CHECKED_IN = "tag_is_user_checked_in";
 	private static final String TAG_SHOULD_FINISH_ACTIVITY_MAP = "tag_sgould_finish_activity_map";
+	private static final String TAG_SHOULD_START_LOG_IN = "tag_sgould_start_log_in";
 	private static final String TAG_COOKIE_STRING = "tag_cookie_string";
+	private static final String TAG_START_LOGIN_PAGE_FROM_CONTACTS = "tag_start_login_page_from_contacts";
 	
 	private static final String TAG_IS_LOGGED_IN = "tag_is_logged_in";
 	
@@ -109,8 +113,14 @@ public class AppCAP extends Application{
 
 	public static String cleanResponseString(String data){
 
-		return data.replaceAll("\\+", " ").replaceAll("%28", "\"").replaceAll("%29", "\"").replaceAll("%C4%8D", "c")
-				.replaceAll("%C4%87", "c");
+		String retS = data;
+		
+		try {
+			retS = URLDecoder.decode(data, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return retS;
 	}
 
 	public static void setLocalUserPhotoURL(String url){
@@ -203,12 +213,28 @@ public class AppCAP extends Application{
 		getSharedPreferences().edit().putBoolean(TAG_IS_USER_CHECKED_IN, set).commit();
 	}
 
-	public static boolean shouldFinishActMap (){
+	public static boolean shouldFinishActivities (){
 		return getSharedPreferences().getBoolean(TAG_SHOULD_FINISH_ACTIVITY_MAP, false);
 	}
 	
-	public static void setShouldFinishActMap (boolean set){
+	public static void setShouldFinishActivities (boolean set){
 		getSharedPreferences().edit().putBoolean(TAG_SHOULD_FINISH_ACTIVITY_MAP, set).commit();
+	}
+	
+	public static boolean shouldStartLogIn (){
+		return getSharedPreferences().getBoolean(TAG_SHOULD_START_LOG_IN, false);
+	}
+	
+	public static void setShouldStartLogIn (boolean set){
+		getSharedPreferences().edit().putBoolean(TAG_SHOULD_START_LOG_IN, set).commit();
+	}
+	
+	public static boolean isStartingLoginPageFromContacts (){
+		return getSharedPreferences().getBoolean(TAG_START_LOGIN_PAGE_FROM_CONTACTS, false);
+	}
+	
+	public static void setStartLoginPageFromContacts (boolean set){
+		getSharedPreferences().edit().putBoolean(TAG_START_LOGIN_PAGE_FROM_CONTACTS, set).commit();
 	}
 
 	public static String getCookieString (){

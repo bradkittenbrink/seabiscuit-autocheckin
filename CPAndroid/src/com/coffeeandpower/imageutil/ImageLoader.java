@@ -84,7 +84,7 @@ public class ImageLoader {
 			bitmap = decodeFile(f);
 			return bitmap;
 		} catch (Exception e){
-			e.printStackTrace();
+			//e.printStackTrace();
 			return null;
 		}
 	}
