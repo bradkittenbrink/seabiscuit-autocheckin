@@ -15,7 +15,7 @@
     	android:textColor="#ffffff"
     	android:textStyle="bold"
     	android:textSize="16sp"
-    	android:text="Title"
+    	android:text="@string/custom_dialog_title"
     />
     
     <TextView android:id="@+id/text_dialog_message"
@@ -27,7 +27,7 @@
     	android:paddingBottom="10dip"
     	android:gravity="center"
     	android:textColor="#ffffff"
-    	android:text="Message"
+    	android:text="@string/custom_dialog_message"
     />
     
 	<Button android:id="@+id/button_ok"
@@ -35,7 +35,7 @@
 	    android:layout_height="wrap_content"
 	    android:layout_margin="5dip"
 	    android:layout_gravity="center_horizontal"
-	    android:text="OK"
+	    android:text="@string/ok"
 	    android:textColor="#ff000000"
 	    android:textStyle="bold"
 	 />

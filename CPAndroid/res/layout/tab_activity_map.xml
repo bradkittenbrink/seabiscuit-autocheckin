@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:text="C&amp;P"
+                    android:text="@string/app_name"
                     android:textColor="#ffffff"
                     android:textSize="25dip" />
             </RelativeLayout>

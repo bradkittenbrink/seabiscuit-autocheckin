@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:background="#2d2d2d"
             android:padding="10dp"
-            android:text="nikoladj"
+            android:text=""
             android:textColor="#dddddd"
             android:textSize="25sp" />
 
@@ -39,7 +39,7 @@
             android:clickable="true"
             android:onClick="onClickEnterInviteCode"
             android:padding="10dp"
-            android:text="Enter invite code"
+            android:text="@string/user_menu_enter"
             android:textColor="#dddddd"
             android:textSize="20sp" />
 
@@ -60,7 +60,7 @@
             android:clickable="true"
             android:onClick="onClickWallet"
             android:padding="10dp"
-            android:text="Wallet"
+            android:text="@string/activity_wallet"
             android:textColor="#dddddd"
             android:textSize="20sp" />
 
@@ -81,7 +81,7 @@
             android:clickable="true"
             android:onClick="onClickSettings"
             android:padding="10dp"
-            android:text="Settings"
+            android:text="@string/settings"
             android:textColor="#dddddd"
             android:textSize="20sp" />
 
@@ -102,7 +102,7 @@
             android:clickable="true"
             android:onClick="onClickLogout"
             android:padding="10dp"
-            android:text="Logout"
+            android:text="@string/user_menu_logout"
             android:textColor="#dddddd"
             android:textSize="20sp" />
 
@@ -130,7 +130,7 @@
             android:id="@+id/dummy_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Show me new Check Ins"
+            android:text="@string/user_menu_show"
             android:textColor="#009590" />
 
         <LinearLayout
@@ -150,6 +150,7 @@
                 android:textColor="#e6e6e6" />
 
             <Button
+                android:id="@+id/btn_from"
                 android:layout_width="180dip"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"

@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Wallet"
+            android:text="@string/activity_wallet"
             android:textColor="#ffffff"
             android:textSize="25dip" />
 
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
             android:layout_toRightOf="@+id/imageview_lock"
-            android:text="Your Balance"
+            android:text="@string/activity_wallet_your_balance"
             android:textColor="#000000" />
 
         <TextView android:id="@+id/balance"
@@ -77,7 +77,7 @@
         android:layout_below="@+id/dummy_layout_1"
         android:background="#585858"
         android:padding="5dip"
-        android:text="Transaction History"
+        android:text="@string/activity_wallet_transaction_history"
         android:textColor="#c6c6c6" />
 
     <ListView

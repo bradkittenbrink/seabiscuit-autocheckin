@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/imageview_map"
                 android:layout_centerHorizontal="true"
-                android:text="Map" />
+                android:text="@string/tab_map" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/imageview_places"
                 android:layout_centerHorizontal="true"
-                android:text="Places" />
+                android:text="@string/tab_places" />
         </RelativeLayout>
 
         <ImageView
@@ -108,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/imageview_people"
                 android:layout_centerHorizontal="true"
-                android:text="People" />
+                android:text="@string/tab_people" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/imageview_contacts"
                 android:layout_centerHorizontal="true"
-                android:text="Log In" />
+                android:text="@string/tab_log_in" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -161,7 +161,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/imageview_contacts"
                 android:layout_centerHorizontal="true"
-                android:text="Contacts" />
+                android:text="@string/tab_contacts" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -186,7 +186,7 @@
             android:layout_below="@+id/imageview_check_in"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-15dip"
-            android:text="Check In" />
+            android:text="@string/tab_check_in" />
 
         <ImageView
             android:id="@+id/imageview_check_in_clock_hand"

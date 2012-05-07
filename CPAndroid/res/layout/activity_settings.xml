@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Settings"
+            android:text="@string/settings"
             android:textColor="#ffffff"
             android:textSize="25dip" />
 
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:padding="10dip"
-                android:text="Nickname" />
+                android:text="@string/nickname" />
 
             <ProgressBar
                 android:id="@+id/progress_nickname"
@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:padding="10dip"
-                android:text="Profile Photo" />
+                android:text="@string/activity_settings_profile_photo" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -153,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:padding="10dip"
-                android:text="Email" />
+                android:text="@string/email" />
 
             <ImageView
                 android:id="@+id/imageview_delete_email"
@@ -205,7 +205,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:padding="10dip"
-                android:text="Job Category" />
+                android:text="@string/activity_settings_job_category" />
 
             <ImageView
                 android:layout_width="11dip"
@@ -231,7 +231,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:padding="10dip"
-                android:text="Smarterer Badges" />
+                android:text="@string/activity_settings_smarterer" />
 
             <ImageView
                 android:layout_width="11dip"

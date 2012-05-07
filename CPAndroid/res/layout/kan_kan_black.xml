@@ -19,7 +19,7 @@
             android:layout_margin="5dip"
             android:background="@drawable/btn_dark_all"
             android:onClick="onClickCancel"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textColor="#FFFFFF"
             android:typeface="serif" />
 
@@ -31,7 +31,7 @@
             android:layout_margin="5dip"
             android:background="@drawable/btn_dark_all"
             android:onClick="onClickDone"
-            android:text="Done"
+            android:text="@string/done"
             android:textColor="#FFFFFF"
             android:typeface="serif" />
 

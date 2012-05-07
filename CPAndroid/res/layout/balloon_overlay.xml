@@ -22,7 +22,7 @@
             android:id="@+id/balloon_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="balloon_item_title"
+            android:text=""
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             android:textSize="16dip" >
@@ -32,7 +32,7 @@
             android:id="@+id/balloon_item_snippet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="balloon_item_snippet"
+            android:text=""
             android:textColor="#ffffff"
             android:textSize="12dip" >
         </TextView>

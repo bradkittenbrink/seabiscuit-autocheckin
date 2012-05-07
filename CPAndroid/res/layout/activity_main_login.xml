@@ -15,7 +15,7 @@
         android:layout_marginBottom="15dp"
         android:background="@drawable/button_gray"
         android:onClick="onClickLater"
-        android:text="Later"
+        android:text="@string/later"
         android:textColor="#ffffff" />
 
     <TextView
@@ -26,7 +26,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="60dp"
         android:gravity="center"
-        android:text="Connect with LinkedIn \n to start using C&amp;P"
+        android:text="@string/activity_main_login_connect"
         android:textSize="16sp" />
 
     <ImageButton

@@ -30,7 +30,7 @@
         android:layout_below="@+id/btn_linked_in"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="Connect with LinkedIn \n to start using C&amp;P"
+        android:text="@string/tab_activity_login_connect"
         android:textSize="16sp" />
 
     <include

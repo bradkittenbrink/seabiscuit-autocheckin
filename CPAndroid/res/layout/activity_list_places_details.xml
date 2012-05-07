@@ -20,7 +20,7 @@
             android:background="@drawable/rounded_border"
             android:onClick="onClickBack"
             android:padding="8dip"
-            android:text="Back"
+            android:text="@string/back"
             android:textColor="#ffffff" />
 
         <com.coffeeandpower.views.CustomFontView
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Place Name"
+            android:text="@string/activity_list_places_details_place_name"
             android:textColor="#ffffff"
             android:textSize="25dip" />
     </RelativeLayout>

@@ -19,7 +19,7 @@
             android:background="@drawable/rounded_border"
             android:onClick="onClickBack"
             android:padding="8dip"
-            android:text="Settings"
+            android:text="@string/settings"
             android:textColor="#ffffff" />
 
         <com.coffeeandpower.views.CustomFontView
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Job Categories"
+            android:text="@string/activity_job_category_job"
             android:textColor="#ffffff"
             android:textSize="25dip" />
     </RelativeLayout>
@@ -40,7 +40,7 @@
         android:layout_below="@+id/dummy_layout"
         android:layout_marginLeft="20dip"
         android:layout_marginTop="20dip"
-        android:text="Major Job Category" />
+        android:text="@string/activity_job_caregory_major" />
 
     <Button
         android:id="@+id/button_major"
@@ -53,7 +53,7 @@
         android:gravity="left|center_vertical"
         android:onClick="onClickMajor"
         android:paddingLeft="10dip"
-        android:text="other" />
+        android:text="@string/other" />
 
     <TextView
         android:id="@+id/textview_minor"
@@ -62,7 +62,7 @@
         android:layout_below="@+id/button_major"
         android:layout_marginLeft="20dip"
         android:layout_marginTop="20dip"
-        android:text="Minor Job Category" />
+        android:text="@string/activity_job_caregory_minor" />
 
     <Button
         android:id="@+id/button_minor"
@@ -75,7 +75,7 @@
         android:gravity="left|center_vertical"
         android:onClick="onClickMinor"
         android:paddingLeft="10dip"
-        android:text="other" />
+        android:text="@string/other" />
 
     <include
         android:id="@+id/picker"

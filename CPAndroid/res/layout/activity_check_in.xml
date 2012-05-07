@@ -18,7 +18,7 @@
             android:background="@drawable/rounded_border"
             android:onClick="onClickBack"
             android:padding="8dip"
-            android:text="Back"
+            android:text="@string/back"
             android:textColor="#ffffff" />
 
         <com.coffeeandpower.views.CustomFontView
@@ -67,7 +67,7 @@
                 android:id="@+id/textview_check_in"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CHECK IN AT..."
+                android:text="@string/activity_check_in_check_in_at"
                 android:textColor="#ffffff"
                 android:textSize="24dip"
                 android:textStyle="bold" />
@@ -76,7 +76,7 @@
                 android:id="@+id/textview_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="dfgdfg"
+                android:text=""
                 android:textColor="#ffffff"
                 android:textSize="19dip"
                 android:textStyle="bold" />
@@ -85,7 +85,7 @@
                 android:id="@+id/textview_street"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="dfgdfg"
+                android:text=""
                 android:textColor="#ffffff"
                 android:textSize="17dip" />
         </LinearLayout>
@@ -150,7 +150,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dip"
-                    android:text="Who&apos;s here now?"
+                    android:text="@string/activity_check_in_who"
                     android:textSize="20dip" />
             </LinearLayout>
         </HorizontalScrollView>
@@ -169,7 +169,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="8dip"
-            android:text="What can you do, or what do you need?"
+            android:text="@string/activity_check_in_what"
             android:textColor="#666666"
             android:textSize="26dip"
             android:textStyle="bold" />
@@ -182,7 +182,7 @@
             android:layout_marginLeft="20dip"
             android:singleLine="true"
             android:layout_marginRight="20dip"
-            android:hint="optional" />
+            android:hint="@string/activity_check_in_optional" />
 
         <com.coffeeandpower.views.CustomFontView
             android:id="@+id/textview_how_long"
@@ -191,7 +191,7 @@
             android:layout_below="@+id/edittext_optional"
             android:layout_marginLeft="20dip"
             android:layout_marginTop="5dip"
-            android:text="FOR HOW LONG?"
+            android:text="@string/activity_check_in_for_how_long"
             android:textColor="#666666"
             android:textSize="26dip"
             android:textStyle="bold" />
@@ -206,7 +206,7 @@
             android:layout_marginLeft="20dip"
             android:layout_marginRight="25dip"
             android:layout_marginTop="5dip"
-            android:text="1 hour"
+            android:text=""
             android:textColor="#42818b"
             android:textSize="24dip" />
 

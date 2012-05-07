@@ -18,7 +18,7 @@
             android:background="@drawable/rounded_border"
             android:onClick="onClickBack"
             android:padding="8dip"
-            android:text="Back"
+            android:text="@string/back"
             android:textColor="#ffffff" />
 
         <com.coffeeandpower.views.CustomFontView
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Join"
+            android:text="@string/activity_join_join"
             android:textColor="#ffffff"
             android:textSize="25dip" />
 
@@ -39,7 +39,7 @@
             android:background="@drawable/rounded_border"
             android:onClick="onClickJoin"
             android:padding="8dip"
-            android:text="Join"
+            android:text="@string/activity_join_join"
             android:textColor="#ffffff" />
     </RelativeLayout>
 
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dip"
                 android:gravity="center_horizontal"
-                android:text="Join the co-working revolution!"
+                android:text="@string/activity_join_co_working"
                 android:textColor="#ffffff"
                 android:textSize="16dip"
                 android:textStyle="bold" />
@@ -71,7 +71,7 @@
                 android:layout_marginRight="20dip"
                 android:layout_marginTop="20dip"
                 android:background="#000000"
-                android:hint="Email Address"
+                android:hint="@string/activity_join_email_address"
                 android:inputType="textEmailAddress"
                 android:padding="5dip"
                 android:textColor="#ffffff" />
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
                 android:gravity="center_horizontal"
-                android:text="You did not enter a valid email address."
+                android:text="@string/activity_join_did_not"
                 android:textColor="#ffffff"
                 android:textSize="16dip" />
 
@@ -94,7 +94,7 @@
                 android:layout_marginRight="20dip"
                 android:layout_marginTop="10dip"
                 android:background="#000000"
-                android:hint="Password"
+                android:hint="@string/password"
                 android:inputType="textPassword"
                 android:padding="5dip"
                 android:singleLine="true"
@@ -117,7 +117,7 @@
                 android:layout_marginRight="20dip"
                 android:layout_marginTop="10dip"
                 android:background="#000000"
-                android:hint="Re-type Password"
+                android:hint="@string/re_password"
                 android:inputType="textPassword"
                 android:padding="5dip"
                 android:singleLine="true"
@@ -131,7 +131,7 @@
                 android:layout_marginRight="20dip"
                 android:layout_marginTop="30dip"
                 android:background="#000000"
-                android:hint="Nickname"
+                android:hint="@string/nickname"
                 android:padding="5dip"
                 android:singleLine="true"
                 android:textColor="#ffffff" />
@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
                 android:gravity="center_horizontal"
-                android:text="Nickname must be at least 3 characters long."
+                android:text="@string/activity_join_nickname_must_be"
                 android:textColor="#ffffff"
                 android:textSize="16dip" />
 
@@ -163,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dip"
-                    android:text="coffeeandpower.com"
+                    android:text="@string/coffeeandpower.com"
                     android:textColor="#ffffff" />
             </LinearLayout>
         </LinearLayout>

@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="2"
-            android:text="Omladinski Stadion"
+            android:text=""
             android:textColor="#62615f"
             android:textSize="24sp" />
 
@@ -34,10 +34,9 @@
             android:id="@+id/textview_checkin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_marginRight="10dip"
             android:singleLine="true"
-            android:text="8 Checkins"
+            android:text=""
             android:textColor="#62615f"
             android:textSize="17sp" />
     </LinearLayout>

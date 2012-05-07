@@ -19,7 +19,7 @@
             android:background="@drawable/rounded_border"
             android:onClick="onClickBack"
             android:padding="8dip"
-            android:text="Back"
+            android:text="@string/back"
             android:textColor="#ffffff" />
 
         <com.coffeeandpower.views.CustomFontView
@@ -108,7 +108,7 @@
                     android:layout_below="@+id/shadow_view"
                     android:layout_marginLeft="15dip"
                     android:layout_marginTop="5dip"
-                    android:text="Here now..."
+                    android:text="@string/activity_places_details_here"
                     android:textColor="#108086"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -130,7 +130,7 @@
                     android:layout_below="@+id/list_here_now"
                     android:layout_marginLeft="15dip"
                     android:layout_marginTop="5dip"
-                    android:text="Have worked here..."
+                    android:text="@string/activity_places_details_have"
                     android:textColor="#108086"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -158,7 +158,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Check in"
+                        android:text="@string/activity_check_in_list_check"
                         android:textColor="#656565"
                         android:textStyle="bold" />
 
