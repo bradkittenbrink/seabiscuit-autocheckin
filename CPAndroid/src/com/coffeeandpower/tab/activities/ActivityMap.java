@@ -21,6 +21,7 @@ import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -466,7 +467,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu{
 		AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
 		
 		// Check and Set Notification settings
-		menu.setOnNotificationSettingsListener((ToggleButton)findViewById(R.id.toggle_checked_in), (TextView)findViewById(R.id.dummy_text_1));
+		menu.setOnNotificationSettingsListener((ToggleButton)findViewById(R.id.toggle_checked_in), (Button)findViewById(R.id.btn_from));
 	}
 
 

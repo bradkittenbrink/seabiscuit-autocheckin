@@ -8,11 +8,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
@@ -37,6 +39,10 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 	private Context context;
 
 	private ProgressDialog progress;
+
+	private ToggleButton toggle;
+
+	private Button btnFrom;
 
 	private DataHolder result;
 	private DataHolder resultNotificationSettings;
@@ -88,6 +94,22 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 				AppCAP.setUserCheckedIn(false);
 				userState.onCheckOut();
 				break;
+
+			case HANDLE_GET_NOTIFICATION_SETTINGS:
+				if (resultNotificationSettings.getObject()!=null && resultNotificationSettings.getObject() instanceof Object[]){
+					Object[] obj = (Object[]) resultNotificationSettings.getObject();
+
+					String pushDistance = (String) obj[0];
+					String checkedInOnly = (String) obj[1];
+
+					if (toggle!=null && btnFrom!=null){
+						Log.d("LOG", "text: " + pushDistance + ":" +checkedInOnly);
+						toggle.setChecked(checkedInOnly.matches("1"));
+						btnFrom.setText(pushDistance.matches("venue") ? "in venue" : "in city");
+					}
+				} 
+				break;
+
 			}
 		}
 
@@ -219,39 +241,20 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 	 * Toggle Button listener and checker
 	 * @param toggle
 	 */
-	public void setOnNotificationSettingsListener(final ToggleButton toggle, final TextView textView) {
-		
-		final Handler hnd = new Handler(){
-			@Override
-			public void handleMessage(Message msg) {
-				super.handleMessage(msg);
-				
-				switch (msg.what){
-				
-				case HANDLE_GET_NOTIFICATION_SETTINGS:
-					if (resultNotificationSettings.getObject()!=null && resultNotificationSettings.getObject() instanceof Object[]){
-						Object[] obj = (Object[]) resultNotificationSettings.getObject();
-						
-						String pushDistance = (String) obj[0];
-						String checkedInOnly = (String) obj[1];
-						
-						toggle.setChecked(checkedInOnly.matches("1"));
-						textView.setText(pushDistance.matches("venue") ? "in venue" : "in city");
-					} 
-					break;
-				}
-			}
-			
-		};
+	public void setOnNotificationSettingsListener(final ToggleButton toggle,final Button btnFrom) {
+		this.toggle = toggle;
+		this.btnFrom = btnFrom;
+
 		
 		// Get notification settings
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				resultNotificationSettings = AppCAP.getConnection().getNotificationSettings();
-				hnd.sendEmptyMessage(HANDLE_GET_NOTIFICATION_SETTINGS);
+				handler.sendEmptyMessage(HANDLE_GET_NOTIFICATION_SETTINGS);
 			}
 		}).start();
+
 		
 		// Check Toggle State
 		toggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -263,6 +266,39 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 						AppCAP.getConnection().setNotificationSettings(AppCAP.getPushDistance(), isChecked);
 					}
 				}).start();
+			}
+		});
+		
+		
+		// Button From onClickListener
+		final CharSequence[] data = {"City", "Place"};
+		btnFrom.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Show dialog for pending Jobs
+				new AlertDialog.Builder(context)
+				.setTitle("Show me new check-ins from:")
+				.setSingleChoiceItems(data, -1, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						if (whichButton!=-1){
+							AppCAP.setPushDistance(whichButton==1 ? "venue" : "city");
+							btnFrom.setText(whichButton==1 ? "in venue" : "in city");
+							new Thread(new Runnable() {
+								@Override
+								public void run() {
+									AppCAP.getConnection().setNotificationSettings(AppCAP.getPushDistance(), toggle.isChecked());
+								}
+							}).start();
+						}
+						dialog.dismiss();
+					}
+				})
+				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						dialog.cancel();
+					}
+				})
+				.show();
 			}
 		});
 	}

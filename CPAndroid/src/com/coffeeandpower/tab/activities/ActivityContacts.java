@@ -3,6 +3,7 @@ package com.coffeeandpower.tab.activities;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -107,7 +108,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu{
 		} else {
 			
 			// Check and Set Notification settings
-			menu.setOnNotificationSettingsListener((ToggleButton)findViewById(R.id.toggle_checked_in),(TextView)findViewById(R.id.dummy_text_1));
+			menu.setOnNotificationSettingsListener((ToggleButton)findViewById(R.id.toggle_checked_in),(Button)findViewById(R.id.btn_from));
 		}
 	}
 

@@ -2426,7 +2426,7 @@ public class HttpUtil {
 					JSONObject objPayload = json.optJSONObject("payload");
 					if (objPayload!=null){
 						
-						result.setObject(new Object[]{objPayload.optString("push_distance"), json.optString("checked_in_only")});
+						result.setObject(new Object[]{objPayload.optString("push_distance"), objPayload.optString("checked_in_only")});
 					}
 				}
 			}
