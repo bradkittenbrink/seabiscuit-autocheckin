@@ -1,10 +1,8 @@
 package com.coffeeandpower.adapters;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +12,7 @@ import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
+import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.imageutil.ImageLoader;
 
@@ -111,21 +110,8 @@ public class MyUsersAdapter extends BaseAdapter{
 
 		// Deafult gray line state is gone
 		holder.textGrayLine.setVisibility(View.GONE);
-
-		float[] results = new float[1];
-		Location.distanceBetween(myLat, myLng, mudArray.get(position).getLat(), mudArray.get(position).getLng(), results);
-
-		String distanceS = "";
-		DecimalFormat oneDForm = new DecimalFormat("#.#");
-		if (results[0] < 100){
-			float d = Float.valueOf(oneDForm.format(results[0]));
-			distanceS = d + "m";
-		} else {
-			float d = Float.valueOf(oneDForm.format(results[0]/1000));
-			distanceS = d + "km";
-		}
-		holder.textDistance.setText(distanceS);
-
+		
+		holder.textDistance.setText(RootActivity.getDistanceBetween(myLat, myLng,mudArray.get(position).getLat(), mudArray.get(position).getLng()));
 
 		// Check if we have hereNow user
 		if (mudArray.get(position).getCheckedIn()==1 && mudArray.get(position).isFirstInList()){

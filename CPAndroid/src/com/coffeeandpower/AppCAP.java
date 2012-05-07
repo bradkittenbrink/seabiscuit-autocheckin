@@ -35,10 +35,10 @@ public class AppCAP extends Application{
 	private static final String TAG_SHOULD_START_LOG_IN = "tag_sgould_start_log_in";
 	private static final String TAG_COOKIE_STRING = "tag_cookie_string";
 	private static final String TAG_START_LOGIN_PAGE_FROM_CONTACTS = "tag_start_login_page_from_contacts";
-	
+
 	private static final String TAG_IS_LOGGED_IN = "tag_is_logged_in";
-	
-	
+
+
 	public static final String URL_WEB_SERVICE = "https://coffeeandpower.com/"; // production
 	//public static final String URL_WEB_SERVICE = "http://staging.coffeeandpower.com/"; // staging	
 	public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
@@ -69,21 +69,21 @@ public class AppCAP extends Application{
 
 	@Override
 	public void onCreate() {
-        super.onCreate();
+		super.onCreate();
 
-        this.http = new HttpUtil();
-        
-        UAirship.takeOff(this);
-        
-        PushManager.enablePush();
-        PushManager.shared().setIntentReceiver(IntentReceiver.class);
-        
-        PushPreferences prefs = PushManager.shared().getPreferences();
-        //Debug code to get the APID to manually push notifications
-        Log.d("Coffee","Found APID: " + prefs.getPushId());
+		this.http = new HttpUtil();
+
+		UAirship.takeOff(this);
+
+		PushManager.enablePush();
+		PushManager.shared().setIntentReceiver(IntentReceiver.class);
+
+		PushPreferences prefs = PushManager.shared().getPreferences();
+		//Debug code to get the APID to manually push notifications
+		Log.d("Coffee","Found APID: " + prefs.getPushId());
 	}
-	
-    public void onStop() {
+
+	public void onStop() {
 		UAirship.land();
 	}
 
@@ -114,7 +114,7 @@ public class AppCAP extends Application{
 	public static String cleanResponseString(String data){
 
 		String retS = data;
-		
+
 		try {
 			retS = URLDecoder.decode(data, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -176,11 +176,11 @@ public class AppCAP extends Application{
 	public static int getLoggedInUserId (){
 		return getSharedPreferences().getInt(TAG_LOGGED_IN_USER_ID, 0);
 	}
-	
+
 	public static void setLoggedInUserNickname (String nickname){
 		getSharedPreferences().edit().putString(TAG_LOGGED_IN_USER_NICKNAME, nickname).commit();
 	}
-	
+
 	public static String getLoggedInUserNickname (){
 		return getSharedPreferences().getString(TAG_LOGGED_IN_USER_NICKNAME, "");
 	}
@@ -194,6 +194,14 @@ public class AppCAP extends Application{
 		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES+"user_lng", (float)data[5]).commit();
 	}
 
+	/**
+	 *  data[0] = sw_lat;
+	 *  data[1] = sw_lng;
+	 *	data[2] = ne_lat;
+	 *	data[3] = ne_lng;
+	 *	data[4] = user_lat;
+	 *	data[5] = user_lng;
+	 */
 	public static double[] getUserCoordinates (){
 		double[] data = new double[6];
 		data[0] = (double)getSharedPreferences().getFloat(TAG_USER_COORDINATES+"sw_lat", 0);
@@ -208,7 +216,7 @@ public class AppCAP extends Application{
 	public static boolean isUserCheckedIn (){
 		return getSharedPreferences().getBoolean(TAG_IS_USER_CHECKED_IN, false);
 	}
-	
+
 	public static void setUserCheckedIn (boolean set){
 		getSharedPreferences().edit().putBoolean(TAG_IS_USER_CHECKED_IN, set).commit();
 	}
@@ -216,23 +224,23 @@ public class AppCAP extends Application{
 	public static boolean shouldFinishActivities (){
 		return getSharedPreferences().getBoolean(TAG_SHOULD_FINISH_ACTIVITY_MAP, false);
 	}
-	
+
 	public static void setShouldFinishActivities (boolean set){
 		getSharedPreferences().edit().putBoolean(TAG_SHOULD_FINISH_ACTIVITY_MAP, set).commit();
 	}
-	
+
 	public static boolean shouldStartLogIn (){
 		return getSharedPreferences().getBoolean(TAG_SHOULD_START_LOG_IN, false);
 	}
-	
+
 	public static void setShouldStartLogIn (boolean set){
 		getSharedPreferences().edit().putBoolean(TAG_SHOULD_START_LOG_IN, set).commit();
 	}
-	
+
 	public static boolean isStartingLoginPageFromContacts (){
 		return getSharedPreferences().getBoolean(TAG_START_LOGIN_PAGE_FROM_CONTACTS, false);
 	}
-	
+
 	public static void setStartLoginPageFromContacts (boolean set){
 		getSharedPreferences().edit().putBoolean(TAG_START_LOGIN_PAGE_FROM_CONTACTS, set).commit();
 	}
@@ -240,7 +248,7 @@ public class AppCAP extends Application{
 	public static String getCookieString (){
 		return getSharedPreferences().getString(TAG_COOKIE_STRING, "");
 	}
-	
+
 	public static void setCookieString (String cookie){
 		getSharedPreferences().edit().putString(TAG_COOKIE_STRING, cookie).commit();
 	}
@@ -248,10 +256,10 @@ public class AppCAP extends Application{
 	public static void setLoggedIn (boolean set){
 		getSharedPreferences().edit().putBoolean(TAG_IS_LOGGED_IN, set).commit();
 	}
-	
+
 	public static boolean isLoggedIn (){
 		return getSharedPreferences().getBoolean(TAG_IS_LOGGED_IN, false);
 	}
-	
+
 
 }

@@ -31,11 +31,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
+import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyFavouritePlacesAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
@@ -44,17 +46,17 @@ import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
+import com.coffeeandpower.maps.PinBlackDrawable;
 import com.coffeeandpower.utils.HttpUtil;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
-public class ActivityUserDetails extends MapActivity{
+public class ActivityUserDetails extends RootActivity{
 
 	private static final int HANDLE_GET_USER_RESUME = 1222; 
 	private static final int HANDLE_LOAD_PROFILE_PICTURE = 1223; 
@@ -165,7 +167,6 @@ public class ActivityUserDetails extends MapActivity{
 		favPlacesList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-				
 				Intent intent = new Intent(ActivityUserDetails.this, ActivityPlaceDetails.class);
 				intent.putExtra("foursquare_id", favouriteVenues.get(position).getId());
 				intent.putExtra("coords", AppCAP.getUserCoordinates());
@@ -176,8 +177,6 @@ public class ActivityUserDetails extends MapActivity{
 		mapView = (MapView) findViewById(R.id.mapview_user_details);
 		progressPhoto = (ProgressBar) findViewById(R.id.progressbar_photo);
 		imageProfile = (ImageView) findViewById(R.id.imagebutton_user_face);
-		Drawable drawable = this.getResources().getDrawable(R.drawable.map_marker_iphone);
-		itemizedoverlay = new MyItemizedOverlay2(drawable);
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading");
 
@@ -211,13 +210,15 @@ public class ActivityUserDetails extends MapActivity{
 		if (mud!=null){
 			GeoPoint point = new GeoPoint((int)(mud.getLat()*1E6), (int)(mud.getLng()*1E6));
 			mapController.animateTo(point);
+			mapView.scrollBy(-getDisplayMetrics().widthPixels/4, -getDisplayMetrics().heightPixels/10);
+			itemizedoverlay = new MyItemizedOverlay2(
+					getPinDrawable(RootActivity.getDistanceBetween(AppCAP.getUserCoordinates()[4], AppCAP.getUserCoordinates()[5], mud.getLat(), mud.getLng())+ " away", point));
 			createMarker(point);
 		}
 
 
 		// Set Views states
 		if (mud!=null){
-
 			((CustomFontView) findViewById(R.id.textview_user_name)).setText(mud.getNickName());
 			((TextView)findViewById(R.id.textview_user_status)).setText(AppCAP.cleanResponseString(mud.getStatusText()));
 			((CustomFontView) findViewById(R.id.textview_nick_name)).setText(mud.getNickName());
@@ -247,19 +248,28 @@ public class ActivityUserDetails extends MapActivity{
 				}
 			}).start();
 		}
+
 	}
+
+
+	private Drawable getPinDrawable (String text, GeoPoint gp){
+		PinBlackDrawable icon = new PinBlackDrawable(this, text);
+		icon.setBounds(0,-icon.getIntrinsicHeight(),icon.getIntrinsicWidth() , 0);
+		return icon;
+	}
+
 
 	/**
 	 * Update users data in UI, from favouriteVenues and userResumeData
 	 */
 	private void updateUserDataInUI(){
-
 		if (userResumeData!=null){
 			loadProfilePicture();
 
 			((TextView)findViewById(R.id.textview_date)).setText(userResumeData.getJoined());
 			((TextView)findViewById(R.id.textview_earned)).setText("$" + userResumeData.getTotalEarned());
 			((TextView)findViewById(R.id.textview_love)).setText(userResumeData.getReviewsLoveReceived());
+			((TextView)findViewById(R.id.textview_rate)).setText(userResumeData.getHourlyBillingRate().matches("") ? "N/A" : userResumeData.getHourlyBillingRate());
 
 			((TextView)findViewById(R.id.textview_place)).setText(AppCAP.cleanResponseString(userResumeData.getVenueName()));
 			((TextView)findViewById(R.id.textview_street)).setText(AppCAP.cleanResponseString(userResumeData.getVenueAddress()));
@@ -313,6 +323,14 @@ public class ActivityUserDetails extends MapActivity{
 				}
 			}
 
+			// Chech if user is verified for LinkedIn and Facebook
+			if (userResumeData.getVerifiedLinkedIn().matches("1")){
+				((LinearLayout)findViewById(R.id.layout_verified_linked_in)).setVisibility(View.VISIBLE);
+			}
+			if (userResumeData.getVerifiedFacebook().matches("1")){
+				((LinearLayout)findViewById(R.id.layout_verified_facebook)).setVisibility(View.VISIBLE);
+			}
+
 
 			// Check if user have Education Data
 			if (!userResumeData.getEducation().isEmpty()){
@@ -329,7 +347,7 @@ public class ActivityUserDetails extends MapActivity{
 					String endDate = (edu.getEndDate()+"").contains("null") ? "" : edu.getEndDate()+"";
 					String degree = edu.getDegree().contains("null") ? "" : edu.getDegree();
 					String concentration = edu.getConcentrations().contains("null") ? "" : edu.getConcentrations();
-							
+
 					((TextView)view.findViewById(R.id.textview_review_edu)).setText(school + " " + startDate + "-" + endDate);
 					((TextView)view.findViewById(R.id.textview_review_degree)).setText(degree);
 					((TextView)view.findViewById(R.id.textview_review_concentrations)).setText(concentration);
@@ -339,8 +357,9 @@ public class ActivityUserDetails extends MapActivity{
 
 		}
 
+		
+		// List view with venues 
 		if (favouriteVenues!=null){
-
 			MyFavouritePlacesAdapter adapter = new MyFavouritePlacesAdapter(this, favouriteVenues);
 			favPlacesList.setAdapter(adapter);
 			favPlacesList.postDelayed(new Runnable() {
@@ -351,6 +370,15 @@ public class ActivityUserDetails extends MapActivity{
 			}, 400);
 
 		}
+		
+		
+		// Scroll to the top of the page
+		((ScrollView)findViewById(R.id.scroll)).post(new Runnable() {
+			@Override
+			public void run() {
+				((ScrollView)findViewById(R.id.scroll)).fullScroll(ScrollView.FOCUS_UP);
+			}
+		});
 	}
 
 	/**
@@ -399,14 +427,13 @@ public class ActivityUserDetails extends MapActivity{
 
 	private void animateView(RelativeLayout v){
 		AnimationSet set = new AnimationSet(true);
-
 		Animation animation = new AlphaAnimation(0.0f, 1.0f);
 		animation.setDuration(150);
 		set.addAnimation(animation);
 
 		animation = new TranslateAnimation(
 				Animation.RELATIVE_TO_SELF, 0.0f,Animation.RELATIVE_TO_SELF, 0.0f,
-				Animation.RELATIVE_TO_SELF, -1.0f,Animation.RELATIVE_TO_SELF, 0.0f
+				Animation.RELATIVE_TO_SELF, 3.0f,Animation.RELATIVE_TO_SELF, 0.0f
 				);
 		animation.setDuration(300);
 		set.addAnimation(animation);
@@ -417,7 +444,6 @@ public class ActivityUserDetails extends MapActivity{
 
 
 	private void startButtonsAnim (View v, boolean isPlus) {
-
 		if (isPlus){
 
 			((RelativeLayout)findViewById(R.id.rel_buttons)).setVisibility(View.VISIBLE);

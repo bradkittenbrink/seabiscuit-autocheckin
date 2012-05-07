@@ -1,10 +1,8 @@
 package com.coffeeandpower.adapters;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +12,7 @@ import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
+import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.imageutil.ImageLoader;
 
@@ -86,20 +85,7 @@ public class MyPlacesAdapter extends BaseAdapter{
 			holder = (ViewHolder)convertView.getTag();
 		}
 
-		float[] results = new float[1];
-		Location.distanceBetween(myLat, myLng, venues.get(position).getLat(), venues.get(position).getLng(), results);
-
-		String distanceS = "";
-		DecimalFormat oneDForm = new DecimalFormat("#.#");
-		if (results[0] < 100){
-			float d = Float.valueOf(oneDForm.format(results[0]));
-			distanceS = d + "m";
-		} else {
-			float d = Float.valueOf(oneDForm.format(results[0]/1000));
-			distanceS = d + "km";
-		}
-
-		holder.textDistance.setText(distanceS);
+		holder.textDistance.setText(RootActivity.getDistanceBetween(myLat, myLng, venues.get(position).getLat(), venues.get(position).getLng()));
 		holder.textAddress.setText(AppCAP.cleanResponseString(venues.get(position).getAddress()));
 		holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(position).getName()));
 

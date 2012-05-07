@@ -29,12 +29,11 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="sdfsdcs"
             android:textColor="#ffffff"
             android:textSize="25dip" />
     </RelativeLayout>
 
-    <ScrollView
+    <ScrollView android:id="@+id/scroll"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/dummy_layout" >
@@ -93,7 +92,6 @@
                             android:id="@+id/textview_user_status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="dsfsdf"
                             android:textColor="#60605e"
                             android:textSize="16dip" />
 
@@ -101,9 +99,8 @@
                             android:id="@+id/textview_nick_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="sdfsdf"
                             android:textColor="#60605e"
-                            android:textSize="22dip" />
+                            android:textSize="24dip" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -237,6 +234,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_marginBottom="0dip"
+                    android:layout_marginTop="30dip"
                     android:background="@drawable/paper_texture"
                     android:layoutAnimation="@anim/layout_random_fade"
                     android:paddingBottom="90dip" >
@@ -248,7 +246,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentTop="true"
                         android:layout_margin="10dip"
-                        android:text="RESUME"
+                        android:text="Resume"
                         android:textColor="#338585"
                         android:textSize="22dip"
                         android:textStyle="bold" />
@@ -282,15 +280,16 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="RATE:"
-                                android:textColor="#62615f" />
+                                android:textColor="#62615f"
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/textview_rate"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/text_rate"
-                                android:text="N/A"
                                 android:textColor="#62615f"
+                                android:textSize="17sp"
                                 android:textStyle="bold" />
                         </RelativeLayout>
 
@@ -298,7 +297,6 @@
                             android:id="@+id/dummy_view"
                             android:layout_width="1dip"
                             android:layout_height="fill_parent"
-                            android:layout_below="@+id/textview_resume"
                             android:background="#cccac9" />
 
                         <RelativeLayout
@@ -315,7 +313,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="EARNED:"
-                                android:textColor="#62615f" />
+                                android:textColor="#62615f"
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/textview_earned"
@@ -323,6 +322,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/text_earned"
                                 android:textColor="#62615f"
+                                android:textSize="17sp"
                                 android:textStyle="bold" />
                         </RelativeLayout>
 
@@ -330,7 +330,6 @@
                             android:id="@+id/dummy_view"
                             android:layout_width="1dip"
                             android:layout_height="fill_parent"
-                            android:layout_below="@+id/textview_resume"
                             android:background="#cccac9" />
 
                         <RelativeLayout
@@ -347,7 +346,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="PROPS:"
-                                android:textColor="#62615f" />
+                                android:textColor="#62615f"
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/textview_love"
@@ -355,6 +355,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/text_spent"
                                 android:textColor="#62615f"
+                                android:textSize="17sp"
                                 android:textStyle="bold" />
                         </RelativeLayout>
                     </LinearLayout>
@@ -371,24 +372,46 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <ListView
-                        android:id="@+id/listview_favorite_places"
+                    <View
+                        android:id="@+id/dummy_view_77"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="1dip"
                         android:layout_below="@+id/textview_favorite_places"
                         android:layout_marginBottom="5dip"
                         android:layout_marginLeft="5dip"
                         android:layout_marginRight="10dip"
+                        android:layout_marginTop="5dip"
+                        android:background="#999999" />
+
+                    <ListView
+                        android:id="@+id/listview_favorite_places"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/dummy_view_77"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginLeft="5dip"
+                        android:layout_marginRight="10dip"
                         android:cacheColorHint="#00000000"
-                        android:divider="#888888"
+                        android:divider="#999999"
                         android:dividerHeight="1dip" >
                     </ListView>
+
+                    <View
+                        android:id="@+id/dummy_view_78"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1dip"
+                        android:layout_below="@+id/listview_favorite_places"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginLeft="5dip"
+                        android:layout_marginRight="10dip"
+                        android:layout_marginTop="5dip"
+                        android:background="#999999" />
 
                     <com.coffeeandpower.views.CustomFontView
                         android:id="@+id/dummy_joined"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/listview_favorite_places"
+                        android:layout_below="@+id/dummy_view_78"
                         android:layout_marginLeft="10dip"
                         android:text="Joined on"
                         android:textColor="#444444"
@@ -399,7 +422,7 @@
                         android:id="@+id/textview_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/listview_favorite_places"
+                        android:layout_below="@+id/dummy_view_78"
                         android:layout_marginLeft="10dip"
                         android:layout_toRightOf="@+id/dummy_joined"
                         android:textColor="#338585"
@@ -410,10 +433,64 @@
                         android:layout_width="fill_parent"
                         android:layout_height="1dip"
                         android:layout_below="@+id/textview_date"
+                        android:layout_marginBottom="5dip"
                         android:layout_marginLeft="5dip"
                         android:layout_marginRight="10dip"
                         android:layout_marginTop="5dip"
-                        android:background="#888888" />
+                        android:background="#999999" />
+
+                    <!-- Verified LinkedIn and Facebook image goes here -->
+
+                    <LinearLayout
+                        android:id="@+id/verified_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/dummy_view_1"
+                        android:layout_marginLeft="10dip"
+                        android:orientation="vertical" >
+
+                        <LinearLayout
+                            android:id="@+id/layout_verified_linked_in"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:visibility="gone" >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/network_icon_linkedin" />
+
+                            <com.coffeeandpower.views.CustomFontView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dip"
+                                android:text="LinkedIn"
+                                android:textColor="#62615f"
+                                android:textSize="26sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_verified_facebook"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:visibility="gone" >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/network_icon_facebook" />
+
+                            <com.coffeeandpower.views.CustomFontView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dip"
+                                android:text="Facebook"
+                                android:textColor="#62615f"
+                                android:textSize="26sp" />
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <!-- Review starts here -->
 
@@ -421,7 +498,7 @@
                         android:id="@+id/layout_reviews"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/dummy_view_1"
+                        android:layout_below="@+id/verified_layout"
                         android:layout_marginTop="10dip"
                         android:orientation="vertical"
                         android:visibility="gone" >
@@ -440,10 +517,11 @@
                             android:id="@+id/dummy_view_2"
                             android:layout_width="fill_parent"
                             android:layout_height="1dip"
+                            android:layout_marginBottom="5dip"
                             android:layout_marginLeft="5dip"
                             android:layout_marginRight="10dip"
                             android:layout_marginTop="5dip"
-                            android:background="#888888" />
+                            android:background="#999999" />
 
                         <!-- Love Sub Review -->
 
@@ -482,10 +560,11 @@
                         <View
                             android:layout_width="fill_parent"
                             android:layout_height="1dip"
+                            android:layout_marginBottom="5dip"
                             android:layout_marginLeft="5dip"
                             android:layout_marginRight="10dip"
                             android:layout_marginTop="5dip"
-                            android:background="#888888" />
+                            android:background="#999999" />
 
                         <LinearLayout
                             android:id="@+id/edu_inflate"

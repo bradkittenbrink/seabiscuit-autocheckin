@@ -19,7 +19,6 @@ public class Utils {
 	 * @param listView
 	 */
 	public static void setListViewHeightBasedOnChildren(ListView listView) {
-
 		ListAdapter listAdapter = listView.getAdapter(); 
 
 		if (listAdapter == null) {
@@ -49,7 +48,6 @@ public class Utils {
 	 * @return
 	 */
 	public static String getDateFromEpoch (String epoch){
-
 		long epoch_ = 0;
 		try {
 			epoch_ = Long.parseLong(epoch);

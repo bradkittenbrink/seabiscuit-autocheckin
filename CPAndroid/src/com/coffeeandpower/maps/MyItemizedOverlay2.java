@@ -2,10 +2,11 @@ package com.coffeeandpower.maps;
 
 import java.util.ArrayList;
 
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
 public class MyItemizedOverlay2 extends ItemizedOverlay<OverlayItem> {
@@ -33,11 +34,14 @@ public class MyItemizedOverlay2 extends ItemizedOverlay<OverlayItem> {
 
 	@Override
 	protected boolean onTap(int index) {
-		Log.d("LOG", "index: " + index);
 		return true;
 	}
 
-
-
+	@Override
+	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		if ( shadow )
+			return;
+		super.draw(canvas, mapView, shadow);
+	}
 
 }

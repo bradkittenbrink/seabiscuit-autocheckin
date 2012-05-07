@@ -12,7 +12,6 @@ public class GraphicUtils {
 	 * @return
 	 */
 	public static Bitmap resizeProfileImage(Bitmap image){
-
 		int ratio = 1;
 
 		if (image.getHeight() > 512 || image.getWidth() > 512){
