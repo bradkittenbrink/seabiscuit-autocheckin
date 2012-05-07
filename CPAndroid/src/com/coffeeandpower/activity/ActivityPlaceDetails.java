@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
@@ -181,6 +182,7 @@ public class ActivityPlaceDetails extends RootActivity{
 			((CustomFontView)findViewById(R.id.textview_chat_name)).setText(AppCAP.cleanResponseString(selectedVenue.getName()));
 			((CustomFontView)findViewById(R.id.textview_place_name)).setText(AppCAP.cleanResponseString(selectedVenue.getName()));
 			((CustomFontView)findViewById(R.id.textview_place_address)).setText(AppCAP.cleanResponseString(selectedVenue.getAddress()));
+			((TextView)findViewById(R.id.textview_place_check_in)).setText("Check in to " + AppCAP.cleanResponseString(selectedVenue.getName()));
 
 			// Try to load image
 			imageLoader.DisplayImage(selectedVenue.getPhotoURL(), (ImageView)findViewById(R.id.image_view), R.drawable.picture_coming_soon_rectangle);

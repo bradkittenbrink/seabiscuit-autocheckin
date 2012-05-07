@@ -4,7 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.coffeeandpower.urbanairship.IntentReceiver;
@@ -34,6 +36,7 @@ public class AppCAP extends Application{
 	private static final String TAG_SHOULD_FINISH_ACTIVITY_MAP = "tag_sgould_finish_activity_map";
 	private static final String TAG_SHOULD_START_LOG_IN = "tag_sgould_start_log_in";
 	private static final String TAG_COOKIE_STRING = "tag_cookie_string";
+	private static final String TAG_METRIC_SYSTEM = "tag_metric_system";
 	private static final String TAG_START_LOGIN_PAGE_FROM_CONTACTS = "tag_start_login_page_from_contacts";
 
 	private static final String TAG_IS_LOGGED_IN = "tag_is_logged_in";
@@ -79,8 +82,20 @@ public class AppCAP extends Application{
 		PushManager.shared().setIntentReceiver(IntentReceiver.class);
 
 		PushPreferences prefs = PushManager.shared().getPreferences();
-		//Debug code to get the APID to manually push notifications
 		Log.d("Coffee","Found APID: " + prefs.getPushId());
+
+		// Get country code for metrics/imperial units
+		TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+		Log.d("LOG", "Locale: " + tm.getSimCountryIso());
+		if (tm.getSimCountryIso()!=null){
+			if (tm.getSimCountryIso().contains("US")){
+				setMetricsSys(false);
+			} else {
+				setMetricsSys(true);
+			}
+		} else {
+			setMetricsSys(false);
+		}
 	}
 
 	public void onStop() {
@@ -93,6 +108,14 @@ public class AppCAP extends Application{
 
 	private static SharedPreferences getSharedPreferences() {
 		return instance.getSharedPreferences(AppCAP.TAG, MODE_PRIVATE);
+	}
+
+	public static boolean isMetrics (){
+		return getSharedPreferences().getBoolean(TAG_METRIC_SYSTEM, false);
+	} 
+
+	private void setMetricsSys (boolean set) {
+		getSharedPreferences().edit().putBoolean(TAG_METRIC_SYSTEM, set).commit();
 	}
 
 	public static void setUserEmail (String email){

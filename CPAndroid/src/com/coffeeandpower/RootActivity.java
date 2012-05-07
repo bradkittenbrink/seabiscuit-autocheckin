@@ -37,21 +37,37 @@ public class RootActivity extends MapActivity{
 	 */
 	public static String getDistanceBetween (double startLat, double startLng, double endLat, double endLng) {
 		float[] results = new float[1];
-		Location.distanceBetween(startLat, startLng, endLat, endLng, results);
-
-		String distanceS = "";
+		Location.distanceBetween(startLat, startLng, endLat, endLng, results);	
+		return formatToMetricsOrImperial(results[0]);
+	}
+	
+	public static String formatToMetricsOrImperial(float distance) {
 		DecimalFormat oneDForm = new DecimalFormat("#.#");
-		if (results[0] < 100){
-			float d = Float.valueOf(oneDForm.format(results[0]));
-			distanceS = d + "m";
+		String distanceS = "";
+		
+		if (AppCAP.isMetrics()){
+			if (distance < 100){
+				float d = Float.valueOf(oneDForm.format(distance));
+				distanceS = d + "m";
+			} else {
+				float d = Float.valueOf(oneDForm.format(distance/1000));
+				distanceS = d + "km";
+			}
 		} else {
-			float d = Float.valueOf(oneDForm.format(results[0]/1000));
-			distanceS = d + "km";
+			distance = distance * 3.28f; // feets
+			if (distance < 1000){
+				float d = Float.valueOf(oneDForm.format(distance));
+				distanceS = d + "ft";
+			} else {
+				float d = Float.valueOf(oneDForm.format(distance/5280));
+				distanceS = d + "mi";
+			}
 		}
 		return distanceS;
 	}
-
 	
+
+
 	protected DisplayMetrics getDisplayMetrics (){
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);

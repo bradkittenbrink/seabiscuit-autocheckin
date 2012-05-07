@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
+import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserShort;
 import com.coffeeandpower.cont.Venue;
@@ -27,12 +28,11 @@ import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.CustomSeek;
 import com.coffeeandpower.views.CustomSeek.HoursChangeListener;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
-public class ActivityCheckIn extends MapActivity{
+public class ActivityCheckIn extends RootActivity{
 
 	private static final int GET_CHECKED_USERS = 8;
 
@@ -156,6 +156,7 @@ public class ActivityCheckIn extends MapActivity{
 		// Navigate map to location from intent data
 		GeoPoint point = new GeoPoint((int)(venue.getLat()*1E6), (int)(venue.getLng()*1E6));
 		mapController.animateTo(point);
+		mapView.scrollBy(-getDisplayMetrics().widthPixels/4, 0);
 		createMarker(point);
 
 		// Listener for Hours change on SeekBar

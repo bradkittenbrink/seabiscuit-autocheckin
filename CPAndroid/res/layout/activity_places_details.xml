@@ -91,7 +91,7 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@drawable/texture_first_aid_kit" >
+                android:background="@drawable/texture" >
 
                 <View
                     android:id="@+id/shadow_view"
@@ -150,6 +150,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/list_were_here"
                     android:layout_centerHorizontal="true"
+                    android:gravity="center"
                     android:orientation="vertical" >
 
                     <TextView

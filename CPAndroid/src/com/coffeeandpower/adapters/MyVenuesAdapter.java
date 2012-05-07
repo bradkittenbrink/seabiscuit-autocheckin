@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.coffeeandpower.R;
+import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.Venue;
 
 public class MyVenuesAdapter extends BaseAdapter{
@@ -60,7 +61,6 @@ public class MyVenuesAdapter extends BaseAdapter{
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		
 		ViewHolder holder; 
 		
 		if (convertView == null){
@@ -70,21 +70,9 @@ public class MyVenuesAdapter extends BaseAdapter{
 		} else {
 			holder = (ViewHolder)convertView.getTag();
 		}
-
-		double distance = venues.get(position).getDistance();
-		String distanceS = "";
-		
-		if (distance < 100){
-			distanceS = distance + "m";
-		} else {
-			DecimalFormat oneDForm = new DecimalFormat("#.#");
-			double d = Double.valueOf(oneDForm.format(distance/1000));
-			distanceS = d + "km";
-		}
-		
 		
 		holder.textAddress.setText(venues.get(position).getAddress());
-		holder.textDistance.setText(distanceS);
+		holder.textDistance.setText(RootActivity.formatToMetricsOrImperial(venues.get(position).getDistance()));
 		holder.textName.setText(venues.get(position).getName());
 		
 		return convertView;
