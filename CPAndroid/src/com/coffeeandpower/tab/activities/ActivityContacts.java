@@ -6,11 +6,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.utils.UserAndTabMenu;
@@ -104,6 +104,10 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu{
 
 		if (AppCAP.shouldFinishActivities()){
 			onBackPressed();
+		} else {
+			
+			// Check and Set Notification settings
+			menu.setOnNotificationSettingsListener((ToggleButton)findViewById(R.id.toggle_checked_in),(TextView)findViewById(R.id.dummy_text_1));
 		}
 	}
 
@@ -178,5 +182,6 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu{
 	public void onClickContacts(View v) {
 		//menu.onClickContacts(v);
 	}
+
 
 }

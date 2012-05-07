@@ -37,6 +37,7 @@ public class AppCAP extends Application{
 	private static final String TAG_SHOULD_START_LOG_IN = "tag_sgould_start_log_in";
 	private static final String TAG_COOKIE_STRING = "tag_cookie_string";
 	private static final String TAG_METRIC_SYSTEM = "tag_metric_system";
+	private static final String TAG_PUSH_DISTANCE = "tag_push_distance";
 	private static final String TAG_START_LOGIN_PAGE_FROM_CONTACTS = "tag_start_login_page_from_contacts";
 
 	private static final String TAG_IS_LOGGED_IN = "tag_is_logged_in";
@@ -284,5 +285,12 @@ public class AppCAP extends Application{
 		return getSharedPreferences().getBoolean(TAG_IS_LOGGED_IN, false);
 	}
 
+	public static void setPushDistance (String dist){
+		getSharedPreferences().edit().putString(TAG_PUSH_DISTANCE, dist).commit();
+	}
+
+	public static String getPushDistance (){
+		return getSharedPreferences().getString(TAG_PUSH_DISTANCE, "city");
+	}
 
 }

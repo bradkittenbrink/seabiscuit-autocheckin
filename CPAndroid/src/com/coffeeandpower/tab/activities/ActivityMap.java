@@ -24,6 +24,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
@@ -463,6 +464,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu{
 
 		// For every refresh save Map coordinates
 		AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
+		
+		// Check and Set Notification settings
+		menu.setOnNotificationSettingsListener((ToggleButton)findViewById(R.id.toggle_checked_in), (TextView)findViewById(R.id.dummy_text_1));
 	}
 
 
@@ -597,6 +601,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu{
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
 	}
+
+
 
 
 

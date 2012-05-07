@@ -72,7 +72,6 @@ import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.cont.Work;
 import com.coffeeandpower.inter.OAuthService;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapView;
 
 public class HttpUtil {
 
@@ -842,6 +841,55 @@ public class HttpUtil {
 			return result;
 
 		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Set Notification Settings
+	 * @param distance
+	 * @param checkedInOnly
+	 * @return
+	 */
+	public DataHolder setNotificationSettings (String distance, boolean checkedInOnly){
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		try {
+			params.add(new BasicNameValuePair("action", "setNotificationSettings"));
+			params.add(new BasicNameValuePair("push_distance", URLEncoder.encode(distance+"", "utf-8")));
+			params.add(new BasicNameValuePair("checked_in_only", checkedInOnly ? "1" : "0"));
+			
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_setNotificationSettings: " +responseString);
+
+			if (responseString!=null){
+
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
 			e.printStackTrace();
 			return result;
 		}
@@ -2347,6 +2395,63 @@ public class HttpUtil {
 	}
 
 
+	/** 
+	 * Get Notification Settings
+	 * @return
+	 */
+	public DataHolder getNotificationSettings (){
+		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+
+		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("action", "getNotificationSettings"));
+
+		try {
+			post.setEntity(new UrlEncodedFormEntity(params));
+
+			// Execute HTTP Post Request
+			HttpResponse response = client.execute(post);
+			HttpEntity resEntity = response.getEntity();  
+
+			String responseString = EntityUtils.toString(resEntity); 
+			RootActivity.log("HttpUtil_getNotificationSettings: " +responseString);
+
+			if (responseString!=null){
+
+				JSONObject json = new JSONObject(responseString);
+				if (json!=null){
+					
+					JSONObject objPayload = json.optJSONObject("payload");
+					if (objPayload!=null){
+						
+						result.setObject(new Object[]{objPayload.optString("push_distance"), json.optString("checked_in_only")});
+					}
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	
+	
 	/**
 	 * Sign up for a new account
 	 * @param userName

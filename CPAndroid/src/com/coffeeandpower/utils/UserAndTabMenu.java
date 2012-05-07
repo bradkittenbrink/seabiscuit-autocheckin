@@ -9,7 +9,11 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
@@ -28,12 +32,14 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 
 	public static final int HANDLE_CHECK_OUT = 1800;
 	public static final int HANDLE_LOG_OUT = 1801;
+	public static final int HANDLE_GET_NOTIFICATION_SETTINGS = 1802;
 
 	private Context context;
 
 	private ProgressDialog progress;
 
 	private DataHolder result;
+	private DataHolder resultNotificationSettings;
 
 	public interface OnUserStateChanged{
 		public void onCheckOut();
@@ -207,5 +213,59 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 		AppCAP.setShouldFinishActivities(true);
 		userState.onLogOut();
 	}
+
+
+	/**
+	 * Toggle Button listener and checker
+	 * @param toggle
+	 */
+	public void setOnNotificationSettingsListener(final ToggleButton toggle, final TextView textView) {
+		
+		final Handler hnd = new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				
+				switch (msg.what){
+				
+				case HANDLE_GET_NOTIFICATION_SETTINGS:
+					if (resultNotificationSettings.getObject()!=null && resultNotificationSettings.getObject() instanceof Object[]){
+						Object[] obj = (Object[]) resultNotificationSettings.getObject();
+						
+						String pushDistance = (String) obj[0];
+						String checkedInOnly = (String) obj[1];
+						
+						toggle.setChecked(checkedInOnly.matches("1"));
+						textView.setText(pushDistance.matches("venue") ? "in venue" : "in city");
+					} 
+					break;
+				}
+			}
+			
+		};
+		
+		// Get notification settings
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				resultNotificationSettings = AppCAP.getConnection().getNotificationSettings();
+				hnd.sendEmptyMessage(HANDLE_GET_NOTIFICATION_SETTINGS);
+			}
+		}).start();
+		
+		// Check Toggle State
+		toggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						AppCAP.getConnection().setNotificationSettings(AppCAP.getPushDistance(), isChecked);
+					}
+				}).start();
+			}
+		});
+	}
+
 
 }

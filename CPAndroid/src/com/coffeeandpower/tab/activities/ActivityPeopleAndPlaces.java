@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
@@ -250,6 +251,9 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			onBackPressed();
 		} else {
 			checkUserState();
+			
+			// Check and Set Notification settings
+			menu.setOnNotificationSettingsListener((ToggleButton)findViewById(R.id.toggle_checked_in),(TextView)findViewById(R.id.dummy_text_1));
 		}
 	}
 
@@ -349,4 +353,5 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			showDialog(DIALOG_MUST_BE_A_MEMBER);
 		}
 	}
+
 }
