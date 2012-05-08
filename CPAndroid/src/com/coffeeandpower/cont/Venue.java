@@ -3,7 +3,8 @@ package com.coffeeandpower.cont;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public class Venue implements Serializable{
+public class Venue implements Serializable
+{
 
 	private String id;
 	private String name;
@@ -34,15 +35,16 @@ public class Venue implements Serializable{
 	/**
 	 * Create empty venue obj
 	 */
-	public Venue(){
-		this("","","","",0,0,0,"","","","","","","",0,0,0,0,"","");
+	public Venue()
+	{
+		this("", "", "", "", 0, 0, 0, "", "", "", "", "", "", "", 0, 0, 0, 0, "", "");
 	}
-	
-	public Venue(String id, String name, String address, String crossStreet,
-			double lat, double lng, int distance, String postalCode,
-			String city, String state, String country, String categoryName,
-			String categoryPluralName, String categoryShortName,
-			int checkinsCount, int usersCount, int tipCount, int hereNowCount, String phone, String photoUrl) {
+
+	public Venue(String id, String name, String address, String crossStreet, double lat, double lng, int distance,
+			String postalCode, String city, String state, String country, String categoryName,
+			String categoryPluralName, String categoryShortName, int checkinsCount, int usersCount, int tipCount,
+			int hereNowCount, String phone, String photoUrl)
+	{
 
 		this.id = id;
 		this.name = name;
@@ -66,169 +68,209 @@ public class Venue implements Serializable{
 		this.photoUrl = photoUrl;
 	}
 
-	public String getId() {
+	public String getId()
+	{
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(String id)
+	{
 		this.id = id;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		this.name = name;
 	}
 
-	public String getAddress() {
+	public String getAddress()
+	{
 		return address;
 	}
 
-	public void setAddress(String address) {
+	public void setAddress(String address)
+	{
 		this.address = address;
 	}
 
-	public String getCrossStreet() {
+	public String getCrossStreet()
+	{
 		return crossStreet;
 	}
 
-	public void setCrossStreet(String crossStreet) {
+	public void setCrossStreet(String crossStreet)
+	{
 		this.crossStreet = crossStreet;
 	}
 
-	public double getLat() {
+	public double getLat()
+	{
 		return lat;
 	}
 
-	public void setLat(double lat) {
+	public void setLat(double lat)
+	{
 		this.lat = lat;
 	}
 
-	public double getLng() {
+	public double getLng()
+	{
 		return lng;
 	}
 
-	public void setLng(double lng) {
+	public void setLng(double lng)
+	{
 		this.lng = lng;
 	}
 
 	/**
 	 * Returns distance in meters
+	 * 
 	 * @return
 	 */
-	public int getDistance() {
+	public int getDistance()
+	{
 		return distance;
 	}
 
-	public void setDistance(int distance) {
+	public void setDistance(int distance)
+	{
 		this.distance = distance;
 	}
 
-	public String getPostalCode() {
+	public String getPostalCode()
+	{
 		return postalCode;
 	}
 
-	public void setPostalCode(String postalCode) {
+	public void setPostalCode(String postalCode)
+	{
 		this.postalCode = postalCode;
 	}
 
-	public String getCity() {
+	public String getCity()
+	{
 		return city;
 	}
 
-	public void setCity(String city) {
+	public void setCity(String city)
+	{
 		this.city = city;
 	}
 
-	public String getState() {
+	public String getState()
+	{
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(String state)
+	{
 		this.state = state;
 	}
 
-	public String getCountry() {
+	public String getCountry()
+	{
 		return country;
 	}
 
-	public void setCountry(String country) {
+	public void setCountry(String country)
+	{
 		this.country = country;
 	}
 
-	public String getCategoryName() {
+	public String getCategoryName()
+	{
 		return categoryName;
 	}
 
-	public void setCategoryName(String categoryName) {
+	public void setCategoryName(String categoryName)
+	{
 		this.categoryName = categoryName;
 	}
 
-	public String getCategoryPluralName() {
+	public String getCategoryPluralName()
+	{
 		return categoryPluralName;
 	}
 
-	public void setCategoryPluralName(String categoryPluralName) {
+	public void setCategoryPluralName(String categoryPluralName)
+	{
 		this.categoryPluralName = categoryPluralName;
 	}
 
-	public String getCategoryShortName() {
+	public String getCategoryShortName()
+	{
 		return categoryShortName;
 	}
 
-	public void setCategoryShortName(String categoryShortName) {
+	public void setCategoryShortName(String categoryShortName)
+	{
 		this.categoryShortName = categoryShortName;
 	}
 
-	public int getCheckinsCount() {
+	public int getCheckinsCount()
+	{
 		return checkinsCount;
 	}
 
-	public void setCheckinsCount(int checkinsCount) {
+	public void setCheckinsCount(int checkinsCount)
+	{
 		this.checkinsCount = checkinsCount;
 	}
 
-	public int getUsersCount() {
+	public int getUsersCount()
+	{
 		return usersCount;
 	}
 
-	public void setUsersCount(int usersCount) {
+	public void setUsersCount(int usersCount)
+	{
 		this.usersCount = usersCount;
 	}
 
-	public int getTipCount() {
+	public int getTipCount()
+	{
 		return tipCount;
 	}
 
-	public void setTipCount(int tipCount) {
+	public void setTipCount(int tipCount)
+	{
 		this.tipCount = tipCount;
 	}
 
-	public int getHereNowCount() {
+	public int getHereNowCount()
+	{
 		return hereNowCount;
 	}
 
-	public void setHereNowCount(int hereNowCount) {
+	public void setHereNowCount(int hereNowCount)
+	{
 		this.hereNowCount = hereNowCount;
 	}
 
-	public String getPhone() {
+	public String getPhone()
+	{
 		return phone;
 	}
 
-	public void setPhone(String phone) {
+	public void setPhone(String phone)
+	{
 		this.phone = phone;
 	}
 
-	public String getPhotoUrl() {
+	public String getPhotoUrl()
+	{
 		return photoUrl;
 	}
 
-	public void setPhotoUrl(String photoUrl) {
+	public void setPhotoUrl(String photoUrl)
+	{
 		this.photoUrl = photoUrl;
 	}
-
 
 }

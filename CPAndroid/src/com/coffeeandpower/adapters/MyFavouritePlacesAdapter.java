@@ -15,46 +15,56 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.imageutil.ImageLoader;
 
-public class MyFavouritePlacesAdapter extends BaseAdapter{
+public class MyFavouritePlacesAdapter extends BaseAdapter
+{
 
 	private ArrayList<Venue> venues;
 	private LayoutInflater inflater;
 	public ImageLoader imageLoader;
 
-	public MyFavouritePlacesAdapter(Activity context, ArrayList<Venue> venues){
+	public MyFavouritePlacesAdapter(Activity context, ArrayList<Venue> venues)
+	{
 
 		this.inflater = context.getLayoutInflater();
-		this.imageLoader=new ImageLoader(context.getApplicationContext());
+		this.imageLoader = new ImageLoader(context.getApplicationContext());
 
-		if (venues!=null){
+		if (venues != null)
+		{
 			this.venues = venues;
-		} else {
+		}
+		else
+		{
 			this.venues = new ArrayList<Venue>();
 		}
 	}
 
 	@Override
-	public int getCount() {
+	public int getCount()
+	{
 		return venues.size();
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public Object getItem(int position)
+	{
 		return venues.get(position);
 	}
 
 	@Override
-	public long getItemId(int position) {
+	public long getItemId(int position)
+	{
 		return 0;
 	}
 
-	public static class ViewHolder {
+	public static class ViewHolder
+	{
 
 		public ImageView image;
 		public TextView textVenueName;
 		public TextView textCheckinsCount;
 
-		public ViewHolder(View convertView){
+		public ViewHolder(View convertView)
+		{
 
 			this.textVenueName = (TextView) convertView.findViewById(R.id.textview_place);
 			this.image = (ImageView) convertView.findViewById(R.id.imageview_image);
@@ -63,23 +73,30 @@ public class MyFavouritePlacesAdapter extends BaseAdapter{
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(int position, View convertView, ViewGroup parent)
+	{
 
-		ViewHolder holder; 
+		ViewHolder holder;
 
-		if (convertView == null){
+		if (convertView == null)
+		{
 			convertView = inflater.inflate(R.layout.item_list_favorite_places, null);
 			holder = new ViewHolder(convertView);
 			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder)convertView.getTag();
+		}
+		else
+		{
+			holder = (ViewHolder) convertView.getTag();
 		}
 
 		holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(position).getName()));
 
-		if (venues.get(position).getCheckinsCount() > 1){
+		if (venues.get(position).getCheckinsCount() > 1)
+		{
 			holder.textCheckinsCount.setText(venues.get(position).getCheckinsCount() + " Checkins");
-		} else {
+		}
+		else
+		{
 			holder.textCheckinsCount.setText(venues.get(position).getCheckinsCount() + " Checkin");
 		}
 

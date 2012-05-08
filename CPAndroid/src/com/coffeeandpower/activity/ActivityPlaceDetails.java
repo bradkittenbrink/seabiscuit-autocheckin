@@ -26,11 +26,14 @@ import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.imageutil.ImageLoader;
+import com.coffeeandpower.utils.UserAndTabMenu;
+import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 
-public class ActivityPlaceDetails extends RootActivity{
+public class ActivityPlaceDetails extends RootActivity
+{
 
 	private static final int HANDLE_GET_USERS_AND_VENUES = 1404;
 
@@ -53,47 +56,56 @@ public class ActivityPlaceDetails extends RootActivity{
 
 	private ImageLoader imageLoader;
 
+	private boolean amICheckedIn;
+
 	private double data[];
 
 	{
 		arrayUsersHereNow = new ArrayList<UserSmart>();
 		arrayUsersWereHere = new ArrayList<UserSmart>();
+		amICheckedIn = false;
 	}
 
-
-	private Handler handler = new Handler(){
+	private Handler handler = new Handler()
+	{
 		@Override
-		public void handleMessage(Message msg) {
+		public void handleMessage(Message msg)
+		{
 			super.handleMessage(msg);
 
 			progress.dismiss();
 
-			switch (msg.what){
+			switch (msg.what)
+			{
 
 			case AppCAP.HTTP_ERROR:
 				new CustomDialog(ActivityPlaceDetails.this, "Error", "Internet connection error").show();
 				break;
 
 			case HANDLE_GET_USERS_AND_VENUES:
-				if (result.getObject() instanceof Object[]){
+				if (result.getObject() instanceof Object[])
+				{
 					Object[] obj = (Object[]) result.getObject();
-					arrayVenues = (ArrayList<VenueSmart>) obj[0]; 
+					arrayVenues = (ArrayList<VenueSmart>) obj[0];
 					arrayUsers = (ArrayList<UserSmart>) obj[1];
 
-					for (VenueSmart v:arrayVenues){
-						if (v.getFoursquareId().equals(foursquareId)){
+					for (VenueSmart v : arrayVenues)
+					{
+						if (v.getFoursquareId().equals(foursquareId))
+						{
 							selectedVenue = v;
 						}
 					}
 
 					// Sort users list
-					if (arrayUsers!=null){
-						Collections.sort(arrayUsers, new Comparator<UserSmart>() {
+					if (arrayUsers != null)
+					{
+						Collections.sort(arrayUsers, new Comparator<UserSmart>()
+						{
 							@Override
-							public int compare(UserSmart m1, UserSmart m2) {
-								if (m1.getCheckedIn()>m2.getCheckedIn()){
-									return -1;
-								}
+							public int compare(UserSmart m1, UserSmart m2)
+							{
+								if (m1.getCheckedIn() > m2.getCheckedIn()) { return -1; }
 								return 1;
 							}
 						});
@@ -108,7 +120,8 @@ public class ActivityPlaceDetails extends RootActivity{
 	};
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_places_details);
 
@@ -117,43 +130,51 @@ public class ActivityPlaceDetails extends RootActivity{
 		// Viewvs
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
-		listHereNow = (ListView)findViewById(R.id.list_here_now);
-		listWereHere = (ListView)findViewById(R.id.list_were_here);
+		listHereNow = (ListView) findViewById(R.id.list_here_now);
+		listWereHere = (ListView) findViewById(R.id.list_were_here);
 
 		// Get foursquareId from Intent
 		Bundle bundle = getIntent().getExtras();
-		if (bundle!=null){
+		if (bundle != null)
+		{
 			foursquareId = bundle.getString("foursquare_id");
 			data = bundle.getDoubleArray("coords");
-
-			getUsersAndVenues();
 		}
 
-
 		// On item list click
-		listHereNow.setOnItemClickListener(new OnItemClickListener() {
+		listHereNow.setOnItemClickListener(new OnItemClickListener()
+		{
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-				if (AppCAP.isLoggedIn()){
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
+				if (AppCAP.isLoggedIn())
+				{
 					Intent intent = new Intent(ActivityPlaceDetails.this, ActivityUserDetails.class);
 					intent.putExtra("mapuserobject", arrayUsersHereNow.get(position));
 					intent.putExtra("from_act", "list");
 					startActivity(intent);
-				} else {
+				}
+				else
+				{
 					showDialog(DIALOG_MUST_BE_A_MEMBER);
 				}
 			}
 		});
 
-		listWereHere.setOnItemClickListener(new OnItemClickListener() {
+		listWereHere.setOnItemClickListener(new OnItemClickListener()
+		{
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-				if (AppCAP.isLoggedIn()){
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
+				if (AppCAP.isLoggedIn())
+				{
 					Intent intent = new Intent(ActivityPlaceDetails.this, ActivityUserDetails.class);
 					intent.putExtra("mapuserobject", arrayUsersWereHere.get(position));
 					intent.putExtra("from_act", "list");
 					startActivity(intent);
-				} else {
+				}
+				else
+				{
 					showDialog(DIALOG_MUST_BE_A_MEMBER);
 				}
 			}
@@ -161,65 +182,100 @@ public class ActivityPlaceDetails extends RootActivity{
 
 	}
 
-	private void getUsersAndVenues (){
+	private void getUsersAndVenues()
+	{
 		progress.show();
-		new Thread(new Runnable() {
+		new Thread(new Runnable()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				result = AppCAP.getConnection().getVenuesAndUsersWithCheckinsInBoundsDuringInterval(data, 7);
-				if (result.getResponseCode()==AppCAP.HTTP_ERROR){
+				if (result.getResponseCode() == AppCAP.HTTP_ERROR)
+				{
 					handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-				} else {
+				}
+				else
+				{
 					handler.sendEmptyMessage(HANDLE_GET_USERS_AND_VENUES);
 				}
 			}
 		}).start();
 	}
 
-
-	private void fillData (){
-		if (selectedVenue!=null){
-			((CustomFontView)findViewById(R.id.textview_chat_name)).setText(AppCAP.cleanResponseString(selectedVenue.getName()));
-			((CustomFontView)findViewById(R.id.textview_place_name)).setText(AppCAP.cleanResponseString(selectedVenue.getName()));
-			((CustomFontView)findViewById(R.id.textview_place_address)).setText(AppCAP.cleanResponseString(selectedVenue.getAddress()));
-			((TextView)findViewById(R.id.textview_place_check_in)).setText("Check in to " + AppCAP.cleanResponseString(selectedVenue.getName()));
-
+	private void fillData()
+	{
+		if (selectedVenue != null)
+		{
+			((CustomFontView) findViewById(R.id.textview_chat_name)).setText(AppCAP.cleanResponseString(selectedVenue
+					.getName()));
+			((CustomFontView) findViewById(R.id.textview_place_name)).setText(AppCAP.cleanResponseString(selectedVenue
+					.getName()));
+			((CustomFontView) findViewById(R.id.textview_place_address)).setText(AppCAP
+					.cleanResponseString(selectedVenue.getAddress()));
+			((TextView) findViewById(R.id.textview_place_check_in)).setText("Check in to "
+					+ AppCAP.cleanResponseString(selectedVenue.getName()));
+			
 			// Try to load image
-			imageLoader.DisplayImage(selectedVenue.getPhotoURL(), (ImageView)findViewById(R.id.image_view), R.drawable.picture_coming_soon_rectangle);
+			imageLoader.DisplayImage(selectedVenue.getPhotoURL(), (ImageView) findViewById(R.id.image_view),
+					R.drawable.picture_coming_soon_rectangle);
 
 			arrayUsersInVenue = selectedVenue.getArrayCheckins();
-			for (CheckinData cd:arrayUsersInVenue){
-				if (cd.getCheckedIn()==1){
+
+			for (CheckinData cd : arrayUsersInVenue)
+			{
+				if (cd.getCheckedIn() == 1)
+				{
 					// user is here now
 					arrayUsersHereNow.add(getUserById(cd.getUserId()));
-				} else {
+				}
+				else
+				{
 					// users were here
 					arrayUsersWereHere.add(getUserById(cd.getUserId()));
+				}
+
+				// Check if I am checked in or not
+				if (AppCAP.getLoggedInUserId() == cd.getUserId() && cd.getCheckedIn() == 1)
+				{
+					((TextView) findViewById(R.id.textview_place_check_in)).setText("Check out of "
+							+ AppCAP.cleanResponseString(selectedVenue.getName()));
+					amICheckedIn = true;
 				}
 			}
 
 			// Create adapters and populate Lists
-			if (arrayUsersHereNow.isEmpty()){
+			if (arrayUsersHereNow.isEmpty())
+			{
 				listHereNow.setVisibility(View.GONE);
-				((CustomFontView)findViewById(R.id.textview_here)).setVisibility(View.GONE);
-			} else {
+				((CustomFontView) findViewById(R.id.textview_here)).setVisibility(View.GONE);
+			}
+			else
+			{
 				listHereNow.setAdapter(new MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersHereNow));
-				listHereNow.postDelayed(new Runnable() {
+				listHereNow.postDelayed(new Runnable()
+				{
 					@Override
-					public void run() {
+					public void run()
+					{
 						Utils.setListViewHeightBasedOnChildren(listHereNow);
 					}
 				}, 400);
 				Utils.animateListView(listHereNow);
 			}
-			if (arrayUsersWereHere.isEmpty()){
+			if (arrayUsersWereHere.isEmpty())
+			{
 				listWereHere.setVisibility(View.GONE);
-				((CustomFontView)findViewById(R.id.textview_worked)).setVisibility(View.GONE);
-			} else {
+				((CustomFontView) findViewById(R.id.textview_worked)).setVisibility(View.GONE);
+			}
+			else
+			{
 				listWereHere.setAdapter(new MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersWereHere));
-				listWereHere.postDelayed(new Runnable() {
+				listWereHere.postDelayed(new Runnable()
+				{
 					@Override
-					public void run() {
+					public void run()
+					{
 						Utils.setListViewHeightBasedOnChildren(listWereHere);
 					}
 				}, 400);
@@ -229,25 +285,48 @@ public class ActivityPlaceDetails extends RootActivity{
 		}
 	}
 
-
-	private UserSmart getUserById (int userId){
-		for (UserSmart us:arrayUsers){
-			if (us.getUserId()==userId){
-				return us;
-			}
+	private UserSmart getUserById(int userId)
+	{
+		for (UserSmart us : arrayUsers)
+		{
+			if (us.getUserId() == userId) { return us; }
 		}
 		return null;
 	}
 
-
-	public void onClickBack (View v){
+	public void onClickBack(View v)
+	{
 		onBackPressed();
 	}
 
+	public void onClickCheckIn(View v)
+	{
+		UserAndTabMenu menu = new UserAndTabMenu(ActivityPlaceDetails.this);
+		menu.setOnUserStateChanged(new OnUserStateChanged()
+		{
+			@Override
+			public void onLogOut()
+			{	
+			}
 
-	public void onClickCheckIn (View v){
-		if (AppCAP.isLoggedIn()){
-			if (selectedVenue!=null){
+			@Override
+			public void onCheckOut()
+			{
+				arrayUsersHereNow.clear();
+				arrayUsersWereHere.clear();
+				amICheckedIn = false;
+				getUsersAndVenues();
+			}
+		});
+
+		if (AppCAP.isLoggedIn())
+		{
+			if (amICheckedIn)
+			{
+				menu.onClickCheckIn(v);
+			}
+			else if (selectedVenue != null)
+			{
 				Venue venue = new Venue();
 				venue.setAddress(AppCAP.cleanResponseString(selectedVenue.getAddress()));
 				venue.setCity(AppCAP.cleanResponseString(selectedVenue.getCity()));
@@ -257,35 +336,47 @@ public class ActivityPlaceDetails extends RootActivity{
 				venue.setLng(selectedVenue.getLng());
 				venue.setState(AppCAP.cleanResponseString(selectedVenue.getState()));
 
-				Intent intent = new Intent (ActivityPlaceDetails.this, ActivityCheckIn.class);
+				Intent intent = new Intent(ActivityPlaceDetails.this, ActivityCheckIn.class);
 				intent.putExtra("venue", venue);
 				startActivity(intent);
 			}
-		} else {
+		}
+		else
+		{
 			showDialog(DIALOG_MUST_BE_A_MEMBER);
 		}
 	}
 
-
 	@Override
-	protected void onResume() {
+	protected void onResume()
+	{
 		super.onResume();
+		
+		if (foursquareId!=null && foursquareId.length()>0)
+		{
+			arrayUsersHereNow.clear();
+			arrayUsersWereHere.clear();
+			getUsersAndVenues();
+		}
+		
 	}
 
 	@Override
-	public void onBackPressed() {
+	public void onBackPressed()
+	{
 		super.onBackPressed();
 	}
 
 	@Override
-	protected void onPause() {
+	protected void onPause()
+	{
 		super.onPause();
 	}
 
 	@Override
-	protected void onDestroy() {
+	protected void onDestroy()
+	{
 		super.onDestroy();
 	}
-
 
 }

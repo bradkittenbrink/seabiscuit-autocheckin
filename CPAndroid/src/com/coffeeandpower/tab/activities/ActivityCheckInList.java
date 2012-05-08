@@ -25,7 +25,8 @@ import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.views.CustomDialog;
 import com.google.android.maps.GeoPoint;
 
-public class ActivityCheckInList extends ListActivity{
+public class ActivityCheckInList extends ListActivity
+{
 
 	private static final int RESPONSE_OK = 200;
 
@@ -34,22 +35,26 @@ public class ActivityCheckInList extends ListActivity{
 	private DataHolder dh;
 	private MyVenuesAdapter adapter;
 
-	private Handler handler = new Handler(){
+	private Handler handler = new Handler()
+	{
 
 		@Override
-		public void handleMessage(Message msg) {
+		public void handleMessage(Message msg)
+		{
 			super.handleMessage(msg);
 
 			progress.dismiss();
 
-			switch (msg.what){
+			switch (msg.what)
+			{
 
 			case AppCAP.HTTP_ERROR:
 				new CustomDialog(ActivityCheckInList.this, "Error", "Internet connection error").show();
 				break;
 
 			case RESPONSE_OK:
-				if (dh.getObject()!=null){
+				if (dh.getObject() != null)
+				{
 					adapter = new MyVenuesAdapter(ActivityCheckInList.this, (ArrayList<Venue>) dh.getObject());
 					setListAdapter(adapter);
 					animateListView(getListView());
@@ -60,7 +65,8 @@ public class ActivityCheckInList extends ListActivity{
 	};
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_check_in_list);
 
@@ -72,7 +78,8 @@ public class ActivityCheckInList extends ListActivity{
 
 		// Get data from Intent
 		Bundle extras = getIntent().getExtras();
-		if (extras!=null){
+		if (extras != null)
+		{
 
 			int lng = extras.getInt("lng");
 			int lat = extras.getInt("lat");
@@ -80,13 +87,18 @@ public class ActivityCheckInList extends ListActivity{
 			final GeoPoint gp = new GeoPoint(lat, lng);
 			progress.show();
 
-			new Thread(new Runnable() {
+			new Thread(new Runnable()
+			{
 				@Override
-				public void run() {
+				public void run()
+				{
 					dh = AppCAP.getConnection().getVenuesCloseToLocation(gp, 20);
-					if (dh.getResponseCode()==AppCAP.HTTP_ERROR){
+					if (dh.getResponseCode() == AppCAP.HTTP_ERROR)
+					{
 						handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-					} else {
+					}
+					else
+					{
 						handler.sendEmptyMessage(dh.getResponseCode());
 					}
 				}
@@ -95,64 +107,64 @@ public class ActivityCheckInList extends ListActivity{
 
 	}
 
-
 	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
+	protected void onListItemClick(ListView l, View v, int position, long id)
+	{
 		super.onListItemClick(l, v, position, id);
 
-		Intent intent = new Intent (ActivityCheckInList.this, ActivityCheckIn.class);
-		intent.putExtra("venue", (Venue)adapter.getItem(position));
+		Intent intent = new Intent(ActivityCheckInList.this, ActivityCheckIn.class);
+		intent.putExtra("venue", (Venue) adapter.getItem(position));
 		startActivityForResult(intent, AppCAP.ACT_CHECK_IN);
 	}
 
-
-
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
 		super.onActivityResult(requestCode, resultCode, data);
 
-		switch (requestCode){
+		switch (requestCode)
+		{
 
 		case AppCAP.ACT_CHECK_IN:
 
-			if (resultCode == AppCAP.ACT_QUIT){
+			if (resultCode == AppCAP.ACT_QUIT)
+			{
 				ActivityCheckInList.this.finish();
 			}
 		}
 	}
 
-
 	@Override
-	protected void onResume() {
+	protected void onResume()
+	{
 		super.onResume();
 	}
 
-
-	public void onClickCancel (View v){
+	public void onClickCancel(View v)
+	{
 		onBackPressed();
 	}
 
-
 	@Override
-	protected void onDestroy() {
+	protected void onDestroy()
+	{
 		super.onDestroy();
 	}
 
-	private void animateListView(ListView lv){
+	private void animateListView(ListView lv)
+	{
 		AnimationSet set = new AnimationSet(true);
 
 		Animation animation = new AlphaAnimation(0.0f, 1.0f);
 		animation.setDuration(150);
 		set.addAnimation(animation);
 
-		animation = new TranslateAnimation(
-				Animation.RELATIVE_TO_SELF, 0.0f,Animation.RELATIVE_TO_SELF, 0.0f,
-				Animation.RELATIVE_TO_SELF, -1.0f,Animation.RELATIVE_TO_SELF, 0.0f
-				);
+		animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+				Animation.RELATIVE_TO_SELF, -1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
 		animation.setDuration(300);
 		set.addAnimation(animation);
 
-		LayoutAnimationController controller = new LayoutAnimationController(set, 0.5f);       
+		LayoutAnimationController controller = new LayoutAnimationController(set, 0.5f);
 		lv.setLayoutAnimation(controller);
 	}
 

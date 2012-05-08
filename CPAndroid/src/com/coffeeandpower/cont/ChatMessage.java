@@ -1,8 +1,8 @@
 package com.coffeeandpower.cont;
 
-public class ChatMessage {
+public class ChatMessage
+{
 
-	
 	private int id;
 	private int userId;
 	private String entryText;
@@ -11,9 +11,10 @@ public class ChatMessage {
 	private String photoUrl;
 	private int receivingUserId;
 	private int offerId;
-	
-	public ChatMessage(int id, int userId, String entryText, String nickName,
-			String date, String photoUrl, int receivingUserId, int offerId) {
+
+	public ChatMessage(int id, int userId, String entryText, String nickName, String date, String photoUrl,
+			int receivingUserId, int offerId)
+	{
 
 		this.id = id;
 		this.userId = userId;
@@ -24,56 +25,85 @@ public class ChatMessage {
 		this.receivingUserId = receivingUserId;
 		this.offerId = offerId;
 	}
-	
-	
-	public int getId() {
+
+	public int getId()
+	{
 		return id;
 	}
-	public void setId(int id) {
+
+	public void setId(int id)
+	{
 		this.id = id;
 	}
-	public int getUserId() {
+
+	public int getUserId()
+	{
 		return userId;
 	}
-	public void setUserId(int userId) {
+
+	public void setUserId(int userId)
+	{
 		this.userId = userId;
 	}
-	public String getEntryText() {
+
+	public String getEntryText()
+	{
 		return entryText;
 	}
-	public void setEntryText(String entryText) {
+
+	public void setEntryText(String entryText)
+	{
 		this.entryText = entryText;
 	}
-	public String getNickName() {
+
+	public String getNickName()
+	{
 		return nickName;
 	}
-	public void setNickName(String nickName) {
+
+	public void setNickName(String nickName)
+	{
 		this.nickName = nickName;
 	}
-	public String getDate() {
+
+	public String getDate()
+	{
 		return date;
 	}
-	public void setDate(String date) {
+
+	public void setDate(String date)
+	{
 		this.date = date;
 	}
-	public String getPhotoUrl() {
+
+	public String getPhotoUrl()
+	{
 		return photoUrl;
 	}
-	public void setPhotoUrl(String photoUrl) {
+
+	public void setPhotoUrl(String photoUrl)
+	{
 		this.photoUrl = photoUrl;
 	}
-	public int getReceivingUserId() {
+
+	public int getReceivingUserId()
+	{
 		return receivingUserId;
 	}
-	public void setReceivingUserId(int receivingUserId) {
+
+	public void setReceivingUserId(int receivingUserId)
+	{
 		this.receivingUserId = receivingUserId;
 	}
-	public int getOfferId() {
+
+	public int getOfferId()
+	{
 		return offerId;
 	}
-	public void setOfferId(int offerId) {
+
+	public void setOfferId(int offerId)
+	{
 		this.offerId = offerId;
 	}
-	
-	
+
 }

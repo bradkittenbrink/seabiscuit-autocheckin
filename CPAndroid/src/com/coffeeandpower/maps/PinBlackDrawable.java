@@ -14,23 +14,25 @@ import android.graphics.drawable.Drawable;
 
 import com.coffeeandpower.R;
 
-public class PinBlackDrawable extends Drawable{
+public class PinBlackDrawable extends Drawable
+{
 
 	private Bitmap bitmapPin;
 
 	private Paint paintPin;
 	private Paint paintText;
-	
+
 	private Rect textBound;
-	
+
 	private String text;
 
-	public PinBlackDrawable(Context context, String text){
+	public PinBlackDrawable(Context context, String text)
+	{
 		this.text = text;
-		
+
 		paintPin = new Paint();
 		paintPin.setAntiAlias(true);
-		
+
 		paintText = new Paint();
 		paintText.setColor(Color.BLACK);
 		paintText.setTypeface(Typeface.DEFAULT_BOLD);
@@ -42,44 +44,47 @@ public class PinBlackDrawable extends Drawable{
 		bitmapPin = BitmapFactory.decodeResource(context.getResources(), R.drawable.map_marker_iphone);
 	};
 
-
 	@Override
-	public void draw(Canvas canvas){
-		if (bitmapPin!=null){
-			canvas.drawBitmap(bitmapPin, 0 - (bitmapPin.getWidth() / 2) + 2, 0 - bitmapPin.getHeight(), paintPin); // !!! -3
-			canvas.drawText(text, 0 - (textBound.width() / 2), 0 - (bitmapPin.getHeight()+5) , paintText);
+	public void draw(Canvas canvas)
+	{
+		if (bitmapPin != null)
+		{
+			canvas.drawBitmap(bitmapPin, 0 - (bitmapPin.getWidth() / 2) + 2, 0 - bitmapPin.getHeight(), paintPin); // !!!
+																													// -3
+			canvas.drawText(text, 0 - (textBound.width() / 2), 0 - (bitmapPin.getHeight() + 5), paintText);
 		}
 	}
 
 	@Override
-	public int getIntrinsicHeight() {
+	public int getIntrinsicHeight()
+	{
 		return bitmapPin.getHeight();
 	}
 
-
 	@Override
-	public int getIntrinsicWidth() {
+	public int getIntrinsicWidth()
+	{
 		return bitmapPin.getWidth();
 	}
 
-
 	@Override
-	public int getOpacity() {
+	public int getOpacity()
+	{
 		return PixelFormat.TRANSLUCENT;
 	}
 
-
 	@Override
-	public void setAlpha(int alpha) {
+	public void setAlpha(int alpha)
+	{
 		paintPin.setAlpha(alpha);
 		paintText.setAlpha(alpha);
 	}
 
-
 	@Override
-	public void setColorFilter(ColorFilter cf) {
+	public void setColorFilter(ColorFilter cf)
+	{
 		paintPin.setColorFilter(cf);
 		paintText.setColorFilter(cf);
 	}
-	
+
 }

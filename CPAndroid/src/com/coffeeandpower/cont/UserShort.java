@@ -1,20 +1,21 @@
 package com.coffeeandpower.cont;
 
-public class UserShort {
+public class UserShort
+{
 
 	private int id;
-	
+
 	private String nickName;
 	private String statusText;
 	private String about;
 	private String joinDate;
 	private String imageURL;
 	private String hourlyBilingRate;
-	
-	
-	public UserShort(int id, String nickName, String statusText, String about,
-			String joinDate, String imageURL, String hourlyBilingRate) {
-		
+
+	public UserShort(int id, String nickName, String statusText, String about, String joinDate, String imageURL,
+			String hourlyBilingRate)
+	{
+
 		this.id = id;
 		this.nickName = nickName;
 		this.statusText = statusText;
@@ -24,76 +25,74 @@ public class UserShort {
 		this.hourlyBilingRate = hourlyBilingRate;
 	}
 
-
-	public int getId() {
+	public int getId()
+	{
 		return id;
 	}
 
-
-	public void setId(int id) {
+	public void setId(int id)
+	{
 		this.id = id;
 	}
 
-
-	public String getNickName() {
+	public String getNickName()
+	{
 		return nickName;
 	}
 
-
-	public void setNickName(String nickName) {
+	public void setNickName(String nickName)
+	{
 		this.nickName = nickName;
 	}
 
-
-	public String getStatusText() {
+	public String getStatusText()
+	{
 		return statusText;
 	}
 
-
-	public void setStatusText(String statusText) {
+	public void setStatusText(String statusText)
+	{
 		this.statusText = statusText;
 	}
 
-
-	public String getAbout() {
+	public String getAbout()
+	{
 		return about;
 	}
 
-
-	public void setAbout(String about) {
+	public void setAbout(String about)
+	{
 		this.about = about;
 	}
 
-
-	public String getJoinDate() {
+	public String getJoinDate()
+	{
 		return joinDate;
 	}
 
-
-	public void setJoinDate(String joinDate) {
+	public void setJoinDate(String joinDate)
+	{
 		this.joinDate = joinDate;
 	}
 
-
-	public String getImageURL() {
+	public String getImageURL()
+	{
 		return imageURL;
 	}
 
-
-	public void setImageURL(String imageURL) {
+	public void setImageURL(String imageURL)
+	{
 		this.imageURL = imageURL;
 	}
 
-
-	public String getHourlyBilingRate() {
+	public String getHourlyBilingRate()
+	{
 		return hourlyBilingRate;
 	}
 
-
-	public void setHourlyBilingRate(String hourlyBilingRate) {
+	public void setHourlyBilingRate(String hourlyBilingRate)
+	{
 		this.hourlyBilingRate = hourlyBilingRate;
 	}
-	
-	
-	
+
 }

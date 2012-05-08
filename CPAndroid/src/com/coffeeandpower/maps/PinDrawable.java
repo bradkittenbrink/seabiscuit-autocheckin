@@ -14,7 +14,8 @@ import android.graphics.drawable.Drawable;
 
 import com.coffeeandpower.R;
 
-public class PinDrawable extends Drawable{
+public class PinDrawable extends Drawable
+{
 
 	public static final int TYPE_RED_PIN = 1;
 	public static final int TYPE_WHITE_PIN = 2;
@@ -25,74 +26,85 @@ public class PinDrawable extends Drawable{
 
 	private Paint paintPin;
 	private Paint paintText;
-	
+
 	private Rect textBound;
 
-	public PinDrawable(Context context, int hereNowCount){
+	public PinDrawable(Context context, int hereNowCount)
+	{
 		number = hereNowCount + "";
 
 		paintPin = new Paint();
 		paintPin.setAntiAlias(true);
-		
+
 		paintText = new Paint();
 		paintText.setColor(Color.WHITE);
 		paintText.setTypeface(Typeface.SERIF);
 		paintText.setAntiAlias(true);
-		
-		if (hereNowCount < 10){
+
+		if (hereNowCount < 10)
+		{
 			paintText.setTextSize(29);
-		} else if (hereNowCount < 100) {
+		}
+		else if (hereNowCount < 100)
+		{
 			paintText.setTextSize(24);
-		} else if (hereNowCount < 1000){
+		}
+		else if (hereNowCount < 1000)
+		{
 			paintText.setTextSize(19);
-		} else {
+		}
+		else
+		{
 			paintText.setTextSize(15);
 		}
-		
+
 		textBound = new Rect();
 		paintText.getTextBounds(number, 0, number.length(), textBound);
 		bitmapPin = BitmapFactory.decodeResource(context.getResources(), R.drawable.pin_checkedin);
 
 	};
 
-
 	@Override
-	public void draw(Canvas canvas){
-		if (bitmapPin!=null){
-			canvas.drawBitmap(bitmapPin, 0 - (bitmapPin.getWidth() / 2) + 2, 0 - bitmapPin.getHeight(), paintPin); // !!! -3
-			canvas.drawText(number, 0 - (textBound.width() / 2), 0 - (bitmapPin.getHeight() /2) , paintText);
+	public void draw(Canvas canvas)
+	{
+		if (bitmapPin != null)
+		{
+			canvas.drawBitmap(bitmapPin, 0 - (bitmapPin.getWidth() / 2) + 2, 0 - bitmapPin.getHeight(), paintPin); // !!!
+																													// -3
+			canvas.drawText(number, 0 - (textBound.width() / 2), 0 - (bitmapPin.getHeight() / 2), paintText);
 		}
 	}
 
 	@Override
-	public int getIntrinsicHeight() {
+	public int getIntrinsicHeight()
+	{
 		return bitmapPin.getHeight();
 	}
 
-
 	@Override
-	public int getIntrinsicWidth() {
+	public int getIntrinsicWidth()
+	{
 		return bitmapPin.getWidth();
 	}
 
-
 	@Override
-	public int getOpacity() {
+	public int getOpacity()
+	{
 		return PixelFormat.TRANSLUCENT;
 	}
 
-
 	@Override
-	public void setAlpha(int alpha) {
+	public void setAlpha(int alpha)
+	{
 		paintPin.setAlpha(alpha);
 		paintText.setAlpha(alpha);
 	}
 
-
 	@Override
-	public void setColorFilter(ColorFilter cf) {
+	public void setColorFilter(ColorFilter cf)
+	{
 		paintPin.setColorFilter(cf);
 		paintText.setColorFilter(cf);
 	}
-	
+
 }

@@ -20,16 +20,17 @@ import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
 import com.google.code.linkedinapi.schema.Person;
 
 /**
- *
+ * 
  * @author jrojas
  */
-public class LinkedIn implements OAuthService {
+public class LinkedIn implements OAuthService
+{
 
 	LinkedInOAuthService oAuthService;
 	LinkedInApiClientFactory factory;
 	LinkedInApiClient client;
 	LinkedInRequestToken liToken;
-	LinkedInAccessToken accessToken;     
+	LinkedInAccessToken accessToken;
 	String apiKey;
 	String apiSec;
 
@@ -39,16 +40,26 @@ public class LinkedIn implements OAuthService {
 	public static final String OAUTH_CALLBACK_HOST = "callback";
 	public static final String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
 
-	public String getServiceNameSignUp() { return "linkedin"; }
-	public String getServiceNameLogin() { return "Linkedin"; }
+	public String getServiceNameSignUp()
+	{
+		return "linkedin";
+	}
 
-	public boolean isConnected() { return client != null && accessToken != null; }
+	public String getServiceNameLogin()
+	{
+		return "Linkedin";
+	}
+
+	public boolean isConnected()
+	{
+		return client != null && accessToken != null;
+	}
 
 	public void initialize(String apiKey_, String apiSec_)
 	{
 		apiKey = apiKey_;
 		apiSec = apiSec_;
-		//create service & factory with keys from LinkedIn developer
+		// create service & factory with keys from LinkedIn developer
 		oAuthService = LinkedInOAuthServiceFactory.getInstance().createLinkedInOAuthService(apiKey, apiSec);
 		factory = LinkedInApiClientFactory.newInstance(apiKey, apiSec);
 	}
@@ -58,11 +69,12 @@ public class LinkedIn implements OAuthService {
 		accessToken = null;
 		client = null;
 		try
-		{    		
-			liToken = oAuthService.getOAuthRequestToken(OAUTH_CALLBACK_URL); // on this line 
+		{
+			liToken = oAuthService.getOAuthRequestToken(OAUTH_CALLBACK_URL); // on
+																				// this
+																				// line
 			return new Intent(Intent.ACTION_VIEW, Uri.parse(liToken.getAuthorizationUrl()));
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			return null;
 		}
@@ -72,9 +84,11 @@ public class LinkedIn implements OAuthService {
 	{
 		accessToken = oAuthService.getOAuthAccessToken(liToken, verifier);
 		client = factory.createLinkedInApiClient(accessToken);
-		//client.postNetworkUpdate("LinkedIn Android app test, token = " + accessToken.getToken());
+		// client.postNetworkUpdate("LinkedIn Android app test, token = " +
+		// accessToken.getToken());
 		if (client != null)
-			currUser = client.getProfileForCurrentUser(EnumSet.allOf(com.google.code.linkedinapi.client.enumeration.ProfileField.class));
+			currUser = client.getProfileForCurrentUser(EnumSet
+					.allOf(com.google.code.linkedinapi.client.enumeration.ProfileField.class));
 
 		return client != null && accessToken.getToken() != null;
 	}
@@ -83,12 +97,12 @@ public class LinkedIn implements OAuthService {
 	{
 		try
 		{
-			accessToken = new LinkedInAccessToken(token, tokenSecret);    	
+			accessToken = new LinkedInAccessToken(token, tokenSecret);
 			client = factory.createLinkedInApiClient(accessToken);
 			if (client != null)
-				currUser = client.getProfileForCurrentUser(EnumSet.allOf(com.google.code.linkedinapi.client.enumeration.ProfileField.class));
-		}
-		catch (Exception e)
+				currUser = client.getProfileForCurrentUser(EnumSet
+						.allOf(com.google.code.linkedinapi.client.enumeration.ProfileField.class));
+		} catch (Exception e)
 		{
 
 		}
@@ -108,8 +122,7 @@ public class LinkedIn implements OAuthService {
 
 	public String getUserId()
 	{
-		if (currUser == null)
-			return null;    	    	
+		if (currUser == null) return null;
 		return currUser.getId();
 	}
 
@@ -129,14 +142,13 @@ public class LinkedIn implements OAuthService {
 	}
 
 	public void saveSettings()
-	{    	
-		if (client == null)
-			return;
+	{
+		if (client == null) return;
 		AppCAP.setUserLinkedInDetails(getAccessToken(), getAccessTokenSecret(), getUserId());
 	}
 
 	public void clearSettings()
 	{
 		AppCAP.setUserLinkedInDetails("", "", "");
-	}       
+	}
 }

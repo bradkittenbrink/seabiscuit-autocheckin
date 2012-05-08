@@ -1,8 +1,8 @@
 package com.coffeeandpower.cont;
 
-public class Review {
+public class Review
+{
 
-	
 	private int id;
 	private String author;
 	private String title;
@@ -15,11 +15,10 @@ public class Review {
 	private String review;
 	private String ratingImage;
 	private String relativeTime;
-	
-	public Review(int id, String author, String title, String type,
-			String createTime, String skill, String rating, String isLove,
-			String tipAmount, String review, String ratingImage,
-			String relativeTime) {
+
+	public Review(int id, String author, String title, String type, String createTime, String skill, String rating,
+			String isLove, String tipAmount, String review, String ratingImage, String relativeTime)
+	{
 
 		this.id = id;
 		this.author = author;
@@ -34,79 +33,125 @@ public class Review {
 		this.ratingImage = ratingImage;
 		this.relativeTime = relativeTime;
 	}
-	
-	public int getId() {
+
+	public int getId()
+	{
 		return id;
 	}
-	public void setId(int id) {
+
+	public void setId(int id)
+	{
 		this.id = id;
 	}
-	public String getAuthor() {
+
+	public String getAuthor()
+	{
 		return author;
 	}
-	public void setAuthor(String author) {
+
+	public void setAuthor(String author)
+	{
 		this.author = author;
 	}
-	public String getTitle() {
+
+	public String getTitle()
+	{
 		return title;
 	}
-	public void setTitle(String title) {
+
+	public void setTitle(String title)
+	{
 		this.title = title;
 	}
-	public String getType() {
+
+	public String getType()
+	{
 		return type;
 	}
-	public void setType(String type) {
+
+	public void setType(String type)
+	{
 		this.type = type;
 	}
-	public String getCreateTime() {
+
+	public String getCreateTime()
+	{
 		return createTime;
 	}
-	public void setCreateTime(String createTime) {
+
+	public void setCreateTime(String createTime)
+	{
 		this.createTime = createTime;
 	}
-	public String getSkill() {
+
+	public String getSkill()
+	{
 		return skill;
 	}
-	public void setSkill(String skill) {
+
+	public void setSkill(String skill)
+	{
 		this.skill = skill;
 	}
-	public String getRating() {
+
+	public String getRating()
+	{
 		return rating;
 	}
-	public void setRating(String rating) {
+
+	public void setRating(String rating)
+	{
 		this.rating = rating;
 	}
-	public String getIsLove() {
+
+	public String getIsLove()
+	{
 		return isLove;
 	}
-	public void setIsLove(String isLove) {
+
+	public void setIsLove(String isLove)
+	{
 		this.isLove = isLove;
 	}
-	public String getTipAmount() {
+
+	public String getTipAmount()
+	{
 		return tipAmount;
 	}
-	public void setTipAmount(String tipAmount) {
+
+	public void setTipAmount(String tipAmount)
+	{
 		this.tipAmount = tipAmount;
 	}
-	public String getReview() {
+
+	public String getReview()
+	{
 		return review;
 	}
-	public void setReview(String review) {
+
+	public void setReview(String review)
+	{
 		this.review = review;
 	}
-	public String getRatingImage() {
+
+	public String getRatingImage()
+	{
 		return ratingImage;
 	}
-	public void setRatingImage(String ratingImage) {
+
+	public void setRatingImage(String ratingImage)
+	{
 		this.ratingImage = ratingImage;
 	}
-	public String getRelativeTime() {
+
+	public String getRelativeTime()
+	{
 		return relativeTime;
 	}
-	public void setRelativeTime(String relativeTime) {
+
+	public void setRelativeTime(String relativeTime)
+	{
 		this.relativeTime = relativeTime;
 	}
-	
-	
+
 }

@@ -30,7 +30,8 @@ import com.coffeeandpower.tab.activities.ActivityContacts;
 import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.views.CustomDialog;
 
-public class UserAndTabMenu implements UserMenu, TabMenu{
+public class UserAndTabMenu implements UserMenu, TabMenu
+{
 
 	public static final int HANDLE_CHECK_OUT = 1800;
 	public static final int HANDLE_LOG_OUT = 1801;
@@ -47,45 +48,68 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 	private DataHolder result;
 	private DataHolder resultNotificationSettings;
 
-	public interface OnUserStateChanged{
+	public interface OnUserStateChanged
+	{
 		public void onCheckOut();
+
 		public void onLogOut();
 	}
 
-	OnUserStateChanged userState = new OnUserStateChanged() {
+	OnUserStateChanged userState = new OnUserStateChanged()
+	{
 		@Override
-		public void onCheckOut() {}
-		public void onLogOut() {}
+		public void onCheckOut()
+		{
+		}
+
+		public void onLogOut()
+		{
+		}
 	};
 
-	public void setOnUserStateChanged(OnUserStateChanged userState){
+	public void setOnUserStateChanged(OnUserStateChanged userState)
+	{
 		this.userState = userState;
 	}
 
-	public UserAndTabMenu (Context context){
+	public UserAndTabMenu(Context context)
+	{
 		this.context = context;
 		this.progress = new ProgressDialog(context);
 
 		// If user is not logged in
-		if (!AppCAP.isLoggedIn()){
+		if (!AppCAP.isLoggedIn())
+		{
 			View v = ((Activity) context).findViewById(R.id.btn_menu);
 			RelativeLayout r = (RelativeLayout) ((Activity) context).findViewById(R.id.rel_log_in);
 			RelativeLayout r1 = (RelativeLayout) ((Activity) context).findViewById(R.id.rel_contacts);
 
-			if (v!=null){ v.setVisibility(View.GONE);}
-			if (r!=null){ r.setVisibility(View.VISIBLE);}
-			if (r1!=null){ r1.setVisibility(View.GONE);}
+			if (v != null)
+			{
+				v.setVisibility(View.GONE);
+			}
+			if (r != null)
+			{
+				r.setVisibility(View.VISIBLE);
+			}
+			if (r1 != null)
+			{
+				r1.setVisibility(View.GONE);
+			}
 		}
 	}
 
-	private Handler handler =  new Handler(){
+	private Handler handler = new Handler()
+	{
 		@Override
-		public void handleMessage(Message msg) {
+		public void handleMessage(Message msg)
+		{
 			super.handleMessage(msg);
 
 			progress.dismiss();
 
-			switch (msg.what){
+			switch (msg.what)
+			{
 			case AppCAP.HTTP_ERROR:
 				new CustomDialog(context, "Error", result.getResponseMessage()).show();
 				break;
@@ -96,18 +120,21 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 				break;
 
 			case HANDLE_GET_NOTIFICATION_SETTINGS:
-				if (resultNotificationSettings.getObject()!=null && resultNotificationSettings.getObject() instanceof Object[]){
+				if (resultNotificationSettings.getObject() != null
+						&& resultNotificationSettings.getObject() instanceof Object[])
+				{
 					Object[] obj = (Object[]) resultNotificationSettings.getObject();
 
 					String pushDistance = (String) obj[0];
 					String checkedInOnly = (String) obj[1];
 
-					if (toggle!=null && btnFrom!=null){
-						Log.d("LOG", "text: " + pushDistance + ":" +checkedInOnly);
+					if (toggle != null && btnFrom != null)
+					{
+						Log.d("LOG", "text: " + pushDistance + ":" + checkedInOnly);
 						toggle.setChecked(checkedInOnly.matches("1"));
 						btnFrom.setText(pushDistance.matches("venue") ? "in venue" : "in city");
 					}
-				} 
+				}
 				break;
 
 			}
@@ -116,13 +143,15 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 	};
 
 	@Override
-	public void onClickMap(View v) {
-		//Intent intent = new Intent(context, ActivityMap.class);							
-		//context.startActivity(intent);
+	public void onClickMap(View v)
+	{
+		// Intent intent = new Intent(context, ActivityMap.class);
+		// context.startActivity(intent);
 	}
 
 	@Override
-	public void onClickPlaces(View v) {
+	public void onClickPlaces(View v)
+	{
 		double[] data = new double[6];
 		data = AppCAP.getUserCoordinates();
 
@@ -140,52 +169,61 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 	}
 
 	@Override
-	public void onClickCheckIn(View v) {
-		if (AppCAP.isUserCheckedIn()){
+	public void onClickCheckIn(View v)
+	{
+		if (AppCAP.isUserCheckedIn())
+		{
 			AlertDialog.Builder builder = new AlertDialog.Builder(context);
 			builder.setTitle("Check Out");
-			builder.setMessage("Are you sure you want to be checked out?")
-			.setCancelable(false)
-			.setPositiveButton("Check Out", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					progress.setMessage("Checking out...");
-					progress.show();
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							result = AppCAP.getConnection().checkOut();
-							handler.sendEmptyMessage(result.getResponseCode());
+			builder.setMessage("Are you sure you want to be checked out?").setCancelable(false)
+					.setPositiveButton("Check Out", new DialogInterface.OnClickListener()
+					{
+						public void onClick(DialogInterface dialog, int id)
+						{
+							progress.setMessage("Checking out...");
+							progress.show();
+							new Thread(new Runnable()
+							{
+								@Override
+								public void run()
+								{
+									result = AppCAP.getConnection().checkOut();
+									handler.sendEmptyMessage(result.getResponseCode());
+								}
+							}).start();
 						}
-					}).start();
-				}
-			})
-			.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
+					}).setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+					{
+						public void onClick(DialogInterface dialog, int id)
+						{
+							dialog.cancel();
+						}
+					});
 			AlertDialog alert = builder.create();
 			alert.show();
 
-		} else {
+		}
+		else
+		{
 			double[] data = new double[6];
 			data = AppCAP.getUserCoordinates();
 
 			double userLat = data[4];
 			double userLng = data[5];
 
-			if (userLat!=0 && userLng!=0){
+			if (userLat != 0 && userLng != 0)
+			{
 				Intent intent = new Intent(context, ActivityCheckInList.class);
-				intent.putExtra("lat", (int)(userLat * 1E6));
-				intent.putExtra("lng", (int)(userLng * 1E6));
+				intent.putExtra("lat", (int) (userLat * 1E6));
+				intent.putExtra("lng", (int) (userLng * 1E6));
 				context.startActivity(intent);
 			}
 		}
 	}
 
-
 	@Override
-	public void onClickPeople(View v) {
+	public void onClickPeople(View v)
+	{
 		double[] data = new double[6];
 		data = AppCAP.getUserCoordinates();
 
@@ -202,31 +240,36 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 	}
 
 	@Override
-	public void onClickContacts(View v) {
+	public void onClickContacts(View v)
+	{
 		Intent intent = new Intent(context, ActivityContacts.class);
 		context.startActivity(intent);
 	}
 
 	@Override
-	public void onClickEnterInviteCode(View v) {
+	public void onClickEnterInviteCode(View v)
+	{
 		Intent intent = new Intent(context, ActivityEnterInviteCode.class);
 		context.startActivity(intent);
 	}
 
 	@Override
-	public void onClickWallet(View v) {
+	public void onClickWallet(View v)
+	{
 		Intent intent = new Intent(context, ActivityWallet.class);
 		context.startActivity(intent);
 	}
 
 	@Override
-	public void onClickSettings(View v) {
+	public void onClickSettings(View v)
+	{
 		Intent intent = new Intent(context, ActivitySettings.class);
 		context.startActivity(intent);
 	}
 
 	@Override
-	public void onClickLogout(View v) {
+	public void onClickLogout(View v)
+	{
 		AppCAP.setLoggedInUserId(0);
 		AppCAP.setLocalUserPhotoLargeURL("");
 		AppCAP.setLocalUserPhotoURL("");
@@ -236,72 +279,83 @@ public class UserAndTabMenu implements UserMenu, TabMenu{
 		userState.onLogOut();
 	}
 
-
 	/**
 	 * Toggle Button listener and checker
+	 * 
 	 * @param toggle
 	 */
-	public void setOnNotificationSettingsListener(final ToggleButton toggle,final Button btnFrom) {
+	public void setOnNotificationSettingsListener(final ToggleButton toggle, final Button btnFrom)
+	{
 		this.toggle = toggle;
 		this.btnFrom = btnFrom;
 
-		
 		// Get notification settings
-		new Thread(new Runnable() {
+		new Thread(new Runnable()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				resultNotificationSettings = AppCAP.getConnection().getNotificationSettings();
 				handler.sendEmptyMessage(HANDLE_GET_NOTIFICATION_SETTINGS);
 			}
 		}).start();
 
-		
 		// Check Toggle State
-		toggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		toggle.setOnCheckedChangeListener(new OnCheckedChangeListener()
+		{
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-				new Thread(new Runnable() {
+			public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked)
+			{
+				new Thread(new Runnable()
+				{
 					@Override
-					public void run() {
+					public void run()
+					{
 						AppCAP.getConnection().setNotificationSettings(AppCAP.getPushDistance(), isChecked);
 					}
 				}).start();
 			}
 		});
-		
-		
+
 		// Button From onClickListener
-		final CharSequence[] data = {"City", "Place"};
-		btnFrom.setOnClickListener(new OnClickListener() {
+		final CharSequence[] data =
+		{ "City", "Place" };
+		btnFrom.setOnClickListener(new OnClickListener()
+		{
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				// Show dialog for pending Jobs
-				new AlertDialog.Builder(context)
-				.setTitle("Show me new check-ins from:")
-				.setSingleChoiceItems(data, -1, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						if (whichButton!=-1){
-							AppCAP.setPushDistance(whichButton==1 ? "venue" : "city");
-							btnFrom.setText(whichButton==1 ? "in venue" : "in city");
-							new Thread(new Runnable() {
-								@Override
-								public void run() {
-									AppCAP.getConnection().setNotificationSettings(AppCAP.getPushDistance(), toggle.isChecked());
+				new AlertDialog.Builder(context).setTitle("Show me new check-ins from:")
+						.setSingleChoiceItems(data, -1, new DialogInterface.OnClickListener()
+						{
+							public void onClick(DialogInterface dialog, int whichButton)
+							{
+								if (whichButton != -1)
+								{
+									AppCAP.setPushDistance(whichButton == 1 ? "venue" : "city");
+									btnFrom.setText(whichButton == 1 ? "in venue" : "in city");
+									new Thread(new Runnable()
+									{
+										@Override
+										public void run()
+										{
+											AppCAP.getConnection().setNotificationSettings(AppCAP.getPushDistance(),
+													toggle.isChecked());
+										}
+									}).start();
 								}
-							}).start();
-						}
-						dialog.dismiss();
-					}
-				})
-				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						dialog.cancel();
-					}
-				})
-				.show();
+								dialog.dismiss();
+							}
+						}).setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+						{
+							public void onClick(DialogInterface dialog, int whichButton)
+							{
+								dialog.cancel();
+							}
+						}).show();
 			}
 		});
 	}
-
 
 }

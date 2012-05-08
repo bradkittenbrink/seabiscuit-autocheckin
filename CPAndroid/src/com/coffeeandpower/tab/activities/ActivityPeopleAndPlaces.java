@@ -39,7 +39,8 @@ import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 
-public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, UserMenu{
+public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, UserMenu
+{
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_USER = 1;
@@ -75,42 +76,49 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		isPeopleList = true;
 	}
 
-
-	private Handler handler = new Handler(){
+	private Handler handler = new Handler()
+	{
 		@Override
-		public void handleMessage(Message msg) {
+		public void handleMessage(Message msg)
+		{
 			super.handleMessage(msg);
 
 			progress.dismiss();
 
-			switch (msg.what){
+			switch (msg.what)
+			{
 
 			case AppCAP.HTTP_ERROR:
 				new CustomDialog(ActivityPeopleAndPlaces.this, "Error", "Internet connection error").show();
 				break;
 
 			case HANDLE_GET_USERS_AND_VENUES:
-				if (result.getObject() instanceof Object[]){
+				if (result.getObject() instanceof Object[])
+				{
 					Object[] obj = (Object[]) result.getObject();
-					arrayVenues = (ArrayList<VenueSmart>) obj[0]; 
+					arrayVenues = (ArrayList<VenueSmart>) obj[0];
 					arrayUsers = (ArrayList<UserSmart>) obj[1];
 
 					// Sort users list
-					if (arrayUsers!=null){
-						Collections.sort(arrayUsers, new Comparator<UserSmart>() {
+					if (arrayUsers != null)
+					{
+						Collections.sort(arrayUsers, new Comparator<UserSmart>()
+						{
 							@Override
-							public int compare(UserSmart m1, UserSmart m2) {
-								if (m1.getCheckedIn()>m2.getCheckedIn()){
-									return -1;
-								}
+							public int compare(UserSmart m1, UserSmart m2)
+							{
+								if (m1.getCheckedIn() > m2.getCheckedIn()) { return -1; }
 								return 1;
 							}
 						});
 					}
 
-					if (type.equals("people")){
+					if (type.equals("people"))
+					{
 						setPeopleList();
-					} else {
+					}
+					else
+					{
 						setPlaceList();
 					}
 
@@ -121,25 +129,30 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		}
 	};
 
-
 	/**
 	 * Check if user is checked in or not
 	 */
-	private void checkUserState(){
-		if (AppCAP.isUserCheckedIn()){
-			((TextView)findViewById(R.id.textview_check_in)).setText("Check Out");
-		} else {
-			((TextView)findViewById(R.id.textview_check_in)).setText("Check In");
+	private void checkUserState()
+	{
+		if (AppCAP.isUserCheckedIn())
+		{
+			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
+		}
+		else
+		{
+			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
 		}
 	}
 
-	private void setPeopleList (){
+	private void setPeopleList()
+	{
 		adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
 		listView.setAdapter(adapterUsers);
 		Utils.animateListView(listView);
 	}
 
-	private void setPlaceList (){
+	private void setPlaceList()
+	{
 		isPeopleList = false;
 		((CustomFontView) findViewById(R.id.textview_location_name)).setText("Place");
 		adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
@@ -147,9 +160,9 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		Utils.animateListView(listView);
 	}
 
-
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tab_activity_people_and_places);
 
@@ -163,21 +176,29 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
 
-		listView = (ListView)findViewById(R.id.list);
-		listView.setOnItemClickListener(new OnItemClickListener() {
+		listView = (ListView) findViewById(R.id.list);
+		listView.setOnItemClickListener(new OnItemClickListener()
+		{
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,long arg3) {
-				if (isPeopleList){
-					if (!AppCAP.isLoggedIn()){
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3)
+			{
+				if (isPeopleList)
+				{
+					if (!AppCAP.isLoggedIn())
+					{
 						showDialog(DIALOG_MUST_BE_A_MEMBER);
-					} else {
+					}
+					else
+					{
 						Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityUserDetails.class);
-						intent.putExtra("mapuserobject", (UserSmart)adapterUsers.getItem(position));
+						intent.putExtra("mapuserobject", (UserSmart) adapterUsers.getItem(position));
 						intent.putExtra("from_act", "list");
 						startActivity(intent);
 						onBackPressed();
 					}
-				} else {
+				}
+				else
+				{
 					Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
 					intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
 					intent.putExtra("coords", data);
@@ -187,42 +208,49 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			}
 		});
 
-
 		// User and Tab Menu
 		checkUserState();
 		menu = new UserAndTabMenu(this);
-		menu.setOnUserStateChanged(new OnUserStateChanged() {
+		menu.setOnUserStateChanged(new OnUserStateChanged()
+		{
 			@Override
-			public void onCheckOut() {
+			public void onCheckOut()
+			{
 				checkUserState();
 			}
 
 			@Override
-			public void onLogOut() {}
+			public void onLogOut()
+			{
+			}
 		});
-
-
 
 		// Get data from intent
 		Bundle extras = getIntent().getExtras();
-		if (extras!=null){
+		if (extras != null)
+		{
 
 			// Check is it People or Places List
 			type = extras.getString("type");
-			if (type.equals("people")){
-				((RelativeLayout)findViewById(R.id.rel_people)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-				((ImageView)findViewById(R.id.imageview_people)).setImageResource(R.drawable.tab_people_pressed);
-				((TextView)findViewById(R.id.text_people)).setTextColor(Color.WHITE);
-			} else {
-				((RelativeLayout)findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-				((ImageView)findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
-				((TextView)findViewById(R.id.text_places)).setTextColor(Color.WHITE);
+			if (type.equals("people"))
+			{
+				((RelativeLayout) findViewById(R.id.rel_people)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+				((ImageView) findViewById(R.id.imageview_people)).setImageResource(R.drawable.tab_people_pressed);
+				((TextView) findViewById(R.id.text_people)).setTextColor(Color.WHITE);
+			}
+			else
+			{
+				((RelativeLayout) findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+				((ImageView) findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
+				((TextView) findViewById(R.id.text_places)).setTextColor(Color.WHITE);
 			}
 
 			// Check is it click from Activity or Balloon
 			String from = extras.getString("from");
-			if (from!=null){
-				if (from.equals("from_tab")){
+			if (from != null)
+			{
+				if (from.equals("from_tab"))
+				{
 
 					data[0] = extras.getDouble("sw_lat");
 					data[1] = extras.getDouble("sw_lng");
@@ -234,8 +262,9 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 					userLat = data[4];
 					userLng = data[5];
 					getUsersAndVenues();
-				} else {
-
+				}
+				else
+				{
 
 				}
 			}
@@ -243,114 +272,137 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 	}
 
-
 	@Override
-	protected void onResume() {
+	protected void onResume()
+	{
 		super.onResume();
 
-		if (AppCAP.shouldFinishActivities()){
+		if (AppCAP.shouldFinishActivities())
+		{
 			onBackPressed();
-		} else {
+		}
+		else
+		{
 			checkUserState();
-			
+
 			// Check and Set Notification settings
-			menu.setOnNotificationSettingsListener((ToggleButton)findViewById(R.id.toggle_checked_in),(Button)findViewById(R.id.btn_from));
+			menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in),
+					(Button) findViewById(R.id.btn_from));
 		}
 	}
 
-
-	public void onClickMenu (View v){
-		if (pager.getCurrentScreen()==SCREEN_USER){
+	public void onClickMenu(View v)
+	{
+		if (pager.getCurrentScreen() == SCREEN_USER)
+		{
 			pager.setCurrentScreen(SCREEN_SETTINGS, true);
-		} else {
+		}
+		else
+		{
 			pager.setCurrentScreen(SCREEN_USER, true);
 		}
 	}
 
-
-	private void getUsersAndVenues (){
+	private void getUsersAndVenues()
+	{
 		progress.show();
-		new Thread(new Runnable() {
+		new Thread(new Runnable()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				result = AppCAP.getConnection().getVenuesAndUsersWithCheckinsInBoundsDuringInterval(data, 7);
-				if (result.getResponseCode()==AppCAP.HTTP_ERROR){
+				if (result.getResponseCode() == AppCAP.HTTP_ERROR)
+				{
 					handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-				} else {
+				}
+				else
+				{
 					handler.sendEmptyMessage(HANDLE_GET_USERS_AND_VENUES);
 				}
 			}
 		}).start();
 	}
 
-
-	public void onClickBack (View v){
-		onBackPressed();	
+	public void onClickBack(View v)
+	{
+		onBackPressed();
 	}
 
-
 	@Override
-	public void onBackPressed() {
+	public void onBackPressed()
+	{
 		super.onBackPressed();
 	}
 
-
 	@Override
-	protected void onDestroy() {
+	protected void onDestroy()
+	{
 		super.onDestroy();
 	}
 
 	@Override
-	public void onClickEnterInviteCode(View v) {
-		menu.onClickEnterInviteCode(v);		
+	public void onClickEnterInviteCode(View v)
+	{
+		menu.onClickEnterInviteCode(v);
 	}
 
 	@Override
-	public void onClickWallet(View v) {
+	public void onClickWallet(View v)
+	{
 		menu.onClickWallet(v);
 
 	}
 
 	@Override
-	public void onClickSettings(View v) {
+	public void onClickSettings(View v)
+	{
 		menu.onClickSettings(v);
 
 	}
 
 	@Override
-	public void onClickLogout(View v) {
+	public void onClickLogout(View v)
+	{
 		menu.onClickLogout(v);
 		onBackPressed();
 	}
 
 	@Override
-	public void onClickMap(View v) {
+	public void onClickMap(View v)
+	{
 		menu.onClickMap(v);
 		finish();
 	}
 
 	@Override
-	public void onClickContacts(View v) {
+	public void onClickContacts(View v)
+	{
 		menu.onClickContacts(v);
 		finish();
 	}
 
-	public void onClickPlaces (View v){
+	public void onClickPlaces(View v)
+	{
 		menu.onClickPlaces(v);
 		finish();
 	}
 
-
-	public void onClickPeople (View v){
+	public void onClickPeople(View v)
+	{
 		menu.onClickPeople(v);
 		finish();
 	}
 
 	@Override
-	public void onClickCheckIn(View v) {
-		if (AppCAP.isLoggedIn()){
+	public void onClickCheckIn(View v)
+	{
+		if (AppCAP.isLoggedIn())
+		{
 			menu.onClickCheckIn(v);
-		} else {
+		}
+		else
+		{
 			showDialog(DIALOG_MUST_BE_A_MEMBER);
 		}
 	}

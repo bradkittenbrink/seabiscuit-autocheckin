@@ -18,7 +18,8 @@ import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.views.CustomDialog;
 
-public class ActivityJobCategory extends RootActivity{
+public class ActivityJobCategory extends RootActivity
+{
 
 	public static final int HANDLE_UPLOAD_JOBS_INFO = 1500;
 
@@ -41,14 +42,17 @@ public class ActivityJobCategory extends RootActivity{
 		selectedMinorJob = "";
 	}
 
-	private Handler handler = new Handler(){
+	private Handler handler = new Handler()
+	{
 		@Override
-		public void handleMessage(Message msg) {
+		public void handleMessage(Message msg)
+		{
 			super.handleMessage(msg);
 
 			progress.dismiss();
 
-			switch (msg.what) {
+			switch (msg.what)
+			{
 			case AppCAP.HTTP_ERROR:
 				new CustomDialog(ActivityJobCategory.this, "Error", result.getResponseMessage()).show();
 				break;
@@ -65,7 +69,8 @@ public class ActivityJobCategory extends RootActivity{
 	};
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_job_category);
 
@@ -74,105 +79,129 @@ public class ActivityJobCategory extends RootActivity{
 		progress.setMessage("Uploading...");
 
 		// Kan Kan Wheel adapter
-		final WheelView wheelView = (WheelView)findViewById(R.id.wheel_jobs);
-		jobAdapter = new ArrayWheelAdapter<String>(this, new String[] {"engineering", "design", "marketing", "legal", "finance", "admin", "investor", "business development", "other"});
+		final WheelView wheelView = (WheelView) findViewById(R.id.wheel_jobs);
+		jobAdapter = new ArrayWheelAdapter<String>(this, new String[]
+		{ "engineering", "design", "marketing", "legal", "finance", "admin", "investor", "business development",
+				"other" });
 
 		jobAdapter.setItemResource(R.layout.wheel_text_item);
 		wheelView.setViewAdapter(jobAdapter);
 		wheelView.addScrollingListener(scrolledProvince);
 	}
 
-
 	/**
-	 *  Wheel scrolled listener for jobs adapter
+	 * Wheel scrolled listener for jobs adapter
 	 */
-	OnWheelScrollListener scrolledProvince = new OnWheelScrollListener() {
-		public void onScrollingStarted(WheelView wheel) {}
-		public void onScrollingFinished(WheelView wheel) {
-			if (isMajorSelected){
+	OnWheelScrollListener scrolledProvince = new OnWheelScrollListener()
+	{
+		public void onScrollingStarted(WheelView wheel)
+		{
+		}
+
+		public void onScrollingFinished(WheelView wheel)
+		{
+			if (isMajorSelected)
+			{
 				selectedMajorJob = (String) jobAdapter.getItemText(wheel.getCurrentItem());
-			} else {
+			}
+			else
+			{
 				selectedMinorJob = (String) jobAdapter.getItemText(wheel.getCurrentItem());
 			}
 		}
 	};
 
-	private View getTimePickerLayout() {
-		if (timePickerLayout == null) {
+	private View getTimePickerLayout()
+	{
+		if (timePickerLayout == null)
+		{
 			timePickerLayout = findViewById(R.id.picker);
 		}
 		return timePickerLayout;
 	}
 
-
-	public void onClickMajor (View v){
+	public void onClickMajor(View v)
+	{
 		getTimePickerLayout().setVisibility(View.VISIBLE);
-		((TextView)findViewById(R.id.timepicker_title)).setText("Major Job Category");
+		((TextView) findViewById(R.id.timepicker_title)).setText("Major Job Category");
 		isMajorSelected = true;
 	}
 
-
-	public void onClickMinor (View v){
+	public void onClickMinor(View v)
+	{
 		getTimePickerLayout().setVisibility(View.VISIBLE);
-		((TextView)findViewById(R.id.timepicker_title)).setText("Minor Job Category");
+		((TextView) findViewById(R.id.timepicker_title)).setText("Minor Job Category");
 		isMajorSelected = false;
 	}
 
-	public void onClickCancel (View v){
+	public void onClickCancel(View v)
+	{
 		getTimePickerLayout().setVisibility(View.GONE);
 	}
 
-	public void onClickDone (View v){
-		if (isMajorSelected){
-			((Button)findViewById(R.id.button_major)).setText(selectedMajorJob);
-		} else {
-			((Button)findViewById(R.id.button_minor)).setText(selectedMinorJob);
+	public void onClickDone(View v)
+	{
+		if (isMajorSelected)
+		{
+			((Button) findViewById(R.id.button_major)).setText(selectedMajorJob);
+		}
+		else
+		{
+			((Button) findViewById(R.id.button_minor)).setText(selectedMinorJob);
 		}
 		getTimePickerLayout().setVisibility(View.GONE);
 	}
 
-	private void uploadJobs (){
+	private void uploadJobs()
+	{
 
-		if (selectedMajorJob.length()>0 || selectedMinorJob.length()>0){
+		if (selectedMajorJob.length() > 0 || selectedMinorJob.length() > 0)
+		{
 			progress.show();
-			new Thread(new Runnable() {
+			new Thread(new Runnable()
+			{
 				@Override
-				public void run() {
+				public void run()
+				{
 					result = AppCAP.getConnection().saveUserJobCategory(selectedMajorJob, selectedMinorJob);
 					handler.sendEmptyMessage(result.getResponseCode());
 				}
 			}).start();
-		} else {
+		}
+		else
+		{
 			finish();
 		}
 	}
 
-
 	@Override
-	protected void onResume() {
+	protected void onResume()
+	{
 		super.onResume();
 	}
 
-
-	public void onClickBack (View v){
+	public void onClickBack(View v)
+	{
 		uploadJobs();
 	}
 
-
 	@Override
-	public void onBackPressed() {
-		if (getTimePickerLayout().getVisibility()==View.VISIBLE){
+	public void onBackPressed()
+	{
+		if (getTimePickerLayout().getVisibility() == View.VISIBLE)
+		{
 			getTimePickerLayout().setVisibility(View.GONE);
-		} else {
+		}
+		else
+		{
 			uploadJobs();
 		}
 	}
 
-
 	@Override
-	protected void onDestroy() {
+	protected void onDestroy()
+	{
 		super.onDestroy();
 	}
-
 
 }

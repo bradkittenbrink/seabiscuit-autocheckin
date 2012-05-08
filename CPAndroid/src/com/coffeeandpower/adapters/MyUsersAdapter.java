@@ -16,7 +16,8 @@ import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.imageutil.ImageLoader;
 
-public class MyUsersAdapter extends BaseAdapter{
+public class MyUsersAdapter extends BaseAdapter
+{
 
 	private ArrayList<UserSmart> mudArray;
 	private LayoutInflater inflater;
@@ -25,36 +26,44 @@ public class MyUsersAdapter extends BaseAdapter{
 	private double myLat;
 	private double myLng;
 
-	public MyUsersAdapter(Activity context, ArrayList<UserSmart> mudArray, double myLat, double myLng){
+	public MyUsersAdapter(Activity context, ArrayList<UserSmart> mudArray, double myLat, double myLng)
+	{
 
 		this.inflater = context.getLayoutInflater();
 		this.myLat = myLat;
 		this.myLng = myLng;
-		this.imageLoader=new ImageLoader(context.getApplicationContext());
+		this.imageLoader = new ImageLoader(context.getApplicationContext());
 
-		if (mudArray!=null){
+		if (mudArray != null)
+		{
 			this.mudArray = mudArray;
-		} else {
+		}
+		else
+		{
 			this.mudArray = new ArrayList<UserSmart>();
 		}
 	}
 
 	@Override
-	public int getCount() {
+	public int getCount()
+	{
 		return mudArray.size();
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public Object getItem(int position)
+	{
 		return mudArray.get(position);
 	}
 
 	@Override
-	public long getItemId(int position) {
+	public long getItemId(int position)
+	{
 		return 0;
 	}
 
-	public static class ViewHolder {
+	public static class ViewHolder
+	{
 
 		public TextView textNickName;
 		public TextView textStatus;
@@ -66,7 +75,8 @@ public class MyUsersAdapter extends BaseAdapter{
 
 		public ImageView profileImage;
 
-		public ViewHolder(View convertView){
+		public ViewHolder(View convertView)
+		{
 
 			this.textCheckinsCount = (TextView) convertView.findViewById(R.id.textview_checkin);
 			this.textDistance = (TextView) convertView.findViewById(R.id.textview_how_far);
@@ -80,29 +90,40 @@ public class MyUsersAdapter extends BaseAdapter{
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(int position, View convertView, ViewGroup parent)
+	{
 
-		ViewHolder holder; 
+		ViewHolder holder;
 
-		if (convertView == null){
+		if (convertView == null)
+		{
 			convertView = inflater.inflate(R.layout.item_list_about_person, null);
 			holder = new ViewHolder(convertView);
 			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder)convertView.getTag();
+		}
+		else
+		{
+			holder = (ViewHolder) convertView.getTag();
 		}
 
-		if (AppCAP.isLoggedIn()){
+		if (AppCAP.isLoggedIn())
+		{
 			holder.textNickName.setText(mudArray.get(position).getNickName());
-			imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage, R.drawable.default_avatar50);
-		} else {
+			imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage,
+					R.drawable.default_avatar50);
+		}
+		else
+		{
 			holder.textNickName.setText("Name Hidden");
 			imageLoader.DisplayImage("", holder.profileImage, R.drawable.default_avatar50_login);
 		}
 
-		if (mudArray.get(position).getStatusText()!=null && mudArray.get(position).getStatusText().length()>0){
+		if (mudArray.get(position).getStatusText() != null && mudArray.get(position).getStatusText().length() > 0)
+		{
 			holder.textStatus.setText("\"" + AppCAP.cleanResponseString(mudArray.get(position).getStatusText()) + "\"");
-		} else {
+		}
+		else
+		{
 			holder.textStatus.setText("");
 		}
 		holder.textVenueName.setText(AppCAP.cleanResponseString(mudArray.get(position).getVenueName()));
@@ -110,20 +131,22 @@ public class MyUsersAdapter extends BaseAdapter{
 
 		// Deafult gray line state is gone
 		holder.textGrayLine.setVisibility(View.GONE);
-		
-		holder.textDistance.setText(RootActivity.getDistanceBetween(myLat, myLng,mudArray.get(position).getLat(), mudArray.get(position).getLng()));
+
+		holder.textDistance.setText(RootActivity.getDistanceBetween(myLat, myLng, mudArray.get(position).getLat(),
+				mudArray.get(position).getLng()));
 
 		// Check if we have hereNow user
-		if (mudArray.get(position).getCheckedIn()==1 && mudArray.get(position).isFirstInList()){
+		if (mudArray.get(position).getCheckedIn() == 1 && mudArray.get(position).isFirstInList())
+		{
 			holder.textGrayLine.setText("Checked In Now");
 			holder.textGrayLine.setVisibility(View.VISIBLE);
-		} 
-		if (mudArray.get(position).getCheckedIn()==0 && mudArray.get(position).isFirstInList()){
+		}
+		if (mudArray.get(position).getCheckedIn() == 0 && mudArray.get(position).isFirstInList())
+		{
 			// it was in last seven days
 			holder.textGrayLine.setText("Last 7 Days");
 			holder.textGrayLine.setVisibility(View.VISIBLE);
 		}
-
 
 		return convertView;
 	}

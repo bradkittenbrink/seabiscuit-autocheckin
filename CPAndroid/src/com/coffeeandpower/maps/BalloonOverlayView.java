@@ -14,23 +14,24 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.activity.ActivityPlaceDetails;
 
-
-public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout {
+public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout
+{
 
 	private LinearLayout layout;
 
 	private TextView title;
 	private TextView snippet;
-	
+
 	private int balloonBottomOffset;
 
 	private String foursquareIdKey;
 
-	public BalloonOverlayView(final Context context, int balloonBottomOffset) {
+	public BalloonOverlayView(final Context context, int balloonBottomOffset)
+	{
 		super(context);
 
 		this.balloonBottomOffset = balloonBottomOffset;
-		
+
 		setPadding(10, 0, 10, balloonBottomOffset);
 		layout = new LinearLayout(context);
 		layout.setVisibility(VISIBLE);
@@ -43,10 +44,13 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 
 		// Click on Baloon next button
 		ImageView next = (ImageView) v.findViewById(R.id.close_img_button);
-		next.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
+		next.setOnClickListener(new OnClickListener()
+		{
+			public void onClick(View v)
+			{
 
-				if (foursquareIdKey!=null){
+				if (foursquareIdKey != null)
+				{
 					Intent intent = new Intent(context, ActivityPlaceDetails.class);
 					intent.putExtra("foursquare_id", foursquareIdKey);
 					intent.putExtra("coords", AppCAP.getUserCoordinates());
@@ -56,35 +60,45 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 			}
 		});
 
-		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT);
 		params.gravity = Gravity.NO_GRAVITY;
 
 		addView(layout, params);
 	}
 
-
-	public void setData(Item item) {
+	public void setData(Item item)
+	{
 		this.foursquareIdKey = item.getFoursquareIdKey();
 
 		layout.setVisibility(VISIBLE);
 
-		if (item.isPin()){
+		if (item.isPin())
+		{
 			setPadding(10, 0, 10, 68);
-		} else {
+		}
+		else
+		{
 			setPadding(10, 0, 10, balloonBottomOffset);
 		}
-		
-		if (item.getTitle() != null) {
+
+		if (item.getTitle() != null)
+		{
 			title.setVisibility(VISIBLE);
 			title.setText(item.getTitle());
-		} else {
+		}
+		else
+		{
 			title.setVisibility(GONE);
 		}
 
-		if (item.getSnippet() != null) {
+		if (item.getSnippet() != null)
+		{
 			snippet.setVisibility(VISIBLE);
 			snippet.setText(item.getSnippet());
-		} else {
+		}
+		else
+		{
 			snippet.setVisibility(GONE);
 		}
 

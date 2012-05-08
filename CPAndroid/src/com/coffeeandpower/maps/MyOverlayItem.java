@@ -3,46 +3,55 @@ package com.coffeeandpower.maps;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
-public class MyOverlayItem extends OverlayItem{
+public class MyOverlayItem extends OverlayItem
+{
 
 	private String foursquareIdKey;
-	
+
 	private boolean isPin;
-	
+
 	private int lat;
 	private int lng;
-	
-	public MyOverlayItem(GeoPoint point, String title, String snippet) {
+
+	public MyOverlayItem(GeoPoint point, String title, String snippet)
+	{
 		super(point, title, snippet);
-		
+
 	}
 
-	public void setMapUserData (String foursquareIdKey){
+	public void setMapUserData(String foursquareIdKey)
+	{
 		this.foursquareIdKey = foursquareIdKey;
 	}
-	
-	public String getFoursquareIdKey(){
+
+	public String getFoursquareIdKey()
+	{
 		return foursquareIdKey;
 	}
-	
-	public void setMyLocationCoords(int lat, int lng){
+
+	public void setMyLocationCoords(int lat, int lng)
+	{
 		this.lat = lat;
-		this.lng = lng;		
+		this.lng = lng;
 	}
-	
-	public boolean isPin() {
+
+	public boolean isPin()
+	{
 		return isPin;
 	}
 
-	public void setPin(boolean isPin) {
+	public void setPin(boolean isPin)
+	{
 		this.isPin = isPin;
 	}
 
-	public int getMyLatitude(){
+	public int getMyLatitude()
+	{
 		return lat;
 	}
-	
-	public int getMyLongitude(){
+
+	public int getMyLongitude()
+	{
 		return lng;
 	}
 }

@@ -2,50 +2,51 @@ package com.coffeeandpower.cont;
 
 /**
  * Holder for http responses
+ * 
  * @author Desktop1
- *
+ * 
  */
-public class DataHolder {
-
+public class DataHolder
+{
 
 	private int responseCode;
 	private String responseMessage;
 	private Object object;
 
-
-	public DataHolder(int responseCode, String responseMessage, Object object) {
+	public DataHolder(int responseCode, String responseMessage, Object object)
+	{
 		this.responseCode = responseCode;
 		this.responseMessage = responseMessage;
 		this.object = object;
 	}
 
-
-	public int getResponseCode() {
+	public int getResponseCode()
+	{
 		return responseCode;
 	}
 
-
-	public String getResponseMessage() {
+	public String getResponseMessage()
+	{
 		return responseMessage;
 	}
 
-
-	public Object getObject() {
+	public Object getObject()
+	{
 		return object;
 	}
 
-
-	public void setResponseCode(int responseCode) {
+	public void setResponseCode(int responseCode)
+	{
 		this.responseCode = responseCode;
 	}
 
-
-	public void setResponseMessage(String responseMessage) {
+	public void setResponseMessage(String responseMessage)
+	{
 		this.responseMessage = responseMessage;
 	}
 
-
-	public void setObject(Object object) {
+	public void setObject(Object object)
+	{
 		this.object = object;
 	}
 
