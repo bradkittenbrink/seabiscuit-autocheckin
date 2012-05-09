@@ -4,54 +4,54 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
 public class MyOverlayItem extends OverlayItem
-{
-
-	private String foursquareIdKey;
-
-	private boolean isPin;
-
-	private int lat;
-	private int lng;
-
-	public MyOverlayItem(GeoPoint point, String title, String snippet)
 	{
-		super(point, title, snippet);
 
-	}
+		private String foursquareIdKey;
 
-	public void setMapUserData(String foursquareIdKey)
-	{
-		this.foursquareIdKey = foursquareIdKey;
-	}
+		private boolean isPin;
 
-	public String getFoursquareIdKey()
-	{
-		return foursquareIdKey;
-	}
+		private int lat;
+		private int lng;
 
-	public void setMyLocationCoords(int lat, int lng)
-	{
-		this.lat = lat;
-		this.lng = lng;
-	}
+		public MyOverlayItem (GeoPoint point, String title, String snippet)
+			{
+				super (point, title, snippet);
 
-	public boolean isPin()
-	{
-		return isPin;
-	}
+			}
 
-	public void setPin(boolean isPin)
-	{
-		this.isPin = isPin;
-	}
+		public void setMapUserData (String foursquareIdKey)
+			{
+				this.foursquareIdKey = foursquareIdKey;
+			}
 
-	public int getMyLatitude()
-	{
-		return lat;
-	}
+		public String getFoursquareIdKey ()
+			{
+				return foursquareIdKey;
+			}
 
-	public int getMyLongitude()
-	{
-		return lng;
+		public void setMyLocationCoords (int lat, int lng)
+			{
+				this.lat = lat;
+				this.lng = lng;
+			}
+
+		public boolean isPin ()
+			{
+				return isPin;
+			}
+
+		public void setPin (boolean isPin)
+			{
+				this.isPin = isPin;
+			}
+
+		public int getMyLatitude ()
+			{
+				return lat;
+			}
+
+		public int getMyLongitude ()
+			{
+				return lng;
+			}
 	}
-}

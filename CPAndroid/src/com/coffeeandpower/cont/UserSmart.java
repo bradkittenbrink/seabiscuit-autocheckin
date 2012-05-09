@@ -4,229 +4,229 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class UserSmart implements Serializable
-{
-
-	private int checkInId;
-	private int userId;
-	private String nickName;
-	private String statusText;
-	private String photo; // ???
-	private String majorJobCategory;
-	private String minorJobCategory;
-	private String headLine;
-	private String fileName; // this is Profile Photo
-	private double lat;
-	private double lng;
-	private int checkedIn;
-	private String foursquareId;
-	private String venueName;
-	private int checkInCount;
-	private String skills;
-	private boolean met;
-	private boolean isFirstInList;
-
-	public boolean isFirstInList()
 	{
-		return isFirstInList;
-	}
 
-	public void setFirstInList(boolean isFirstInList)
-	{
-		this.isFirstInList = isFirstInList;
-	}
+		private int checkInId;
+		private int userId;
+		private String nickName;
+		private String statusText;
+		private String photo; // ???
+		private String majorJobCategory;
+		private String minorJobCategory;
+		private String headLine;
+		private String fileName; // this is Profile Photo
+		private double lat;
+		private double lng;
+		private int checkedIn;
+		private String foursquareId;
+		private String venueName;
+		private int checkInCount;
+		private String skills;
+		private boolean met;
+		private boolean isFirstInList;
 
-	public UserSmart(int checkInId, int userId, String nickName, String statusText, String photo,
-			String majorJobCategory, String minorJobCategory, String headLine, String fileName, double lat, double lng,
-			int checkedIn, String foursquareId, String venueName, int checkInCount, String skills, boolean met)
-	{
-		super();
-		this.checkInId = checkInId;
-		this.userId = userId;
-		this.nickName = nickName;
-		this.statusText = statusText;
-		this.photo = photo;
-		this.majorJobCategory = majorJobCategory;
-		this.minorJobCategory = minorJobCategory;
-		this.headLine = headLine;
-		this.fileName = fileName;
-		this.lat = lat;
-		this.lng = lng;
-		this.checkedIn = checkedIn;
-		this.foursquareId = foursquareId;
-		this.venueName = venueName;
-		this.checkInCount = checkInCount;
-		this.skills = skills;
-		this.met = met;
-	}
+		public boolean isFirstInList ()
+			{
+				return isFirstInList;
+			}
 
-	public int getCheckInId()
-	{
-		return checkInId;
-	}
+		public void setFirstInList (boolean isFirstInList)
+			{
+				this.isFirstInList = isFirstInList;
+			}
 
-	public void setCheckInId(int checkInId)
-	{
-		this.checkInId = checkInId;
-	}
+		public UserSmart (int checkInId, int userId, String nickName, String statusText, String photo, String majorJobCategory,
+				String minorJobCategory, String headLine, String fileName, double lat, double lng, int checkedIn, String foursquareId,
+				String venueName, int checkInCount, String skills, boolean met)
+			{
+				super ();
+				this.checkInId = checkInId;
+				this.userId = userId;
+				this.nickName = nickName;
+				this.statusText = statusText;
+				this.photo = photo;
+				this.majorJobCategory = majorJobCategory;
+				this.minorJobCategory = minorJobCategory;
+				this.headLine = headLine;
+				this.fileName = fileName;
+				this.lat = lat;
+				this.lng = lng;
+				this.checkedIn = checkedIn;
+				this.foursquareId = foursquareId;
+				this.venueName = venueName;
+				this.checkInCount = checkInCount;
+				this.skills = skills;
+				this.met = met;
+			}
 
-	public int getUserId()
-	{
-		return userId;
-	}
+		public int getCheckInId ()
+			{
+				return checkInId;
+			}
 
-	public void setUserId(int userId)
-	{
-		this.userId = userId;
-	}
+		public void setCheckInId (int checkInId)
+			{
+				this.checkInId = checkInId;
+			}
 
-	public String getNickName()
-	{
-		return nickName;
-	}
+		public int getUserId ()
+			{
+				return userId;
+			}
 
-	public void setNickName(String nickName)
-	{
-		this.nickName = nickName;
-	}
+		public void setUserId (int userId)
+			{
+				this.userId = userId;
+			}
 
-	public String getStatusText()
-	{
-		return statusText;
-	}
+		public String getNickName ()
+			{
+				return nickName;
+			}
 
-	public void setStatusText(String statusText)
-	{
-		this.statusText = statusText;
-	}
+		public void setNickName (String nickName)
+			{
+				this.nickName = nickName;
+			}
 
-	public String getPhoto()
-	{
-		return photo;
-	}
+		public String getStatusText ()
+			{
+				return statusText;
+			}
 
-	public void setPhoto(String photo)
-	{
-		this.photo = photo;
-	}
+		public void setStatusText (String statusText)
+			{
+				this.statusText = statusText;
+			}
 
-	public String getMajorJobCategory()
-	{
-		return majorJobCategory;
-	}
+		public String getPhoto ()
+			{
+				return photo;
+			}
 
-	public void setMajorJobCategory(String majorJobCategory)
-	{
-		this.majorJobCategory = majorJobCategory;
-	}
+		public void setPhoto (String photo)
+			{
+				this.photo = photo;
+			}
 
-	public String getMinorJobCategory()
-	{
-		return minorJobCategory;
-	}
+		public String getMajorJobCategory ()
+			{
+				return majorJobCategory;
+			}
 
-	public void setMinorJobCategory(String minorJobCategory)
-	{
-		this.minorJobCategory = minorJobCategory;
-	}
+		public void setMajorJobCategory (String majorJobCategory)
+			{
+				this.majorJobCategory = majorJobCategory;
+			}
 
-	public String getHeadLine()
-	{
-		return headLine;
-	}
+		public String getMinorJobCategory ()
+			{
+				return minorJobCategory;
+			}
 
-	public void setHeadLine(String headLine)
-	{
-		this.headLine = headLine;
-	}
+		public void setMinorJobCategory (String minorJobCategory)
+			{
+				this.minorJobCategory = minorJobCategory;
+			}
 
-	public String getFileName()
-	{
-		return fileName;
-	}
+		public String getHeadLine ()
+			{
+				return headLine;
+			}
 
-	public void setFileName(String fileName)
-	{
-		this.fileName = fileName;
-	}
+		public void setHeadLine (String headLine)
+			{
+				this.headLine = headLine;
+			}
 
-	public double getLat()
-	{
-		return lat;
-	}
+		public String getFileName ()
+			{
+				return fileName;
+			}
 
-	public void setLat(double lat)
-	{
-		this.lat = lat;
-	}
+		public void setFileName (String fileName)
+			{
+				this.fileName = fileName;
+			}
 
-	public double getLng()
-	{
-		return lng;
-	}
+		public double getLat ()
+			{
+				return lat;
+			}
 
-	public void setLng(double lng)
-	{
-		this.lng = lng;
-	}
+		public void setLat (double lat)
+			{
+				this.lat = lat;
+			}
 
-	public int getCheckedIn()
-	{
-		return checkedIn;
-	}
+		public double getLng ()
+			{
+				return lng;
+			}
 
-	public void setCheckedIn(int checkedIn)
-	{
-		this.checkedIn = checkedIn;
-	}
+		public void setLng (double lng)
+			{
+				this.lng = lng;
+			}
 
-	public String getFoursquareId()
-	{
-		return foursquareId;
-	}
+		public int getCheckedIn ()
+			{
+				return checkedIn;
+			}
 
-	public void setFoursquareId(String foursquareId)
-	{
-		this.foursquareId = foursquareId;
-	}
+		public void setCheckedIn (int checkedIn)
+			{
+				this.checkedIn = checkedIn;
+			}
 
-	public String getVenueName()
-	{
-		return venueName;
-	}
+		public String getFoursquareId ()
+			{
+				return foursquareId;
+			}
 
-	public void setVenueName(String venueName)
-	{
-		this.venueName = venueName;
-	}
+		public void setFoursquareId (String foursquareId)
+			{
+				this.foursquareId = foursquareId;
+			}
 
-	public int getCheckInCount()
-	{
-		return checkInCount;
-	}
+		public String getVenueName ()
+			{
+				return venueName;
+			}
 
-	public void setCheckInCount(int checkInCount)
-	{
-		this.checkInCount = checkInCount;
-	}
+		public void setVenueName (String venueName)
+			{
+				this.venueName = venueName;
+			}
 
-	public String getSkills()
-	{
-		return skills;
-	}
+		public int getCheckInCount ()
+			{
+				return checkInCount;
+			}
 
-	public void setSkills(String skills)
-	{
-		this.skills = skills;
-	}
+		public void setCheckInCount (int checkInCount)
+			{
+				this.checkInCount = checkInCount;
+			}
 
-	public boolean isMet()
-	{
-		return met;
-	}
+		public String getSkills ()
+			{
+				return skills;
+			}
 
-	public void setMet(boolean met)
-	{
-		this.met = met;
-	}
+		public void setSkills (String skills)
+			{
+				this.skills = skills;
+			}
 
-}
+		public boolean isMet ()
+			{
+				return met;
+			}
+
+		public void setMet (boolean met)
+			{
+				this.met = met;
+			}
+
+	}

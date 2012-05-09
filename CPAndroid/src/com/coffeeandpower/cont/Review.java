@@ -1,157 +1,157 @@
 package com.coffeeandpower.cont;
 
 public class Review
-{
-
-	private int id;
-	private String author;
-	private String title;
-	private String type;
-	private String createTime;
-	private String skill;
-	private String rating;
-	private String isLove;
-	private String tipAmount;
-	private String review;
-	private String ratingImage;
-	private String relativeTime;
-
-	public Review(int id, String author, String title, String type, String createTime, String skill, String rating,
-			String isLove, String tipAmount, String review, String ratingImage, String relativeTime)
 	{
 
-		this.id = id;
-		this.author = author;
-		this.title = title;
-		this.type = type;
-		this.createTime = createTime;
-		this.skill = skill;
-		this.rating = rating;
-		this.isLove = isLove;
-		this.tipAmount = tipAmount;
-		this.review = review;
-		this.ratingImage = ratingImage;
-		this.relativeTime = relativeTime;
-	}
+		private int id;
+		private String author;
+		private String title;
+		private String type;
+		private String createTime;
+		private String skill;
+		private String rating;
+		private String isLove;
+		private String tipAmount;
+		private String review;
+		private String ratingImage;
+		private String relativeTime;
 
-	public int getId()
-	{
-		return id;
-	}
+		public Review (int id, String author, String title, String type, String createTime, String skill, String rating, String isLove,
+				String tipAmount, String review, String ratingImage, String relativeTime)
+			{
 
-	public void setId(int id)
-	{
-		this.id = id;
-	}
+				this.id = id;
+				this.author = author;
+				this.title = title;
+				this.type = type;
+				this.createTime = createTime;
+				this.skill = skill;
+				this.rating = rating;
+				this.isLove = isLove;
+				this.tipAmount = tipAmount;
+				this.review = review;
+				this.ratingImage = ratingImage;
+				this.relativeTime = relativeTime;
+			}
 
-	public String getAuthor()
-	{
-		return author;
-	}
+		public int getId ()
+			{
+				return id;
+			}
 
-	public void setAuthor(String author)
-	{
-		this.author = author;
-	}
+		public void setId (int id)
+			{
+				this.id = id;
+			}
 
-	public String getTitle()
-	{
-		return title;
-	}
+		public String getAuthor ()
+			{
+				return author;
+			}
 
-	public void setTitle(String title)
-	{
-		this.title = title;
-	}
+		public void setAuthor (String author)
+			{
+				this.author = author;
+			}
 
-	public String getType()
-	{
-		return type;
-	}
+		public String getTitle ()
+			{
+				return title;
+			}
 
-	public void setType(String type)
-	{
-		this.type = type;
-	}
+		public void setTitle (String title)
+			{
+				this.title = title;
+			}
 
-	public String getCreateTime()
-	{
-		return createTime;
-	}
+		public String getType ()
+			{
+				return type;
+			}
 
-	public void setCreateTime(String createTime)
-	{
-		this.createTime = createTime;
-	}
+		public void setType (String type)
+			{
+				this.type = type;
+			}
 
-	public String getSkill()
-	{
-		return skill;
-	}
+		public String getCreateTime ()
+			{
+				return createTime;
+			}
 
-	public void setSkill(String skill)
-	{
-		this.skill = skill;
-	}
+		public void setCreateTime (String createTime)
+			{
+				this.createTime = createTime;
+			}
 
-	public String getRating()
-	{
-		return rating;
-	}
+		public String getSkill ()
+			{
+				return skill;
+			}
 
-	public void setRating(String rating)
-	{
-		this.rating = rating;
-	}
+		public void setSkill (String skill)
+			{
+				this.skill = skill;
+			}
 
-	public String getIsLove()
-	{
-		return isLove;
-	}
+		public String getRating ()
+			{
+				return rating;
+			}
 
-	public void setIsLove(String isLove)
-	{
-		this.isLove = isLove;
-	}
+		public void setRating (String rating)
+			{
+				this.rating = rating;
+			}
 
-	public String getTipAmount()
-	{
-		return tipAmount;
-	}
+		public String getIsLove ()
+			{
+				return isLove;
+			}
 
-	public void setTipAmount(String tipAmount)
-	{
-		this.tipAmount = tipAmount;
-	}
+		public void setIsLove (String isLove)
+			{
+				this.isLove = isLove;
+			}
 
-	public String getReview()
-	{
-		return review;
-	}
+		public String getTipAmount ()
+			{
+				return tipAmount;
+			}
 
-	public void setReview(String review)
-	{
-		this.review = review;
-	}
+		public void setTipAmount (String tipAmount)
+			{
+				this.tipAmount = tipAmount;
+			}
 
-	public String getRatingImage()
-	{
-		return ratingImage;
-	}
+		public String getReview ()
+			{
+				return review;
+			}
 
-	public void setRatingImage(String ratingImage)
-	{
-		this.ratingImage = ratingImage;
-	}
+		public void setReview (String review)
+			{
+				this.review = review;
+			}
 
-	public String getRelativeTime()
-	{
-		return relativeTime;
-	}
+		public String getRatingImage ()
+			{
+				return ratingImage;
+			}
 
-	public void setRelativeTime(String relativeTime)
-	{
-		this.relativeTime = relativeTime;
-	}
+		public void setRatingImage (String ratingImage)
+			{
+				this.ratingImage = ratingImage;
+			}
 
-}
+		public String getRelativeTime ()
+			{
+				return relativeTime;
+			}
+
+		public void setRelativeTime (String relativeTime)
+			{
+				this.relativeTime = relativeTime;
+			}
+
+	}

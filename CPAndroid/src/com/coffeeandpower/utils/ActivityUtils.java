@@ -13,106 +13,106 @@ import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.views.CustomDialog;
 
 public class ActivityUtils
-{
-
-	public static abstract class Action implements Runnable
-	{
-		protected DataHolder result;
-		protected OAuthService service;
-		protected ActivityUtils.ProgressHandler handler;
-		protected Runnable action;
-
-		public DataHolder getResult()
-		{
-			return result;
-		}
-	}
-
-	public static class ProgressHandler extends Handler
-	{
-		ProgressDialog progress;
-		DataHolder result;
-
-		public void setResult(DataHolder result_)
-		{
-			result = result_;
-		}
-	}
-
-	public static class JoinProgressHandler extends ProgressHandler
 	{
 
-		public JoinProgressHandler(Activity a)
-		{
-			progress = new ProgressDialog(a);
-			progress.setOwnerActivity(a);
-			progress.setMessage("Accessing Account...");
-			progress.show();
-		}
+		public static abstract class Action implements Runnable
+			{
+				protected DataHolder result;
+				protected OAuthService service;
+				protected ActivityUtils.ProgressHandler handler;
+				protected Runnable action;
 
-		@Override
-		public void handleMessage(Message msg)
-		{
-			super.handleMessage(msg);
+				public DataHolder getResult ()
+					{
+						return result;
+					}
+			}
 
-			Activity a = progress.getOwnerActivity();
-			progress.dismiss();
+		public static class ProgressHandler extends Handler
+			{
+				ProgressDialog progress;
+				DataHolder result;
 
-			switch (msg.what)
+				public void setResult (DataHolder result_)
+					{
+						result = result_;
+					}
+			}
+
+		public static class JoinProgressHandler extends ProgressHandler
 			{
 
-			case AppCAP.HTTP_ERROR:
-				new CustomDialog(a, "Error", "Internet connection error").show();
-				break;
+				public JoinProgressHandler (Activity a)
+					{
+						progress = new ProgressDialog (a);
+						progress.setOwnerActivity (a);
+						progress.setMessage ("Accessing Account...");
+						progress.show ();
+					}
 
-			case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:
-				if (result != null)
-				{
-					new CustomDialog(a, "Error Accessing Account", result.getResponseMessage()).show();
-				}
-				break;
-			}
-		}
-	};
+				@Override
+				public void handleMessage (Message msg)
+					{
+						super.handleMessage (msg);
 
-	public static class LoginProgressHandler extends ProgressHandler
-	{
+						Activity a = progress.getOwnerActivity ();
+						progress.dismiss ();
 
-		public LoginProgressHandler(Activity a)
-		{
-			progress = new ProgressDialog(a);
-			progress.setOwnerActivity(a);
-			progress.setMessage("Logging in...");
-			progress.show();
-		}
+						switch (msg.what)
+							{
 
-		@Override
-		public void handleMessage(Message msg)
-		{
-			super.handleMessage(msg);
+							case AppCAP.HTTP_ERROR:
+								new CustomDialog (a, "Error", "Internet connection error").show ();
+								break;
 
-			Activity a = progress.getOwnerActivity();
-			progress.dismiss();
+							case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:
+								if (result != null)
+									{
+										new CustomDialog (a, "Error Accessing Account", result.getResponseMessage ()).show ();
+									}
+								break;
+							}
+					}
+			};
 
-			switch (msg.what)
+		public static class LoginProgressHandler extends ProgressHandler
 			{
 
-			case AppCAP.HTTP_ERROR:
-				new CustomDialog(a, "Error", "Internet connection error").show();
-				break;
+				public LoginProgressHandler (Activity a)
+					{
+						progress = new ProgressDialog (a);
+						progress.setOwnerActivity (a);
+						progress.setMessage ("Logging in...");
+						progress.show ();
+					}
 
-			case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:
-				new CustomDialog(a, "Error", "Could not login").show();
-				break;
+				@Override
+				public void handleMessage (Message msg)
+					{
+						super.handleMessage (msg);
 
-			case AppCAP.HTTP_REQUEST_SUCCEEDED:
-				AppCAP.setLoggedIn(true);
-				Intent intent = new Intent(a, ActivityMap.class);
-				a.startActivity(intent);
-				a.finish();
-				break;
-			}
-		}
-	};
+						Activity a = progress.getOwnerActivity ();
+						progress.dismiss ();
 
-}
+						switch (msg.what)
+							{
+
+							case AppCAP.HTTP_ERROR:
+								new CustomDialog (a, "Error", "Internet connection error").show ();
+								break;
+
+							case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:
+								new CustomDialog (a, "Error", "Could not login").show ();
+								break;
+
+							case AppCAP.HTTP_REQUEST_SUCCEEDED:
+								AppCAP.setLoggedIn (true);
+								Intent intent = new Intent (a, ActivityMap.class);
+								a.startActivity (intent);
+								a.finish ();
+								break;
+							}
+					}
+			};
+
+	}

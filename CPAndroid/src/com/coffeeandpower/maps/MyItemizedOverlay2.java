@@ -10,44 +10,44 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
 public class MyItemizedOverlay2 extends ItemizedOverlay<OverlayItem>
-{
-
-	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
-
-	public MyItemizedOverlay2(Drawable defaultMarker)
 	{
-		super(boundCenterBottom(defaultMarker));
-	}
 
-	public void addOverlay(OverlayItem overlay)
-	{
-		mOverlays.add(overlay);
-		populate();
-	}
+		private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem> ();
 
-	@Override
-	protected OverlayItem createItem(int i)
-	{
-		return mOverlays.get(i);
-	}
+		public MyItemizedOverlay2 (Drawable defaultMarker)
+			{
+				super (boundCenterBottom (defaultMarker));
+			}
 
-	@Override
-	public int size()
-	{
-		return mOverlays.size();
-	}
+		public void addOverlay (OverlayItem overlay)
+			{
+				mOverlays.add (overlay);
+				populate ();
+			}
 
-	@Override
-	protected boolean onTap(int index)
-	{
-		return true;
-	}
+		@Override
+		protected OverlayItem createItem (int i)
+			{
+				return mOverlays.get (i);
+			}
 
-	@Override
-	public void draw(Canvas canvas, MapView mapView, boolean shadow)
-	{
-		if (shadow) return;
-		super.draw(canvas, mapView, shadow);
-	}
+		@Override
+		public int size ()
+			{
+				return mOverlays.size ();
+			}
 
-}
+		@Override
+		protected boolean onTap (int index)
+			{
+				return true;
+			}
+
+		@Override
+		public void draw (Canvas canvas, MapView mapView, boolean shadow)
+			{
+				if (shadow) return;
+				super.draw (canvas, mapView, shadow);
+			}
+
+	}
