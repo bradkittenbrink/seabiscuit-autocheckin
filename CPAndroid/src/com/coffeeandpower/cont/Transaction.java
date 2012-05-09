@@ -1,6 +1,5 @@
 package com.coffeeandpower.cont;
 
-public class Transaction
-	{
+public class Transaction {
 
-	}
+}
