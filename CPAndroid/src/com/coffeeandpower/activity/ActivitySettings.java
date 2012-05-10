@@ -167,10 +167,10 @@ public class ActivitySettings extends RootActivity {
 	    @Override
 	    public void run() {
 		resultLoggedUser = AppCAP.getConnection().getUserData();
-		if (resultLoggedUser.getResponseCode() == AppCAP.HTTP_ERROR) {
+		if (resultLoggedUser.getHandlerCode() == AppCAP.HTTP_ERROR) {
 		    handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 		} else {
-		    handler.sendEmptyMessage(resultLoggedUser.getResponseCode());
+		    handler.sendEmptyMessage(resultLoggedUser.getHandlerCode());
 		}
 	    }
 	}).start();
@@ -195,7 +195,7 @@ public class ActivitySettings extends RootActivity {
 			    @Override
 			    public void run() {
 				result = AppCAP.getConnection().setUserProfileData(loggedUser, false);
-				if (result.getResponseCode() == AppCAP.HTTP_ERROR) {
+				if (result.getHandlerCode() == AppCAP.HTTP_ERROR) {
 				    handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 				} else {
 				    handler.sendEmptyMessage(HANDLE_NICK_NAME_CHANGE);
@@ -240,7 +240,7 @@ public class ActivitySettings extends RootActivity {
 			    @Override
 			    public void run() {
 				result = AppCAP.getConnection().setUserProfileData(loggedUser, true);
-				if (result.getResponseCode() == AppCAP.HTTP_ERROR) {
+				if (result.getHandlerCode() == AppCAP.HTTP_ERROR) {
 				    handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 				} else {
 				    handler.sendEmptyMessage(HANDLE_EMAIL_CHANGE);
@@ -281,7 +281,7 @@ public class ActivitySettings extends RootActivity {
 		@Override
 		public void run() {
 		    resultPhotoDownload = HttpUtil.getBitmapFromURL(AppCAP.getLocalUserPhotoURL());
-		    if (resultPhotoDownload.getResponseCode() == AppCAP.HTTP_ERROR) {
+		    if (resultPhotoDownload.getHandlerCode() == AppCAP.HTTP_ERROR) {
 			handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 		    } else {
 			handler.sendEmptyMessage(HANDLE_USER_PROFILE_PHOTO);
@@ -354,7 +354,7 @@ public class ActivitySettings extends RootActivity {
 			@Override
 			public void run() {
 			    resultPhotoUpload = AppCAP.getConnection().uploadUserProfilePhoto();
-			    if (resultPhotoUpload.getResponseCode() == AppCAP.HTTP_ERROR) {
+			    if (resultPhotoUpload.getHandlerCode() == AppCAP.HTTP_ERROR) {
 				handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 			    } else {
 				handler.sendEmptyMessage(HANDLE_UPLOAD_PROFILE_PHOTO);

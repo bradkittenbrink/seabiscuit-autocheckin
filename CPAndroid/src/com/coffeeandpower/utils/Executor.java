@@ -17,6 +17,8 @@ public class Executor {
     public static final int HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS = 1602;
     public static final int HANDLE_GET_USER_DATA = 1603;
     public static final int HANDLE_VENUES_CLOSE_TO_LOCATION = 1604;
+    public static final int HANDLE_SEND_FRIEND_REQUEST = 1605;
+    public static final int HANDLE_ADD_PLACE = 1606;
 
     private DataHolder result;
 
@@ -77,7 +79,7 @@ public class Executor {
 	    @Override
 	    public void run() {
 		result = AppCAP.getConnection().getResumeForUserId(userId);
-		handler.sendEmptyMessage(result.getResponseCode());
+		handler.sendEmptyMessage(result.getHandlerCode());
 	    }
 	}).start();
     }
@@ -89,7 +91,7 @@ public class Executor {
 	    @Override
 	    public void run() {
 		result = AppCAP.getConnection().sendReview(userResume, review);
-		handler.sendEmptyMessage(result.getResponseCode());
+		handler.sendEmptyMessage(result.getHandlerCode());
 	    }
 	}).start();
     }
@@ -103,7 +105,7 @@ public class Executor {
 	    @Override
 	    public void run() {
 		result = AppCAP.getConnection().getVenuesAndUsersWithCheckinsInBoundsDuringInterval(coords, 7);
-		handler.sendEmptyMessage(result.getResponseCode());
+		handler.sendEmptyMessage(result.getHandlerCode());
 	    }
 	}).start();
     }
@@ -115,7 +117,7 @@ public class Executor {
 	    @Override
 	    public void run() {
 		result = AppCAP.getConnection().getUserData();
-		handler.sendEmptyMessage(result.getResponseCode());
+		handler.sendEmptyMessage(result.getHandlerCode());
 	    }
 	}).start();
     }
@@ -127,7 +129,31 @@ public class Executor {
 	    @Override
 	    public void run() {
 		result = AppCAP.getConnection().getVenuesCloseToLocation(gp, number);
-		handler.sendEmptyMessage(result.getResponseCode());
+		handler.sendEmptyMessage(result.getHandlerCode());
+	    }
+	}).start();
+    }
+    
+    public synchronized void sendFriendRequest(final int userId) {
+	progress.setMessage("Sending Request...");
+	progress.show();
+	new Thread(new Runnable() {
+	    @Override
+	    public void run() {
+		result = AppCAP.getConnection().sendFriendRequest(userId);
+		handler.sendEmptyMessage(result.getHandlerCode());
+	    }
+	}).start();
+    }
+    
+    public synchronized void addPlace(final String name) {
+	progress.setMessage("Saving new place...");
+	progress.show();
+	new Thread(new Runnable() {
+	    @Override
+	    public void run() {
+		result = AppCAP.getConnection().addPlace(name, AppCAP.getUserCoordinates());
+		handler.sendEmptyMessage(result.getHandlerCode());
 	    }
 	}).start();
     }

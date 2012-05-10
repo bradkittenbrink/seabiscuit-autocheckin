@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -126,16 +129,13 @@ public class ActivityPlaceDetails extends RootActivity {
     private void fillData() {
 	if (selectedVenue != null) {
 	    ((CustomFontView) findViewById(R.id.textview_chat_name)).setText(AppCAP.cleanResponseString(selectedVenue.getName()));
-	    ((CustomFontView) findViewById(R.id.textview_place_name))
-		    .setText(AppCAP.cleanResponseString(selectedVenue.getName()));
-	    ((CustomFontView) findViewById(R.id.textview_place_address)).setText(AppCAP.cleanResponseString(selectedVenue
-		    .getAddress()));
-	    ((TextView) findViewById(R.id.textview_place_check_in)).setText("Check in to "
-		    + AppCAP.cleanResponseString(selectedVenue.getName()));
+	    ((CustomFontView) findViewById(R.id.textview_place_name)).setText(AppCAP.cleanResponseString(selectedVenue.getName()));
+	    ((CustomFontView) findViewById(R.id.textview_place_address)).setText(AppCAP.cleanResponseString(selectedVenue.getAddress()));
+	    ((TextView) findViewById(R.id.textview_place_check_in)).setText("Check in to " + AppCAP.cleanResponseString(selectedVenue.getName()));
 
 	    // Try to load image
-	    imageLoader.DisplayImage(selectedVenue.getPhotoURL(), (ImageView) findViewById(R.id.image_view),
-		    R.drawable.picture_coming_soon_rectangle);
+	    imageLoader
+		    .DisplayImage(selectedVenue.getPhotoURL(), (ImageView) findViewById(R.id.image_view), R.drawable.picture_coming_soon_rectangle, 200);
 
 	    arrayUsersInVenue = selectedVenue.getArrayCheckins();
 
@@ -185,6 +185,30 @@ public class ActivityPlaceDetails extends RootActivity {
 	    }
 
 	}
+    }
+
+    public VenueSmart getVenueSmart() {
+	return selectedVenue;
+    }
+
+    public void onClickAddress(View v) {
+	AlertDialog.Builder builder = new AlertDialog.Builder(ActivityPlaceDetails.this);
+	builder.setTitle("Directions");
+	builder.setMessage("Do you want directions to " + AppCAP.cleanResponseString(selectedVenue.getName())).setCancelable(false)
+		.setPositiveButton("Launch Map", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+			Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr="
+				+ AppCAP.getUserCoordinates()[4] + "," + AppCAP.getUserCoordinates()[5] + "&daddr=" + selectedVenue.getLat() + ","
+				+ selectedVenue.getLng()));
+			startActivity(intent);
+			dialog.cancel();
+		    }
+		}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+			dialog.cancel();
+		    }
+		});
+	builder.create().show();
     }
 
     private UserSmart getUserById(int userId) {

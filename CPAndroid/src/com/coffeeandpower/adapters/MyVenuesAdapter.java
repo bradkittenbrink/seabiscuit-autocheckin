@@ -3,6 +3,7 @@ package com.coffeeandpower.adapters;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,6 @@ public class MyVenuesAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
-
 	public TextView textName;
 	public TextView textAddress;
 	public TextView textDistance;
@@ -71,9 +71,11 @@ public class MyVenuesAdapter extends BaseAdapter {
 	}
 
 	holder.textAddress.setText(venues.get(position).getAddress());
-	holder.textDistance.setText(RootActivity.formatToMetricsOrImperial(venues.get(position).getDistance()));
+	holder.textDistance.setText(venues.get(position).getId().equals("add_place") ? "" : RootActivity.formatToMetricsOrImperial(venues.get(position).getDistance()));
 	holder.textName.setText(venues.get(position).getName());
-
+	if (venues.get(position).getId().equals("add_place"))
+	    holder.textName.setTypeface(Typeface.DEFAULT, Typeface.BOLD_ITALIC);
+	
 	return convertView;
     }
 

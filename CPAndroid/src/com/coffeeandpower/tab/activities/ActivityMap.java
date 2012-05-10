@@ -86,8 +86,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
     private void checkUserState() {
 	if (AppCAP.isUserCheckedIn()) {
 	    ((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-	    ((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(
-		    ActivityMap.this, R.anim.rotate_indefinitely));
+	    ((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityMap.this,
+		    R.anim.rotate_indefinitely));
 	} else {
 	    ((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
 	    ((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
@@ -190,8 +190,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		    break;
 
 		case MotionEvent.ACTION_CANCEL:
-		    if (event.getX() > firstX + 10 || event.getX() < firstX - 10 || event.getY() > firstY + 10
-			    || event.getY() < firstY - 10) {
+		    if (event.getX() > firstX + 10 || event.getX() < firstX - 10 || event.getY() > firstY + 10 || event.getY() < firstY - 10) {
 			refreshMapDataSet();
 			firstX = event.getX();
 			firstY = event.getY();
@@ -200,8 +199,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		    break;
 
 		case MotionEvent.ACTION_UP:
-		    if (event.getX() > firstX + 10 || event.getX() < firstX - 10 || event.getY() > firstY + 10
-			    || event.getY() < firstY - 10) {
+		    if (event.getX() > firstX + 10 || event.getX() < firstX - 10 || event.getY() > firstY + 10 || event.getY() < firstY - 10) {
 			refreshMapDataSet();
 			firstX = event.getX();
 			firstY = event.getY();
@@ -229,12 +227,12 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	    mapController.setZoom(17);
 
 	    // Temp solution for black space below mapView
-	    if (myLocationOverlay != null) {
-		if (myLocationOverlay.getMyLocation() != null) {
-		    mapController.animateTo(myLocationOverlay.getMyLocation());
-		    mapController.setZoom(17);
-		}
-	    }
+	    /*
+	     * if (myLocationOverlay != null) { if
+	     * (myLocationOverlay.getMyLocation() != null) {
+	     * mapController.animateTo(myLocationOverlay.getMyLocation());
+	     * mapController.setZoom(17); } }
+	     */
 
 	    // Refresh Data
 	    refreshMapDataSet();
@@ -264,8 +262,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	    overlayitem.setMapUserData(foursquareIdKey);
 
 	    if (myLocationOverlay.getMyLocation() != null) {
-		overlayitem.setMyLocationCoords(myLocationOverlay.getMyLocation().getLatitudeE6(), myLocationOverlay
-			.getMyLocation().getLongitudeE6());
+		overlayitem
+			.setMyLocationCoords(myLocationOverlay.getMyLocation().getLatitudeE6(), myLocationOverlay.getMyLocation().getLongitudeE6());
 	    }
 
 	    // Pin or marker
@@ -361,13 +359,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 
 	hideBaloons();
 
-	// Remove all markers from MapView
-	itemizedoverlay.clear();
-
-	for (int i = mapView.getOverlays().size(); i > 1; i--) {
-	    mapView.getOverlays().remove(i - 1);
-	}
-
 	exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(getSWAndNECoordinatesBounds(mapView), false);
 
 	// For every refresh save Map coordinates
@@ -378,8 +369,10 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	((Button) findViewById(R.id.btn_from)).setText(AppCAP.getNotificationFrom());
 
 	// Check and Set Notification settings
-	menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in),
-		(Button) findViewById(R.id.btn_from), true);
+	menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in), (Button) findViewById(R.id.btn_from), true);
+
+	// TEst
+	// AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
 
     }
 
@@ -521,14 +514,23 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	switch (action) {
 	case Executor.HANDLE_GET_USER_DATA:
 	    if (result.getObject() != null) {
-		loggedUser = (User) result.getObject();
-		useUserData();
+		if (result.getObject() instanceof User) {
+		    loggedUser = (User) result.getObject();
+		    useUserData();
+		}
 	    }
 	    break;
 
 	case Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS:
 	    if (result.getObject() != null) {
 		if (result.getObject() instanceof Object[]) {
+
+		    // Remove all markers from MapView
+		    itemizedoverlay.clear();
+
+		    for (int i = mapView.getOverlays().size(); i > 1; i--) {
+			mapView.getOverlays().remove(i - 1);
+		    }
 
 		    Object[] obj = (Object[]) result.getObject();
 

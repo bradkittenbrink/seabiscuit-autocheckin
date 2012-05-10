@@ -49,7 +49,6 @@ public class MyUserSmartAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
-
 	public TextView textNickName;
 	public TextView textJobName;
 	public TextView textCheckins;
@@ -66,7 +65,6 @@ public class MyUserSmartAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
 	ViewHolder holder;
 
 	if (convertView == null) {
@@ -77,23 +75,24 @@ public class MyUserSmartAdapter extends BaseAdapter {
 	    holder = (ViewHolder) convertView.getTag();
 	}
 
-	holder.textJobName.setText(mudArray.get(position).getHeadLine());
+	holder.textJobName.setText(mudArray.get(position).getHeadLine().equals("null") ? ""
+		: (mudArray.get(position).getHeadLine().equals("NULL") ? "" : ((mudArray.get(position).getHeadLine().equals(null) ? "" :AppCAP.cleanResponseString(mudArray.get(position).getHeadLine())))));
 
 	if (AppCAP.isLoggedIn()) {
 	    holder.textNickName.setText(mudArray.get(position).getNickName());
 
-	    String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray.get(position).getCheckInCount()
-		    + " Checkin" : mudArray.get(position).getCheckInCount() + " Checkins";
+	    String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray.get(position).getCheckInCount() + " Checkin" : mudArray.get(
+		    position).getCheckInCount()
+		    + " Checkins";
 	    holder.textCheckins.setText(checkStr);
 
 	    // Try to load profile image
-	    imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage, R.drawable.default_avatar50);
+	    imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage, R.drawable.default_avatar50, 70);
 	} else {
 	    holder.textNickName.setText("Name Hidden");
-	    imageLoader.DisplayImage("", holder.profileImage, R.drawable.default_avatar50_login);
+	    imageLoader.DisplayImage("", holder.profileImage, R.drawable.default_avatar50_login, 70);
 	}
 
 	return convertView;
     }
-
 }

@@ -84,7 +84,7 @@ public class MyFavouritePlacesAdapter extends BaseAdapter {
 	}
 
 	// Try to load image
-	imageLoader.DisplayImage(venues.get(position).getPhotoUrl(), holder.image, R.drawable.picture_coming_soon);
+	imageLoader.DisplayImage(venues.get(position).getPhotoUrl(), holder.image, R.drawable.picture_coming_soon, 70);
 
 	return convertView;
     }

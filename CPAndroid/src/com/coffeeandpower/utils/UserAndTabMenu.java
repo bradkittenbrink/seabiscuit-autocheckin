@@ -166,7 +166,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 				@Override
 				public void run() {
 				    result = AppCAP.getConnection().checkOut();
-				    handler.sendEmptyMessage(result.getResponseCode());
+				    handler.sendEmptyMessage(result.getHandlerCode());
 				}
 			    }).start();
 			}

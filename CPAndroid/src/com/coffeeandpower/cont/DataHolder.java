@@ -8,18 +8,28 @@ package com.coffeeandpower.cont;
  */
 public class DataHolder {
 
+    private int handlerCode;
     private int responseCode;
     private String responseMessage;
     private Object object;
 
-    public DataHolder(int responseCode, String responseMessage, Object object) {
-	this.responseCode = responseCode;
+    public DataHolder(int handlerCode, String responseMessage, Object object) {
+	this.handlerCode = handlerCode;
 	this.responseMessage = responseMessage;
 	this.object = object;
+	this.responseCode = 0;
+    }
+
+    public int getHandlerCode() {
+	return handlerCode;
     }
 
     public int getResponseCode() {
-	return responseCode;
+        return responseCode;
+    }
+
+    public void setResponseCode(int responseCode) {
+        this.responseCode = responseCode;
     }
 
     public String getResponseMessage() {
@@ -30,8 +40,8 @@ public class DataHolder {
 	return object;
     }
 
-    public void setResponseCode(int responseCode) {
-	this.responseCode = responseCode;
+    public void setHandlerCode(int handlerCode) {
+	this.handlerCode = handlerCode;
     }
 
     public void setResponseMessage(String responseMessage) {

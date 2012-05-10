@@ -81,7 +81,7 @@ public class ActivityWallet extends RootActivity {
 	    @Override
 	    public void run() {
 		result = AppCAP.getConnection().getUserTransactionData();
-		handler.sendEmptyMessage(result.getResponseCode());
+		handler.sendEmptyMessage(result.getHandlerCode());
 	    }
 	}).start();
     }

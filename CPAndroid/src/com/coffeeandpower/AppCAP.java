@@ -52,6 +52,7 @@ public class AppCAP extends Application {
     // public static final String URL_WEB_SERVICE =
     // "http://staging.coffeeandpower.com/"; // staging
     public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
+    public static final String FOURSQUARE_OAUTH = "BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4";
     public static final String URL_FUNDS = "http://www.coffeeandpower.com/m/?ios#addFundsiPhone";
     public static final String URL_LOGIN = "login.php";
     public static final String URL_LOGOUT = "logout.php";

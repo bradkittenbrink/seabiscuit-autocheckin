@@ -30,14 +30,16 @@ public class ImageLoader {
     ExecutorService executorService;
 
     private int defaultImage;
+    private int IMAGE_SIZE = 70;
 
     public ImageLoader(Context context) {
 	fileCache = new CacheFile(context);
 	executorService = Executors.newFixedThreadPool(5);
     }
 
-    public void DisplayImage(String url, ImageView imageView, int defaultImageRes) {
+    public void DisplayImage(String url, ImageView imageView, int defaultImageRes, int size) {
 	this.defaultImage = defaultImageRes;
+	this.IMAGE_SIZE = size;
 	imageViews.put(imageView, url);
 	Bitmap bitmap = memoryCache.get(url);
 
@@ -94,11 +96,11 @@ public class ImageLoader {
 
 	    // Find the correct scale value. It should be the power
 	    // of 2.
-	    final int REQUIRED_SIZE = 70;
+
 	    int width_tmp = o.outWidth, height_tmp = o.outHeight;
 	    int scale = 1;
 	    while (true) {
-		if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE) {
+		if (width_tmp / 2 < IMAGE_SIZE || height_tmp / 2 < IMAGE_SIZE) {
 		    break;
 		}
 		width_tmp /= 2;

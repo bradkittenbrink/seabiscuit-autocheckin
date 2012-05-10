@@ -328,14 +328,12 @@ public class HttpUtil {
 				    JSONObject objReviewFromArray = reviewsArray.optJSONObject(x);
 				    if (objReviewFromArray != null) {
 
-					reviews.add(new Review(objReviewFromArray.optInt("id"), objReviewFromArray
-						.optString("author"), objReviewFromArray.optString("title"), objReviewFromArray
-						.optString("type"), objReviewFromArray.optString("create_time"),
-						objReviewFromArray.optString("skill"), objReviewFromArray.optString("rating"),
-						objReviewFromArray.optString("is_love"), objReviewFromArray
-							.optString("tip_amount"), objReviewFromArray.optString("review"),
-						objReviewFromArray.optString("ratingImage"), objReviewFromArray
-							.optString("relativeTime")));
+					reviews.add(new Review(objReviewFromArray.optInt("id"), objReviewFromArray.optString("author"),
+						objReviewFromArray.optString("title"), objReviewFromArray.optString("type"), objReviewFromArray
+							.optString("create_time"), objReviewFromArray.optString("skill"), objReviewFromArray
+							.optString("rating"), objReviewFromArray.optString("is_love"), objReviewFromArray
+							.optString("tip_amount"), objReviewFromArray.optString("review"), objReviewFromArray
+							.optString("ratingImage"), objReviewFromArray.optString("relativeTime")));
 				    }
 				}
 			    }
@@ -349,8 +347,8 @@ public class HttpUtil {
 
 				JSONObject objEdu = arrayEdu.optJSONObject(x);
 				if (objEdu != null) {
-				    education.add(new Education(objEdu.optString("school"), objEdu.optInt("startDate"), objEdu
-					    .optInt("endDate"), objEdu.optString("concentrations"), objEdu.optString("degree")));
+				    education.add(new Education(objEdu.optString("school"), objEdu.optInt("startDate"), objEdu.optInt("endDate"),
+					    objEdu.optString("concentrations"), objEdu.optString("degree")));
 				}
 			    }
 			}
@@ -373,18 +371,17 @@ public class HttpUtil {
 			// array list favourite
 			// checkin locatios
 			ArrayList<Object> tempHolder = new ArrayList<Object>();
-			tempHolder.add(new UserResume(nickName, majorJob, minorJob, statusText, urlPhoto, urlPhotoLarge, joined,
-				bio, totalEarned, totalTipsEarned, totalMissionCountAsRecipient, distinctTipPayers, totalSpent,
-				totalTipsSpent, totalMissionCountAsPayer, distinctTipRecipients, totalEarnedFromMe,
-				totalMissionsFromMe, totalMissionsAsAgent, totalMissionsAsClient, totalMissions, totalFunded,
-				skillSet, hourlyBillingRate, verifiedLinkedIn, linkedInProfileLink, verifiedFacebook,
-				facebookProfileLink, verifiedMobile, trusted, jobTitle, checkInId, userId, lat, lng, checkInDate,
-				checkIn, checkOutDate, checkOut, foursquare, foursquareId, venueName, venueAddress, city, state,
-				zip, phone, icon, visible, photoUrlUnUsed, formattedPhone, usersHere, reviewsPage, reviewsTotal,
+			tempHolder.add(new UserResume(nickName, majorJob, minorJob, statusText, urlPhoto, urlPhotoLarge, joined, bio, totalEarned,
+				totalTipsEarned, totalMissionCountAsRecipient, distinctTipPayers, totalSpent, totalTipsSpent,
+				totalMissionCountAsPayer, distinctTipRecipients, totalEarnedFromMe, totalMissionsFromMe, totalMissionsAsAgent,
+				totalMissionsAsClient, totalMissions, totalFunded, skillSet, hourlyBillingRate, verifiedLinkedIn,
+				linkedInProfileLink, verifiedFacebook, facebookProfileLink, verifiedMobile, trusted, jobTitle, checkInId, userId,
+				lat, lng, checkInDate, checkIn, checkOutDate, checkOut, foursquare, foursquareId, venueName, venueAddress, city,
+				state, zip, phone, icon, visible, photoUrlUnUsed, formattedPhone, usersHere, reviewsPage, reviewsTotal,
 				reviewsRecords, reviewsLoveReceived, reviews, education, work, locationLat, locationLng));
 			tempHolder.add(checkinhistoryArray);
 
-			result.setResponseCode(Executor.HANDLE_GET_USER_RESUME);
+			result.setHandlerCode(Executor.HANDLE_GET_USER_RESUME);
 			result.setObject(tempHolder);
 		    }
 
@@ -445,7 +442,7 @@ public class HttpUtil {
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
 
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 		    return result;
 		}
 	    }
@@ -497,7 +494,7 @@ public class HttpUtil {
 
 	    bmImg = BitmapFactory.decodeStream(is);
 
-	    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+	    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 	    result.setObject(bmImg);
 
 	} catch (IOException e) {
@@ -542,7 +539,7 @@ public class HttpUtil {
 
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 		    result.setObject(json.opt("message"));
 
 		    JSONObject params = json.optJSONObject("params");
@@ -606,7 +603,7 @@ public class HttpUtil {
 	    if (responseString != null) {
 
 		if (responseString.equals("0")) {
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 		}
 	    }
 
@@ -673,7 +670,7 @@ public class HttpUtil {
 
 		    String message = json.optString("message");
 		    result.setResponseMessage(message);
-		    result.setResponseCode(Executor.HANDLE_SENDING_PROP);
+		    result.setHandlerCode(Executor.HANDLE_SENDING_PROP);
 		    return result;
 		}
 	    }
@@ -741,18 +738,17 @@ public class HttpUtil {
 
 				JSONObject objMess = arrayChat.optJSONObject(x);
 				if (objMess != null) {
-				    messages.add(new ChatMessage(objMess.optInt("id"), objMess.optInt("user_id"), objMess
-					    .optString("entry_text"), objMess.optString("nickname"), objMess.optString("date"),
-					    objMess.optString("photo_url"), objMess.optInt("receiving_user_id"), objMess
-						    .optInt("offer_id")));
+				    messages.add(new ChatMessage(objMess.optInt("id"), objMess.optInt("user_id"), objMess.optString("entry_text"),
+					    objMess.optString("nickname"), objMess.optString("date"), objMess.optString("photo_url"), objMess
+						    .optInt("receiving_user_id"), objMess.optInt("offer_id")));
 				}
 			    }
 			}
 			result.setObject(messages);
-			result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+			result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 			return result;
 		    } else {
-			result.setResponseCode(AppCAP.HTTP_ERROR);
+			result.setHandlerCode(AppCAP.HTTP_ERROR);
 			result.setResponseMessage("Error loading chat...");
 		    }
 		}
@@ -818,7 +814,7 @@ public class HttpUtil {
 
 		    String message = json.optString("message");
 		    result.setResponseMessage(message);
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 		    return result;
 		}
 	    }
@@ -993,27 +989,16 @@ public class HttpUtil {
 	DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 	client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
-	String userLat = "";
-	String userLng = "";
+	HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API + "?action=getVenuesAndUsersWithCheckinsInBoundsDuringInterval"
+		+ "&sw_lat=" + data[0] + "&sw_lng=" + data[1] + "&ne_lat=" + data[2] + "&ne_lng=" + data[3] + "&checked_in_since="
+		+ (System.currentTimeMillis() / 1000 - (86400 * numberOfDays)) + "&user_lat=" + data[4] + "&user_lng=" + data[5] + "&version=0.1");
 
-	if (data[4] != 0 && data[5] != 0) {
-	    userLat = "&user_lat=" + data[4];
-	    userLng = "&user_lng=" + data[5];
-	}
-
-	HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API
-		+ "?action=getVenuesAndUsersWithCheckinsInBoundsDuringInterval" + "&sw_lat=" + data[0] + "&sw_lng=" + data[1]
-		+ "&ne_lat=" + data[2] + "&ne_lng=" + data[3] + "&checked_in_since="
-		+ (System.currentTimeMillis() / 1000 - (86400 * numberOfDays)) + userLat + userLng + "&version=0.1");
-	// Log.d("LOG", "time interval: " + (System.currentTimeMillis()
-	// /1000 -
-	// (86400 * numberOfDays)));
 	try {
 
 	    // Execute HTTP Get Request
 	    HttpResponse response = client.execute(get);
 	    HttpEntity resEntity = response.getEntity();
-
+	    Log.d("LOG", "URI: " + get.getURI());
 	    String responseString = EntityUtils.toString(resEntity);
 	    RootActivity.log("HttpUtil_getVenuesAndUsersWithCheckinsInBoundsDuringInterval: " + responseString);
 
@@ -1051,20 +1036,18 @@ public class HttpUtil {
 						    } catch (NumberFormatException e) {
 						    }
 
-						    arrayCheckins.add(new CheckinData(userId, o.optInt("checkin_count"), o
-							    .optInt("checked_in")));
+						    arrayCheckins.add(new CheckinData(userId, o.optInt("checkin_count"), o.optInt("checked_in")));
 						}
 					    }
 					}
 				    }
 
-				    venues.add(new VenueSmart(objVenue.optString("name"), objVenue.optString("address"), objVenue
-					    .optString("city"), objVenue.optString("state"), objVenue.optString("distance"),
-					    objVenue.optString("foursquare"), objVenue.optInt("checkins"), objVenue
-						    .optInt("checkins_for_week"), objVenue.optInt("checkins_for_interval"),
-					    objVenue.optString("photo_url"), objVenue.optString("phone"), objVenue
-						    .optString("formatted_phone"), objVenue.optDouble("lat"), objVenue
-						    .optDouble("lng"), arrayCheckins));
+				    venues.add(new VenueSmart(objVenue.optString("name"), objVenue.optString("address"), objVenue.optString("city"),
+					    objVenue.optString("state"), objVenue.optString("distance"), objVenue.optString("foursquare"), objVenue
+						    .optInt("checkins"), objVenue.optInt("checkins_for_week"), objVenue
+						    .optInt("checkins_for_interval"), objVenue.optString("photo_url"), objVenue.optString("phone"),
+					    objVenue.optString("formatted_phone"), objVenue.optDouble("lat"), objVenue.optDouble("lng"),
+					    arrayCheckins));
 				}
 			    }
 			}
@@ -1091,10 +1074,9 @@ public class HttpUtil {
 					    objUser.optString("minor_job_category"),
 					    // smarterer_name
 					    // !?!?!?!??!
-					    objUser.optString("headline"), objUser.optString("filename"),
-					    objUser.optDouble("lat"), objUser.optDouble("lng"), objUser.optInt("checked_in"),
-					    objUser.optString("foursquare"), objUser.optString("venue_name"),
-					    objUser.optInt("checkin_count"), objUser.optString("skills"),
+					    objUser.optString("headline"), objUser.optString("filename"), objUser.optDouble("lat"),
+					    objUser.optDouble("lng"), objUser.optInt("checked_in"), objUser.optString("foursquare"),
+					    objUser.optString("venue_name"), objUser.optInt("checkin_count"), objUser.optString("skills"),
 					    objUser.optBoolean("met"));
 
 				    if (singleUserMap.getCheckedIn() == 1) {
@@ -1116,7 +1098,7 @@ public class HttpUtil {
 
 			result.setObject(new Object[] { venues, users });
 		    }
-		    result.setResponseCode(Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS);
+		    result.setHandlerCode(Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS);
 		    return result;
 		}
 	    }
@@ -1203,13 +1185,12 @@ public class HttpUtil {
 				    String imageURL = obj.optString("imageUrl");
 				    String hourlyBilingRate = obj.optString("hourly_biling_rate");
 
-				    usersArray.add(new UserShort(id, nickName, statusText, about, joinDate, imageURL,
-					    hourlyBilingRate));
+				    usersArray.add(new UserShort(id, nickName, statusText, about, joinDate, imageURL, hourlyBilingRate));
 				}
 			    }
 			}
 		    }
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 		    result.setObject(usersArray);
 		    return result;
 		}
@@ -1268,8 +1249,8 @@ public class HttpUtil {
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
 
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-									   // this
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
+									  // this
 		    return result;
 		}
 	    }
@@ -1327,8 +1308,8 @@ public class HttpUtil {
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
 
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-									   // this
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
+									  // this
 		    return result;
 		}
 	    }
@@ -1358,12 +1339,9 @@ public class HttpUtil {
      * @param userId
      * @return
      */
-    public DataHolder sendF2FInvite(int userId) {
-
+    public DataHolder sendFriendRequest(int userId) {
 	DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
-
 	client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-
 	HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
 	List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -1385,10 +1363,110 @@ public class HttpUtil {
 
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
+		    if (json.optString("error") != null) {
+			result.setResponseMessage(json.optString("message"));
+			result.setResponseCode(json.optInt("error"));
+			result.setHandlerCode(Executor.HANDLE_SEND_FRIEND_REQUEST);
+			return result;
+		    }
+		}
+	    }
 
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-									   // this
-		    return result;
+	} catch (UnsupportedEncodingException e) {
+	    e.printStackTrace();
+	    return result;
+
+	} catch (ClientProtocolException e) {
+	    e.printStackTrace();
+	    return result;
+
+	} catch (IOException e) {
+	    e.printStackTrace();
+	    return result;
+
+	} catch (JSONException e) {
+	    e.printStackTrace();
+	    return result;
+	}
+	return result;
+    }
+
+    /**
+     * Add place at Foursquare
+     * 
+     * @param name
+     * @param coords
+     * @return
+     */
+    public DataHolder addPlace(String name, double[] coords) {
+	DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+	client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+	HttpPost post = new HttpPost("https://api.foursquare.com/v2/venues/add");
+
+	List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+	try {
+	    params.add(new BasicNameValuePair("name", name));
+	    params.add(new BasicNameValuePair("ll", coords[4] + "," + coords[5]));
+	    params.add(new BasicNameValuePair("oauth_token", AppCAP.FOURSQUARE_OAUTH));
+	    params.add(new BasicNameValuePair("v", "20120208"));
+
+	    post.setEntity(new UrlEncodedFormEntity(params));
+
+	    // Execute HTTP Post Request
+	    HttpResponse response = client.execute(post);
+	    HttpEntity resEntity = response.getEntity();
+
+	    String responseString = EntityUtils.toString(resEntity);
+	    RootActivity.log("HttpUtil_addPlace: " + responseString);
+
+	    if (responseString != null) {
+
+		JSONObject json = new JSONObject(responseString);
+		if (json != null) {
+		    JSONObject meta = json.optJSONObject("meta");
+		    if (meta != null) {
+			if (meta.optString("code") != null && meta.optString("code").equals("200")) {
+
+			    JSONObject responseObj = json.optJSONObject("response");
+			    if (responseObj != null) {
+				JSONObject venueObj = responseObj.optJSONObject("venue");
+				if (venueObj != null) {
+
+				    JSONObject locationObj = venueObj.optJSONObject("location");
+				    if (locationObj != null) {
+
+					int checkinsCount = 0;
+					int usersCount = 0;
+					int tipCount = 0;
+					int hereNowCount = 0;
+
+					JSONObject statsObj = venueObj.optJSONObject("stats");
+					if (statsObj != null) {
+
+					    checkinsCount = statsObj.optInt("checkinsCount");
+					    usersCount = statsObj.optInt("usersCount");
+					    tipCount = statsObj.optInt("tipCount");
+					}
+
+					JSONObject hereNowObj = venueObj.optJSONObject("hereNow");
+					if (hereNowObj != null) {
+
+					    hereNowCount = hereNowObj.optInt("count");
+
+					}
+					result.setHandlerCode(Executor.HANDLE_ADD_PLACE);
+					result.setObject(new Venue(venueObj.optString("id"), venueObj.optString("name"), locationObj
+						.optString("address"), locationObj.optString("crossStreet"), locationObj.optDouble("lat"),
+						locationObj.optDouble("lng"), locationObj.optInt("distance"), locationObj.optString("postalCode"),
+						locationObj.optString("city"), locationObj.optString("state"), locationObj.optString("country"), "",
+						"", "", checkinsCount, usersCount, tipCount, hereNowCount, "", ""));
+
+				    }
+				}
+			    }
+			}
+		    }
 		}
 	    }
 
@@ -1445,8 +1523,8 @@ public class HttpUtil {
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
 
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-									   // this
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
+									  // this
 		    return result;
 		}
 	    }
@@ -1504,8 +1582,8 @@ public class HttpUtil {
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
 
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-									   // this
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
+									  // this
 		    return result;
 		}
 	    }
@@ -1565,8 +1643,8 @@ public class HttpUtil {
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
 
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-									   // this
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
+									  // this
 		    return result;
 		}
 	    }
@@ -1622,8 +1700,8 @@ public class HttpUtil {
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
 
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-									   // this
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
+									  // this
 		    return result;
 		}
 	    }
@@ -1683,8 +1761,8 @@ public class HttpUtil {
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
 
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-									   // this
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
+									  // this
 		    return result;
 		}
 	    }
@@ -1747,10 +1825,10 @@ public class HttpUtil {
 		if (json != null) {
 
 		    if (json.optBoolean("error")) {
-			result.setResponseCode(AppCAP.HTTP_ERROR);
+			result.setHandlerCode(AppCAP.HTTP_ERROR);
 			result.setResponseMessage(json.optString("payload"));
 		    } else {
-			result.setResponseCode(ActivityEnterInviteCode.HANDLE_ENTER_INV_CODE);
+			result.setHandlerCode(ActivityEnterInviteCode.HANDLE_ENTER_INV_CODE);
 		    }
 		    return result;
 		}
@@ -1812,10 +1890,10 @@ public class HttpUtil {
 		if (json != null) {
 
 		    if (json.optBoolean("error")) {
-			result.setResponseCode(AppCAP.HTTP_ERROR);
+			result.setHandlerCode(AppCAP.HTTP_ERROR);
 			result.setResponseMessage(json.optString("payload"));
 		    } else {
-			result.setResponseCode(ActivityJobCategory.HANDLE_UPLOAD_JOBS_INFO);
+			result.setHandlerCode(ActivityJobCategory.HANDLE_UPLOAD_JOBS_INFO);
 			result.setResponseMessage(json.optString("payload"));
 		    }
 		    return result;
@@ -1875,8 +1953,8 @@ public class HttpUtil {
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
 
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-									   // this
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
+									  // this
 		    return result;
 		}
 	    }
@@ -1932,7 +2010,7 @@ public class HttpUtil {
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
 
-		    result.setResponseCode(UserAndTabMenu.HANDLE_CHECK_OUT);
+		    result.setHandlerCode(UserAndTabMenu.HANDLE_CHECK_OUT);
 		    return result;
 		}
 	    }
@@ -2002,7 +2080,7 @@ public class HttpUtil {
 
 		    String res = json.optString("response");
 		    if (res.equals("1")) {
-			result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+			result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 		    }
 		    return result;
 		}
@@ -2162,20 +2240,20 @@ public class HttpUtil {
 					    hereNowCount = hereNowObj.optInt("count");
 					}
 
-					venuesArray.add(new Venue(id, name, address, crossStreet, lat, lng, distance, postalCode,
-						city, state, country, categoryName, categoryPluralName, categoryShortName,
-						checkinsCount, usersCount, tipCount, hereNowCount, "", ""));
+					venuesArray.add(new Venue(id, name, address, crossStreet, lat, lng, distance, postalCode, city, state,
+						country, categoryName, categoryPluralName, categoryShortName, checkinsCount, usersCount, tipCount,
+						hereNowCount, "", ""));
 				    }
 				}
 
-				result.setResponseCode(code);
+				result.setHandlerCode(code);
 				result.setObject(venuesArray);
 				return result;
 			    }
 			}
 
 		    } else {
-			result.setResponseCode(code);
+			result.setHandlerCode(code);
 			return result;
 		    }
 
@@ -2321,18 +2399,18 @@ public class HttpUtil {
 					    hereNowCount = hereNowObj.optInt("count");
 					}
 
-					venuesArray.add(new Venue(id, name, address, crossStreet, lat, lng, distance, postalCode,
-						city, state, country, categoryName, categoryPluralName, categoryShortName,
-						checkinsCount, usersCount, tipCount, hereNowCount, "", ""));
+					venuesArray.add(new Venue(id, name, address, crossStreet, lat, lng, distance, postalCode, city, state,
+						country, categoryName, categoryPluralName, categoryShortName, checkinsCount, usersCount, tipCount,
+						hereNowCount, "", ""));
 				    }
 				}
 
-				result.setResponseCode(Executor.HANDLE_VENUES_CLOSE_TO_LOCATION);
+				result.setHandlerCode(Executor.HANDLE_VENUES_CLOSE_TO_LOCATION);
 				result.setObject(venuesArray);
 				return result;
 			    }
 			}
-		    } 
+		    }
 		}
 	    }
 
@@ -2352,6 +2430,57 @@ public class HttpUtil {
 	    e.printStackTrace();
 	    return result;
 
+	}
+	return result;
+    }
+
+    /**
+     * Get Nearest Venues With Checkins To Coordinate
+     * 
+     * @param coords
+     * @return
+     */
+    public DataHolder getNearestVenuesWithCheckinsToCoordinate(double[] coords) {
+	DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+	client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+	HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API + "?action=getNearestVenuesAndUsersWithCheckinsDuringInterval" + "&lat="
+		+ coords[4] + "&lng=" + coords[5]);
+
+	try {
+	    // Execute HTTP Get Request
+	    HttpResponse response = client.execute(get);
+	    HttpEntity resEntity = response.getEntity();
+
+	    String responseString = EntityUtils.toString(resEntity);
+	    RootActivity.log("HttpUtil_getNearestVenuesWithCheckinsToCoordinate: " + responseString);
+
+	    if (responseString != null) {
+
+		JSONObject json = new JSONObject(responseString);
+		if (json != null) {
+
+		    JSONObject objPayload = json.optJSONObject("payload");
+		    if (objPayload != null) {
+
+		    }
+		    return result;
+		}
+	    }
+	} catch (UnsupportedEncodingException e) {
+	    e.printStackTrace();
+	    return result;
+
+	} catch (ClientProtocolException e) {
+	    e.printStackTrace();
+	    return result;
+
+	} catch (IOException e) {
+	    e.printStackTrace();
+	    return result;
+
+	} catch (JSONException e) {
+	    e.printStackTrace();
+	    return result;
 	}
 	return result;
     }
@@ -2396,14 +2525,13 @@ public class HttpUtil {
 			//
 			//
 
-			result.setResponseCode(ActivityWallet.HANDLE_GET_TRANSACTION_DATA);
-			result.setObject(new UserTransaction(objPayload.optInt("userid"), objPayload.optString("nickname"),
-				objPayload.optString("username"), objPayload.optString("status_text"), objPayload
-					.optString("status"), objPayload.optString("active"), objPayload.optString("photo"),
-				objPayload.optString("photo_large"), objPayload.optDouble("lat"), objPayload.optDouble("lng"),
-				objPayload.optInt("favorite_enabled"), objPayload.optInt("favorite_count"), objPayload
-					.optInt("my_favorite_count"), objPayload.optInt("money_received"), objPayload
-					.optInt("offers_paid"), objPayload.optInt("balance"), transactions));
+			result.setHandlerCode(ActivityWallet.HANDLE_GET_TRANSACTION_DATA);
+			result.setObject(new UserTransaction(objPayload.optInt("userid"), objPayload.optString("nickname"), objPayload
+				.optString("username"), objPayload.optString("status_text"), objPayload.optString("status"), objPayload
+				.optString("active"), objPayload.optString("photo"), objPayload.optString("photo_large"),
+				objPayload.optDouble("lat"), objPayload.optDouble("lng"), objPayload.optInt("favorite_enabled"), objPayload
+					.optInt("favorite_count"), objPayload.optInt("my_favorite_count"), objPayload.optInt("money_received"),
+				objPayload.optInt("offers_paid"), objPayload.optInt("balance"), transactions));
 		    }
 		    return result;
 		}
@@ -2487,9 +2615,9 @@ public class HttpUtil {
 		    AppCAP.setLocalUserPhotoLargeURL(photoLarge);
 		    AppCAP.setLocalUserPhotoURL(photo);
 
-		    result.setObject(new User(userId, favoriteEnabled, favoriteCount, myFavoriteCount, moneyReceived, offersPaid,
-			    balance, nickName, userName, statusText, status, active, photo, photoLarge, lat, lng));
-		    result.setResponseCode(Executor.HANDLE_GET_USER_DATA);
+		    result.setObject(new User(userId, favoriteEnabled, favoriteCount, myFavoriteCount, moneyReceived, offersPaid, balance, nickName,
+			    userName, statusText, status, active, photo, photoLarge, lat, lng));
+		    result.setHandlerCode(Executor.HANDLE_GET_USER_DATA);
 		    return result;
 		}
 	    }
@@ -2546,8 +2674,7 @@ public class HttpUtil {
 		    JSONObject objPayload = json.optJSONObject("payload");
 		    if (objPayload != null) {
 
-			result.setObject(new Object[] { objPayload.optString("push_distance"),
-				objPayload.optString("checked_in_only") });
+			result.setObject(new Object[] { objPayload.optString("push_distance"), objPayload.optString("checked_in_only") });
 		    }
 		}
 	    }
@@ -2620,11 +2747,11 @@ public class HttpUtil {
 
 		if (succeeded) {
 
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 		    return result;
 
 		} else {
-		    result.setResponseCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
+		    result.setHandlerCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
 		    return result;
 		}
 	    }
@@ -2702,11 +2829,11 @@ public class HttpUtil {
 
 		if (succeeded) {
 
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 		    return result;
 
 		} else {
-		    result.setResponseCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
+		    result.setHandlerCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
 		    return result;
 		}
 	    }
@@ -2788,11 +2915,11 @@ public class HttpUtil {
 		     * 
 		     * result.setObject(new User(userId, nickName)); } }
 		     */
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 		    return result;
 
 		} else {
-		    result.setResponseCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
+		    result.setHandlerCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
 		    return result;
 		}
 	    }
@@ -2870,11 +2997,11 @@ public class HttpUtil {
 		     * 
 		     * result.setObject(new User(userId, nickName)); } }
 		     */
-		    result.setResponseCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 		    return result;
 
 		} else {
-		    result.setResponseCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
+		    result.setHandlerCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
 		    return result;
 		}
 	    }
@@ -2940,8 +3067,8 @@ public class HttpUtil {
 	    }
 
 	    @Override
-	    public Socket connectSocket(Socket sock, String host, int port, InetAddress localAddress, int localPort,
-		    HttpParams params) throws IOException {
+	    public Socket connectSocket(Socket sock, String host, int port, InetAddress localAddress, int localPort, HttpParams params)
+		    throws IOException {
 		return delegate.connectSocket(sock, host, port, localAddress, localPort, params);
 	    }
 

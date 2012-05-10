@@ -66,7 +66,7 @@ public class ActivityEnterInviteCode extends Activity {
 			    result = AppCAP.getConnection().enterInvitationCode(
 				    ((EditText) findViewById(R.id.edit_text)).getText().toString(),
 				    AppCAP.getUserCoordinates()[4], AppCAP.getUserCoordinates()[5]);
-			    handler.sendEmptyMessage(result.getResponseCode());
+			    handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		    }).start();
 		}

@@ -94,10 +94,10 @@ public class MyUsersAdapter extends BaseAdapter {
 
 	if (AppCAP.isLoggedIn()) {
 	    holder.textNickName.setText(mudArray.get(position).getNickName());
-	    imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage, R.drawable.default_avatar50);
+	    imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage, R.drawable.default_avatar50, 70);
 	} else {
 	    holder.textNickName.setText("Name Hidden");
-	    imageLoader.DisplayImage("", holder.profileImage, R.drawable.default_avatar50_login);
+	    imageLoader.DisplayImage("", holder.profileImage, R.drawable.default_avatar50_login, 70);
 	}
 
 	if (mudArray.get(position).getStatusText() != null && mudArray.get(position).getStatusText().length() > 0) {
@@ -106,13 +106,16 @@ public class MyUsersAdapter extends BaseAdapter {
 	    holder.textStatus.setText("");
 	}
 	holder.textVenueName.setText(AppCAP.cleanResponseString(mudArray.get(position).getVenueName()));
-	holder.textJobName.setText(mudArray.get(position).getMajorJobCategory());
+
+	String jobName = mudArray.get(position).getMajorJobCategory();
+	if (jobName != null && jobName.length() > 1)
+	    jobName = jobName.substring(0, 1).toUpperCase() + jobName.substring(1);
+	holder.textJobName.setText(jobName);
 
 	// Deafult gray line state is gone
 	holder.textGrayLine.setVisibility(View.GONE);
 
-	holder.textDistance.setText(RootActivity.getDistanceBetween(myLat, myLng, mudArray.get(position).getLat(),
-		mudArray.get(position).getLng()));
+	holder.textDistance.setText(RootActivity.getDistanceBetween(myLat, myLng, mudArray.get(position).getLat(), mudArray.get(position).getLng()));
 
 	// Check if we have hereNow user
 	if (mudArray.get(position).getCheckedIn() == 1 && mudArray.get(position).isFirstInList()) {

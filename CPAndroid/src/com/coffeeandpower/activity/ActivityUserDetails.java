@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -53,7 +55,9 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
 public class ActivityUserDetails extends RootActivity {
+
     private static final int DIALOG_SEND_PROP = 0;
+    private static final int DIALOG_SEND_F2F_INVITE = 1;
 
     private UserSmart mud;
 
@@ -137,14 +141,13 @@ public class ActivityUserDetails extends RootActivity {
 	// Navigate map to location from intent data
 	if (mud != null) {
 	    GeoPoint point = new GeoPoint((int) (mud.getLat() * 1E6), (int) (mud.getLng() * 1E6));
-	    GeoPoint pointForCenter = new GeoPoint(point.getLatitudeE6()
-		    + Utils.getScreenDependentItemSize(Utils.MAP_VER_OFFSET_FROM_CENTER), point.getLongitudeE6()
-		    - Utils.getScreenDependentItemSize(Utils.MAP_HOR_OFFSET_FROM_CENTER));
+	    GeoPoint pointForCenter = new GeoPoint(point.getLatitudeE6() + Utils.getScreenDependentItemSize(Utils.MAP_VER_OFFSET_FROM_CENTER),
+		    point.getLongitudeE6() - Utils.getScreenDependentItemSize(Utils.MAP_HOR_OFFSET_FROM_CENTER));
 	    mapController.animateTo(pointForCenter);
 
 	    itemizedoverlay = new MyItemizedOverlay2(getPinDrawable(
-		    RootActivity.getDistanceBetween(AppCAP.getUserCoordinates()[4], AppCAP.getUserCoordinates()[5], mud.getLat(),
-			    mud.getLng()) + " away", point));
+		    RootActivity.getDistanceBetween(AppCAP.getUserCoordinates()[4], AppCAP.getUserCoordinates()[5], mud.getLat(), mud.getLng())
+			    + " away", point));
 	    createMarker(point);
 	}
 
@@ -182,13 +185,13 @@ public class ActivityUserDetails extends RootActivity {
     private void updateUserDataInUI() {
 	if (userResumeData != null) {
 	    // Load profile picture
-	    imageLoader.DisplayImage(userResumeData.getUrlPhoto(), imageProfile, R.drawable.default_avatar50);
+	    imageLoader.DisplayImage(userResumeData.getUrlPhoto(), imageProfile, R.drawable.default_avatar50, 70);
 
 	    ((TextView) findViewById(R.id.textview_date)).setText(userResumeData.getJoined());
 	    ((TextView) findViewById(R.id.textview_earned)).setText("$" + userResumeData.getTotalEarned());
 	    ((TextView) findViewById(R.id.textview_love)).setText(userResumeData.getReviewsLoveReceived());
-	    ((TextView) findViewById(R.id.textview_rate)).setText(userResumeData.getHourlyBillingRate().matches("") ? "N/A"
-		    : userResumeData.getHourlyBillingRate());
+	    ((TextView) findViewById(R.id.textview_rate)).setText(userResumeData.getHourlyBillingRate().matches("") ? "N/A" : userResumeData
+		    .getHourlyBillingRate());
 
 	    ((TextView) findViewById(R.id.textview_place)).setText(AppCAP.cleanResponseString(userResumeData.getVenueName()));
 	    ((TextView) findViewById(R.id.textview_street)).setText(AppCAP.cleanResponseString(userResumeData.getVenueAddress()));
@@ -201,9 +204,8 @@ public class ActivityUserDetails extends RootActivity {
 
 		if (userResumeData.getUsersHere() > 1) {
 		    ((LinearLayout) findViewById(R.id.layout_others_at_venue)).setVisibility(View.VISIBLE);
-		    ((TextView) findViewById(R.id.textview_others_here_now))
-			    .setText(userResumeData.getUsersHere() == 2 ? "1 other here now"
-				    : (userResumeData.getUsersHere() - 1) + " others here now");
+		    ((TextView) findViewById(R.id.textview_others_here_now)).setText(userResumeData.getUsersHere() == 2 ? "1 other here now"
+			    : (userResumeData.getUsersHere() - 1) + " others here now");
 		}
 
 	    } else {
@@ -211,9 +213,8 @@ public class ActivityUserDetails extends RootActivity {
 
 		if (userResumeData.getUsersHere() > 0) {
 		    ((LinearLayout) findViewById(R.id.layout_others_at_venue)).setVisibility(View.VISIBLE);
-		    ((TextView) findViewById(R.id.textview_others_here_now))
-			    .setText(userResumeData.getUsersHere() == 1 ? "1 other here now" : userResumeData.getUsersHere()
-				    + " others here now");
+		    ((TextView) findViewById(R.id.textview_others_here_now)).setText(userResumeData.getUsersHere() == 1 ? "1 other here now"
+			    : userResumeData.getUsersHere() + " others here now");
 		}
 	    }
 
@@ -323,8 +324,8 @@ public class ActivityUserDetails extends RootActivity {
 	animation.setDuration(150);
 	set.addAnimation(animation);
 
-	animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
-		Animation.RELATIVE_TO_SELF, 3.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+	animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 3.0f,
+		Animation.RELATIVE_TO_SELF, 0.0f);
 	animation.setDuration(300);
 	set.addAnimation(animation);
 
@@ -371,7 +372,12 @@ public class ActivityUserDetails extends RootActivity {
 	Calendar checkoutCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 	long checkout = Long.parseLong(ur.getCheckOut());
 	int mins = (int) ((checkout - (checkoutCal.getTimeInMillis() / 1000)) / 60);
-	return mins == 1 ? mins + " min" : mins + " mins";
+
+	if (mins <= 60)
+	    return mins == 1 ? mins + " min" : mins + " mins";
+	else
+	    return ((mins / 60) == 1 ? "1 hour " : (mins / 60) + " hours ") + ((mins % 60) == 1 ? "1 min" : (mins % 60) + " mins");
+
     }
 
     /**
@@ -385,8 +391,8 @@ public class ActivityUserDetails extends RootActivity {
     }
 
     public void onClickChat(View v) {
-	startActivity(new Intent(ActivityUserDetails.this, ActivityChat.class).putExtra("user_id", userResumeData.getUserId())
-		.putExtra("nick_name", userResumeData.getNickName()));
+	startActivity(new Intent(ActivityUserDetails.this, ActivityChat.class).putExtra("user_id", userResumeData.getUserId()).putExtra("nick_name",
+		userResumeData.getNickName()));
     }
 
     public void onClickPaid(View v) {
@@ -394,7 +400,7 @@ public class ActivityUserDetails extends RootActivity {
     }
 
     public void onClickSendContact(View v) {
-	AppCAP.getConnection().sendF2FInvite(mud.getUserId());
+	showDialog(DIALOG_SEND_F2F_INVITE);
     }
 
     public void onClickSendProp(View v) {
@@ -437,8 +443,7 @@ public class ActivityUserDetails extends RootActivity {
 		public void onClick(View v) {
 		    if (((EditText) dialog.findViewById(R.id.edit_review)).getText().toString().length() > 0) {
 			dialog.dismiss();
-			exe.sendReviewProp(userResumeData, ((EditText) dialog.findViewById(R.id.edit_review)).getText()
-				.toString());
+			exe.sendReviewProp(userResumeData, ((EditText) dialog.findViewById(R.id.edit_review)).getText().toString());
 		    } else {
 			dialog.dismiss();
 			Toast.makeText(ActivityUserDetails.this, "Review can't be empty!", Toast.LENGTH_SHORT).show();
@@ -453,6 +458,21 @@ public class ActivityUserDetails extends RootActivity {
 		}
 	    });
 	    break;
+
+	case DIALOG_SEND_F2F_INVITE:
+	    AlertDialog.Builder builder = new AlertDialog.Builder(ActivityUserDetails.this);
+	    builder.setMessage("Request to exchange contact info?").setCancelable(false)
+		    .setPositiveButton("SEND", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+			    exe.sendFriendRequest(mud.getUserId());
+			    dialog.cancel();
+			}
+		    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+			    dialog.cancel();
+			}
+		    });
+	    return builder.create();
 	}
 
 	return dialog;
@@ -460,7 +480,9 @@ public class ActivityUserDetails extends RootActivity {
 
     public void actionFinished(int action) {
 	result = exe.getResult();
+
 	switch (action) {
+
 	case Executor.HANDLE_GET_USER_RESUME:
 	    if (result != null && result.getObject() != null) {
 		if (result.getObject() instanceof ArrayList<?>) {
@@ -487,6 +509,13 @@ public class ActivityUserDetails extends RootActivity {
 	    }
 	    break;
 
+	case Executor.HANDLE_SEND_FRIEND_REQUEST:
+	    String message = result.getResponseCode() == 0 ? "Contact Request Sent."
+		    : (result.getResponseCode() == 4 ? "We've resent your request.\nThe password is: " + result.getResponseMessage() : (result
+			    .getResponseCode() == 6 ? "Request already sent" : result.getResponseMessage()));
+
+	    Toast.makeText(ActivityUserDetails.this, message, Toast.LENGTH_LONG).show();
+	    break;
 	}
     }
 

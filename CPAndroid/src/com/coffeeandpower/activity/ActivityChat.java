@@ -99,7 +99,7 @@ public class ActivityChat extends RootActivity {
 		@Override
 		public void run() {
 		    result = AppCAP.getConnection().getOneOnOneChatHistory(userId);
-		    if (result.getResponseCode() == AppCAP.HTTP_ERROR) {
+		    if (result.getHandlerCode() == AppCAP.HTTP_ERROR) {
 			handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 		    } else {
 			handler.sendEmptyMessage(HANDLE_GET_HISTORY);
@@ -123,7 +123,7 @@ public class ActivityChat extends RootActivity {
 		@Override
 		public void run() {
 		    result = AppCAP.getConnection().sendOneOnOneChatMessage(userId, mess);
-		    if (result.getResponseCode() == AppCAP.HTTP_ERROR) {
+		    if (result.getHandlerCode() == AppCAP.HTTP_ERROR) {
 			handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 		    } else {
 			handler.sendEmptyMessage(HANDLE_SEND_MESSAGE);

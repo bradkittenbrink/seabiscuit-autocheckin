@@ -16,7 +16,6 @@ import com.google.android.maps.MapActivity;
 public class RootActivity extends MapActivity {
 
     public static final int DIALOG_MUST_BE_A_MEMBER = 30;
-    public static final int DIALOG_CHECK_OUT = 31;
 
     private AlertDialog alert;
 

@@ -169,7 +169,7 @@ public class ActivityJobCategory extends RootActivity {
 		@Override
 		public void run() {
 		    result = AppCAP.getConnection().saveUserJobCategory(selectedMajorJob, selectedMinorJob);
-		    handler.sendEmptyMessage(result.getResponseCode());
+		    handler.sendEmptyMessage(result.getHandlerCode());
 		}
 	    }).start();
 	} else {
@@ -187,7 +187,7 @@ public class ActivityJobCategory extends RootActivity {
 	    @Override
 	    public void run() {
 		result = AppCAP.getConnection().getResumeForUserId(AppCAP.getLoggedInUserId());
-		if (result.getResponseCode() == AppCAP.HTTP_ERROR) {
+		if (result.getHandlerCode() == AppCAP.HTTP_ERROR) {
 		    handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 		} else {
 		    handler.sendEmptyMessage(HANDLE_GET_USER_RESUME);

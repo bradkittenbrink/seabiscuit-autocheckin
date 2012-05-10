@@ -10,6 +10,7 @@
         android:layout_height="100dp"
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
         android:background="@drawable/picture_coming_soon"
         android:gravity="center_vertical|center_horizontal" />
 

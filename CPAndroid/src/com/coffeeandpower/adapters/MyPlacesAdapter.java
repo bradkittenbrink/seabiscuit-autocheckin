@@ -92,14 +92,14 @@ public class MyPlacesAdapter extends BaseAdapter {
 
 	if (venues.get(position).getCheckins() != 0) {
 	    String sc = venues.get(position).getCheckins() == 1 ? "1 person here now" : venues.get(position).getCheckins()
-		    + " persons here now";
+		    + " people here now";
 	    holder.textCheckins.setText(sc);
 	} else {
 	    holder.textCheckins.setText(venues.get(position).getCheckinsForInterval() + " people this week");
 	}
 
 	// Try to load image
-	imageLoader.DisplayImage(venues.get(position).getPhotoURL(), holder.image, R.drawable.picture_coming_soon);
+	imageLoader.DisplayImage(venues.get(position).getPhotoURL(), holder.image, R.drawable.picture_coming_soon, 70);
 
 	return convertView;
     }

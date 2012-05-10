@@ -47,7 +47,8 @@
                 android:id="@+id/layout_top"
                 android:layout_width="fill_parent"
                 android:layout_height="250dip" >
-                <ImageView
+
+                <ImageView
                     android:id="@+id/image_view"
                     android:layout_width="fill_parent"
                     android:layout_height="250dip"
@@ -75,7 +76,9 @@
                         android:id="@+id/textview_place_address"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:clickable="true"
                         android:gravity="center"
+                        android:onClick="onClickAddress"
                         android:singleLine="true"
                         android:textColor="#ffffff"
                         android:textSize="16dip" />

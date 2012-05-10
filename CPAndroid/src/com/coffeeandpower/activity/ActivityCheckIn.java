@@ -167,10 +167,13 @@ public class ActivityCheckIn extends RootActivity {
 		switch (hours) {
 		case 1:
 		    textHours.setText(hours + " hour");
+		    checkInDuration = 1;
 		    break;
 
 		default:
 		    textHours.setText(hours + " hours");
+		    checkInDuration = hours;
+		    break;
 		}
 	    }
 	});
@@ -190,7 +193,7 @@ public class ActivityCheckIn extends RootActivity {
 	    @Override
 	    public void run() {
 		resultGetUsersCheckedIn = AppCAP.getConnection().getUsersCheckedInAtFoursquareID(venue.getId());
-		if (resultGetUsersCheckedIn.getResponseCode() == AppCAP.HTTP_ERROR) {
+		if (resultGetUsersCheckedIn.getHandlerCode() == AppCAP.HTTP_ERROR) {
 		    handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 		} else {
 		    handler.sendEmptyMessage(GET_CHECKED_USERS);
@@ -228,10 +231,10 @@ public class ActivityCheckIn extends RootActivity {
 	    public void run() {
 		resultCheckIn = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime,
 			statusEditText.getText().toString());
-		if (resultCheckIn.getResponseCode() == AppCAP.HTTP_ERROR) {
+		if (resultCheckIn.getHandlerCode() == AppCAP.HTTP_ERROR) {
 		    handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 		} else {
-		    handler.sendEmptyMessage(resultCheckIn.getResponseCode());
+		    handler.sendEmptyMessage(resultCheckIn.getHandlerCode());
 		}
 	    }
 	}).start();
@@ -267,7 +270,7 @@ public class ActivityCheckIn extends RootActivity {
 			}
 		    });
 
-		    imageLoader.DisplayImage(checkedInUsers.get(i).getImageURL(), image, R.drawable.default_avatar50);
+		    imageLoader.DisplayImage(checkedInUsers.get(i).getImageURL(), image, R.drawable.default_avatar50, 70);
 		    layoutForInflate.addView(image);
 
 		}

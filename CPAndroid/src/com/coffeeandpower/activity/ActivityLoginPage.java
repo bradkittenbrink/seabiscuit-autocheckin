@@ -137,8 +137,8 @@ public class ActivityLoginPage extends RootActivity {
 	    result = AppCAP.getConnection().signupViaOAuthService(service);
 	    handler.setResult(result);
 	    if (result != null) {
-		handler.sendEmptyMessage(result.getResponseCode());
-		if (result.getResponseCode() == AppCAP.HTTP_REQUEST_SUCCEEDED && action != null)
+		handler.sendEmptyMessage(result.getHandlerCode());
+		if (result.getHandlerCode() == AppCAP.HTTP_REQUEST_SUCCEEDED && action != null)
 		    new Thread(action).start();
 	    } else {
 		handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
@@ -161,8 +161,8 @@ public class ActivityLoginPage extends RootActivity {
 	    service.getUserId();
 	    result = AppCAP.getConnection().loginViaOAuthService(service);
 	    if (result != null) {
-		handler.sendEmptyMessage(result.getResponseCode());
-		if (result.getResponseCode() == AppCAP.ERROR_SUCCEEDED_SHOW_MESS)
+		handler.sendEmptyMessage(result.getHandlerCode());
+		if (result.getHandlerCode() == AppCAP.ERROR_SUCCEEDED_SHOW_MESS)
 		    service.clearSettings(); // assume
 					     // that
 					     // the
