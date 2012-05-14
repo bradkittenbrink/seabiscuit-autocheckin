@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" /> 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <!-- REQUIRED for C2DM -->
     <permission
@@ -153,8 +153,8 @@
         <activity
             android:name=".activity.ActivityChat"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustPan"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="stateVisible|adjustPan" >
         </activity>
         <activity
             android:name=".activity.ActivityWallet"

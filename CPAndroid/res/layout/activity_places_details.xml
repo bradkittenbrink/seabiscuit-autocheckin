@@ -72,16 +72,36 @@
                         android:textSize="24dip"
                         android:textStyle="bold" />
 
-                    <com.coffeeandpower.views.CustomFontView
-                        android:id="@+id/textview_place_address"
+                    <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:gravity="center"
-                        android:onClick="onClickAddress"
-                        android:singleLine="true"
-                        android:textColor="#ffffff"
-                        android:textSize="16dip" />
+                        android:orientation="horizontal" >
+
+                        <com.coffeeandpower.views.CustomFontView
+                            android:id="@+id/textview_place_address"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:onClick="onClickAddress"
+                            android:singleLine="true"
+                            android:textColor="#ffffff"
+                            android:textSize="16dip" />
+
+                        <com.coffeeandpower.views.CustomFontView
+                            android:id="@+id/textview_phone_number"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:onClick="onClickPhone"
+                            android:singleLine="true"
+                            android:visibility="gone"
+                            android:textColor="#ffffff"
+                            android:textSize="16dip" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <View

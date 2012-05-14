@@ -1,5 +1,9 @@
 package com.coffeeandpower;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -7,6 +11,9 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.coffeeandpower.urbanairship.IntentReceiver;
@@ -94,8 +101,8 @@ public class AppCAP extends Application {
 	TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 	Log.d("LOG", "Locale: " + tm.getSimCountryIso());
 	if (tm.getSimCountryIso() != null && !tm.getSimCountryIso().equals("")) {
-	    if (tm.getSimCountryIso().contains("US") || tm.getSimCountryIso().contains("us")
-		    || tm.getSimCountryIso().contains("usa") || tm.getSimCountryIso().contains("um")) {
+	    if (tm.getSimCountryIso().contains("US") || tm.getSimCountryIso().contains("us") || tm.getSimCountryIso().contains("usa")
+		    || tm.getSimCountryIso().contains("um")) {
 		setMetricsSys(false);
 	    } else {
 		setMetricsSys(true);
@@ -143,7 +150,8 @@ public class AppCAP extends Application {
 
     public static String cleanResponseString(String data) {
 	String retS = data;
-
+	data = Html.fromHtml(data).toString();
+	
 	try {
 	    retS = URLDecoder.decode(data, "UTF-8");
 	} catch (UnsupportedEncodingException e) {
@@ -316,6 +324,20 @@ public class AppCAP extends Application {
 
     public static void saveScreenWidth(int screenWidth) {
 	getSharedPreferences().edit().putInt(TAG_SCREEN_WIDTH, screenWidth).commit();
+    }
+
+    public static void logInFile(String data) {
+	try {
+	    FileOutputStream fOut = instance.openFileOutput("big_log.txt", MODE_WORLD_READABLE);
+	    OutputStreamWriter osw = new OutputStreamWriter(fOut);
+	    osw.write(data);
+	    osw.flush();
+	    osw.close();
+	} catch (FileNotFoundException e) {
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
     }
 
 }

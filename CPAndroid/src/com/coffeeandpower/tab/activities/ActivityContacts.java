@@ -12,9 +12,12 @@ import android.widget.ToggleButton;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
+import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.UserAndTabMenu;
+import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
@@ -27,12 +30,30 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
     private HorizontalPagerModified pager;
 
     private UserAndTabMenu menu;
+    
+    private Executor exe;
+    
+    private DataHolder result;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.tab_activity_contacts);
 
+	// Executor
+	exe = new Executor(ActivityContacts.this);
+	exe.setExecutorListener(new ExecutorInterface() {
+	    @Override
+	    public void onErrorReceived() {
+		errorReceived();
+	    }
+
+	    @Override
+	    public void onActionFinished(int action) {
+		actionFinished(action);
+	    }
+	});
+	
 	((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
 
 	// Horizontal Pager
@@ -115,6 +136,24 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 	    // Check and Set Notification settings
 	    menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in),
 		    (Button) findViewById(R.id.btn_from), false);
+	    
+	    // Get contacts list
+	    exe.getContacts();
+	}
+    }
+    
+    private void errorReceived(){
+	
+    }
+    
+    private void actionFinished(int action){
+	result = exe.getResult();
+	
+	switch (action) {
+	
+	case 0:
+	    
+	    break;
 	}
     }
 

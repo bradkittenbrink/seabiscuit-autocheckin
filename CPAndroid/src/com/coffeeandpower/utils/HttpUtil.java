@@ -59,6 +59,7 @@ import com.coffeeandpower.activity.ActivityWallet;
 import com.coffeeandpower.cont.ChatMessage;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
+import com.coffeeandpower.cont.Listing;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.Transaction;
 import com.coffeeandpower.cont.User;
@@ -108,6 +109,7 @@ public class HttpUtil {
 
 	    String responseString = EntityUtils.toString(resEntity);
 	    RootActivity.log("HttpUtil_getResumeForUserId: " + responseString);
+	    AppCAP.logInFile(responseString);
 
 	    if (responseString != null) {
 
@@ -190,6 +192,8 @@ public class HttpUtil {
 			ArrayList<Review> reviews = new ArrayList<Review>();
 			ArrayList<Education> education = new ArrayList<Education>();
 			ArrayList<Work> work = new ArrayList<Work>();
+			ArrayList<Listing> agentList = new ArrayList<Listing>();
+			ArrayList<Listing> clientList = new ArrayList<Listing>();
 
 			double locationLat = 0;
 			double locationLng = 0;
@@ -205,7 +209,7 @@ public class HttpUtil {
 			joined = payload.optString("joined");
 			bio = payload.optString("bio");
 			skillSet = payload.optString("skillSet");
-			hourlyBillingRate = payload.optString("hourly_biling_rate");
+			hourlyBillingRate = payload.optString("hourly_billing_rate");
 			trusted = payload.optString("trusted");
 			jobTitle = payload.optString("job_title");
 
@@ -281,16 +285,11 @@ public class HttpUtil {
 			    usersHere = objCheckInData.optInt("users_here");
 			}
 
-			// Check in history, I took only
-			// first TWO results, but
-			// maybe we need more than
-			// two....
 			JSONArray arrayCheckIn = payload.optJSONArray("checkin_history");
 			ArrayList<Venue> checkinhistoryArray = new ArrayList<Venue>();
 			if (arrayCheckIn != null) {
 
 			    for (int x = 0; x < arrayCheckIn.length(); x++) {
-
 				if (x < 3) {
 
 				    JSONObject objFromArray = arrayCheckIn.optJSONObject(x);
@@ -342,7 +341,6 @@ public class HttpUtil {
 			// Get Education data
 			JSONArray arrayEdu = payload.optJSONArray("education");
 			if (arrayEdu != null) {
-
 			    for (int x = 0; x < arrayEdu.length(); x++) {
 
 				JSONObject objEdu = arrayEdu.optJSONObject(x);
@@ -356,13 +354,38 @@ public class HttpUtil {
 			// Get Work data
 			JSONArray arrayWork = payload.optJSONArray("work");
 			if (arrayWork != null) {
-
 			    for (int x = 0; x < arrayWork.length(); x++) {
 
 				JSONObject objWork = arrayWork.optJSONObject(x);
 				if (objWork != null) {
+				    work.add(new Work(objWork.optString("title"), objWork.optString("company"), objWork.optString("startDate"),
+					    objWork.optString("endDate")));
+				}
+			    }
+			}
 
-				    // code
+			// Get listings as agent
+			JSONArray arrayAgent = payload.optJSONArray("listingsAsAgent");
+			if (arrayAgent != null) {
+			    for (int x = 0; x < arrayAgent.length(); x++) {
+
+				JSONObject obj = arrayAgent.optJSONObject(x);
+				if (obj != null) {
+				    agentList.add(new Listing(obj.optString("days_past"), obj.optString("listing"), obj.optInt("author_id"), obj
+					    .optString("price"), obj.optInt("client_id"), obj.optString("client_nickname")));
+				}
+			    }
+			}
+
+			// Get listings as client
+			JSONArray arrayClient = payload.optJSONArray("listingsAsClient");
+			if (arrayClient != null) {
+			    for (int x = 0; x < arrayClient.length(); x++) {
+
+				JSONObject obj = arrayClient.optJSONObject(x);
+				if (obj != null) {
+				    clientList.add(new Listing(obj.optString("days_past"), obj.optString("listing"), obj.optInt("author_id"), obj
+					    .optString("price"), obj.optInt("client_id"), obj.optString("client_nickname")));
 				}
 			    }
 			}
@@ -378,7 +401,7 @@ public class HttpUtil {
 				linkedInProfileLink, verifiedFacebook, facebookProfileLink, verifiedMobile, trusted, jobTitle, checkInId, userId,
 				lat, lng, checkInDate, checkIn, checkOutDate, checkOut, foursquare, foursquareId, venueName, venueAddress, city,
 				state, zip, phone, icon, visible, photoUrlUnUsed, formattedPhone, usersHere, reviewsPage, reviewsTotal,
-				reviewsRecords, reviewsLoveReceived, reviews, education, work, locationLat, locationLng));
+				reviewsRecords, reviewsLoveReceived, reviews, education, work, agentList, clientList, locationLat, locationLng));
 			tempHolder.add(checkinhistoryArray);
 
 			result.setHandlerCode(Executor.HANDLE_GET_USER_RESUME);
@@ -999,7 +1022,9 @@ public class HttpUtil {
 	    HttpResponse response = client.execute(get);
 	    HttpEntity resEntity = response.getEntity();
 	    Log.d("LOG", "URI: " + get.getURI());
+	    
 	    String responseString = EntityUtils.toString(resEntity);
+	    AppCAP.logInFile(responseString);
 	    RootActivity.log("HttpUtil_getVenuesAndUsersWithCheckinsInBoundsDuringInterval: " + responseString);
 
 	    if (responseString != null) {
@@ -1161,14 +1186,7 @@ public class HttpUtil {
 		    JSONObject objPayload = json.optJSONObject("payload");
 		    if (objPayload != null) {
 
-			int count = objPayload.optInt("count"); // I
-								// will
-								// use
-								// arratUsers.size()
-								// instead
-								// of
-								// count
-
+			int count = objPayload.optInt("count"); 
 			JSONArray arrayUsers = objPayload.optJSONArray("users");
 			if (arrayUsers != null) {
 
@@ -1669,23 +1687,19 @@ public class HttpUtil {
     }
 
     /**
-     * Get contact list
+     * Get contactw list
      * 
      * @return
      */
-    public DataHolder getContactList() {
-
+    public DataHolder getContactsList() {
 	DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
-
 	client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-
 	HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
 	List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 	try {
 	    params.add(new BasicNameValuePair("action", "getContactList"));
-
 	    post.setEntity(new UrlEncodedFormEntity(params));
 
 	    // Execute HTTP Post Request
@@ -1700,8 +1714,7 @@ public class HttpUtil {
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
 
-		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-									  // this
+		    result.setHandlerCode(Executor.HANDLE_GET_CONTACTS_LIST);
 		    return result;
 		}
 	    }

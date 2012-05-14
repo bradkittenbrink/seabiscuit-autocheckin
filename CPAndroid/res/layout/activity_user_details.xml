@@ -59,18 +59,16 @@
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="80dip"
+                    android:layout_height="90dip"
                     android:layout_margin="10dip"
                     android:background="@drawable/paper_texture"
                     android:layoutAnimation="@anim/layout_random_fade" >
 
                     <ImageButton
                         android:id="@+id/imagebutton_user_face"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="8dip"
-                        android:adjustViewBounds="true"
                         android:background="@drawable/default_avatar50"
                         android:scaleType="fitXY" />
 
@@ -87,14 +85,21 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#60605e"
-                            android:textSize="16dip" />
+                            android:textSize="14dip" />
 
                         <com.coffeeandpower.views.CustomFontView
                             android:id="@+id/textview_nick_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#60605e"
-                            android:textSize="24dip" />
+                            android:textSize="26dip" />
+
+                        <TextView
+                            android:id="@+id/textview_user_job_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#60605e"
+                            android:textSize="12dip" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -354,11 +359,39 @@
                         </RelativeLayout>
                     </LinearLayout>
 
+                    <!-- Summary info -->
+
+                    <com.coffeeandpower.views.CustomFontView
+                        android:id="@+id/text_summary_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/dummy_layout_1"
+                        android:layout_marginLeft="10dip"
+                        android:layout_marginTop="10dip"
+                        android:paddingTop="10dp"
+                        android:text="Summary"
+                        android:textColor="#338585"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/text_summary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/text_summary_title"
+                        android:layout_marginLeft="10dip"
+                        android:textColor="#444444"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                    <!-- Often works at... -->
+
                     <com.coffeeandpower.views.CustomFontView
                         android:id="@+id/textview_favorite_places"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/dummy_layout_1"
+                        android:layout_below="@+id/text_summary"
                         android:layout_marginLeft="10dip"
                         android:layout_marginTop="10dip"
                         android:text="@string/activity_user_details_often"
@@ -469,6 +502,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
+                            android:paddingTop="8dp"
                             android:visibility="gone" >
 
                             <ImageView
@@ -486,29 +520,27 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <!-- Review starts here -->
+                    <!-- Work Review -->
 
                     <LinearLayout
-                        android:id="@+id/layout_reviews"
+                        android:id="@+id/layout_work_review"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/verified_layout"
-                        android:layout_marginTop="10dip"
+                        android:layout_marginTop="15dip"
                         android:orientation="vertical"
                         android:visibility="gone" >
 
                         <com.coffeeandpower.views.CustomFontView
-                            android:id="@+id/textview_review_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dip"
-                            android:text="@string/reviews"
+                            android:text="Work"
                             android:textColor="#338585"
-                            android:textSize="24sp"
+                            android:textSize="26sp"
                             android:textStyle="bold" />
 
                         <View
-                            android:id="@+id/dummy_view_2"
                             android:layout_width="fill_parent"
                             android:layout_height="1dip"
                             android:layout_marginBottom="5dip"
@@ -517,16 +549,12 @@
                             android:layout_marginTop="5dip"
                             android:background="#999999" />
 
-                        <!-- Love Sub Review -->
-
                         <LinearLayout
-                            android:id="@+id/love_inflate"
-                            android:layout_width="fill_parent"
+                            android:id="@+id/work_inflate"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dip"
-                            android:orientation="vertical"
-                            android:paddingLeft="10dip"
-                            android:visibility="gone" >
+                            android:layout_marginLeft="10dip"
+                            android:orientation="vertical" >
                         </LinearLayout>
                     </LinearLayout>
 
@@ -536,19 +564,18 @@
                         android:id="@+id/layout_edu_review"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/layout_reviews"
+                        android:layout_below="@+id/layout_work_review"
                         android:layout_marginTop="15dip"
                         android:orientation="vertical"
                         android:visibility="gone" >
 
                         <com.coffeeandpower.views.CustomFontView
-                            android:id="@+id/textview_education_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dip"
                             android:text="@string/education"
                             android:textColor="#338585"
-                            android:textSize="24sp"
+                            android:textSize="26sp"
                             android:textStyle="bold" />
 
                         <View
@@ -564,8 +591,110 @@
                             android:id="@+id/edu_inflate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dip"
+                            android:layout_marginLeft="10dip"
                             android:orientation="vertical" >
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Review starts here -->
+
+                    <LinearLayout
+                        android:id="@+id/layout_reviews"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/layout_edu_review"
+                        android:layout_marginTop="10dip"
+                        android:orientation="vertical"
+                        android:visibility="gone" >
+
+                        <com.coffeeandpower.views.CustomFontView
+                            android:id="@+id/textview_review_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dip"
+                            android:text="@string/reviews"
+                            android:textColor="#338585"
+                            android:textSize="26sp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:id="@+id/dummy_view_2"
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dip"
+                            android:layout_marginBottom="5dip"
+                            android:layout_marginLeft="5dip"
+                            android:layout_marginRight="10dip"
+                            android:layout_marginTop="5dip"
+                            android:background="#999999" />
+
+                        <LinearLayout
+                            android:id="@+id/love_inflate"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dip"
+                            android:orientation="vertical"
+                            android:paddingLeft="10dip"
+                            android:visibility="gone" >
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Listings As Agent -->
+
+                    <LinearLayout
+                        android:id="@+id/layout_listings_agent"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/layout_reviews"
+                        android:layout_marginTop="10dip"
+                        android:orientation="vertical"
+                        android:visibility="gone" >
+
+                        <com.coffeeandpower.views.CustomFontView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dip"
+                            android:text="Listings as Agent"
+                            android:textColor="#338585"
+                            android:textSize="26sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:id="@+id/agent_inflate"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dip"
+                            android:orientation="vertical"
+                            android:paddingLeft="10dip" >
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Listings As Client -->
+
+                    <LinearLayout
+                        android:id="@+id/layout_listings_client"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/layout_listings_agent"
+                        android:layout_marginTop="10dip"
+                        android:orientation="vertical"
+                        android:visibility="gone" >
+
+                        <com.coffeeandpower.views.CustomFontView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dip"
+                            android:text="Listings as Client"
+                            android:textColor="#338585"
+                            android:textSize="26sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:id="@+id/client_inflate"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dip"
+                            android:orientation="vertical"
+                            android:paddingLeft="10dip" >
                         </LinearLayout>
                     </LinearLayout>
                 </RelativeLayout>
@@ -634,7 +763,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/check_in"
-        android:onClick="onClickCheckIn" />
+        android:onClick="onClickCheckIn" />
     -->
 
 </RelativeLayout>

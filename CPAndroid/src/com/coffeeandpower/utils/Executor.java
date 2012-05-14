@@ -19,6 +19,7 @@ public class Executor {
     public static final int HANDLE_VENUES_CLOSE_TO_LOCATION = 1604;
     public static final int HANDLE_SEND_FRIEND_REQUEST = 1605;
     public static final int HANDLE_ADD_PLACE = 1606;
+    public static final int HANDLE_GET_CONTACTS_LIST = 1607;
 
     private DataHolder result;
 
@@ -153,6 +154,18 @@ public class Executor {
 	    @Override
 	    public void run() {
 		result = AppCAP.getConnection().addPlace(name, AppCAP.getUserCoordinates());
+		handler.sendEmptyMessage(result.getHandlerCode());
+	    }
+	}).start();
+    }
+    
+    public synchronized void getContacts() {
+	progress.setMessage("Loading...");
+	progress.show();
+	new Thread(new Runnable() {
+	    @Override
+	    public void run() {
+		result = AppCAP.getConnection().getContactsList();
 		handler.sendEmptyMessage(result.getHandlerCode());
 	    }
 	}).start();

@@ -77,22 +77,23 @@ public class UserResume {
     private ArrayList<Review> reviews;
     private ArrayList<Education> education;
     private ArrayList<Work> work;
+    private ArrayList<Listing> agentListings;
+    private ArrayList<Listing> clienListings;
 
     private double locationLat;
     private double locationLng;
 
-    public UserResume(String nickName, String majorJob, String minorJob, String statusText, String urlPhoto,
-	    String urlPhotoSmall, String joined, String bio, int totalEarned, int totalTipsEarned,
-	    int totalMissionCountAsRecipient, int distinctTipPayers, int totalSpent, int totalTipsSpent,
-	    int totalMissionCountAsPayer, int distinctTipRecipients, double totalEarnedFromMe, int totalMissionsFromMe,
-	    int totalMissionsAsAgent, int totalMissionsAsClient, int totalMissions, String totalFunded, String skillSet,
-	    String hourlyBillingRate, String verifiedLinkedIn, String linkedInProfileLink, String verifiedFacebook,
-	    String facebookProfileLink, String verifiedMobile, String trusted, String jobTitle, int checkInId, int userId,
-	    double lat, double lng, String checkInDate, String checkIn, String checkOutDate, String checkOut, String foursquare,
-	    String foursquareId, String venueName, String venueAddress, String city, String state, String zip, String phone,
-	    String icon, String visible, String photoUrlUnUsed, String formattedPhone, int usersHere, String reviewsPage,
-	    int reviewsTotal, String reviewsRecords, String reviewsLoveReceived, ArrayList<Review> reviews,
-	    ArrayList<Education> education, ArrayList<Work> work, double locationLat, double locationLng) {
+    public UserResume(String nickName, String majorJob, String minorJob, String statusText, String urlPhoto, String urlPhotoSmall, String joined,
+	    String bio, int totalEarned, int totalTipsEarned, int totalMissionCountAsRecipient, int distinctTipPayers, int totalSpent,
+	    int totalTipsSpent, int totalMissionCountAsPayer, int distinctTipRecipients, double totalEarnedFromMe, int totalMissionsFromMe,
+	    int totalMissionsAsAgent, int totalMissionsAsClient, int totalMissions, String totalFunded, String skillSet, String hourlyBillingRate,
+	    String verifiedLinkedIn, String linkedInProfileLink, String verifiedFacebook, String facebookProfileLink, String verifiedMobile,
+	    String trusted, String jobTitle, int checkInId, int userId, double lat, double lng, String checkInDate, String checkIn,
+	    String checkOutDate, String checkOut, String foursquare, String foursquareId, String venueName, String venueAddress, String city,
+	    String state, String zip, String phone, String icon, String visible, String photoUrlUnUsed, String formattedPhone, int usersHere,
+	    String reviewsPage, int reviewsTotal, String reviewsRecords, String reviewsLoveReceived, ArrayList<Review> reviews,
+	    ArrayList<Education> education, ArrayList<Work> work, ArrayList<Listing> agentListings, ArrayList<Listing> clienListings,
+	    double locationLat, double locationLng) {
 
 	this.nickName = nickName;
 	this.majorJob = majorJob;
@@ -155,6 +156,24 @@ public class UserResume {
 	this.locationLng = locationLng;
 	this.education = education;
 	this.work = work;
+	this.agentListings = agentListings;
+	this.clienListings = clienListings;
+    }
+
+    public ArrayList<Listing> getAgentListings() {
+	return agentListings;
+    }
+
+    public void setAgentListings(ArrayList<Listing> agentListings) {
+	this.agentListings = agentListings;
+    }
+
+    public ArrayList<Listing> getClienListings() {
+	return clienListings;
+    }
+
+    public void setClienListings(ArrayList<Listing> clienListings) {
+	this.clienListings = clienListings;
     }
 
     public String getMajorJob() {

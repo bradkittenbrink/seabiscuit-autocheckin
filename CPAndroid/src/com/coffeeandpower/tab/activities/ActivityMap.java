@@ -163,6 +163,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		runOnUiThread(new Runnable() {
 		    @Override
 		    public void run() {
+			mapController.setZoom(17);
 			refreshMapDataSet();
 		    }
 		});
@@ -224,8 +225,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	    onBackPressed();
 	} else {
 	    myLocationOverlay.enableMyLocation();
-	    mapController.setZoom(17);
-
 	    // Temp solution for black space below mapView
 	    /*
 	     * if (myLocationOverlay != null) { if
