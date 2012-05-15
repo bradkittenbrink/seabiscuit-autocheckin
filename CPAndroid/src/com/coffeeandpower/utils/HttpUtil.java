@@ -534,11 +534,8 @@ public class HttpUtil {
      * @return
      */
     public DataHolder uploadUserProfilePhoto() {
-
 	DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
-
 	client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-
 	HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
 	MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -562,7 +559,7 @@ public class HttpUtil {
 
 		JSONObject json = new JSONObject(responseString);
 		if (json != null) {
-		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(Executor.HANDLE_UPLOAD_USER_PROFILE_PHOTO);
 		    result.setObject(json.opt("message"));
 
 		    JSONObject params = json.optJSONObject("params");
@@ -626,7 +623,7 @@ public class HttpUtil {
 	    if (responseString != null) {
 
 		if (responseString.equals("0")) {
-		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(Executor.HANDLE_SEND_CHAT_MESSAGE);
 		}
 	    }
 
@@ -768,7 +765,7 @@ public class HttpUtil {
 			    }
 			}
 			result.setObject(messages);
-			result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+			result.setHandlerCode(Executor.HANDLE_ONE_ON_ONE_CHAT_HISTORY);
 			return result;
 		    } else {
 			result.setHandlerCode(AppCAP.HTTP_ERROR);
@@ -837,7 +834,7 @@ public class HttpUtil {
 
 		    String message = json.optString("message");
 		    result.setResponseMessage(message);
-		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(Executor.HANDLE_SET_USER_PROFILE_DATA);
 		    return result;
 		}
 	    }
@@ -1022,7 +1019,7 @@ public class HttpUtil {
 	    HttpResponse response = client.execute(get);
 	    HttpEntity resEntity = response.getEntity();
 	    Log.d("LOG", "URI: " + get.getURI());
-	    
+
 	    String responseString = EntityUtils.toString(resEntity);
 	    AppCAP.logInFile(responseString);
 	    RootActivity.log("HttpUtil_getVenuesAndUsersWithCheckinsInBoundsDuringInterval: " + responseString);
@@ -1186,7 +1183,7 @@ public class HttpUtil {
 		    JSONObject objPayload = json.optJSONObject("payload");
 		    if (objPayload != null) {
 
-			int count = objPayload.optInt("count"); 
+			int count = objPayload.optInt("count");
 			JSONArray arrayUsers = objPayload.optJSONArray("users");
 			if (arrayUsers != null) {
 
@@ -1208,7 +1205,7 @@ public class HttpUtil {
 			    }
 			}
 		    }
-		    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+		    result.setHandlerCode(Executor.HANDLE_GET_CHECHED_USERS_IN_FOURSQUARE);
 		    result.setObject(usersArray);
 		    return result;
 		}
@@ -1808,11 +1805,8 @@ public class HttpUtil {
      * @return
      */
     public DataHolder enterInvitationCode(String invitationCode, double lat, double lng) {
-
 	DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
-
 	client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-
 	HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
 	List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -1841,8 +1835,114 @@ public class HttpUtil {
 			result.setHandlerCode(AppCAP.HTTP_ERROR);
 			result.setResponseMessage(json.optString("payload"));
 		    } else {
-			result.setHandlerCode(ActivityEnterInviteCode.HANDLE_ENTER_INV_CODE);
+			result.setHandlerCode(Executor.HANDLE_ENTER_INVITATION_CODE);
 		    }
+		    return result;
+		}
+	    }
+
+	} catch (UnsupportedEncodingException e) {
+	    e.printStackTrace();
+	    return result;
+
+	} catch (ClientProtocolException e) {
+	    e.printStackTrace();
+	    return result;
+
+	} catch (IOException e) {
+	    e.printStackTrace();
+	    return result;
+
+	} catch (JSONException e) {
+	    e.printStackTrace();
+	    return result;
+	}
+	return result;
+    }
+
+    /**
+     * Get venue chat
+     * 
+     * @param venueId
+     * @param lastChatIDString
+     * @return
+     */
+    public DataHolder getVenueChatForVenueWithID(String venueId, String lastChatIDString) {
+	DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+	client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+	HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API +"?action=getVenueChat" + "&venue_id=" + venueId + "&last_id=" + lastChatIDString );
+
+	Log.d("LOG", "chat: " + get.getURI());
+	try {
+	    // Execute HTTP Post Request
+	    HttpResponse response = client.execute(get);
+	    HttpEntity resEntity = response.getEntity();
+
+	    String responseString = EntityUtils.toString(resEntity);
+	    RootActivity.log("HttpUtil_getVenueChatForVenueWithID: " + responseString);
+
+	    if (responseString != null) {
+		JSONObject json = new JSONObject(responseString);
+		if (json != null) {
+
+		    result.setHandlerCode(Executor.HANDLE_GET_VENUE_CHAT);
+		    return result;
+		}
+	    }
+
+	} catch (UnsupportedEncodingException e) {
+	    e.printStackTrace();
+	    return result;
+
+	} catch (ClientProtocolException e) {
+	    e.printStackTrace();
+	    return result;
+
+	} catch (IOException e) {
+	    e.printStackTrace();
+	    return result;
+
+	} catch (JSONException e) {
+	    e.printStackTrace();
+	    return result;
+	}
+	return result;
+    }
+    
+    /**
+     * Send Venue Chat
+     * @param venueId
+     * @param lastChatIDString
+     * @param message
+     * @return
+     */
+    public DataHolder sendVenueChatForVenueWithID(String venueId, String lastChatIDString, String message) {
+	DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
+	client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+	HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+	List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+	try {
+	    params.add(new BasicNameValuePair("action", "getVenueChat"));
+	    params.add(new BasicNameValuePair("venue_id", venueId));
+	    params.add(new BasicNameValuePair("last_id", lastChatIDString));
+	    params.add(new BasicNameValuePair("message", message));
+	    post.setEntity(new UrlEncodedFormEntity(params));
+
+	    // Execute HTTP Post Request
+	    HttpResponse response = client.execute(post);
+	    HttpEntity resEntity = response.getEntity();
+
+	    String responseString = EntityUtils.toString(resEntity);
+	    RootActivity.log("HttpUtil_sendVenueChatForVenueWithID: " + responseString);
+
+	    if (responseString != null) {
+
+		JSONObject json = new JSONObject(responseString);
+		if (json != null) {
+
+		    result.setHandlerCode(Executor.HANDLE_SEND_VENUE_CHAT);
 		    return result;
 		}
 	    }
@@ -1906,7 +2006,7 @@ public class HttpUtil {
 			result.setHandlerCode(AppCAP.HTTP_ERROR);
 			result.setResponseMessage(json.optString("payload"));
 		    } else {
-			result.setHandlerCode(ActivityJobCategory.HANDLE_UPLOAD_JOBS_INFO);
+			result.setHandlerCode(Executor.HANDLE_SAVE_USER_JOB_CATEGORY);
 			result.setResponseMessage(json.optString("payload"));
 		    }
 		    return result;
@@ -2093,7 +2193,7 @@ public class HttpUtil {
 
 		    String res = json.optString("response");
 		    if (res.equals("1")) {
-			result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
+			result.setHandlerCode(Executor.HANDLE_CHECK_IN);
 		    }
 		    return result;
 		}
@@ -2534,19 +2634,17 @@ public class HttpUtil {
 			ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 
 			// Implement Transactions here
-			// !!!!!!!!!!!!!
-			//
-			//
 
-			result.setHandlerCode(ActivityWallet.HANDLE_GET_TRANSACTION_DATA);
+			result.setHandlerCode(Executor.HANDLE_GET_USER_TRANSACTION_DATA);
 			result.setObject(new UserTransaction(objPayload.optInt("userid"), objPayload.optString("nickname"), objPayload
 				.optString("username"), objPayload.optString("status_text"), objPayload.optString("status"), objPayload
 				.optString("active"), objPayload.optString("photo"), objPayload.optString("photo_large"),
 				objPayload.optDouble("lat"), objPayload.optDouble("lng"), objPayload.optInt("favorite_enabled"), objPayload
 					.optInt("favorite_count"), objPayload.optInt("my_favorite_count"), objPayload.optInt("money_received"),
 				objPayload.optInt("offers_paid"), objPayload.optInt("balance"), transactions));
+
+			return result;
 		    }
-		    return result;
 		}
 	    }
 	} catch (UnsupportedEncodingException e) {

@@ -57,15 +57,6 @@
                 android:padding="10dip"
                 android:text="@string/nickname" />
 
-            <ProgressBar
-                android:id="@+id/progress_nickname"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="6dip"
-                android:visibility="visible" />
-
             <ImageView
                 android:id="@+id/imageview_delete_nickname"
                 android:layout_width="wrap_content"
@@ -127,15 +118,6 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/default_avatar25" />
             </RelativeLayout>
-
-            <ProgressBar
-                android:id="@+id/progress_photo"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dip"
-                android:visibility="visible" />
         </RelativeLayout>
 
         <View
@@ -164,15 +146,6 @@
                 android:layout_marginRight="10dip"
                 android:background="@drawable/error"
                 android:onClick="onClickClearEmail"
-                android:visibility="visible" />
-
-            <ProgressBar
-                android:id="@+id/progress_email"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="6dip"
                 android:visibility="visible" />
 
             <EditText

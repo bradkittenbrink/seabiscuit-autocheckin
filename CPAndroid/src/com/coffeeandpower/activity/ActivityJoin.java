@@ -13,7 +13,9 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.views.CustomDialog;
-
+/**
+ * Unused
+ */
 public class ActivityJoin extends RootActivity {
 
     private EditText editTextEmail;

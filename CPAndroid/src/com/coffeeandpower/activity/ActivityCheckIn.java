@@ -2,11 +2,8 @@ package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
 
-import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -23,8 +20,9 @@ import com.coffeeandpower.cont.UserShort;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
+import com.coffeeandpower.utils.Executor;
+import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.Utils;
-import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.CustomSeek;
 import com.coffeeandpower.views.CustomSeek.HoursChangeListener;
@@ -34,8 +32,6 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
 public class ActivityCheckIn extends RootActivity {
-
-    private static final int GET_CHECKED_USERS = 8;
 
     // Map items
     private MapView mapView;
@@ -56,54 +52,19 @@ public class ActivityCheckIn extends RootActivity {
     private LinearLayout layoutPopUp;
 
     private EditText statusEditText;
-    private ProgressDialog progress;
 
     private int checkInDuration;
 
-    private DataHolder resultCheckIn;
-    private DataHolder resultGetUsersCheckedIn;
+    private DataHolder result;
+
+    private Executor exe;
 
     private ArrayList<UserShort> checkedInUsers;
 
     {
-	checkInDuration = 1; // default 1 hour checkin duration, slider
-			     // sets
+	checkInDuration = 1; // default 1 hour checkin duration, slider sets
 			     // other values
     }
-
-    private Handler handler = new Handler() {
-	@Override
-	public void handleMessage(Message msg) {
-	    super.handleMessage(msg);
-
-	    progress.dismiss();
-
-	    switch (msg.what) {
-
-	    case AppCAP.HTTP_ERROR:
-		new CustomDialog(ActivityCheckIn.this, "Error", "Internet connection error").show();
-		break;
-
-	    case AppCAP.HTTP_REQUEST_SUCCEEDED:
-		setResult(AppCAP.ACT_QUIT);
-		AppCAP.setUserCheckedIn(true);
-		ActivityCheckIn.this.finish();
-		break;
-
-	    case GET_CHECKED_USERS:
-		if (resultGetUsersCheckedIn.getObject() != null) {
-		    if (resultGetUsersCheckedIn.getObject() instanceof ArrayList<?>) {
-
-			checkedInUsers = (ArrayList<UserShort>) resultGetUsersCheckedIn.getObject();
-			populateUsersIfExist();
-		    }
-		}
-		break;
-
-	    }
-	}
-
-    };
 
     @Override
     protected boolean isRouteDisplayed() {
@@ -114,6 +75,20 @@ public class ActivityCheckIn extends RootActivity {
     protected void onCreate(Bundle icicle) {
 	super.onCreate(icicle);
 	setContentView(R.layout.activity_check_in);
+
+	// Executor
+	exe = new Executor(ActivityCheckIn.this);
+	exe.setExecutorListener(new ExecutorInterface() {
+	    @Override
+	    public void onErrorReceived() {
+		errorReceived();
+	    }
+
+	    @Override
+	    public void onActionFinished(int action) {
+		actionFinished(action);
+	    }
+	});
 
 	// Get Data from Intent
 	Bundle extras = getIntent().getExtras();
@@ -134,7 +109,6 @@ public class ActivityCheckIn extends RootActivity {
 	layoutForInflate = (LinearLayout) findViewById(R.id.inflate_users);
 	layoutPopUp = (LinearLayout) findViewById(R.id.layout_popup_info);
 	mapView = (MapView) findViewById(R.id.imageview_mapview);
-	progress = new ProgressDialog(this);
 	Drawable drawable = this.getResources().getDrawable(R.drawable.map_marker_iphone);
 	itemizedoverlay = new MyItemizedOverlay2(drawable);
 
@@ -144,7 +118,6 @@ public class ActivityCheckIn extends RootActivity {
 	textName.setText(venue.getName());
 	layoutCheckedInUsers.setVisibility(View.GONE);
 	layoutPopUp.setVisibility(View.GONE);
-	progress.setMessage("Checking in...");
 
 	// Set others
 	mapView.setClickable(false);
@@ -154,9 +127,8 @@ public class ActivityCheckIn extends RootActivity {
 
 	// Navigate map to location from intent data
 	GeoPoint point = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
-	GeoPoint pointForCenter = new GeoPoint(point.getLatitudeE6()
-		+ Utils.getScreenDependentItemSize(Utils.MAP_VER_OFFSET_FROM_CENTER), point.getLongitudeE6()
-		- Utils.getScreenDependentItemSize(Utils.MAP_HOR_OFFSET_FROM_CENTER));
+	GeoPoint pointForCenter = new GeoPoint(point.getLatitudeE6() + Utils.getScreenDependentItemSize(Utils.MAP_VER_OFFSET_FROM_CENTER),
+		point.getLongitudeE6() - Utils.getScreenDependentItemSize(Utils.MAP_HOR_OFFSET_FROM_CENTER));
 	mapController.animateTo(pointForCenter);
 	createMarker(point);
 
@@ -180,7 +152,6 @@ public class ActivityCheckIn extends RootActivity {
 
 	// Get users checked in venue
 	getUsersCheckedIn(venue);
-
     }
 
     /**
@@ -189,17 +160,7 @@ public class ActivityCheckIn extends RootActivity {
      * @param v
      */
     public void getUsersCheckedIn(Venue v) {
-	new Thread(new Runnable() {
-	    @Override
-	    public void run() {
-		resultGetUsersCheckedIn = AppCAP.getConnection().getUsersCheckedInAtFoursquareID(venue.getId());
-		if (resultGetUsersCheckedIn.getHandlerCode() == AppCAP.HTTP_ERROR) {
-		    handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-		} else {
-		    handler.sendEmptyMessage(GET_CHECKED_USERS);
-		}
-	    }
-	}).start();
+	exe.getUsersCheckedInAtFoursquareID(v.getId());
     }
 
     private void createMarker(GeoPoint point) {
@@ -224,20 +185,7 @@ public class ActivityCheckIn extends RootActivity {
 	final int checkInTime = (int) (System.currentTimeMillis() / 1000);
 	final int checkOutTime = checkInTime + checkInDuration * 3600;
 
-	progress.show();
-
-	new Thread(new Runnable() {
-	    @Override
-	    public void run() {
-		resultCheckIn = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime,
-			statusEditText.getText().toString());
-		if (resultCheckIn.getHandlerCode() == AppCAP.HTTP_ERROR) {
-		    handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-		} else {
-		    handler.sendEmptyMessage(resultCheckIn.getHandlerCode());
-		}
-	    }
-	}).start();
+	exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString());
     }
 
     private void populateUsersIfExist() {
@@ -275,6 +223,32 @@ public class ActivityCheckIn extends RootActivity {
 
 		}
 	    }
+	}
+    }
+
+    private void errorReceived() {
+
+    }
+
+    private void actionFinished(int action) {
+	result = exe.getResult();
+
+	switch (action) {
+
+	case Executor.HANDLE_CHECK_IN:
+	    setResult(AppCAP.ACT_QUIT);
+	    AppCAP.setUserCheckedIn(true);
+	    ActivityCheckIn.this.finish();
+	    break;
+
+	case Executor.HANDLE_GET_CHECHED_USERS_IN_FOURSQUARE:
+	    if (result.getObject() != null) {
+		if (result.getObject() instanceof ArrayList<?>) {
+		    checkedInUsers = (ArrayList<UserShort>) result.getObject();
+		    populateUsersIfExist();
+		}
+	    }
+	    break;
 	}
     }
 

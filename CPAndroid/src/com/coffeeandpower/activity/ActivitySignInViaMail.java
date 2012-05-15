@@ -15,7 +15,11 @@ import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.views.CustomDialog;
-
+/**
+ * Unused
+ * @author Desktop1
+ *
+ */
 public class ActivitySignInViaMail extends RootActivity {
 
     private EditText editTextPassword;

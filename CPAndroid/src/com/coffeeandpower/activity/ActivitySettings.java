@@ -7,15 +7,12 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,7 +20,6 @@ import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -32,19 +28,17 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
+import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.tab.activities.ActivityMap;
+import com.coffeeandpower.utils.Executor;
+import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.GraphicUtils;
-import com.coffeeandpower.utils.HttpUtil;
 import com.coffeeandpower.views.CustomDialog;
 
 public class ActivitySettings extends RootActivity {
 
     public static final String IMAGE_FOLDER = "/CoffeeAndPower";
 
-    private final static int HANDLE_EMAIL_CHANGE = 1222;
-    private final static int HANDLE_NICK_NAME_CHANGE = 1223;
-    private final static int HANDLE_USER_PROFILE_PHOTO = 1224;
-    private final static int HANDLE_UPLOAD_PROFILE_PHOTO = 1225;
     private final static int PROFILE_PIC_REQUEST = 1455;
 
     private User loggedUser;
@@ -56,81 +50,74 @@ public class ActivitySettings extends RootActivity {
     private ImageView imageClearEmailField;
     private ImageView imageProfilePhoto;
 
-    private ProgressBar progresNickName;
-    private ProgressBar progresEmail;
-    private ProgressBar progressPhoto;
-    private ProgressDialog progressUploadPhoto;
-
     private DataHolder result;
-    private DataHolder resultPhotoDownload;
-    private DataHolder resultPhotoUpload;
-    private DataHolder resultLoggedUser;
 
-    private Handler handler = new Handler() {
-	@Override
-	public void handleMessage(Message msg) {
-	    super.handleMessage(msg);
+    private Executor exe;
 
-	    progresEmail.setVisibility(View.GONE);
-	    progresNickName.setVisibility(View.GONE);
-	    progressPhoto.setVisibility(View.GONE);
-	    progressUploadPhoto.dismiss();
+    private ImageLoader imageLoader;
 
-	    switch (msg.what) {
+    private boolean isUserDataChanged;
 
-	    case AppCAP.HTTP_ERROR:
-		new CustomDialog(ActivitySettings.this, "Error", "Internet connection error").show();
-		break;
+    {
+	isUserDataChanged = false;
+    }
 
-	    case HANDLE_EMAIL_CHANGE:
-		textEmail.setVisibility(View.VISIBLE);
-		new CustomDialog(ActivitySettings.this, "Info", result.getResponseMessage()).show();
-		break;
+    private void errorReceived() {
 
-	    case HANDLE_NICK_NAME_CHANGE:
-		textNickName.setVisibility(View.VISIBLE);
-		new CustomDialog(ActivitySettings.this, "Info", result.getResponseMessage()).show();
-		break;
+    }
 
-	    case HANDLE_USER_PROFILE_PHOTO:
-		if (resultPhotoDownload != null) {
-		    if (resultPhotoDownload.getObject() != null) {
-			if (resultPhotoDownload.getObject() instanceof Bitmap) {
-			    imageProfilePhoto.setImageBitmap((Bitmap) resultPhotoDownload.getObject());
-			}
-		    } else {
-			imageProfilePhoto.setBackgroundResource(R.drawable.default_avatar25);
-		    }
+    private void actionFinished(int action) {
+	result = exe.getResult();
 
-		}
-		break;
+	switch (action) {
 
-	    case AppCAP.HTTP_REQUEST_SUCCEEDED:
-		if (resultLoggedUser.getObject() != null) {
-		    loggedUser = (User) resultLoggedUser.getObject();
-		    useUserData();
-		}
-		break;
+	case Executor.HANDLE_SET_USER_PROFILE_DATA:
+	    textEmail.setVisibility(View.VISIBLE);
+	    textNickName.setVisibility(View.VISIBLE);
+	    new CustomDialog(ActivitySettings.this, "Info", result.getResponseMessage()).show();
+	    isUserDataChanged = true;
+	    break;
 
-	    case HANDLE_UPLOAD_PROFILE_PHOTO:
-		if (resultPhotoUpload != null) {
-		    if (resultPhotoUpload.getObject() != null) {
-			if (resultPhotoUpload.getObject() instanceof String) {
-			    new CustomDialog(ActivitySettings.this, "Info", (String) resultPhotoUpload.getObject()).show();
-			    loadProfilePhoto();
-			}
-		    }
-		}
-		break;
-
+	case Executor.HANDLE_GET_USER_DATA:
+	    if (result.getObject() != null) {
+		loggedUser = (User) result.getObject();
+		useUserData();
 	    }
+	    break;
+
+	case Executor.HANDLE_UPLOAD_USER_PROFILE_PHOTO:
+	    if (result != null) {
+		if (result.getObject() != null) {
+		    if (result.getObject() instanceof String) {
+			new CustomDialog(ActivitySettings.this, "Info", (String) result.getObject()).show();
+			loadProfilePhoto();
+		    }
+		}
+	    }
+	    break;
 	}
-    };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_settings);
+
+	// Executor
+	exe = new Executor(ActivitySettings.this);
+	exe.setExecutorListener(new ExecutorInterface() {
+	    @Override
+	    public void onErrorReceived() {
+		errorReceived();
+	    }
+
+	    @Override
+	    public void onActionFinished(int action) {
+		actionFinished(action);
+	    }
+	});
+
+	imageLoader = new ImageLoader(this);
 
 	// Views
 	textNickName = (EditText) findViewById(R.id.edit_nickname);
@@ -138,17 +125,8 @@ public class ActivitySettings extends RootActivity {
 	imageClearNickNameField = (ImageView) findViewById(R.id.imageview_delete_nickname);
 	imageClearEmailField = (ImageView) findViewById(R.id.imageview_delete_email);
 	imageProfilePhoto = (ImageView) findViewById(R.id.imageview_your_face_here);
-	progresNickName = (ProgressBar) findViewById(R.id.progress_nickname);
-	progresEmail = (ProgressBar) findViewById(R.id.progress_email);
-	progressPhoto = (ProgressBar) findViewById(R.id.progress_photo);
-	progressUploadPhoto = new ProgressDialog(this);
-
 	imageClearEmailField.setVisibility(View.GONE);
 	imageClearNickNameField.setVisibility(View.GONE);
-	progresEmail.setVisibility(View.GONE);
-	progresNickName.setVisibility(View.GONE);
-	progressPhoto.setVisibility(View.GONE);
-	progressUploadPhoto.setMessage("Uploading photo...");
 
 	textNickName.setOnFocusChangeListener(new OnFocusChangeListener() {
 	    @Override
@@ -162,18 +140,7 @@ public class ActivitySettings extends RootActivity {
 	});
 
 	// Get logged user
-	progresNickName.setVisibility(View.GONE);
-	new Thread(new Runnable() {
-	    @Override
-	    public void run() {
-		resultLoggedUser = AppCAP.getConnection().getUserData();
-		if (resultLoggedUser.getHandlerCode() == AppCAP.HTTP_ERROR) {
-		    handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-		} else {
-		    handler.sendEmptyMessage(resultLoggedUser.getHandlerCode());
-		}
-	    }
-	}).start();
+	exe.getUserData();
 
 	// Load profile image if exist
 	loadProfilePhoto();
@@ -186,26 +153,11 @@ public class ActivitySettings extends RootActivity {
 		switch (actionId) {
 		case EditorInfo.IME_ACTION_SEND:
 		    textNickName.setVisibility(View.GONE);
-		    progresNickName.setVisibility(View.VISIBLE);
 
 		    if (loggedUser != null) {
 			loggedUser.setNickName(textNickName.getText().toString());
-
-			new Thread(new Runnable() {
-			    @Override
-			    public void run() {
-				result = AppCAP.getConnection().setUserProfileData(loggedUser, false);
-				if (result.getHandlerCode() == AppCAP.HTTP_ERROR) {
-				    handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-				} else {
-				    handler.sendEmptyMessage(HANDLE_NICK_NAME_CHANGE);
-				}
-			    }
-			}).start();
+			exe.setUserProfileData(loggedUser, false);
 		    }
-		    break;
-
-		default:
 		    break;
 		}
 		return false;
@@ -231,22 +183,10 @@ public class ActivitySettings extends RootActivity {
 		switch (actionId) {
 		case EditorInfo.IME_ACTION_SEND:
 		    textEmail.setVisibility(View.GONE);
-		    progresEmail.setVisibility(View.VISIBLE);
 
 		    if (loggedUser != null) {
 			loggedUser.setUserName(textEmail.getText().toString());
-
-			new Thread(new Runnable() {
-			    @Override
-			    public void run() {
-				result = AppCAP.getConnection().setUserProfileData(loggedUser, true);
-				if (result.getHandlerCode() == AppCAP.HTTP_ERROR) {
-				    handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-				} else {
-				    handler.sendEmptyMessage(HANDLE_EMAIL_CHANGE);
-				}
-			    }
-			}).start();
+			exe.setUserProfileData(loggedUser, true);
 		    }
 		    break;
 
@@ -274,35 +214,18 @@ public class ActivitySettings extends RootActivity {
      */
     private void loadProfilePhoto() {
 	if (AppCAP.getLocalUserPhotoURL().length() > 5) {
-
-	    progressPhoto.setVisibility(View.VISIBLE);
-
-	    new Thread(new Runnable() {
-		@Override
-		public void run() {
-		    resultPhotoDownload = HttpUtil.getBitmapFromURL(AppCAP.getLocalUserPhotoURL());
-		    if (resultPhotoDownload.getHandlerCode() == AppCAP.HTTP_ERROR) {
-			handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-		    } else {
-			handler.sendEmptyMessage(HANDLE_USER_PROFILE_PHOTO);
-		    }
-		}
-	    }).start();
-	} else {
-	    imageProfilePhoto.setBackgroundResource(R.drawable.default_avatar25);
+	    imageLoader.DisplayImage(AppCAP.getLocalUserPhotoURL(), imageProfilePhoto, R.drawable.default_avatar25, 70);
 	}
     }
 
     @Override
     protected void onResume() {
-	// TODO Auto-generated method stub
 	super.onResume();
     }
 
     private Uri imageUri;
 
     public void onClickPhoto(View v) {
-
 	// Create folders on sdcard for putting images and audio
 	File dir = new File(Environment.getExternalStorageDirectory() + IMAGE_FOLDER);
 	boolean res = dir.mkdir();
@@ -314,7 +237,6 @@ public class ActivitySettings extends RootActivity {
 
 	imageUri = Uri.fromFile(photo);
 	startActivityForResult(cameraIntent, PROFILE_PIC_REQUEST);
-
     }
 
     @Override
@@ -349,18 +271,7 @@ public class ActivitySettings extends RootActivity {
 		    }
 
 		    // Upload user Photo
-		    progressUploadPhoto.show();
-		    new Thread(new Runnable() {
-			@Override
-			public void run() {
-			    resultPhotoUpload = AppCAP.getConnection().uploadUserProfilePhoto();
-			    if (resultPhotoUpload.getHandlerCode() == AppCAP.HTTP_ERROR) {
-				handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-			    } else {
-				handler.sendEmptyMessage(HANDLE_UPLOAD_PROFILE_PHOTO);
-			    }
-			}
-		    }).start();
+		    exe.uploadUserProfilePhoto();
 
 		} else {
 		    new CustomDialog(ActivitySettings.this, "Info", "Unable to save picture! We are working on that...").show();
@@ -385,17 +296,8 @@ public class ActivitySettings extends RootActivity {
 
     @Override
     public void onBackPressed() {
-
-	if (result != null) {
-	    if (result.getObject() != null) {
-		if ((Boolean) result.getObject()) {
-
-		    // Nick name or Email was changed, so
-		    // get user data again,
-		    // refresh it
-		    setResult(ActivityMap.ACCOUNT_CHANGED);
-		}
-	    }
+	if (isUserDataChanged) {
+	    setResult(ActivityMap.ACCOUNT_CHANGED);
 	}
 	super.onBackPressed();
     }

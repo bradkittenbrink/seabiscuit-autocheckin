@@ -12,8 +12,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.coffeeandpower.urbanairship.IntentReceiver;
@@ -50,14 +48,15 @@ public class AppCAP extends Application {
     private static final String TAG_START_LOGIN_PAGE_FROM_CONTACTS = "tag_start_login_page_from_contacts";
     private static final String TAG_IS_LOGGED_IN = "tag_is_logged_in";
     private static final String TAG_SCREEN_WIDTH = "tag_screen_width";
-
+    private static final String TAG_FIRST_START = "tag_first_start";
+    private static final String TAG_INFO_DIALOG= "tag_info_dialog";
+    
     // Notification settings
     private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
     private static final String TAG_NOTIFICATION_TOGGLE = "tag_notification_toggle";
 
-    public static final String URL_WEB_SERVICE = "https://coffeeandpower.com/"; // production
-    // public static final String URL_WEB_SERVICE =
-    // "http://staging.coffeeandpower.com/"; // staging
+    //public static final String URL_WEB_SERVICE = "https://candp.me/"; // production
+    public static final String URL_WEB_SERVICE = "https://staging.candp.me/"; // staging
     public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
     public static final String FOURSQUARE_OAUTH = "BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4";
     public static final String URL_FUNDS = "http://www.coffeeandpower.com/m/?ios#addFundsiPhone";
@@ -123,6 +122,22 @@ public class AppCAP extends Application {
     private static SharedPreferences getSharedPreferences() {
 	return instance.getSharedPreferences(AppCAP.TAG, MODE_PRIVATE);
     }
+    
+    public static boolean isFirstStart(){
+	return getSharedPreferences().getBoolean(TAG_FIRST_START, true);
+    }
+    
+    public static void setNotFirstStart(){
+	getSharedPreferences().edit().putBoolean(TAG_FIRST_START, false).commit();
+    }
+    
+    public static boolean shouldShowInfoDialog(){
+	return getSharedPreferences().getBoolean(TAG_INFO_DIALOG, true);
+    }
+    
+    public static void dontShowInfoDialog(){
+	getSharedPreferences().edit().putBoolean(TAG_INFO_DIALOG, false).commit();
+    }
 
     public static boolean isMetrics() {
 	return getSharedPreferences().getBoolean(TAG_METRIC_SYSTEM, false);
@@ -151,7 +166,7 @@ public class AppCAP extends Application {
     public static String cleanResponseString(String data) {
 	String retS = data;
 	data = Html.fromHtml(data).toString();
-	
+
 	try {
 	    retS = URLDecoder.decode(data, "UTF-8");
 	} catch (UnsupportedEncodingException e) {

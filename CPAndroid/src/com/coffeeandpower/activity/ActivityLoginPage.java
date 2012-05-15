@@ -73,8 +73,7 @@ public class ActivityLoginPage extends RootActivity {
      */
     private void connectLinkedIn() {
 	lastAuthorize = new LinkedIn();
-	lastAuthorize.initialize((String) getResources().getText(R.string.linkedInApiKey),
-		(String) getResources().getText(R.string.linkedInApiSec));
+	lastAuthorize.initialize((String) getResources().getText(R.string.linkedInApiKey), (String) getResources().getText(R.string.linkedInApiSec));
 	if (AppCAP.getUserLinkedInID().equals("")) {
 	    new Thread(new OAuthAuthorizeAction(lastAuthorize, new ActivityUtils.JoinProgressHandler(this), null)).start();
 	} else {
@@ -93,16 +92,11 @@ public class ActivityLoginPage extends RootActivity {
 	    return;
 
 	if (lastAuthorize.verify(verifier)) {
-	    new Thread(new OAuthSignUpAction(lastAuthorize, // the
-							    // service
-							    // provider
-		    new ActivityUtils.JoinProgressHandler(this), // the
-								 // progress
-								 // handler
-								 // for
-								 // this
-								 // action
-		    new LoginAction(lastAuthorize, new ActivityUtils.LoginProgressHandler(this), null))).start();
+	    // the service provider
+	    new Thread(new OAuthSignUpAction(lastAuthorize,
+	    // the progress handler for this action
+		    new ActivityUtils.JoinProgressHandler(this), new LoginAction(lastAuthorize, new ActivityUtils.LoginProgressHandler(this), null)))
+		    .start();
 	}
     }
 
@@ -163,16 +157,11 @@ public class ActivityLoginPage extends RootActivity {
 	    if (result != null) {
 		handler.sendEmptyMessage(result.getHandlerCode());
 		if (result.getHandlerCode() == AppCAP.ERROR_SUCCEEDED_SHOW_MESS)
-		    service.clearSettings(); // assume
-					     // that
-					     // the
-					     // tokens
-					     // have
-					     // expired...
+		    service.clearSettings();
+		// assume that the tokens have expired...
 	    } else {
 		handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 	    }
-
 	}
     }
 }

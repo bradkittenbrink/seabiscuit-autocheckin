@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -78,7 +77,6 @@ public class ActivityUserDetails extends RootActivity {
 
     private Executor exe;
 
-    // User Resume
     private UserResume userResumeData;
 
     private ArrayList<Venue> favouriteVenues;
@@ -172,7 +170,7 @@ public class ActivityUserDetails extends RootActivity {
 
 	// Load user resume data
 	if (mud != null) {
-	    exe.getUserResume(mud.getUserId());
+	    exe.getResumeForUserId(mud.getUserId());
 	}
 
     }
@@ -511,7 +509,7 @@ public class ActivityUserDetails extends RootActivity {
 		public void onClick(View v) {
 		    if (((EditText) dialog.findViewById(R.id.edit_review)).getText().toString().length() > 0) {
 			dialog.dismiss();
-			exe.sendReviewProp(userResumeData, ((EditText) dialog.findViewById(R.id.edit_review)).getText().toString());
+			exe.sendReview(userResumeData, ((EditText) dialog.findViewById(R.id.edit_review)).getText().toString());
 		    } else {
 			dialog.dismiss();
 			Toast.makeText(ActivityUserDetails.this, "Review can't be empty!", Toast.LENGTH_SHORT).show();

@@ -191,10 +191,6 @@ public class ActivityPlaceDetails extends RootActivity {
 	}
     }
 
-    public VenueSmart getVenueSmart() {
-	return selectedVenue;
-    }
-
     public void onClickAddress(View v) {
 	AlertDialog.Builder builder = new AlertDialog.Builder(ActivityPlaceDetails.this);
 	builder.setTitle("Directions");
@@ -213,6 +209,9 @@ public class ActivityPlaceDetails extends RootActivity {
 		    }
 		});
 	builder.create().show();
+	
+	// TEST!!!
+	onClickChat(v);
     }
 
     public void onClickPhone(View v) {
@@ -348,5 +347,11 @@ public class ActivityPlaceDetails extends RootActivity {
 	    }
 	    break;
 	}
+    }
+    
+    public void onClickChat(View v){
+	Intent intent = new Intent(ActivityPlaceDetails.this, ActivityPlaceChat.class);
+	intent.putExtra("venue_id", selectedVenue.getFoursquareId());
+	startActivity(intent);
     }
 }

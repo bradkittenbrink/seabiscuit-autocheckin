@@ -26,6 +26,7 @@ import android.widget.ToggleButton;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
@@ -43,6 +44,7 @@ import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
+import com.coffeeandpower.views.CustomDialog.ClickListener;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.google.android.maps.GeoPoint;
@@ -220,21 +222,31 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
     protected void onResume() {
 	super.onResume();
 
-	if (AppCAP.shouldFinishActivities()) {
-	    startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
-	    onBackPressed();
+	if (AppCAP.isFirstStart()) {
+	    startActivity(new Intent(ActivityMap.this, ActivityEnterInviteCode.class));
+	} else if (AppCAP.shouldShowInfoDialog()) {
+	    CustomDialog cd = new CustomDialog(ActivityMap.this,
+		    "Coffee & Power requires an invite for full membership but you have 30 days of full access to try us out.",
+		    "If you get an invite from another C&P user you can enter it anytime by going to the Account page/Enter invite code tab.");
+	    cd.setOnClickListener(new ClickListener() {
+		@Override
+		public void onClick() {
+		    AppCAP.dontShowInfoDialog();
+		    myLocationOverlay.enableMyLocation();
+		    refreshMapDataSet();
+		}
+	    });
+	    cd.show();
 	} else {
-	    myLocationOverlay.enableMyLocation();
-	    // Temp solution for black space below mapView
-	    /*
-	     * if (myLocationOverlay != null) { if
-	     * (myLocationOverlay.getMyLocation() != null) {
-	     * mapController.animateTo(myLocationOverlay.getMyLocation());
-	     * mapController.setZoom(17); } }
-	     */
+	    if (AppCAP.shouldFinishActivities()) {
+		startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
+		onBackPressed();
+	    } else {
+		myLocationOverlay.enableMyLocation();
 
-	    // Refresh Data
-	    refreshMapDataSet();
+		// Refresh Data
+		refreshMapDataSet();
+	    }
 	}
     }
 

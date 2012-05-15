@@ -5,11 +5,7 @@ import java.util.ArrayList;
 import kankan.wheel.widget.OnWheelScrollListener;
 import kankan.wheel.widget.WheelView;
 import kankan.wheel.widget.adapters.ArrayWheelAdapter;
-import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,12 +16,10 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserResume;
-import com.coffeeandpower.views.CustomDialog;
+import com.coffeeandpower.utils.Executor;
+import com.coffeeandpower.utils.Executor.ExecutorInterface;
 
 public class ActivityJobCategory extends RootActivity {
-
-    public static final int HANDLE_UPLOAD_JOBS_INFO = 1500;
-    private static final int HANDLE_GET_USER_RESUME = 1222;
 
     private View timePickerLayout;
 
@@ -38,9 +32,9 @@ public class ActivityJobCategory extends RootActivity {
 
     private DataHolder result;
 
-    private UserResume userResumeData;
+    private Executor exe;
 
-    private ProgressDialog progress;
+    private UserResume userResumeData;
 
     {
 	isMajorSelected = false;
@@ -48,54 +42,31 @@ public class ActivityJobCategory extends RootActivity {
 	selectedMinorJob = "";
     }
 
-    private Handler handler = new Handler() {
-	@Override
-	public void handleMessage(Message msg) {
-	    super.handleMessage(msg);
-
-	    progress.dismiss();
-
-	    switch (msg.what) {
-	    case AppCAP.HTTP_ERROR:
-		new CustomDialog(ActivityJobCategory.this, "Error", result.getResponseMessage()).show();
-		break;
-
-	    case HANDLE_UPLOAD_JOBS_INFO:
-		Toast.makeText(ActivityJobCategory.this, result.getResponseMessage(), Toast.LENGTH_SHORT).show();
-		finish();
-		break;
-
-	    case HANDLE_GET_USER_RESUME:
-		if (result.getObject() != null) {
-		    if (result.getObject() instanceof ArrayList<?>) {
-			ArrayList<Object> tempArray = (ArrayList<Object>) result.getObject();
-			if (tempArray != null) {
-			    if (!tempArray.isEmpty()) {
-				if (tempArray.get(0) instanceof UserResume) {
-				    userResumeData = (UserResume) tempArray.get(0);
-				    updateUserDataInUI();
-				}
-			    }
-			}
-		    }
-		}
-		break;
-	    }
-	}
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_job_category);
 
+	// Executor
+	exe = new Executor(ActivityJobCategory.this);
+	exe.setExecutorListener(new ExecutorInterface() {
+	    @Override
+	    public void onErrorReceived() {
+		errorReceived();
+	    }
+
+	    @Override
+	    public void onActionFinished(int action) {
+		actionFinished(action);
+	    }
+	});
+
 	getTimePickerLayout().setVisibility(View.GONE);
-	progress = new ProgressDialog(this);
 
 	// Kan Kan Wheel adapter
 	final WheelView wheelView = (WheelView) findViewById(R.id.wheel_jobs);
-	jobAdapter = new ArrayWheelAdapter<String>(this, new String[] { "engineering", "design", "marketing", "legal", "finance",
-		"admin", "investor", "business development", "other" });
+	jobAdapter = new ArrayWheelAdapter<String>(this, new String[] { "engineering", "design", "marketing", "legal", "finance", "admin",
+		"investor", "business development", "other" });
 
 	jobAdapter.setItemResource(R.layout.wheel_text_item);
 	wheelView.setViewAdapter(jobAdapter);
@@ -114,10 +85,41 @@ public class ActivityJobCategory extends RootActivity {
 		selectedMajorJob = (String) jobAdapter.getItemText(wheel.getCurrentItem());
 	    } else {
 		selectedMinorJob = (String) jobAdapter.getItemText(wheel.getCurrentItem());
-		Log.d("LOG", "wheel: " + selectedMinorJob);
 	    }
 	}
     };
+
+    private void errorReceived() {
+
+    }
+
+    private void actionFinished(int action) {
+	result = exe.getResult();
+
+	switch (action) {
+
+	case Executor.HANDLE_SAVE_USER_JOB_CATEGORY:
+	    Toast.makeText(ActivityJobCategory.this, result.getResponseMessage(), Toast.LENGTH_SHORT).show();
+	    finish();
+	    break;
+
+	case Executor.HANDLE_GET_USER_RESUME:
+	    if (result.getObject() != null) {
+		if (result.getObject() instanceof ArrayList<?>) {
+		    ArrayList<Object> tempArray = (ArrayList<Object>) result.getObject();
+		    if (tempArray != null) {
+			if (!tempArray.isEmpty()) {
+			    if (tempArray.get(0) instanceof UserResume) {
+				userResumeData = (UserResume) tempArray.get(0);
+				updateUserDataInUI();
+			    }
+			}
+		    }
+		}
+	    }
+	    break;
+	}
+    }
 
     private View getTimePickerLayout() {
 	if (timePickerLayout == null) {
@@ -161,17 +163,8 @@ public class ActivityJobCategory extends RootActivity {
     }
 
     private void uploadJobs() {
-	progress.setMessage("Uploading...");
-
 	if (selectedMajorJob.length() > 0 || selectedMinorJob.length() > 0) {
-	    progress.show();
-	    new Thread(new Runnable() {
-		@Override
-		public void run() {
-		    result = AppCAP.getConnection().saveUserJobCategory(selectedMajorJob, selectedMinorJob);
-		    handler.sendEmptyMessage(result.getHandlerCode());
-		}
-	    }).start();
+	    exe.saveUserJobCategory(selectedMajorJob, selectedMinorJob);
 	} else {
 	    finish();
 	}
@@ -180,20 +173,8 @@ public class ActivityJobCategory extends RootActivity {
     @Override
     protected void onResume() {
 	super.onResume();
-
-	progress.setMessage("Loading...");
-	progress.show();
-	new Thread(new Runnable() {
-	    @Override
-	    public void run() {
-		result = AppCAP.getConnection().getResumeForUserId(AppCAP.getLoggedInUserId());
-		if (result.getHandlerCode() == AppCAP.HTTP_ERROR) {
-		    handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-		} else {
-		    handler.sendEmptyMessage(HANDLE_GET_USER_RESUME);
-		}
-	    }
-	}).start();
+	
+	exe.getResumeForUserId(AppCAP.getLoggedInUserId());
     }
 
     public void onClickBack(View v) {

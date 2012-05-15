@@ -2,67 +2,57 @@ package com.coffeeandpower.activity;
 
 import java.text.DecimalFormat;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
-import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserTransaction;
+import com.coffeeandpower.utils.Executor;
+import com.coffeeandpower.utils.Executor.ExecutorInterface;
 
 public class ActivityWallet extends RootActivity {
 
-    public static final int HANDLE_GET_TRANSACTION_DATA = 1500;
-
-    private ProgressDialog progress;
-
     private DataHolder result;
+    
+    private Executor exe;
 
     private UserTransaction transaction;
-
-    private Handler handler = new Handler() {
-	@Override
-	public void handleMessage(Message msg) {
-	    super.handleMessage(msg);
-
-	    progress.dismiss();
-
-	    switch (msg.what) {
-
-	    case AppCAP.HTTP_ERROR:
-
-		break;
-
-	    case HANDLE_GET_TRANSACTION_DATA:
-		if (result.getObject() instanceof UserTransaction) {
-		    transaction = (UserTransaction) result.getObject();
-		    fillUserData();
-		}
-		break;
-	    }
-	}
-
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_wallet);
 
-	progress = new ProgressDialog(this);
+	// Executor
+	exe = new Executor(ActivityWallet.this);
+	exe.setExecutorListener(new ExecutorInterface() {
+	    @Override
+	    public void onErrorReceived() {
+	    }
 
+	    @Override
+	    public void onActionFinished(int action) {
+		result = exe.getResult();
+		switch (action) {
+		
+		case Executor.HANDLE_GET_USER_TRANSACTION_DATA:
+		    if (result.getObject() instanceof UserTransaction) {
+			    transaction = (UserTransaction) result.getObject();
+			    fillUserData();
+			}
+		    break;
+		}
+	    }
+	});
     }
 
     @Override
     protected void onResume() {
 	super.onResume();
-
 	getTransactionData();
     }
 
@@ -75,15 +65,7 @@ public class ActivityWallet extends RootActivity {
 
     // Get transaction Data
     private void getTransactionData() {
-	progress.setMessage("Loading...");
-	progress.show();
-	new Thread(new Runnable() {
-	    @Override
-	    public void run() {
-		result = AppCAP.getConnection().getUserTransactionData();
-		handler.sendEmptyMessage(result.getHandlerCode());
-	    }
-	}).start();
+	exe.getUserTransactionData();
     }
 
     public void onClickAddFunds(View v) {

@@ -138,7 +138,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 		    (Button) findViewById(R.id.btn_from), false);
 	    
 	    // Get contacts list
-	    exe.getContacts();
+	    exe.getContactsList();
 	}
     }
     
