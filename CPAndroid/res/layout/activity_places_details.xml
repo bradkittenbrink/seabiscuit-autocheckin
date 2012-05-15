@@ -98,9 +98,9 @@
                             android:gravity="center"
                             android:onClick="onClickPhone"
                             android:singleLine="true"
-                            android:visibility="gone"
                             android:textColor="#ffffff"
-                            android:textSize="16dip" />
+                            android:textSize="16dip"
+                            android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -116,6 +116,55 @@
                 android:layout_height="fill_parent"
                 android:background="@drawable/texture" >
 
+                <RelativeLayout
+                    android:id="@+id/chat_places"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dip"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="1dip"
+                    android:background="@drawable/bg_silver_chat"
+                    android:clickable="true"
+                    android:onClick="onClickChat" >
+
+                    <TextView
+                        android:id="@+id/textview_chat_places"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:drawableRight="@drawable/icon_number_of_people_here"
+                        android:padding="7dip"
+                        android:text="1"
+                        android:textColor="#c46600"
+                        android:textSize="18dip" />
+
+                    <View
+                        android:id="@+id/view_line"
+                        android:layout_width="1dip"
+                        android:layout_height="fill_parent"
+                        android:layout_toRightOf="@+id/textview_chat_places"
+                        android:background="#d0d0d0" />
+
+                    <com.coffeeandpower.views.CustomFontView
+                        android:id="@+id/textview_chat_places_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dip"
+                        android:layout_toRightOf="@+id/view_line"
+                        android:text="Milence"
+                        android:textColor="#c46600"
+                        android:textSize="18dip" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dip"
+                        android:background="@drawable/list_arrow_light_grey" />
+                </RelativeLayout>
+
                 <View
                     android:id="@+id/shadow_view"
                     android:layout_width="fill_parent"
@@ -128,9 +177,10 @@
                     android:id="@+id/textview_here"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/shadow_view"
+                    android:layout_below="@+id/chat_places"
                     android:layout_marginLeft="15dip"
-                    android:layout_marginTop="5dip"
+                    android:layout_marginRight="15dip"
+                    android:layout_marginTop="15dip"
                     android:text="@string/activity_places_details_here"
                     android:textColor="#108086"
                     android:textSize="20sp"
