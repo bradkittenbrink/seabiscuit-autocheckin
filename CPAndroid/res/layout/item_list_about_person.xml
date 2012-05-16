@@ -46,14 +46,14 @@
                 android:paddingLeft="5dp"
                 android:paddingTop="3dp" >
 
-                <TextView
+                <com.coffeeandpower.views.CustomFontView
                     android:id="@+id/textview_persone_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
+                    android:paddingTop="5dp"
                     android:singleLine="true"
                     android:textColor="#ffdddddd"
-                    android:textSize="22sp"
+                    android:textSize="26sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="5dip"
                     android:singleLine="true"
-                    android:textColor="#ffdddddd"
+                    android:textColor="#BABABA"
                     android:textSize="14sp" />
 
                 <TextView
@@ -81,13 +81,14 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="5dip"
                     android:orientation="horizontal"
-                    android:paddingTop="5dp" >
+                    android:paddingTop="3dp" >
 
                     <TextView
                         android:id="@+id/textview_place"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
+                        android:textColor="#BABABA"
                         android:gravity="bottom"
                         android:singleLine="true"
                         android:textSize="13sp" />

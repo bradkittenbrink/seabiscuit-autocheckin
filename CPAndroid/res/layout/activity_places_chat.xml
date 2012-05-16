@@ -39,7 +39,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight=" 10dip"
-            android:background="@drawable/icon_number_of_people_here" />
+            android:background="@drawable/btn_number_of_people" />
     </RelativeLayout>
 
     <ListView

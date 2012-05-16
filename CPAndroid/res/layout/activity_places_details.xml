@@ -142,6 +142,9 @@
                         android:id="@+id/view_line"
                         android:layout_width="1dip"
                         android:layout_height="fill_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginBottom="1dip"
+                        android:layout_marginTop="1dip"
                         android:layout_toRightOf="@+id/textview_chat_places"
                         android:background="#d0d0d0" />
 

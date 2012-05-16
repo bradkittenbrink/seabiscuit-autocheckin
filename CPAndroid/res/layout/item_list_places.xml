@@ -25,24 +25,24 @@
         android:paddingLeft="5dp"
         android:paddingTop="3dp" >
 
-        <TextView
+        <com.coffeeandpower.views.CustomFontView
             android:id="@+id/textview_place_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
             android:singleLine="true"
-            android:textColor="#ffffffff"
-            android:textSize="20sp"
+            android:textColor="#ffffff"
+            android:textSize="26sp"
             android:textStyle="bold" />
 
-        <TextView
+        <com.coffeeandpower.views.CustomFontView
             android:id="@+id/textview_place_adderes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
             android:singleLine="true"
-            android:textColor="#bcbcbc"
-            android:textSize="16sp"
+            android:textColor="#BABABA"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -54,14 +54,15 @@
             android:orientation="horizontal"
             android:paddingTop="10dp" >
 
-            <TextView
+            <com.coffeeandpower.views.CustomFontView
                 android:id="@+id/textview_how_many_people"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
+                android:textColor="#BABABA"
                 android:gravity="bottom"
                 android:singleLine="true"
-                android:textSize="13sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -71,8 +72,8 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:singleLine="true"
-                android:textColor="#ffffffff"
-                android:textSize="13sp" />
+                android:textColor="#BABABA"
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 
