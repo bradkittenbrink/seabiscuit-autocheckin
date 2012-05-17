@@ -3,6 +3,7 @@ package com.coffeeandpower.tab.activities;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -16,8 +17,8 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.utils.Executor;
-import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
+import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
@@ -29,11 +30,20 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 
 	private HorizontalPagerModified pager;
 
+
 	private UserAndTabMenu menu;
 
 	private Executor exe;
 
 	private DataHolder result;
+
+	/**
+	 * Check if user is checked in or not
+	 */
+	private void checkUserState() {
+
+	}
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -90,6 +100,15 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 			// Get contacts list
 			exe.getContactsList();
 
+			if (AppCAP.isUserCheckedIn()) {
+				((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
+				((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityContacts.this,
+						R.anim.rotate_indefinitely));
+			} else {
+				((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
+				((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
+			}
+
 
 		} else {
 			setContentView(R.layout.tab_activity_login);
@@ -106,6 +125,15 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 			if (r1 != null) {
 				r1.setVisibility(View.GONE);
 			}
+			
+			if (AppCAP.isUserCheckedIn()) {
+				((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
+				((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityContacts.this,
+						R.anim.rotate_indefinitely));
+			} else {
+				((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
+				((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
+			}
 		}
 
 
@@ -118,16 +146,6 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 		onBackPressed();
 	}
 
-	/**
-	 * Check if user is checked in or not
-	 */
-	private void checkUserState() {
-		if (AppCAP.isUserCheckedIn()) {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-		} else {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
-		}
-	}
 
 	public void onClickMenu(View v) {
 		if (pager.getCurrentScreen() == SCREEN_USER) {

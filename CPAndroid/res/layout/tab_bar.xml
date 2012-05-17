@@ -30,6 +30,7 @@
             android:id="@+id/rel_map"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
+            android:layout_marginTop="1dip"
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
@@ -56,6 +57,7 @@
             android:id="@+id/rel_places"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
+            android:layout_marginTop="1dip"
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
@@ -90,6 +92,7 @@
             android:id="@+id/rel_people"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
+            android:layout_marginTop="1dip"
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
@@ -115,6 +118,7 @@
             android:id="@+id/rel_log_in"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
+            android:layout_marginTop="1dip"
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
@@ -142,6 +146,7 @@
             android:id="@+id/rel_contacts"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
+            android:layout_marginTop="1dip"
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
@@ -177,7 +182,9 @@
             android:id="@+id/imageview_check_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_tab_check_in_out" />
+            android:background="@drawable/btn_tab_check_in_out"
+            android:clickable="true"
+            android:onClick="onClickCheckIn" />
 
         <TextView
             android:id="@+id/textview_check_in"

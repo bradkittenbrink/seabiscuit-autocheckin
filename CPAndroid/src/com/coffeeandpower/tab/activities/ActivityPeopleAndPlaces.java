@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -81,8 +82,11 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	private void checkUserState() {
 		if (AppCAP.isUserCheckedIn()) {
 			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
+			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityPeopleAndPlaces.this,
+					R.anim.rotate_indefinitely));
 		} else {
 			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
+			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
 		}
 	}
 
