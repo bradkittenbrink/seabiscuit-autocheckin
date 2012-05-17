@@ -33,232 +33,234 @@ import com.google.android.maps.OverlayItem;
 
 public class ActivityCheckIn extends RootActivity {
 
-    // Map items
-    private MapView mapView;
-    private MapController mapController;
-    private MyItemizedOverlay2 itemizedoverlay;
+	// Map items
+	private MapView mapView;
+	private MapController mapController;
+	private MyItemizedOverlay2 itemizedoverlay;
 
-    private Venue venue;
-
-    // Views
-    private CustomFontView textHours;
-    private CustomFontView textTitle;
-    private CustomFontView textName;
-    private CustomFontView textStreet;
-    private CustomSeek hoursSeek;
-
-    private RelativeLayout layoutCheckedInUsers;
-    private LinearLayout layoutForInflate;
-    private LinearLayout layoutPopUp;
-
-    private EditText statusEditText;
-
-    private int checkInDuration;
-
-    private DataHolder result;
-
-    private Executor exe;
-
-    private ArrayList<UserShort> checkedInUsers;
-
-    {
-	checkInDuration = 1; // default 1 hour checkin duration, slider sets
-			     // other values
-    }
-
-    @Override
-    protected boolean isRouteDisplayed() {
-	return false;
-    }
-
-    @Override
-    protected void onCreate(Bundle icicle) {
-	super.onCreate(icicle);
-	setContentView(R.layout.activity_check_in);
-
-	// Executor
-	exe = new Executor(ActivityCheckIn.this);
-	exe.setExecutorListener(new ExecutorInterface() {
-	    @Override
-	    public void onErrorReceived() {
-		errorReceived();
-	    }
-
-	    @Override
-	    public void onActionFinished(int action) {
-		actionFinished(action);
-	    }
-	});
-
-	// Get Data from Intent
-	Bundle extras = getIntent().getExtras();
-	if (extras != null) {
-	    venue = (Venue) extras.getSerializable("venue");
-	} else {
-	    venue = new Venue();
-	}
+	private Venue venue;
 
 	// Views
-	textTitle = (CustomFontView) findViewById(R.id.text_title);
-	textHours = (CustomFontView) findViewById(R.id.textview_hours);
-	textName = (CustomFontView) findViewById(R.id.textview_name);
-	textStreet = (CustomFontView) findViewById(R.id.textview_street);
-	hoursSeek = (CustomSeek) findViewById(R.id.seekbar_hours);
-	statusEditText = (EditText) findViewById(R.id.edittext_optional);
-	layoutCheckedInUsers = (RelativeLayout) findViewById(R.id.layout_name);
-	layoutForInflate = (LinearLayout) findViewById(R.id.inflate_users);
-	layoutPopUp = (LinearLayout) findViewById(R.id.layout_popup_info);
-	mapView = (MapView) findViewById(R.id.imageview_mapview);
-	Drawable drawable = this.getResources().getDrawable(R.drawable.map_marker_iphone);
-	itemizedoverlay = new MyItemizedOverlay2(drawable);
+	private CustomFontView textHours;
+	private CustomFontView textTitle;
+	private CustomFontView textName;
+	private CustomFontView textStreet;
+	private CustomSeek hoursSeek;
 
-	// Views states
-	textTitle.setText(venue.getName());
-	textStreet.setText(venue.getAddress());
-	textName.setText(venue.getName());
-	layoutCheckedInUsers.setVisibility(View.GONE);
-	layoutPopUp.setVisibility(View.GONE);
+	private RelativeLayout layoutCheckedInUsers;
+	private LinearLayout layoutForInflate;
+	private LinearLayout layoutPopUp;
 
-	// Set others
-	mapView.setClickable(false);
-	mapView.setEnabled(false);
-	mapController = mapView.getController();
-	mapController.setZoom(18);
+	private EditText statusEditText;
 
-	// Navigate map to location from intent data
-	GeoPoint point = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
-	GeoPoint pointForCenter = new GeoPoint(point.getLatitudeE6() + Utils.getScreenDependentItemSize(Utils.MAP_VER_OFFSET_FROM_CENTER),
-		point.getLongitudeE6() - Utils.getScreenDependentItemSize(Utils.MAP_HOR_OFFSET_FROM_CENTER));
-	mapController.animateTo(pointForCenter);
-	createMarker(point);
+	private int checkInDuration;
 
-	// Listener for Hours change on SeekBar
-	hoursSeek.setOnHoursChangeListener(new HoursChangeListener() {
-	    @Override
-	    public void onHoursChange(int hours) {
-		switch (hours) {
-		case 1:
-		    textHours.setText(hours + " hour");
-		    checkInDuration = 1;
-		    break;
+	private DataHolder result;
 
-		default:
-		    textHours.setText(hours + " hours");
-		    checkInDuration = hours;
-		    break;
-		}
-	    }
-	});
+	private Executor exe;
 
-	// Get users checked in venue
-	getUsersCheckedIn(venue);
-    }
+	private ArrayList<UserShort> checkedInUsers;
 
-    /**
-     * Get checkedin users in venue
-     * 
-     * @param v
-     */
-    public void getUsersCheckedIn(Venue v) {
-	exe.getUsersCheckedInAtFoursquareID(v.getId());
-    }
-
-    private void createMarker(GeoPoint point) {
-	OverlayItem overlayitem = new OverlayItem(point, "", "");
-	itemizedoverlay.addOverlay(overlayitem);
-	if (itemizedoverlay.size() > 0) {
-	    mapView.getOverlays().add(itemizedoverlay);
+	{
+		checkInDuration = 1; // default 1 hour checkin duration, slider
+				     // sets
+				     // other values
 	}
-    }
 
-    @Override
-    protected void onResume() {
-	super.onResume();
-    }
+	@Override
+	protected boolean isRouteDisplayed() {
+		return false;
+	}
 
-    /**
-     * Checkin me in venue
-     * 
-     * @param v
-     */
-    public void onClickCheckIn(View v) {
-	final int checkInTime = (int) (System.currentTimeMillis() / 1000);
-	final int checkOutTime = checkInTime + checkInDuration * 3600;
+	@Override
+	protected void onCreate(Bundle icicle) {
+		super.onCreate(icicle);
+		setContentView(R.layout.activity_check_in);
 
-	exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString());
-    }
-
-    private void populateUsersIfExist() {
-	if (checkedInUsers != null) {
-	    if (checkedInUsers.size() > 0) {
-
-		layoutCheckedInUsers.setVisibility(View.VISIBLE);
-		layoutPopUp.setVisibility(View.VISIBLE);
-		ImageLoader imageLoader = new ImageLoader(this);
-
-		// Set text on first view
-		((TextView) layoutPopUp.getChildAt(0)).setText(checkedInUsers.get(0).getNickName());
-		String status = checkedInUsers.get(0).getStatusText();
-		status = status.length() < 1 ? "No status set..." : status;
-		((TextView) layoutPopUp.getChildAt(1)).setText(AppCAP.cleanResponseString(status));
-
-		for (int i = 0; i < checkedInUsers.size(); i++) {
-
-		    ImageView image = new ImageView(this);
-		    image.setPadding(10, 10, 10, 10);
-		    image.setTag(i);
-		    image.setOnClickListener(new OnClickListener() {
+		// Executor
+		exe = new Executor(ActivityCheckIn.this);
+		exe.setExecutorListener(new ExecutorInterface() {
 			@Override
-			public void onClick(View v) {
-			    ((TextView) layoutPopUp.getChildAt(0)).setText(checkedInUsers.get((Integer) v.getTag()).getNickName());
-
-			    String status = checkedInUsers.get((Integer) v.getTag()).getStatusText();
-			    status = status.length() < 1 ? "No status set..." : status;
-			    ((TextView) layoutPopUp.getChildAt(1)).setText(AppCAP.cleanResponseString(status));
+			public void onErrorReceived() {
+				errorReceived();
 			}
-		    });
 
-		    imageLoader.DisplayImage(checkedInUsers.get(i).getImageURL(), image, R.drawable.default_avatar50, 70);
-		    layoutForInflate.addView(image);
+			@Override
+			public void onActionFinished(int action) {
+				actionFinished(action);
+			}
+		});
 
+		// Get Data from Intent
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			venue = (Venue) extras.getSerializable("venue");
+		} else {
+			venue = new Venue();
 		}
-	    }
+
+		// Views
+		textTitle = (CustomFontView) findViewById(R.id.text_title);
+		textHours = (CustomFontView) findViewById(R.id.textview_hours);
+		textName = (CustomFontView) findViewById(R.id.textview_name);
+		textStreet = (CustomFontView) findViewById(R.id.textview_street);
+		hoursSeek = (CustomSeek) findViewById(R.id.seekbar_hours);
+		statusEditText = (EditText) findViewById(R.id.edittext_optional);
+		layoutCheckedInUsers = (RelativeLayout) findViewById(R.id.layout_name);
+		layoutForInflate = (LinearLayout) findViewById(R.id.inflate_users);
+		layoutPopUp = (LinearLayout) findViewById(R.id.layout_popup_info);
+		mapView = (MapView) findViewById(R.id.imageview_mapview);
+		Drawable drawable = this.getResources().getDrawable(R.drawable.map_marker_iphone);
+		itemizedoverlay = new MyItemizedOverlay2(drawable);
+
+		// Views states
+		textTitle.setText(venue.getName());
+		textStreet.setText(venue.getAddress());
+		textName.setText(venue.getName());
+		layoutCheckedInUsers.setVisibility(View.GONE);
+		layoutPopUp.setVisibility(View.GONE);
+
+		// Set others
+		mapView.setClickable(false);
+		mapView.setEnabled(false);
+		mapController = mapView.getController();
+		mapController.setZoom(18);
+
+		// Navigate map to location from intent data
+		GeoPoint point = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
+		GeoPoint pointForCenter = new GeoPoint(point.getLatitudeE6() + Utils.getScreenDependentItemSize(Utils.MAP_VER_OFFSET_FROM_CENTER),
+				point.getLongitudeE6() - Utils.getScreenDependentItemSize(Utils.MAP_HOR_OFFSET_FROM_CENTER));
+		mapController.animateTo(pointForCenter);
+		createMarker(point);
+
+		// Listener for Hours change on SeekBar
+		hoursSeek.setOnHoursChangeListener(new HoursChangeListener() {
+			@Override
+			public void onHoursChange(int hours) {
+				switch (hours) {
+				case 1:
+					textHours.setText(hours + " hour");
+					checkInDuration = 1;
+					break;
+
+				default:
+					textHours.setText(hours + " hours");
+					checkInDuration = hours;
+					break;
+				}
+			}
+		});
+
+		// Get users checked in venue
+		getUsersCheckedIn(venue);
 	}
-    }
 
-    private void errorReceived() {
+	/**
+	 * Get checkedin users in venue
+	 * 
+	 * @param v
+	 */
+	public void getUsersCheckedIn(Venue v) {
+		exe.getUsersCheckedInAtFoursquareID(v.getFoursquareId());
+	}
 
-    }
-
-    private void actionFinished(int action) {
-	result = exe.getResult();
-
-	switch (action) {
-
-	case Executor.HANDLE_CHECK_IN:
-	    setResult(AppCAP.ACT_QUIT);
-	    AppCAP.setUserCheckedIn(true);
-	    ActivityCheckIn.this.finish();
-	    break;
-
-	case Executor.HANDLE_GET_CHECHED_USERS_IN_FOURSQUARE:
-	    if (result.getObject() != null) {
-		if (result.getObject() instanceof ArrayList<?>) {
-		    checkedInUsers = (ArrayList<UserShort>) result.getObject();
-		    populateUsersIfExist();
+	private void createMarker(GeoPoint point) {
+		OverlayItem overlayitem = new OverlayItem(point, "", "");
+		itemizedoverlay.addOverlay(overlayitem);
+		if (itemizedoverlay.size() > 0) {
+			mapView.getOverlays().add(itemizedoverlay);
 		}
-	    }
-	    break;
 	}
-    }
 
-    public void onClickBack(View v) {
-	onBackPressed();
-    }
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
 
-    @Override
-    protected void onDestroy() {
-	super.onDestroy();
-    }
+	/**
+	 * Checkin me in venue
+	 * 
+	 * @param v
+	 */
+	public void onClickCheckIn(View v) {
+		final int checkInTime = (int) (System.currentTimeMillis() / 1000);
+		final int checkOutTime = checkInTime + checkInDuration * 3600;
+
+		exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString());
+	}
+
+	private void populateUsersIfExist() {
+		if (checkedInUsers != null) {
+			if (checkedInUsers.size() > 0) {
+
+				layoutCheckedInUsers.setVisibility(View.VISIBLE);
+				layoutPopUp.setVisibility(View.VISIBLE);
+				ImageLoader imageLoader = new ImageLoader(this);
+
+				// Set text on first view
+				((TextView) layoutPopUp.getChildAt(0)).setText(checkedInUsers.get(0).getNickName());
+				String status = checkedInUsers.get(0).getStatusText();
+				status = status.length() < 1 ? "No status set..." : status;
+				((TextView) layoutPopUp.getChildAt(1)).setText(AppCAP.cleanResponseString(status));
+
+				for (int i = 0; i < checkedInUsers.size(); i++) {
+
+					ImageView image = new ImageView(this);
+					image.setPadding(10, 10, 10, 10);
+					image.setTag(i);
+					image.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							((TextView) layoutPopUp.getChildAt(0)).setText(checkedInUsers.get((Integer) v.getTag())
+									.getNickName());
+
+							String status = checkedInUsers.get((Integer) v.getTag()).getStatusText();
+							status = status.length() < 1 ? "No status set..." : status;
+							((TextView) layoutPopUp.getChildAt(1)).setText(AppCAP.cleanResponseString(status));
+						}
+					});
+
+					imageLoader.DisplayImage(checkedInUsers.get(i).getImageURL(), image, R.drawable.default_avatar50, 70);
+					layoutForInflate.addView(image);
+
+				}
+			}
+		}
+	}
+
+	private void errorReceived() {
+
+	}
+
+	private void actionFinished(int action) {
+		result = exe.getResult();
+
+		switch (action) {
+
+		case Executor.HANDLE_CHECK_IN:
+			setResult(AppCAP.ACT_QUIT);
+			AppCAP.setUserCheckedIn(true);
+			ActivityCheckIn.this.finish();
+			break;
+
+		case Executor.HANDLE_GET_CHECHED_USERS_IN_FOURSQUARE:
+			if (result.getObject() != null) {
+				if (result.getObject() instanceof ArrayList<?>) {
+					checkedInUsers = (ArrayList<UserShort>) result.getObject();
+					populateUsersIfExist();
+				}
+			}
+			break;
+		}
+	}
+
+	public void onClickBack(View v) {
+		onBackPressed();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
 
 }

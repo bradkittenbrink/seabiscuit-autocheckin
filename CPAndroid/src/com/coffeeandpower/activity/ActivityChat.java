@@ -19,113 +19,113 @@ import com.coffeeandpower.views.CustomFontView;
 
 public class ActivityChat extends RootActivity {
 
-    private DataHolder result;
-    
-    private Executor exe;
+	private DataHolder result;
 
-    private ListView listChat;
+	private Executor exe;
 
-    private int userId;
+	private ListView listChat;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-	super.onCreate(savedInstanceState);
-	setContentView(R.layout.activity_chat);
+	private int userId;
 
-	// Executor
-	exe = new Executor(ActivityChat.this);
-	exe.setExecutorListener(new ExecutorInterface() {
-	    @Override
-	    public void onErrorReceived() {
-		errorReceived();
-	    }
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_chat);
 
-	    @Override
-	    public void onActionFinished(int action) {
-		actionFinished(action);
-	    }
-	});
-	
-	// Views
-	listChat = (ListView) findViewById(R.id.listview_chat);
+		// Executor
+		exe = new Executor(ActivityChat.this);
+		exe.setExecutorListener(new ExecutorInterface() {
+			@Override
+			public void onErrorReceived() {
+				errorReceived();
+			}
 
-	// Get userId form intent
-	Bundle bundle = getIntent().getExtras();
-	if (bundle != null) {
+			@Override
+			public void onActionFinished(int action) {
+				actionFinished(action);
+			}
+		});
 
-	    userId = bundle.getInt("user_id");
-	    String nickName = bundle.getString("nick_name");
-	    ((CustomFontView) findViewById(R.id.textview_chat_name)).setText(nickName);
+		// Views
+		listChat = (ListView) findViewById(R.id.listview_chat);
 
-	    getChatHistory();
-	}
-    }
+		// Get userId form intent
+		Bundle bundle = getIntent().getExtras();
+		if (bundle != null) {
 
-    private void getChatHistory() {
-	if (userId != 0) {
-	    exe.getOneOnOneChatHistory(userId);
-	}
-    }
+			userId = bundle.getInt("user_id");
+			String nickName = bundle.getString("nick_name");
+			((CustomFontView) findViewById(R.id.textview_chat_name)).setText(nickName);
 
-    @Override
-    protected void onResume() {
-	super.onResume();
-    }
-
-    public void onClickSend(View v) {
-
-	if (((EditText) findViewById(R.id.edittext_chat)).getText().toString().length() > 0) {
-	    final String mess = ((EditText) findViewById(R.id.edittext_chat)).getText().toString();
-	    Toast.makeText(ActivityChat.this, "Sending...", Toast.LENGTH_SHORT).show();
-	    exe.sendOneOnOneChatMessage(userId, mess);
-	} else {
-	    Toast.makeText(ActivityChat.this, "Message can't be empty!", Toast.LENGTH_SHORT).show();
-	}
-    }
-    
-    private void errorReceived (){
-	
-    }
-    
-    private void actionFinished(int action){
-	result = exe.getResult();
-	
-	switch (action) {
-	
-	case Executor.HANDLE_ONE_ON_ONE_CHAT_HISTORY:
-	    if (result.getObject() instanceof ArrayList<?>) {
-		    ArrayList<ChatMessage> messages = (ArrayList<ChatMessage>) result.getObject();
-		    MyChatAdapter adapter = new MyChatAdapter(ActivityChat.this, messages);
-		    listChat.setAdapter(adapter);
-		    listChat.setSelection(adapter.getCount() - 1);
+			getChatHistory();
 		}
-	    break;
-
-	case Executor.HANDLE_SEND_CHAT_MESSAGE:
-	    Toast.makeText(ActivityChat.this, "Sent...", Toast.LENGTH_SHORT).show();
-		((EditText) findViewById(R.id.edittext_chat)).setText("");
-		getChatHistory();
-	    break;
 	}
-    }
 
-    public void onClickBack(View v) {
-	onBackPressed();
-    }
+	private void getChatHistory() {
+		if (userId != 0) {
+			exe.getOneOnOneChatHistory(userId);
+		}
+	}
 
-    @Override
-    public void onBackPressed() {
-	super.onBackPressed();
-    }
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
 
-    @Override
-    protected void onPause() {
-	super.onPause();
-    }
+	public void onClickSend(View v) {
 
-    @Override
-    protected void onDestroy() {
-	super.onDestroy();
-    }
+		if (((EditText) findViewById(R.id.edittext_chat)).getText().toString().length() > 0) {
+			final String mess = ((EditText) findViewById(R.id.edittext_chat)).getText().toString();
+			Toast.makeText(ActivityChat.this, "Sending...", Toast.LENGTH_SHORT).show();
+			exe.sendOneOnOneChatMessage(userId, mess);
+		} else {
+			Toast.makeText(ActivityChat.this, "Message can't be empty!", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	private void errorReceived() {
+
+	}
+
+	private void actionFinished(int action) {
+		result = exe.getResult();
+
+		switch (action) {
+
+		case Executor.HANDLE_ONE_ON_ONE_CHAT_HISTORY:
+			if (result.getObject() instanceof ArrayList<?>) {
+				ArrayList<ChatMessage> messages = (ArrayList<ChatMessage>) result.getObject();
+				MyChatAdapter adapter = new MyChatAdapter(ActivityChat.this, messages);
+				listChat.setAdapter(adapter);
+				listChat.setSelection(adapter.getCount() - 1);
+			}
+			break;
+
+		case Executor.HANDLE_SEND_CHAT_MESSAGE:
+			Toast.makeText(ActivityChat.this, "Sent...", Toast.LENGTH_SHORT).show();
+			((EditText) findViewById(R.id.edittext_chat)).setText("");
+			getChatHistory();
+			break;
+		}
+	}
+
+	public void onClickBack(View v) {
+		onBackPressed();
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
 
 }

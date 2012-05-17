@@ -24,205 +24,205 @@ import com.coffeeandpower.views.HorizontalPagerModified;
 
 public class ActivityContacts extends RootActivity implements TabMenu, UserMenu {
 
-    private static final int SCREEN_SETTINGS = 0;
-    private static final int SCREEN_USER = 1;
+	private static final int SCREEN_SETTINGS = 0;
+	private static final int SCREEN_USER = 1;
 
-    private HorizontalPagerModified pager;
+	private HorizontalPagerModified pager;
 
-    private UserAndTabMenu menu;
-    
-    private Executor exe;
-    
-    private DataHolder result;
+	private UserAndTabMenu menu;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-	super.onCreate(savedInstanceState);
-	setContentView(R.layout.tab_activity_contacts);
+	private Executor exe;
 
-	// Executor
-	exe = new Executor(ActivityContacts.this);
-	exe.setExecutorListener(new ExecutorInterface() {
-	    @Override
-	    public void onErrorReceived() {
-		errorReceived();
-	    }
+	private DataHolder result;
 
-	    @Override
-	    public void onActionFinished(int action) {
-		actionFinished(action);
-	    }
-	});
-	
-	((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.tab_activity_contacts);
 
-	// Horizontal Pager
-	pager = (HorizontalPagerModified) findViewById(R.id.pager);
-	pager.setCurrentScreen(SCREEN_USER, false);
+		// Executor
+		exe = new Executor(ActivityContacts.this);
+		exe.setExecutorListener(new ExecutorInterface() {
+			@Override
+			public void onErrorReceived() {
+				errorReceived();
+			}
 
-	// User and Tab Menu
-	menu = new UserAndTabMenu(this);
-	menu.setOnUserStateChanged(new OnUserStateChanged() {
+			@Override
+			public void onActionFinished(int action) {
+				actionFinished(action);
+			}
+		});
 
-	    @Override
-	    public void onLogOut() {
-	    }
+		((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
 
-	    @Override
-	    public void onCheckOut() {
-		checkUserState();
-	    }
-	});
+		// Horizontal Pager
+		pager = (HorizontalPagerModified) findViewById(R.id.pager);
+		pager.setCurrentScreen(SCREEN_USER, false);
 
-	if (AppCAP.isLoggedIn()) {
-	    ((RelativeLayout) findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-	    ((ImageView) findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_pressed);
+		// User and Tab Menu
+		menu = new UserAndTabMenu(this);
+		menu.setOnUserStateChanged(new OnUserStateChanged() {
 
-	} else {
-	    setContentView(R.layout.tab_activity_login);
-	    ((RelativeLayout) findViewById(R.id.rel_log_in)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-	    ((ImageView) findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_login_pressed);
+			@Override
+			public void onLogOut() {
+			}
 
-	    RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
-	    RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);
+			@Override
+			public void onCheckOut() {
+				checkUserState();
+			}
+		});
 
-	    if (r != null) {
-		r.setVisibility(View.VISIBLE);
-	    }
-	    if (r1 != null) {
-		r1.setVisibility(View.GONE);
-	    }
+		if (AppCAP.isLoggedIn()) {
+			((RelativeLayout) findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+			((ImageView) findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_pressed);
+
+		} else {
+			setContentView(R.layout.tab_activity_login);
+			((RelativeLayout) findViewById(R.id.rel_log_in)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+			((ImageView) findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_login_pressed);
+
+			RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
+			RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);
+
+			if (r != null) {
+				r.setVisibility(View.VISIBLE);
+			}
+			if (r1 != null) {
+				r1.setVisibility(View.GONE);
+			}
+		}
+
+		((TextView) findViewById(R.id.text_contacts)).setTextColor(Color.WHITE);
 	}
 
-	((TextView) findViewById(R.id.text_contacts)).setTextColor(Color.WHITE);
-    }
-
-    public void onClickLinkedIn(View v) {
-	AppCAP.setShouldFinishActivities(true);
-	AppCAP.setStartLoginPageFromContacts(true);
-	onBackPressed();
-    }
-
-    /**
-     * Check if user is checked in or not
-     */
-    private void checkUserState() {
-	if (AppCAP.isUserCheckedIn()) {
-	    ((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-	} else {
-	    ((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
+	public void onClickLinkedIn(View v) {
+		AppCAP.setShouldFinishActivities(true);
+		AppCAP.setStartLoginPageFromContacts(true);
+		onBackPressed();
 	}
-    }
 
-    public void onClickMenu(View v) {
-	if (pager.getCurrentScreen() == SCREEN_USER) {
-	    pager.setCurrentScreen(SCREEN_SETTINGS, true);
-	} else {
-	    pager.setCurrentScreen(SCREEN_USER, true);
+	/**
+	 * Check if user is checked in or not
+	 */
+	private void checkUserState() {
+		if (AppCAP.isUserCheckedIn()) {
+			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
+		} else {
+			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
+		}
 	}
-    }
 
-    @Override
-    protected void onResume() {
-	super.onResume();
-
-	if (AppCAP.shouldFinishActivities()) {
-	    onBackPressed();
-	} else {
-	    // Get Notification settings from shared prefs
-	    ((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP.getNotificationToggle());
-	    ((Button) findViewById(R.id.btn_from)).setText(AppCAP.getNotificationFrom());
-
-	    // Check and Set Notification settings
-	    menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in),
-		    (Button) findViewById(R.id.btn_from), false);
-	    
-	    // Get contacts list
-	    exe.getContactsList();
+	public void onClickMenu(View v) {
+		if (pager.getCurrentScreen() == SCREEN_USER) {
+			pager.setCurrentScreen(SCREEN_SETTINGS, true);
+		} else {
+			pager.setCurrentScreen(SCREEN_USER, true);
+		}
 	}
-    }
-    
-    private void errorReceived(){
-	
-    }
-    
-    private void actionFinished(int action){
-	result = exe.getResult();
-	
-	switch (action) {
-	
-	case 0:
-	    
-	    break;
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		if (AppCAP.shouldFinishActivities()) {
+			onBackPressed();
+		} else {
+			// Get Notification settings from shared prefs
+			((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP.getNotificationToggle());
+			((Button) findViewById(R.id.btn_from)).setText(AppCAP.getNotificationFrom());
+
+			// Check and Set Notification settings
+			menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in),
+					(Button) findViewById(R.id.btn_from), false);
+
+			// Get contacts list
+			exe.getContactsList();
+		}
 	}
-    }
 
-    @Override
-    public void onBackPressed() {
-	super.onBackPressed();
-    }
+	private void errorReceived() {
 
-    @Override
-    protected void onPause() {
-	super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-	super.onDestroy();
-    }
-
-    @Override
-    public void onClickEnterInviteCode(View v) {
-	menu.onClickEnterInviteCode(v);
-    }
-
-    @Override
-    public void onClickWallet(View v) {
-	menu.onClickWallet(v);
-    }
-
-    @Override
-    public void onClickSettings(View v) {
-	menu.onClickSettings(v);
-    }
-
-    @Override
-    public void onClickLogout(View v) {
-	menu.onClickLogout(v);
-	onBackPressed();
-    }
-
-    @Override
-    public void onClickMap(View v) {
-	menu.onClickMap(v);
-	finish();
-    }
-
-    @Override
-    public void onClickPlaces(View v) {
-	menu.onClickPlaces(v);
-	finish();
-    }
-
-    @Override
-    public void onClickCheckIn(View v) {
-	if (AppCAP.isLoggedIn()) {
-	    menu.onClickCheckIn(v);
-	} else {
-	    showDialog(DIALOG_MUST_BE_A_MEMBER);
 	}
-    }
 
-    @Override
-    public void onClickPeople(View v) {
-	menu.onClickPeople(v);
-	finish();
-    }
+	private void actionFinished(int action) {
+		result = exe.getResult();
 
-    @Override
-    public void onClickContacts(View v) {
-	// menu.onClickContacts(v);
-    }
+		switch (action) {
+
+		case 0:
+
+			break;
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+
+	@Override
+	public void onClickEnterInviteCode(View v) {
+		menu.onClickEnterInviteCode(v);
+	}
+
+	@Override
+	public void onClickWallet(View v) {
+		menu.onClickWallet(v);
+	}
+
+	@Override
+	public void onClickSettings(View v) {
+		menu.onClickSettings(v);
+	}
+
+	@Override
+	public void onClickLogout(View v) {
+		menu.onClickLogout(v);
+		onBackPressed();
+	}
+
+	@Override
+	public void onClickMap(View v) {
+		menu.onClickMap(v);
+		finish();
+	}
+
+	@Override
+	public void onClickPlaces(View v) {
+		menu.onClickPlaces(v);
+		finish();
+	}
+
+	@Override
+	public void onClickCheckIn(View v) {
+		if (AppCAP.isLoggedIn()) {
+			menu.onClickCheckIn(v);
+		} else {
+			showDialog(DIALOG_MUST_BE_A_MEMBER);
+		}
+	}
+
+	@Override
+	public void onClickPeople(View v) {
+		menu.onClickPeople(v);
+		finish();
+	}
+
+	@Override
+	public void onClickContacts(View v) {
+		// menu.onClickContacts(v);
+	}
 
 }

@@ -311,7 +311,7 @@
                                 android:id="@+id/text_earned"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/activity_user_details_earned"
+                                android:text="HOURS:"
                                 android:textColor="#62615f"
                                 android:textSize="14sp" />
 

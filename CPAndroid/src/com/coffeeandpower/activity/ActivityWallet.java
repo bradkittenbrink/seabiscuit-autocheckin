@@ -16,73 +16,73 @@ import com.coffeeandpower.utils.Executor.ExecutorInterface;
 
 public class ActivityWallet extends RootActivity {
 
-    private DataHolder result;
-    
-    private Executor exe;
+	private DataHolder result;
 
-    private UserTransaction transaction;
+	private Executor exe;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-	super.onCreate(savedInstanceState);
-	setContentView(R.layout.activity_wallet);
+	private UserTransaction transaction;
 
-	// Executor
-	exe = new Executor(ActivityWallet.this);
-	exe.setExecutorListener(new ExecutorInterface() {
-	    @Override
-	    public void onErrorReceived() {
-	    }
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_wallet);
 
-	    @Override
-	    public void onActionFinished(int action) {
-		result = exe.getResult();
-		switch (action) {
-		
-		case Executor.HANDLE_GET_USER_TRANSACTION_DATA:
-		    if (result.getObject() instanceof UserTransaction) {
-			    transaction = (UserTransaction) result.getObject();
-			    fillUserData();
+		// Executor
+		exe = new Executor(ActivityWallet.this);
+		exe.setExecutorListener(new ExecutorInterface() {
+			@Override
+			public void onErrorReceived() {
 			}
-		    break;
-		}
-	    }
-	});
-    }
 
-    @Override
-    protected void onResume() {
-	super.onResume();
-	getTransactionData();
-    }
+			@Override
+			public void onActionFinished(int action) {
+				result = exe.getResult();
+				switch (action) {
 
-    // Fill user transaction data
-    private void fillUserData() {
-	DecimalFormat oneDForm = new DecimalFormat("#.##");
-	float d = Float.valueOf(oneDForm.format(transaction.getBalance()));
-	((TextView) findViewById(R.id.balance)).setText("$" + d);
-    }
+				case Executor.HANDLE_GET_USER_TRANSACTION_DATA:
+					if (result.getObject() instanceof UserTransaction) {
+						transaction = (UserTransaction) result.getObject();
+						fillUserData();
+					}
+					break;
+				}
+			}
+		});
+	}
 
-    // Get transaction Data
-    private void getTransactionData() {
-	exe.getUserTransactionData();
-    }
+	@Override
+	protected void onResume() {
+		super.onResume();
+		getTransactionData();
+	}
 
-    public void onClickAddFunds(View v) {
-	startActivity(new Intent(ActivityWallet.this, ActivityAddFunds.class));
-    }
+	// Fill user transaction data
+	private void fillUserData() {
+		DecimalFormat oneDForm = new DecimalFormat("#.##");
+		float d = Float.valueOf(oneDForm.format(transaction.getBalance()));
+		((TextView) findViewById(R.id.balance)).setText("$" + d);
+	}
 
-    public void onClickBack(View v) {
-	onBackPressed();
-    }
+	// Get transaction Data
+	private void getTransactionData() {
+		exe.getUserTransactionData();
+	}
 
-    @Override
-    public void onBackPressed() {
-	super.onBackPressed();
-    }
+	public void onClickAddFunds(View v) {
+		startActivity(new Intent(ActivityWallet.this, ActivityAddFunds.class));
+	}
 
-    @Override
-    protected void onDestroy() {
-	super.onDestroy();
-    }
+	public void onClickBack(View v) {
+		onBackPressed();
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
 }

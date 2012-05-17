@@ -17,60 +17,60 @@ import com.coffeeandpower.utils.Executor.ExecutorInterface;
 
 public class ActivityEnterInviteCode extends Activity {
 
-    private DataHolder result;
+	private DataHolder result;
 
-    private Executor exe;
+	private Executor exe;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-	super.onCreate(savedInstanceState);
-	setContentView(R.layout.activity_enter_invite_code);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_enter_invite_code);
 
-	// Executor
-	exe = new Executor(ActivityEnterInviteCode.this);
-	exe.setExecutorListener(new ExecutorInterface() {
-	    @Override
-	    public void onErrorReceived() {
-		errorReceived();
-	    }
+		// Executor
+		exe = new Executor(ActivityEnterInviteCode.this);
+		exe.setExecutorListener(new ExecutorInterface() {
+			@Override
+			public void onErrorReceived() {
+				errorReceived();
+			}
 
-	    @Override
-	    public void onActionFinished(int action) {
-		actionFinished(action);
-	    }
-	});
+			@Override
+			public void onActionFinished(int action) {
+				actionFinished(action);
+			}
+		});
 
-	((EditText) findViewById(R.id.edit_text)).setOnEditorActionListener(new OnEditorActionListener() {
-	    @Override
-	    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+		((EditText) findViewById(R.id.edit_text)).setOnEditorActionListener(new OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
-		if (actionId == EditorInfo.IME_ACTION_SEND) {
-		    exe.enterInvitationCode(((EditText) findViewById(R.id.edit_text)).getText().toString(), AppCAP.getUserCoordinates()[4],
-			    AppCAP.getUserCoordinates()[5]);
-		}
-		return false;
-	    }
-	});
-    }
+				if (actionId == EditorInfo.IME_ACTION_SEND) {
+					exe.enterInvitationCode(((EditText) findViewById(R.id.edit_text)).getText().toString(),
+							AppCAP.getUserCoordinates()[4], AppCAP.getUserCoordinates()[5]);
+				}
+				return false;
+			}
+		});
+	}
 
-    public void onClickInviteLater(View v) {
-	AppCAP.setNotFirstStart();
-	onBackPressed();
-    }
+	public void onClickInviteLater(View v) {
+		AppCAP.setNotFirstStart();
+		onBackPressed();
+	}
 
-    private void errorReceived() {
-
-    }
-
-    private void actionFinished(int action) {
-	result = exe.getResult();
-
-	switch (action) {
-
-	case Executor.HANDLE_ENTER_INVITATION_CODE:
-	    break;
+	private void errorReceived() {
 
 	}
-    }
+
+	private void actionFinished(int action) {
+		result = exe.getResult();
+
+		switch (action) {
+
+		case Executor.HANDLE_ENTER_INVITATION_CODE:
+			break;
+
+		}
+	}
 
 }
