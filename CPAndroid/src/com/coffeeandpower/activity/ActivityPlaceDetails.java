@@ -3,6 +3,7 @@ package com.coffeeandpower.activity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,10 +22,12 @@ import android.widget.TextView;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.adapters.MyPlaceChatAdapter;
 import com.coffeeandpower.adapters.MyUserSmartAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
+import com.coffeeandpower.cont.VenueChatEntry;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.imageutil.ImageLoader;
@@ -287,13 +290,11 @@ public class ActivityPlaceDetails extends RootActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.d("LOG", "fourId: " + foursquareId);
 		if (foursquareId != null && foursquareId.length() > 0) {
 			arrayUsersHereNow.clear();
 			arrayUsersWereHere.clear();
 			exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(data, true);
 		}
-
 	}
 
 	@Override
@@ -319,17 +320,13 @@ public class ActivityPlaceDetails extends RootActivity {
 
 		switch (action) {
 		case Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS:
-			Log.d("LOG", "switch: " + result.getObject());
 			if (result.getObject() != null && result.getObject() instanceof Object[]) {
 				Object[] obj = (Object[]) result.getObject();
 				arrayVenues = (ArrayList<VenueSmart>) obj[0];
 				arrayUsers = (ArrayList<UserSmart>) obj[1];
-				Log.d("LOG", "vwenues: " + arrayVenues.size() + ":" + arrayUsers.size());
 				for (VenueSmart v : arrayVenues) {
-					Log.d("LOG", "sel venue: " + v.getName() + v.getFoursquareId() + ":" + foursquareId);
 					if (v.getFoursquareId().equals(foursquareId)) {
 						selectedVenue = v;
-						Log.d("LOG", "sel venue");
 					}
 				}
 
@@ -348,6 +345,35 @@ public class ActivityPlaceDetails extends RootActivity {
 
 				// Fill veneu and users data
 				fillData();
+
+				// Get venue chat
+				if (selectedVenue != null)
+					exe.venueChat(selectedVenue.getVenueId(), "0", "", false);
+			}
+			break;
+
+		case Executor.HANDLE_VENUE_CHAT:
+			if (result != null && result.getObject() != null && (result.getObject() instanceof ArrayList<?>)) {
+				ArrayList<Object> tempArray = (ArrayList<Object>) result.getObject();
+
+				if (tempArray.size() == 4) {
+					if (tempArray.get(3) instanceof ArrayList<?>) {
+
+						// Calculate number of users
+						HashSet<String> usersIDs = new HashSet<String>();
+						String lastEntry = "";
+						for (VenueChatEntry entry : (ArrayList<VenueChatEntry>) tempArray.get(3)) {
+							if (entry.getSystemType() != null && !entry.getSystemType().equals("checkin")) {
+								usersIDs.add(entry.getUserId());
+								lastEntry = entry.getEntry().length() > 0 ? "\"" + entry.getEntry() + "\"" : "" ;
+							}
+						}
+						((CustomFontView) findViewById(R.id.textview_chat_places)).setText(usersIDs.size() == 0 ? ""
+								: usersIDs.size() + "");
+						((CustomFontView) findViewById(R.id.textview_chat_places_name))
+								.setText(usersIDs.size() == 0 ? "Tap here to chat." : lastEntry);
+					}
+				}
 			}
 			break;
 		}
@@ -355,7 +381,8 @@ public class ActivityPlaceDetails extends RootActivity {
 
 	public void onClickChat(View v) {
 		Intent intent = new Intent(ActivityPlaceDetails.this, ActivityPlaceChat.class);
-		intent.putExtra("venue_id", selectedVenue.getFoursquareId());
+		intent.putExtra("venue_id", selectedVenue.getVenueId());
+		intent.putExtra("venue_name", selectedVenue.getName());
 		startActivity(intent);
 	}
 }

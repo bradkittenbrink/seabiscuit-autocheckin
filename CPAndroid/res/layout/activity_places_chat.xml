@@ -30,16 +30,28 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="kep"
+            android:singleLine="true"
             android:textColor="#ffffff"
             android:textSize="25dip" />
 
         <ImageView
+            android:id="@+id/image_chat_people"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight=" 10dip"
             android:background="@drawable/btn_number_of_people" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_chat_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/image_chat_people"
+            android:paddingTop="4dp"
+            android:textColor="#c46600"
+            android:textSize="22dip" />
     </RelativeLayout>
 
     <ListView

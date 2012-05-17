@@ -1,5 +1,7 @@
 package com.coffeeandpower.utils;
 
+import java.util.ArrayList;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
@@ -10,6 +12,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.Venue;
+import com.coffeeandpower.cont.VenueChatEntry;
 import com.coffeeandpower.views.CustomDialog;
 import com.google.android.maps.GeoPoint;
 
@@ -32,7 +35,7 @@ public class Executor {
 	public static final int HANDLE_SET_USER_PROFILE_DATA = 1614;
 	public static final int HANDLE_UPLOAD_USER_PROFILE_PHOTO = 1615;
 	public static final int HANDLE_GET_USER_TRANSACTION_DATA = 1616;
-	public static final int HANDLE_GET_VENUE_CHAT = 1617;
+	public static final int HANDLE_VENUE_CHAT = 1617;
 	public static final int HANDLE_SEND_VENUE_CHAT = 1618;
 
 	private DataHolder result;
@@ -293,27 +296,26 @@ public class Executor {
 		}).start();
 	}
 
-	public synchronized void getVenueChat(final String venueId, final String lastChatIDString) {
-		progress.setMessage("Loading...");
+	/**
+	 * Get/send venue chat <br>
+	 * getObject() instance of ArrayList <br>
+	 * <br>
+	 * [0]String lastId [1]String firstDate [2]String lastDate
+	 * [3]ArrayList(VenueChatEntry)
+	 * 
+	 * @param venueId
+	 * @param lastChatIDString
+	 */
+	public synchronized void venueChat(final String venueId, final String lastChatIDString, final String message, final boolean isSend) {
+		progress.setMessage(isSend ? "Sending..." : "Loading...");
 		progress.show();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				result = AppCAP.getConnection().getVenueChatForVenueWithID(venueId, lastChatIDString);
+				result = AppCAP.getConnection().venueChatForVenueWithID(venueId, lastChatIDString, message, isSend);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		}).start();
 	}
 
-	public synchronized void sendVenueChat(final String venueId, final String lastChatIDString, final String message) {
-		progress.setMessage("Sending...");
-		progress.show();
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				result = AppCAP.getConnection().sendVenueChatForVenueWithID(venueId, lastChatIDString, message);
-				handler.sendEmptyMessage(result.getHandlerCode());
-			}
-		}).start();
-	}
 }
