@@ -118,9 +118,9 @@
             android:layout_weight="1"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
-            android:visibility="gone"
             android:onClick="onClickContacts"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:visibility="gone" >
 
             <ImageView
                 android:id="@+id/imageview_contacts"
@@ -185,7 +185,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageview_check_in"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="-15dip"
+            android:layout_marginTop="-14dip"
             android:text="@string/tab_check_in" />
 
         <ImageView
