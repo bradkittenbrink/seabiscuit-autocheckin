@@ -77,11 +77,25 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 		if (AppCAP.isLoggedIn()) {
 			((RelativeLayout) findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_selected);
 			((ImageView) findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_pressed);
+			((TextView) findViewById(R.id.text_contacts)).setTextColor(Color.WHITE);
+
+			// Get Notification settings from shared prefs
+			((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP.getNotificationToggle());
+			((Button) findViewById(R.id.btn_from)).setText(AppCAP.getNotificationFrom());
+
+			// Check and Set Notification settings
+			menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in),
+					(Button) findViewById(R.id.btn_from), false);
+
+			// Get contacts list
+			exe.getContactsList();
+
 
 		} else {
 			setContentView(R.layout.tab_activity_login);
 			((RelativeLayout) findViewById(R.id.rel_log_in)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-			((ImageView) findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_login_pressed);
+			((ImageView) findViewById(R.id.imageview_log_in)).setImageResource(R.drawable.tab_login_pressed);
+			((TextView) findViewById(R.id.text_log_in)).setTextColor(Color.WHITE);
 
 			RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
 			RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);
@@ -94,7 +108,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 			}
 		}
 
-		((TextView) findViewById(R.id.text_contacts)).setTextColor(Color.WHITE);
+
+
 	}
 
 	public void onClickLinkedIn(View v) {
@@ -126,7 +141,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 	protected void onResume() {
 		super.onResume();
 
-		if (AppCAP.shouldFinishActivities()) {
+		/*if (AppCAP.shouldFinishActivities()) {
 			onBackPressed();
 		} else {
 			// Get Notification settings from shared prefs
@@ -139,7 +154,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 
 			// Get contacts list
 			exe.getContactsList();
-		}
+		}*/
 	}
 
 	private void errorReceived() {

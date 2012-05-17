@@ -123,17 +123,17 @@
             android:visibility="gone" >
 
             <ImageView
-                android:id="@+id/imageview_contacts"
+                android:id="@+id/imageview_log_in"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/tab_login_a" />
 
             <TextView
-                android:id="@+id/text_contacts"
+                android:id="@+id/text_log_in"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/imageview_contacts"
+                android:layout_below="@+id/imageview_log_in"
                 android:layout_centerHorizontal="true"
                 android:text="@string/tab_log_in" />
         </RelativeLayout>
@@ -185,7 +185,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageview_check_in"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="-14dip"
+            android:layout_marginTop="-15dip"
             android:text="@string/tab_check_in" />
 
         <ImageView
