@@ -93,7 +93,7 @@ public class MyUsersAdapter extends BaseAdapter {
 		}
 
 		if (AppCAP.isLoggedIn()) {
-			holder.textNickName.setText(mudArray.get(position).getNickName());
+			holder.textNickName.setText(AppCAP.cleanResponseString(mudArray.get(position).getNickName()));
 			imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage, R.drawable.default_avatar50, 70);
 		} else {
 			holder.textNickName.setText("Name Hidden");

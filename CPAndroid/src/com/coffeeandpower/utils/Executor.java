@@ -1,7 +1,5 @@
 package com.coffeeandpower.utils;
 
-import java.util.ArrayList;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
@@ -12,7 +10,6 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.Venue;
-import com.coffeeandpower.cont.VenueChatEntry;
 import com.coffeeandpower.views.CustomDialog;
 import com.google.android.maps.GeoPoint;
 

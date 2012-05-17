@@ -80,7 +80,7 @@ public class MyUserSmartAdapter extends BaseAdapter {
 				.get(position).getHeadLine())))));
 
 		if (AppCAP.isLoggedIn()) {
-			holder.textNickName.setText(mudArray.get(position).getNickName());
+			holder.textNickName.setText(AppCAP.cleanResponseString(mudArray.get(position).getNickName()));
 
 			String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray.get(position).getCheckInCount() + " Checkin"
 					: mudArray.get(position).getCheckInCount() + " Checkins";

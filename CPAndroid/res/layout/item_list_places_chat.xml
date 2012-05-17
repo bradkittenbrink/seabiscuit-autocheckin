@@ -20,7 +20,6 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="5dip"
         android:layout_marginRight="5dip"
-        android:text="sdfsdfsdf"
         android:textColor="#000000" />
 
 </LinearLayout>

@@ -172,6 +172,8 @@ public class AppCAP extends Application {
 			retS = URLDecoder.decode(data, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
+		} catch (IllegalArgumentException e){
+			e.printStackTrace();
 		}
 		return retS;
 	}
