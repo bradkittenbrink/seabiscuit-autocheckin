@@ -22,10 +22,20 @@ import com.urbanairship.push.PushPreferences;
 
 public class AppCAP extends Application {
 
+	// How to generate a map key for debug
+	// 1. Use keytool to get MD5 for your debug app:
+	//    - e.g. c:\Program Files\Java\jre6\bin\keytool -list -alias androiddebugkey -keystore c:\Users\<username>\.android\debug.keystore
+	//    - debug keystore password is: android
+	// 2. Go to this URL: https://developers.google.com/maps/documentation/android/maps-api-signup?hl=en-US
+	// 3. Enter the MD5 from keytool
+	// 4. Once you have your key, replace the property android:apiKey in res/layout/tab_activity_map.xml
+	
 	// Google maps api key for debug Kep:
 	// 0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q
 	// Google maps api key for debug Tengai home:
 	// 0PV0Dp_6Dj6M_WBuUrThj9-fW3btGy9kxl83wgQ
+	// Map key for andrewa debug:
+	// 08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA
 
 	public static final String TAG = "CoffeeAndPower";
 
