@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#333333"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:layout_width="96dip"
+        android:layout_height="96dip"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dip"
+        android:background="@drawable/plug_logo" />
+
+    <com.coffeeandpower.views.CustomEditText
+        android:id="@+id/edit_text"
+        android:layout_width="240dip"
+        android:layout_height="140dip"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/invite_code_background"
+        android:capitalize="characters"
+        android:imeOptions="actionSend"
+        android:singleLine="true"
+        android:padding="25dip"
+        android:text=""
+        android:textColor="#cecece"
+        android:textSize="40dip" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dip"
+        android:gravity="center"
+        android:text="@string/activity_enter_invite_code_enter" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dip"
+        android:background="@drawable/button_turquoise"
+        android:onClick="onClickInviteLater"
+        android:paddingBottom="10dip"
+        android:paddingLeft="20dip"
+        android:paddingRight="20dip"
+        android:paddingTop="10dip"
+        android:text="@string/later"
+        android:textColor="#ffffff" />
+
+</LinearLayout>

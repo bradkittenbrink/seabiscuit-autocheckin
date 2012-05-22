@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#2d2d2d" >
+
+    <RelativeLayout
+        android:id="@+id/dummy_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="45dip"
+        android:background="@drawable/header" >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:background="@drawable/rounded_border"
+            android:onClick="onClickBack"
+            android:padding="8dip"
+            android:text="@string/settings"
+            android:textColor="#ffffff" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/activity_job_category_job"
+            android:textColor="#ffffff"
+            android:textSize="25dip" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textview_major"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dummy_layout"
+        android:layout_marginLeft="20dip"
+        android:layout_marginTop="20dip"
+        android:text="@string/activity_job_caregory_major" />
+
+    <Button
+        android:id="@+id/button_major"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textview_major"
+        android:layout_marginLeft="20dip"
+        android:layout_marginTop="5dip"
+        android:background="@drawable/btn_drop_down"
+        android:gravity="left|center_vertical"
+        android:onClick="onClickMajor"
+        android:paddingLeft="10dip"
+        android:text="@string/other" />
+
+    <TextView
+        android:id="@+id/textview_minor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_major"
+        android:layout_marginLeft="20dip"
+        android:layout_marginTop="20dip"
+        android:text="@string/activity_job_caregory_minor" />
+
+    <Button
+        android:id="@+id/button_minor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textview_minor"
+        android:layout_marginLeft="20dip"
+        android:layout_marginTop="5dip"
+        android:background="@drawable/btn_drop_down"
+        android:gravity="left|center_vertical"
+        android:onClick="onClickMinor"
+        android:paddingLeft="10dip"
+        android:text="@string/other" />
+
+    <include
+        android:id="@+id/picker"
+        android:layout_alignParentBottom="true"
+        layout="@layout/kan_kan_black" />
+
+</RelativeLayout>

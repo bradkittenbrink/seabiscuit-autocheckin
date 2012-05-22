@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dip" >
+
+    <ImageView
+        android:id="@+id/imageview_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:background="@drawable/picture_coming_soon"
+        android:gravity="center_vertical|center_horizontal" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/imageview_image"
+        android:orientation="vertical"
+        android:paddingLeft="5dp" >
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:text=""
+            android:textColor="#62615f"
+            android:textSize="24sp" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_checkin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dip"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="#62615f"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+</RelativeLayout>

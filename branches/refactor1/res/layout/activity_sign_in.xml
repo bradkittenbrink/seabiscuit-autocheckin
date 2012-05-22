@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/secret_society"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dip"
+        android:background="@drawable/header" >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:background="@drawable/rounded_border"
+            android:onClick="onClickBack"
+            android:padding="8dip"
+            android:text="@string/back"
+            android:textColor="#ffffff" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/activity_sign_in"
+            android:textColor="#ffffff"
+            android:textSize="25dip" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dip"
+            android:background="@drawable/rounded_border"
+            android:onClick="onClickSignIn"
+            android:padding="8dip"
+            android:text="@string/activity_sign_in"
+            android:textColor="#ffffff" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/edittext_sign_in_email"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+        android:layout_marginTop="40dip"
+        android:background="#000000"
+        android:hint="@string/activity_join_email_address"
+        android:inputType="textEmailAddress"
+        android:padding="5dip"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:id="@+id/textview_unable_to_login"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+        android:layout_marginTop="10dip"
+        android:textColor="#ffffff" />
+
+    <EditText
+        android:id="@+id/edittext_sign_in_password"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+        android:layout_marginTop="10dip"
+        android:background="#000000"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:padding="5dip"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:layout_marginTop="20dip"
+        android:background="@drawable/login_signup_banner"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:onClick="onClickJoin"
+        android:paddingLeft="20dip"
+        android:text="@string/activity_sign_in_join"
+        android:textColor="#ffffff" />
+
+</LinearLayout>

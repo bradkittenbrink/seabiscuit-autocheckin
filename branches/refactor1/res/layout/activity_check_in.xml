@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:id="@+id/dummy_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="45dip"
+        android:background="@drawable/header" >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:background="@drawable/rounded_border"
+            android:onClick="onClickBack"
+            android:padding="8dip"
+            android:text="@string/back"
+            android:textColor="#ffffff" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textColor="#ffffff"
+            android:textSize="25dip" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/dummy_layout_2"
+        android:layout_below="@+id/dummy_layout" >
+
+        <com.google.android.maps.MapView
+            android:id="@+id/imageview_mapview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:apiKey="0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#5588B5B0" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="20dip"
+            android:background="#77000000"
+            android:layoutAnimation="@anim/layout_random_fade"
+            android:orientation="vertical"
+            android:paddingBottom="5dip"
+            android:paddingLeft="5dip"
+            android:paddingRight="25dip"
+            android:paddingTop="5dip" >
+
+            <com.coffeeandpower.views.CustomFontView
+                android:id="@+id/textview_check_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_check_in_check_in_at"
+                android:textColor="#ffffff"
+                android:textSize="24dip"
+                android:textStyle="bold" />
+
+            <com.coffeeandpower.views.CustomFontView
+                android:id="@+id/textview_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#ffffff"
+                android:textSize="19dip"
+                android:textStyle="bold" />
+
+            <com.coffeeandpower.views.CustomFontView
+                android:id="@+id/textview_street"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#ffffff"
+                android:textSize="17dip" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_popup_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout_name"
+        android:layout_marginLeft="15dip"
+        android:background="@drawable/bg_dialog"
+        android:orientation="vertical"
+        android:paddingLeft="5dip" >
+
+        <TextView
+            android:id="@+id/textview_check_in_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textSize="15dip"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textview_check_in_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textColor="#000000"
+            android:textSize="15dip" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/dummy_layout_2"
+        android:background="#77000000"
+        android:layoutAnimation="@anim/layout_random_fade"
+        android:visibility="visible" >
+
+        <HorizontalScrollView
+            android:id="@+id/hor_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:id="@+id/inflate_users"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+                </LinearLayout>
+
+                <com.coffeeandpower.views.CustomFontView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dip"
+                    android:text="@string/activity_check_in_who"
+                    android:textSize="20dip" />
+            </LinearLayout>
+        </HorizontalScrollView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/dummy_layout_2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#c3c3c3" >
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="8dip"
+            android:text="@string/activity_check_in_what"
+            android:textColor="#666666"
+            android:textSize="26dip"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edittext_optional"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_text"
+            android:layout_marginLeft="20dip"
+            android:singleLine="true"
+            android:layout_marginRight="20dip"
+            android:hint="@string/activity_check_in_optional" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_how_long"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edittext_optional"
+            android:layout_marginLeft="20dip"
+            android:layout_marginTop="5dip"
+            android:text="@string/activity_check_in_for_how_long"
+            android:textColor="#666666"
+            android:textSize="26dip"
+            android:textStyle="bold" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignRight="@+id/edittext_optional"
+            android:layout_below="@+id/edittext_optional"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="25dip"
+            android:layout_marginTop="5dip"
+            android:text=""
+            android:textColor="#42818b"
+            android:textSize="24dip" />
+
+        <com.coffeeandpower.views.CustomSeek
+            android:id="@+id/seekbar_hours"
+            style="@style/custom_seekbar_track"
+            android:layout_width="200dip"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textview_how_long"
+            android:layout_below="@+id/textview_how_long"
+            android:layout_marginTop="10dip"
+            android:progressDrawable="@drawable/custom_seekbar"
+            android:thumb="@drawable/check_in_slider_handle" />
+
+        <ImageView
+            android:layout_width="80dip"
+            android:layout_height="80dip"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/textview_hours"
+            android:background="@drawable/btn_check_in_green"
+            android:onClick="onClickCheckIn" />
+    </RelativeLayout>
+
+</RelativeLayout>

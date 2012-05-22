@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ff333333"
+    android:layoutAnimation="@anim/layout_animation_row_right_slide"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/btn_later"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/button_gray"
+        android:onClick="onClickLater"
+        android:text="@string/later"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:id="@+id/text_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_later"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"
+        android:gravity="center"
+        android:text="@string/activity_main_login_connect"
+        android:textSize="16sp" />
+
+    <ImageButton
+        android:id="@+id/btn_linked_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/text_connect"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dip"
+        android:background="@drawable/btn_linked_in"
+        android:onClick="onClickLinkedIn" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/candp_logo" />
+
+</RelativeLayout>
