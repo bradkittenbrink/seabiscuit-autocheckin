@@ -2,6 +2,8 @@ package com.coffeeandpower.tab.activities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +28,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.cisco.sample.utils.Counter;
+import com.cisco.sample.utils.CounterData;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
@@ -56,7 +61,7 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.urbanairship.UAirship;
 
-public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
+public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Observer {
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_MAP = 1;
 
@@ -76,6 +81,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	private MyLocationOverlay myLocationOverlay;
 	private MyItemizedOverlay itemizedoverlay;
 	private LocationManager locationManager;
+	
+	//Test counter 
+	private Counter counter = null;
 
 	// Current user
 	private User loggedUser;
@@ -87,6 +95,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	protected Handler taskHandler = new Handler();
 	
 	
+	
+	/*
 	private Runnable updateTimer = new Runnable()
         {
             @Override
@@ -116,6 +126,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
                 }
             }
         };
+        */
 
 	/**
 	 * Check if user is checked in or not
@@ -136,8 +147,12 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		super.onCreate(icicle);
 		setContentView(R.layout.tab_activity_map);
 		
-		Log.d("Timer","Starting timer...");
-		taskHandler.postDelayed(updateTimer, 5 * 1000);
+		//Test counter creation
+		this.counter = new Counter(10, 1);
+		counter.addObserver(this); // add this object as a Counter observer
+
+		//Log.d("Timer","Starting timer...");
+		//taskHandler.postDelayed(updateTimer, 5 * 1000);
 
 		// Executor
 		exe = new Executor(ActivityMap.this);
@@ -548,12 +563,15 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	protected void onStart() {
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
+		this.counter.start();
+
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
+		this.counter.stop();
 	}
 
 	private void errorReceived() {
@@ -619,6 +637,24 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 			}
 			break;
 
+		}
+	}
+	@Override
+	public void update(Observable observable, Object data) {
+		/*
+		 * verify that the data is really of type CounterData, and log the
+		 * details
+		 */
+		if (data instanceof CounterData) {
+			CounterData counterdata = (CounterData) data;
+			//Message message = new Message();
+			//Bundle bundle = new Bundle();
+			//bundle.putCharSequence("type", counterdata.type);
+			//bundle.putInt("value", counterdata.value);
+			//message.setData(bundle);
+			//handler.sendMessage(message);
+			//Log.i(counterdata.type, String.valueOf(counterdata.value));
+			Log.d(counterdata.type, String.valueOf(counterdata.value));
 		}
 	}
 }

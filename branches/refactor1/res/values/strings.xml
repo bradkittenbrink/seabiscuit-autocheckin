@@ -7,13 +7,16 @@
     <!-- Linked In -->
 
 
-    <!-- staging -->
+    <!-- staging  -->
     <string name="linkedInApiKey">4xkfzpnvuc72</string>
-    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+    
     <!-- production 
     <string name="linkedInApiKey">5tk2ex0mnjqk</string>
     <string name="linkedInApiSec">9JIH0rUiSbvJuHI2</string>
     -->
+    
+ 
     
     <string name="back">Back</string>
     <string name="send">Send</string>

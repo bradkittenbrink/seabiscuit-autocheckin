@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Observable;
+import java.util.Observer;
 
 import android.app.Application;
 import android.content.Context;
@@ -14,6 +16,7 @@ import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
 
+import com.cisco.sample.utils.Counter;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
 import com.urbanairship.UAirship;
@@ -65,7 +68,7 @@ public class AppCAP extends Application {
 	private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
 	private static final String TAG_NOTIFICATION_TOGGLE = "tag_notification_toggle";
 
-	// public static final String URL_WEB_SERVICE = "https://candp.me/"; //
+	//public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
 	// production
 	public static final String URL_WEB_SERVICE = "https://staging.candp.me/"; // staging
 	public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
@@ -84,6 +87,9 @@ public class AppCAP extends Application {
 	public static final int HTTP_ERROR = 1403;
 	public static final int HTTP_REQUEST_SUCCEEDED = 1404;
 	public static final int ERROR_SUCCEEDED_SHOW_MESS = 1407;
+	
+	// App wide observables
+	private Counter counter; 
 
 	private static AppCAP instance;
 
@@ -98,6 +104,8 @@ public class AppCAP extends Application {
 		super.onCreate();
 
 		this.http = new HttpUtil();
+		
+		//this.newDataObserver = Observable();
 
 		UAirship.takeOff(this);
 
@@ -128,6 +136,10 @@ public class AppCAP extends Application {
 
 	public static HttpUtil getConnection() {
 		return instance.http;
+	}
+	
+	public static Counter getObservable() {
+		return instance.counter;
 	}
 
 	private static SharedPreferences getSharedPreferences() {
