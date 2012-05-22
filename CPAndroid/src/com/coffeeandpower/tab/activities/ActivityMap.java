@@ -11,6 +11,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -81,6 +83,37 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	private DataHolder result;
 
 	private Executor exe;
+	// Scheduler
+	protected Handler taskHandler = new Handler();
+	
+	
+	private Runnable updateTimer = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Log.d("Timer","Received trigger...");
+                taskHandler.postDelayed(updateTimer, 10 * 1000);
+                
+                if(myLocationOverlay.getMyLocation() != null)
+                {
+                        DataHolder response;
+                        double[] currentCoords = new double[2];
+                        currentCoords[0] = ((double)myLocationOverlay.getMyLocation().getLatitudeE6()/1E6);
+                        currentCoords[1] = ((double)myLocationOverlay.getMyLocation().getLongitudeE6()/1E6);
+                        
+                        Log.d("Timer","Calling function with coordinate: " + AppCAP.getUserCoordinates());
+                        
+                        response = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
+                        
+                        Log.d("Timer","Received Response: " + response.toString());
+                }
+                else
+                {
+                	Log.d("Timer","Skipped call to API.");
+                }
+            }
+        };
 
 	/**
 	 * Check if user is checked in or not
@@ -100,6 +133,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.tab_activity_map);
+		
+		Log.d("Timer","Starting timer...");
+		taskHandler.postDelayed(updateTimer, 5 * 1000);
 
 		// Executor
 		exe = new Executor(ActivityMap.this);
