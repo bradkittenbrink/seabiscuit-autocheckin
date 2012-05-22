@@ -2644,7 +2644,8 @@ public class HttpUtil {
 
 					JSONObject objPayload = json.optJSONObject("payload");
 					if (objPayload != null) {
-
+						result.setResponseMessage("HTTP 200 OK");
+						result.setObject(objPayload);						
 					}
 					return result;
 				}
