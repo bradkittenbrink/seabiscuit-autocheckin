@@ -65,7 +65,7 @@ public class AppCAP extends Application {
 	private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
 	private static final String TAG_NOTIFICATION_TOGGLE = "tag_notification_toggle";
 
-	// public static final String URL_WEB_SERVICE = "https://candp.me/"; //
+	// public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
 	// production
 	public static final String URL_WEB_SERVICE = "https://staging.candp.me/"; // staging
 	public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
