@@ -107,6 +107,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
                         response = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
                         
                         Log.d("Timer","Received Response: " + response.toString());
+                        
+                        // Now post a notification with response.object
                 }
                 else
                 {
