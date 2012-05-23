@@ -138,7 +138,7 @@ public class AppCAP extends Application {
 		return instance.http;
 	}
 	
-	public static Counter getObservable() {
+	public static Counter getCounter() {
 		return instance.counter;
 	}
 
