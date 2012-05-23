@@ -29,6 +29,9 @@ public class Counter extends Observable {
 	public void start() {
 		workerThread.start();
 	}
+	public void manualTrigger() {
+		workerThread.manualTrigger();
+	}
 
 	private class CounterWorkerThread implements Runnable {
 		Thread thread = null;
@@ -51,11 +54,14 @@ public class Counter extends Observable {
 			thread.interrupt();
 			thread = null;
 		}
+		public void manualTrigger() {
+			this.stop();
+			this.start();
+		}
 
 		public void run() {
 			try {
 				while (run == true) {
-					Thread.sleep(tick * 1000);
 					count++;
 					
 		                        Log.d("Timer","Calling function with coordinate: " + AppCAP.getUserCoordinates());
@@ -72,6 +78,7 @@ public class Counter extends Observable {
 					} else {
 						notifyObservers(new CounterData(CounterData.counttype,response));
 					}
+					Thread.sleep(tick * 1000);
 				}
 			} catch (InterruptedException interruptEx) {
 				//do nothing here
