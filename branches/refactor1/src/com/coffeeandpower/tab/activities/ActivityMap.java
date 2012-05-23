@@ -94,8 +94,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	// Scheduler
 	protected Handler taskHandler = new Handler();
 	
-	
-	
 	/*
 	private Runnable updateTimer = new Runnable()
         {
@@ -149,7 +147,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		
 		//Test counter creation
 		this.counter = new Counter(10, 1);
-		counter.addObserver(this); // add this object as a Counter observer
+		this.counter.start();
 
 		//Log.d("Timer","Starting timer...");
 		//taskHandler.postDelayed(updateTimer, 5 * 1000);
@@ -500,7 +498,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	@Override
 	protected void onDestroy() {
 		myLocationOverlay.disableMyLocation();
-
+		this.counter.stop();
+		Log.d("timer","Counter is stopped!!!");
 		if (AppCAP.shouldFinishActivities() && AppCAP.shouldStartLogIn()) {
 			startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
 			AppCAP.setShouldStartLogIn(false);
@@ -563,15 +562,14 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	protected void onStart() {
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
-		this.counter.start();
-
+		counter.addObserver(this); // add this object as a Counter observer
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
-		this.counter.stop();
+		counter.deleteObserver(this);
 	}
 
 	private void errorReceived() {
@@ -654,7 +652,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			//message.setData(bundle);
 			//handler.sendMessage(message);
 			//Log.i(counterdata.type, String.valueOf(counterdata.value));
-			Log.d(counterdata.type, String.valueOf(counterdata.value));
+			Log.d(counterdata.type, "Testing");
 		}
 	}
 }
