@@ -12,6 +12,8 @@ public class Counter extends Observable {
 	private Integer tick = 0;
 	private Integer trigger = 0; // trigger every N steps
 	private DataHolder response;
+	
+	
 
 	CounterWorkerThread workerThread = new CounterWorkerThread();
 	
@@ -35,24 +37,33 @@ public class Counter extends Observable {
 
 	private class CounterWorkerThread implements Runnable {
 		Thread thread = null;
-		boolean run = false;;
+		private boolean run = false;
 
 		CounterWorkerThread() {
 			thread = new Thread(this);
 		}
 
 		public void start() {
-			run = true;
-			if ( thread == null) {
-				thread = new Thread(this);
+			Log.d("Counter","Counter.start(): " + this.run);
+			if (this.run == false) {
+        			this.run = true;
+        			if ( thread == null) {
+        				thread = new Thread(this);
+        			}
+        			thread.start();
+        			Log.d("timer","Counter is started.");
 			}
-			thread.start();
 		}
 
 		public void stop() {
-			run = false;
-			thread.interrupt();
-			thread = null;
+			Log.d("Counter","Counter.stop(): " + this.run);
+			if (this.run == true) {
+				Log.d("timer","Stopping counter...");
+        			this.run = false;
+        			thread.interrupt();
+        			thread = null;
+        			Log.d("timer","Counter is stopped.");
+			}
 		}
 		public void manualTrigger() {
 			this.stop();
@@ -60,6 +71,7 @@ public class Counter extends Observable {
 		}
 
 		public void run() {
+			Log.d("Counter","Counter.run()");
 			try {
 				while (run == true) {
 					count++;
@@ -73,11 +85,10 @@ public class Counter extends Observable {
 		                        // Now post a notification with response.object
 					
 					setChanged();
-					if ((count % trigger) == 0) {
-						notifyObservers(new CounterData(CounterData.triggertype, response));
-					} else {
-						notifyObservers(new CounterData(CounterData.counttype,response));
-					}
+					
+					Log.d("Timer","Sending notifyObservers...");
+					notifyObservers(new CounterData(CounterData.triggertype, response));
+					
 					Thread.sleep(tick * 1000);
 				}
 			} catch (InterruptedException interruptEx) {

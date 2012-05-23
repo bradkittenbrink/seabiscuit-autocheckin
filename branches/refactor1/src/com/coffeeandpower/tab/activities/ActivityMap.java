@@ -83,7 +83,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	private LocationManager locationManager;
 	
 	//Test counter 
-	private Counter counter = null;
+	//private Counter counter = null;
 
 	// Current user
 	private User loggedUser;
@@ -91,8 +91,20 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	private DataHolder result;
 
 	private Executor exe;
-	// Scheduler
-	protected Handler taskHandler = new Handler();
+	
+	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
+	protected Handler taskHandler = new Handler() {
+		
+		@Override
+		public void handleMessage(Message msg) {
+			
+			// pass message data along to venue update method
+			ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
+			updateVenuesAndCheckinsFromApiResult(venueArray);
+			
+			super.handleMessage(msg);
+		}
+	};
 	
 	/*
 	private Runnable updateTimer = new Runnable()
@@ -142,12 +154,15 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 
 	@Override
 	protected void onCreate(Bundle icicle) {
+		
 		super.onCreate(icicle);
+		
+		Log.d("Coffee","Creating ActivityMap...");
+		
 		setContentView(R.layout.tab_activity_map);
 		
-		//Test counter creation
-		this.counter = new Counter(10, 1);
-		this.counter.start();
+		
+		
 
 		//Log.d("Timer","Starting timer...");
 		//taskHandler.postDelayed(updateTimer, 5 * 1000);
@@ -423,7 +438,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 
 		hideBaloons();
 
-		exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(getSWAndNECoordinatesBounds(mapView), false);
+		//exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(getSWAndNECoordinatesBounds(mapView), false);
+		//AppCAP.getCounter().manualTrigger();
 
 		// For every refresh save Map coordinates
 		AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
@@ -498,8 +514,10 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	@Override
 	protected void onDestroy() {
 		myLocationOverlay.disableMyLocation();
-		this.counter.stop();
-		Log.d("timer","Counter is stopped!!!");
+
+		//Log.d("ActivityMap","onDestroy(): stopping counter...");
+		//AppCAP.getCounter().stop();
+		
 		if (AppCAP.shouldFinishActivities() && AppCAP.shouldStartLogIn()) {
 			startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
 			AppCAP.setShouldStartLogIn(false);
@@ -560,16 +578,19 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 
 	@Override
 	protected void onStart() {
+		Log.d("ActivityMap","ActivityMap.onStart()");
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
-		counter.addObserver(this); // add this object as a Counter observer
+		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
 	}
 
 	@Override
 	public void onStop() {
+		Log.d("ActivityMap","ActivityMap.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
-		counter.deleteObserver(this);
+		
+		AppCAP.getCounter().deleteObserver(this);
 	}
 
 	private void errorReceived() {
@@ -645,14 +666,53 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		 */
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			//Message message = new Message();
-			//Bundle bundle = new Bundle();
-			//bundle.putCharSequence("type", counterdata.type);
+			DataHolder result = counterdata.value;
+			
+			Log.d("Map","We're here!!!!!!!!!!!!!!!!!!");
+			
+			Object[] obj = (Object[]) result.getObject();
+			@SuppressWarnings("unchecked")
+			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			//ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+			
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putCharSequence("type", counterdata.type);
 			//bundle.putInt("value", counterdata.value);
-			//message.setData(bundle);
-			//handler.sendMessage(message);
-			//Log.i(counterdata.type, String.valueOf(counterdata.value));
-			Log.d(counterdata.type, "Testing");
+			bundle.putParcelableArrayList("venues", arrayVenues);
+			message.setData(bundle);
+			
+			Log.d("Map","ActivityMap.update: Sending handler message...");
+			taskHandler.sendMessage(message);
+			
+			
 		}
 	}
+	
+	
+	private void updateVenuesAndCheckinsFromApiResult(ArrayList<VenueSmart> venueArray) {
+		
+		Log.d("Map","updateVenuesAndCheckinsFromApiResult()");
+		
+		for (VenueSmart venue : venueArray) {
+			GeoPoint gp = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
+
+			if (venue.getCheckins() > 0) {
+				createMarker(gp, venue.getFoursquareId(), venue.getCheckins(), venue.getName(), true);
+			} else if (venue.getCheckinsForWeek() > 0) {
+				createMarker(gp, venue.getFoursquareId(), venue.getCheckinsForWeek(), venue.getName(), false); // !!!
+															       // getCheckinsForWeek
+			}
+		}
+		
+		if (itemizedoverlay.size() > 0) {
+			mapView.getOverlays().add(itemizedoverlay);
+		}
+		checkUserState();
+		mapView.invalidate();
+		
+	}
+	
+	
+	
 }

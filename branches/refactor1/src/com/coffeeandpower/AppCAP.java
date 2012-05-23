@@ -101,6 +101,9 @@ public class AppCAP extends Application {
 
 	@Override
 	public void onCreate() {
+		
+		Log.d("Coffee","AppCAP.onCreate()");
+		
 		super.onCreate();
 
 		this.http = new HttpUtil();
@@ -108,6 +111,11 @@ public class AppCAP extends Application {
 		//this.newDataObserver = Observable();
 
 		UAirship.takeOff(this);
+		
+		//Test counter creation
+		Log.d("Coffee","Creating counter...");
+		this.counter = new Counter(10, 1);
+		this.counter.start();
 
 		PushManager.enablePush();
 		PushManager.shared().setIntentReceiver(IntentReceiver.class);
@@ -128,11 +136,11 @@ public class AppCAP extends Application {
 		} else {
 			setMetricsSys(false);
 		}
+		
+		
 	}
 
-	public void onStop() {
-		UAirship.land();
-	}
+	
 
 	public static HttpUtil getConnection() {
 		return instance.http;

@@ -7,12 +7,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.coffeeandpower.tab.activities.ActivityMap;
 import com.google.android.maps.MapActivity;
+import com.urbanairship.UAirship;
 
 public class RootActivity extends MapActivity {
 
@@ -20,6 +22,25 @@ public class RootActivity extends MapActivity {
 	
 
 	private AlertDialog alert;
+	
+	
+	@Override
+	protected void onCreate(Bundle instance) {
+		super.onCreate(instance);
+		Log.d("RootActivity","RootActivity.onCreate()");
+		
+	}
+	
+	@Override
+	protected void onDestroy() {
+		UAirship.land();
+		Log.d("RootActivity","RootActivity.onDestroy()");
+		
+		
+		
+		super.onPause();
+	}
+	
 
 	/**
 	 * Easy log

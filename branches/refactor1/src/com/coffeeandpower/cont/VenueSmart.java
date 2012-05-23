@@ -2,7 +2,10 @@ package com.coffeeandpower.cont;
 
 import java.util.ArrayList;
 
-public class VenueSmart {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class VenueSmart implements Parcelable{
 
 	private String venueId;
 	private String name;
@@ -25,7 +28,7 @@ public class VenueSmart {
 
 	private ArrayList<CheckinData> arrayCheckins;
 
-	public static class CheckinData {
+	public static class CheckinData implements Parcelable {
 		int userId;
 		int checkinCount;
 		int checkedIn;
@@ -46,6 +49,20 @@ public class VenueSmart {
 
 		public int getCheckedIn() {
 			return checkedIn;
+		}
+		
+		@Override
+		public int describeContents() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public void writeToParcel(Parcel out, int flags) {
+			// TODO Auto-generated method stub
+			out.writeInt(userId);
+			out.writeInt(checkinCount);
+			out.writeInt(checkedIn);
 		}
 	}
 
@@ -196,6 +213,41 @@ public class VenueSmart {
 
 	public void setArrayCheckins(ArrayList<CheckinData> arrayCheckins) {
 		this.arrayCheckins = arrayCheckins;
+	}
+	
+	
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		// TODO Auto-generated method stub
+		
+		
+		out.writeString(this.venueId);
+		out.writeString(this.name);
+		out.writeString(this.address);
+		out.writeString(this.city);
+		out.writeString(this.state);
+		out.writeString(this.distance);
+		out.writeString(this.foursquareId);
+		
+		out.writeInt(this.checkins);
+		out.writeInt(this.checkinsForWeek);
+		out.writeInt(this.checkinsForInterval);
+		
+		out.writeString(this.photoURL);
+		out.writeString(this.phone);
+		out.writeString(this.formattedPhone);
+		
+		out.writeDouble(this.lat);
+		out.writeDouble(this.lng);
+		
+		out.writeList(arrayCheckins);
+		
 	}
 
 }
