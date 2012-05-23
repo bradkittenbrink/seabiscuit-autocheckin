@@ -16,7 +16,7 @@ import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
 
-import com.cisco.sample.utils.Counter;
+import com.coffeeandpower.datatiming.Counter;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
 import com.urbanairship.UAirship;

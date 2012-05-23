@@ -28,8 +28,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.cisco.sample.utils.Counter;
-import com.cisco.sample.utils.CounterData;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
@@ -39,6 +37,8 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.datatiming.Counter;
+import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.maps.BalloonItemizedOverlay;
