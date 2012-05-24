@@ -581,6 +581,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		Log.d("ActivityMap","ActivityMap.onStart()");
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
+		AppCAP.getCounter().start();
 		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
 	}
 
@@ -589,7 +590,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		Log.d("ActivityMap","ActivityMap.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
-		
+		AppCAP.getCounter().stop();
 		AppCAP.getCounter().deleteObserver(this);
 	}
 
@@ -673,7 +674,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			Object[] obj = (Object[]) result.getObject();
 			@SuppressWarnings("unchecked")
 			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-			//ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
 			
 			Message message = new Message();
 			Bundle bundle = new Bundle();

@@ -1016,6 +1016,7 @@ public class HttpUtil {
 			RootActivity.log("HttpUtil_getVenuesAndUsersWithCheckinsInBoundsDuringInterval: " + responseString);
 
 			if (responseString != null) {
+				result.setResponseMessage("JSON Parsing error");
 
 				JSONObject json = new JSONObject(responseString);
 				if (json != null) {
@@ -1125,6 +1126,7 @@ public class HttpUtil {
 						result.setObject(new Object[] { venues, users });
 					}
 					result.setHandlerCode(Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS);
+					result.setResponseMessage("HTTP 200 OK");
 					return result;
 				}
 			}
@@ -2644,10 +2646,114 @@ public class HttpUtil {
 
 					JSONObject objPayload = json.optJSONObject("payload");
 					if (objPayload != null) {
-						result.setResponseMessage("HTTP 200 OK");
-						result.setObject(objPayload);						
+						result.setResponseMessage("JSON PARSE ERROR");
+						result.setObject(objPayload);
+
+						// Array Venues
+						ArrayList<VenueSmart> venues = new ArrayList<VenueSmart>();
+						JSONArray arrayVenues = objPayload.optJSONArray("venues");
+						if (arrayVenues != null) {
+							for (int x = 0; x < arrayVenues.length(); x++) {
+
+								JSONObject objVenue = arrayVenues.optJSONObject(x);
+								if (objVenue != null) {
+
+									ArrayList<CheckinData> arrayCheckins = new ArrayList<VenueSmart.CheckinData>();
+									JSONObject objUsersFromVenue = objVenue.optJSONObject("users");
+									if (objUsersFromVenue != null) {
+
+										JSONArray userIds = objUsersFromVenue.names();
+										if (userIds != null) {
+
+											for (int y = 0; y < userIds.length(); y++) {
+
+												JSONObject o = objUsersFromVenue
+														.optJSONObject(userIds.getString(y));
+												if (o != null) {
+													int userId = 0;
+													try {
+														userId = Integer.parseInt(userIds
+																.getString(y));
+													} catch (NumberFormatException e) {
+													}
+
+													arrayCheckins.add(new CheckinData(userId, o
+															.optInt("checkin_count"), o
+															.optInt("checked_in")));
+												}
+											}
+										}
+									}
+
+									venues.add(new VenueSmart(objVenue.optString("venue_id"), objVenue
+											.optString("name"), objVenue.optString("address"), objVenue
+											.optString("city"), objVenue.optString("state"), objVenue
+											.optString("distance"), objVenue.optString("foursquare_id"),
+											objVenue.optInt("checkins"), objVenue
+													.optInt("checkins_for_week"), objVenue
+													.optInt("checkins_for_interval"), objVenue
+													.optString("photo_url"), objVenue
+													.optString("phone"), objVenue
+													.optString("formatted_phone"), objVenue
+													.optDouble("lat"), objVenue.optDouble("lng"),
+											arrayCheckins));
+								}
+							}
+						}
+
+						// Array Users
+						ArrayList<UserSmart> users = new ArrayList<UserSmart>();
+						JSONArray arrayUsers = objPayload.optJSONArray("users");
+						if (arrayUsers != null) {
+
+							boolean isFirstInList1 = false;
+							boolean isFirstInList0 = false;
+
+							for (int x = 0; x < arrayUsers.length(); x++) {
+								JSONObject objUser = arrayUsers.optJSONObject(x);
+								if (objUser != null) {
+
+									UserSmart singleUserMap = new UserSmart(
+											objUser.optInt("checkin_id"),
+											objUser.optInt("id"),
+											objUser.optString("nickname"),
+											objUser.optString("status_text"),
+											objUser.optString("photo"),
+											objUser.optString("major_job_category"),
+											objUser.optString("minor_job_category"),
+											// smarterer_name
+											// !?!?!?!??!
+											objUser.optString("headline"), objUser.optString("filename"),
+											objUser.optDouble("lat"), objUser.optDouble("lng"),
+											objUser.optInt("checked_in"),
+											objUser.optString("foursquare"),
+											objUser.optString("venue_name"),
+											objUser.optInt("checkin_count"), objUser.optString("skills"),
+											objUser.optBoolean("met"));
+
+									if (singleUserMap.getCheckedIn() == 1) {
+										if (!isFirstInList1) {
+											singleUserMap.setFirstInList(true);
+											isFirstInList1 = !isFirstInList1;
+										}
+									} else {
+										if (!isFirstInList0) {
+											singleUserMap.setFirstInList(true);
+											isFirstInList0 = !isFirstInList0;
+										}
+									}
+
+									users.add(singleUserMap);
+								}
+							}
+						}
+
+						result.setObject(new Object[] { venues, users });
 					}
-					return result;
+					result.setHandlerCode(Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS);
+					result.setResponseMessage("HTTP 200 OK");
+					return result;	
+						
 				}
 			}
 		} catch (UnsupportedEncodingException e) {

@@ -79,6 +79,9 @@ public class Counter extends Observable {
 		                        Log.d("Timer","Calling function with coordinate: " + AppCAP.getUserCoordinates());
 		                        
 		                        response = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
+		        		//AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
+					//Object[] obj = (Object[]) response.getObject();
+
 		                        
 		                        Log.d("Timer","Received Response: " + response.toString());
 		                        

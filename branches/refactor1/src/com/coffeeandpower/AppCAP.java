@@ -115,7 +115,6 @@ public class AppCAP extends Application {
 		//Test counter creation
 		Log.d("Coffee","Creating counter...");
 		this.counter = new Counter(10, 1);
-		this.counter.start();
 
 		PushManager.enablePush();
 		PushManager.shared().setIntentReceiver(IntentReceiver.class);
