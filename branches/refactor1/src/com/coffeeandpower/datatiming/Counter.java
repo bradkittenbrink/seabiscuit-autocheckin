@@ -10,21 +10,31 @@ import com.coffeeandpower.cont.DataHolder;
 
 public class Counter extends Observable {
 	
-	private Integer count = 0;
 	private Integer tick = 0;
 	private Integer trigger = 0; // trigger every N steps
 	private DataHolder response;
 	
 	private boolean isRunning = false;
+	private boolean delayHttp = false;
 	
 	// Scheduler
 	protected Handler taskHandler = new Handler();
 
 	//CounterWorkerThread workerThread = new CounterWorkerThread();
+	public void getLastResponseReset() {
+		if(response != null)
+		{
+                    delayHttp = true;
+		}
+		//Restart the timer
+		stop();
+		start();
+		
+		
+	}
 	
 	public Counter(Integer tick, Integer trigger) {
 		super();
-		this.count = 0;
 		this.tick = tick;
 		this.trigger = trigger;
 	}
@@ -69,26 +79,27 @@ public class Counter extends Observable {
             @Override
             public void run()
             {
-        	    count++;
         	    
         	    Log.d("Timer","Calling function with coordinate: " + AppCAP.getUserCoordinates());
                     
-                    response = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
-                    //AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
-                    //Object[] obj = (Object[]) response.getObject();
-
+        	    if(delayHttp)
+        	    {
+        		    delayHttp = false;    
+        	    }
+        	    else
+        	    {
+        		    response = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
+        		    Log.d("Timer","Received Response: " + response.toString());
+        	    }
                     
-                    Log.d("Timer","Received Response: " + response.toString());
-                    
-                    // Now post a notification with response.object
-			
+                    // Now post a notification with response.object	
                     setChanged();
 			
                     Log.d("Timer","Sending notifyObservers...");
                     notifyObservers(new CounterData(CounterData.triggertype, response));
         	    
                     Log.d("Counter","Posting runnable delayed for 10 seconds...");
-        	    taskHandler.postDelayed(runTimer, 10 * 1000);
+        	    taskHandler.postDelayed(runTimer, tick * 1000);
             }
         };
 	

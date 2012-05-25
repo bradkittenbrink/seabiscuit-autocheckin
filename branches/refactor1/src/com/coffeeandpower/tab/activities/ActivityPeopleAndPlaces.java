@@ -84,9 +84,17 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		@Override
 		public void handleMessage(Message msg) {
 
-			// pass message data along to venue update method
-			ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
-			updateVenuesAndCheckinsFromApiResult(venueArray);
+			if (type.equals("people")) {
+				// pass message data along to venue update method
+				ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("users");
+				updateUsersAndCheckinsFromApiResult(usersArray);
+			}
+			else
+			{
+				// pass message data along to venue update method
+				ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
+				updateVenuesAndCheckinsFromApiResult(venueArray);
+			}
 
 			super.handleMessage(msg);
 		}
@@ -135,6 +143,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 		// Executor
 		exe = new Executor(ActivityPeopleAndPlaces.this);
+		/*
 		exe.setExecutorListener(new ExecutorInterface() {
 			@Override
 			public void onErrorReceived() {
@@ -146,6 +155,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 				actionFinished(action);
 			}
 		});
+		*/
 
 		// Default View
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
@@ -237,6 +247,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		UAirship.shared().getAnalytics().activityStarted(this);
 		//AppCAP.getCounter().start();
 		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
+		AppCAP.getCounter().getLastResponseReset();
 	}
 
 	@Override
@@ -370,13 +381,11 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 					});
 				}
 
-				//Bring up loading screen while we refresh the list
 				if (type.equals("people")) {
 					setPeopleList();
 				} else {
 					setPlaceList();
 				}
-				//Close the loading screen
 
 			}
 			break;
@@ -392,9 +401,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
 			DataHolder result = counterdata.value;
-			
-			Log.d("PeoplePlaces","We're here!!!!!!!!!!!!!!!!!!");
-			
+						
 			Object[] obj = (Object[]) result.getObject();
 			@SuppressWarnings("unchecked")
 			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
@@ -420,20 +427,34 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			Log.d("PeoplePlaces","Error: Received unexpected data type: " + data.getClass().toString());
 	}
 	
+	private void updateUsersAndCheckinsFromApiResult(ArrayList<UserSmart> userArray) {
+		Log.d("PeoplePlaces","updateUsersAndCheckinsFromApiResult()");
+		
+		arrayUsers = userArray;
+		
+		// Sort users list
+		if (arrayUsers != null) {
+			Collections.sort(arrayUsers, new Comparator<UserSmart>() {
+				@Override
+				public int compare(UserSmart m1, UserSmart m2) {
+					if (m1.getCheckedIn() > m2.getCheckedIn()) {
+						return -1;
+					}
+					return 1;
+				}
+			});
+		}
+		//Populate table view
+		setPeopleList();
+	}
+
+	
 	private void updateVenuesAndCheckinsFromApiResult(ArrayList<VenueSmart> venueArray) {
 		
 		Log.d("PeoplePlaces","updateVenuesAndCheckinsFromApiResult()");
 		
 		arrayVenues = venueArray;
-		
-		progress = new ProgressDialog(this);
-		progress.setMessage("Loading...");
-		if (type.equals("people")) {
-			setPeopleList();
-		} else {
-			setPlaceList();
-		}
-		
+		setPlaceList();		
 	}
 
 }
