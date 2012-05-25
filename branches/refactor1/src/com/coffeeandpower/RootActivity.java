@@ -33,12 +33,30 @@ public class RootActivity extends MapActivity {
 	
 	@Override
 	protected void onDestroy() {
-		UAirship.land();
+		
 		Log.d("RootActivity","RootActivity.onDestroy()");
 		
 		
 		
+		super.onDestroy();
+	}
+	
+	@Override
+	protected void onPause() {
+		Log.d("RootActivity","RootActivity.onPause()");
+		
+		
+		
 		super.onPause();
+	}
+	
+	@Override
+	protected void onStop() {
+		Log.d("RootActivity","RootActivity.onStop()");
+		
+		
+		
+		super.onStop();
 	}
 	
 

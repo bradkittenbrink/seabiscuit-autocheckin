@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -161,7 +162,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		
 		setContentView(R.layout.tab_activity_map);
 		
-		
+		AppCAP.startCounter();
 		
 
 		//Log.d("Timer","Starting timer...");
@@ -581,7 +582,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		Log.d("ActivityMap","ActivityMap.onStart()");
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().start();
 		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
 	}
 
@@ -590,7 +590,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		Log.d("ActivityMap","ActivityMap.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
-		AppCAP.getCounter().stop();
+		
 		AppCAP.getCounter().deleteObserver(this);
 	}
 
@@ -665,6 +665,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		 * verify that the data is really of type CounterData, and log the
 		 * details
 		 */
+		Log.d("ActivityMap","update()");
+		
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
 			DataHolder result = counterdata.value;
@@ -711,6 +713,22 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		mapView.invalidate();
 		
 	}
+	
+	
+	// Capture the user pressing the back button in the map view and exit the app
+	// Move this to a separate function
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	        Log.d("Coffee","User exit detected.");
+	        
+	        UAirship.land();
+	        AppCAP.getCounter().stop();
+	        
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
+
 	
 	
 	

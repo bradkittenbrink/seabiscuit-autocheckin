@@ -235,7 +235,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStart()");
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().start();
+		//AppCAP.getCounter().start();
 		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
 	}
 
@@ -244,7 +244,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
-		AppCAP.getCounter().stop();
+		//AppCAP.getCounter().stop();
 		AppCAP.getCounter().deleteObserver(this);
 	}
 
@@ -416,6 +416,8 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			
 			
 		}
+		else
+			Log.d("PeoplePlaces","Error: Received unexpected data type: " + data.getClass().toString());
 	}
 	
 	private void updateVenuesAndCheckinsFromApiResult(ArrayList<VenueSmart> venueArray) {

@@ -2,20 +2,25 @@ package com.coffeeandpower.datatiming;
 
 import java.util.Observable;
 
+import android.os.Handler;
 import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.cont.DataHolder;
 
 public class Counter extends Observable {
+	
 	private Integer count = 0;
 	private Integer tick = 0;
 	private Integer trigger = 0; // trigger every N steps
 	private DataHolder response;
 	
+	private boolean isRunning = false;
 	
+	// Scheduler
+	protected Handler taskHandler = new Handler();
 
-	CounterWorkerThread workerThread = new CounterWorkerThread();
+	//CounterWorkerThread workerThread = new CounterWorkerThread();
 	
 	public Counter(Integer tick, Integer trigger) {
 		super();
@@ -25,16 +30,70 @@ public class Counter extends Observable {
 	}
 
 	public void stop() {
-		workerThread.stop();
+		
+		if (isRunning == true) {
+			Log.d("Counter","Removing callbacks...");
+			this.isRunning = false;
+			taskHandler.removeCallbacks(runTimer);
+			
+		}
+		else
+		{
+			Log.d("Counter","Warning: Tried to stop Counter but it was not started...");
+		}
 	}
 
 	public void start() {
-		workerThread.start();
+		
+		if (isRunning == false) {
+			Log.d("Counter","Posting runnable...");
+			this.isRunning = true;
+			taskHandler.removeCallbacks(runTimer);
+			taskHandler.post(runTimer);
+			
+		}
+		else
+		{
+			Log.d("Counter","Warning: Tried to start Counter when it was already running...");
+		}
+		
 	}
+	
 	public void manualTrigger() {
-		workerThread.manualTrigger();
+		stop();
+		start();
 	}
 
+	private Runnable runTimer = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+        	    count++;
+        	    
+        	    Log.d("Timer","Calling function with coordinate: " + AppCAP.getUserCoordinates());
+                    
+                    response = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
+                    //AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
+                    //Object[] obj = (Object[]) response.getObject();
+
+                    
+                    Log.d("Timer","Received Response: " + response.toString());
+                    
+                    // Now post a notification with response.object
+			
+                    setChanged();
+			
+                    Log.d("Timer","Sending notifyObservers...");
+                    notifyObservers(new CounterData(CounterData.triggertype, response));
+        	    
+                    Log.d("Counter","Posting runnable delayed for 10 seconds...");
+        	    taskHandler.postDelayed(runTimer, 10 * 1000);
+            }
+        };
+	
+        
+        /*
 	private class CounterWorkerThread implements Runnable {
 		Thread thread = null;
 		private boolean run = false;
@@ -102,4 +161,6 @@ public class Counter extends Observable {
 			}
 		}
 	}
+	
+	*/
 }

@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Observable;
-import java.util.Observer;
 
 import android.app.Application;
 import android.content.Context;
@@ -34,11 +32,11 @@ public class AppCAP extends Application {
 	// 4. Once you have your key, replace the property android:apiKey in res/layout/tab_activity_map.xml
 	
 	// Google maps api key for debug Kep:
-	// 0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q
+	//   0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q
 	// Google maps api key for debug Tengai home:
-	// 0PV0Dp_6Dj6M_WBuUrThj9-fW3btGy9kxl83wgQ
+	//   0PV0Dp_6Dj6M_WBuUrThj9-fW3btGy9kxl83wgQ
 	// Map key for andrewa debug:
-	// 08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA
+	//   08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA
 
 	public static final String TAG = "CoffeeAndPower";
 
@@ -89,11 +87,14 @@ public class AppCAP extends Application {
 	public static final int ERROR_SUCCEEDED_SHOW_MESS = 1407;
 	
 	// App wide observables
-	private Counter counter; 
+	
 
 	private static AppCAP instance;
+	
 
 	private HttpUtil http;
+	
+	private Counter timingCounter;
 
 	public AppCAP() {
 		instance = this;
@@ -102,19 +103,25 @@ public class AppCAP extends Application {
 	@Override
 	public void onCreate() {
 		
-		Log.d("Coffee","AppCAP.onCreate()");
+		// You should not actually see any of the Log.d messages in onCreate() - don't know why
+		Log.d("Coffee","AppCAP.onCreate(): ");
+		
 		
 		super.onCreate();
 
 		this.http = new HttpUtil();
 		
 		//this.newDataObserver = Observable();
+		//this.intentService = new Intent(this, TimerService.class);
+	        //startService();
 
 		UAirship.takeOff(this);
 		
 		//Test counter creation
+		//this.counter.start();
 		Log.d("Coffee","Creating counter...");
-		this.counter = new Counter(10, 1);
+		instance.timingCounter = new Counter(10, 1);
+		//instance.timingCounter.start();
 
 		PushManager.enablePush();
 		PushManager.shared().setIntentReceiver(IntentReceiver.class);
@@ -140,14 +147,21 @@ public class AppCAP extends Application {
 	}
 
 	
+	
 
 	public static HttpUtil getConnection() {
 		return instance.http;
 	}
 	
-	public static Counter getCounter() {
-		return instance.counter;
+	public static Counter getCounter () {
+		return instance.timingCounter;
 	}
+	
+	public static void startCounter() {
+		instance.timingCounter.start();
+			
+	}
+	
 
 	private static SharedPreferences getSharedPreferences() {
 		return instance.getSharedPreferences(AppCAP.TAG, MODE_PRIVATE);
