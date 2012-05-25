@@ -3,11 +3,16 @@ package com.coffeeandpower.tab.activities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Observable;
+import java.util.Observer;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -29,6 +34,7 @@ import com.coffeeandpower.adapters.MyUsersAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.utils.Executor;
@@ -38,8 +44,10 @@ import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
+import com.google.android.maps.GeoPoint;
+import com.urbanairship.UAirship;
 
-public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, UserMenu {
+public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, UserMenu, Observer{
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_USER = 1;
@@ -69,6 +77,20 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	private UserAndTabMenu menu;
 
 	private String type;
+	
+	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
+	protected Handler taskHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+
+			// pass message data along to venue update method
+			ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
+			updateVenuesAndCheckinsFromApiResult(venueArray);
+
+			super.handleMessage(msg);
+		}
+	};
 
 	{
 		data = new double[6];
@@ -207,6 +229,24 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			}
 		}
 	}
+	
+	@Override
+	protected void onStart() {
+		Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStart()");
+		super.onStart();
+		UAirship.shared().getAnalytics().activityStarted(this);
+		AppCAP.getCounter().start();
+		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
+	}
+
+	@Override
+	public void onStop() {
+		Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStop()");
+		super.onStop();
+		UAirship.shared().getAnalytics().activityStopped(this);
+		AppCAP.getCounter().stop();
+		AppCAP.getCounter().deleteObserver(this);
+	}
 
 	@Override
 	protected void onResume() {
@@ -330,14 +370,83 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 					});
 				}
 
+				//Bring up loading screen while we refresh the list
 				if (type.equals("people")) {
 					setPeopleList();
 				} else {
 					setPlaceList();
 				}
+				//Close the loading screen
+
 			}
 			break;
 		}
+	}
+	
+	@Override
+	public void update(Observable observable, Object data) {
+		/*
+		 * verify that the data is really of type CounterData, and log the
+		 * details
+		 */
+		if (data instanceof CounterData) {
+			CounterData counterdata = (CounterData) data;
+			DataHolder result = counterdata.value;
+			
+			Log.d("PeoplePlaces","We're here!!!!!!!!!!!!!!!!!!");
+			
+			Object[] obj = (Object[]) result.getObject();
+			@SuppressWarnings("unchecked")
+			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			//ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+			
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putCharSequence("type", counterdata.type);
+			//bundle.putInt("value", counterdata.value);
+			bundle.putParcelableArrayList("venues", arrayVenues);
+			message.setData(bundle);
+			
+			Log.d("PeoplePlaces","ActivityMap.update: Sending handler message...");
+			taskHandler.sendMessage(message);
+			
+			
+		}
+	}
+	
+	private void updateVenuesAndCheckinsFromApiResult(ArrayList<VenueSmart> venueArray) {
+		
+		Log.d("PeoplePlaces","updateVenuesAndCheckinsFromApiResult()");
+		
+		arrayVenues = venueArray;
+		
+		progress = new ProgressDialog(this);
+		progress.setMessage("Loading...");
+		if (type.equals("people")) {
+			//setPeopleList();
+		} else {
+			setPlaceList();
+		}
+		
+		/*
+		for (VenueSmart venue : venueArray) {
+			GeoPoint gp = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
+
+			if (venue.getCheckins() > 0) {
+				createMarker(gp, venue.getFoursquareId(), venue.getCheckins(), venue.getName(), true);
+			} else if (venue.getCheckinsForWeek() > 0) {
+				createMarker(gp, venue.getFoursquareId(), venue.getCheckinsForWeek(), venue.getName(), false); // !!!
+															       // getCheckinsForWeek
+			}
+		}
+		
+		if (itemizedoverlay.size() > 0) {
+			mapView.getOverlays().add(itemizedoverlay);
+		}
+		checkUserState();
+		mapView.invalidate();
+		*/
+		
 	}
 
 }

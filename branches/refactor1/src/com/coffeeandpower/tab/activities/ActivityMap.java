@@ -668,13 +668,11 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
 			DataHolder result = counterdata.value;
-			
-			Log.d("Map","We're here!!!!!!!!!!!!!!!!!!");
-			
+						
 			Object[] obj = (Object[]) result.getObject();
 			@SuppressWarnings("unchecked")
 			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+			//ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
 			
 			Message message = new Message();
 			Bundle bundle = new Bundle();
