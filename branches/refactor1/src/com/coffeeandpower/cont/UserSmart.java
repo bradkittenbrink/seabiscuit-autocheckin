@@ -2,8 +2,12 @@ package com.coffeeandpower.cont;
 
 import java.io.Serializable;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 @SuppressWarnings("serial")
-public class UserSmart implements Serializable {
+public class UserSmart implements Parcelable {
+	//Eliminated Serializable
 
 	private int checkInId;
 	private int userId;
@@ -189,6 +193,33 @@ public class UserSmart implements Serializable {
 
 	public void setMet(boolean met) {
 		this.met = met;
+	}
+	
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		
+		out.writeInt(this.checkInId);
+		out.writeInt(this.userId);
+		out.writeString(this.nickName);
+		out.writeString(this.statusText);
+		out.writeString(this.photo);
+		out.writeString(this.majorJobCategory);
+		out.writeString(this.minorJobCategory);
+		out.writeString(this.headLine);
+		out.writeString(this.fileName);
+		out.writeDouble(this.lat);
+		out.writeDouble(this.lng);
+		out.writeInt(this.checkedIn);
+		out.writeString(this.skills);
+		out.writeInt(this.met ? 1 : 0);
+		out.writeInt(this.isFirstInList ? 1 : 0);
+		
 	}
 
 }

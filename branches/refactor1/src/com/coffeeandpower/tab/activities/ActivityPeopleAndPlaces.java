@@ -398,13 +398,17 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			Object[] obj = (Object[]) result.getObject();
 			@SuppressWarnings("unchecked")
 			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-			//ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+			@SuppressWarnings("unchecked")
+			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
 			
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putCharSequence("type", counterdata.type);
-			//bundle.putInt("value", counterdata.value);
-			bundle.putParcelableArrayList("venues", arrayVenues);
+			if (type.equals("people")) {
+				bundle.putParcelableArrayList("users", arrayUsers);
+			} else {
+				bundle.putParcelableArrayList("venues", arrayVenues);
+			}
 			message.setData(bundle);
 			
 			Log.d("PeoplePlaces","ActivityMap.update: Sending handler message...");
@@ -423,29 +427,10 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
 		if (type.equals("people")) {
-			//setPeopleList();
+			setPeopleList();
 		} else {
 			setPlaceList();
 		}
-		
-		/*
-		for (VenueSmart venue : venueArray) {
-			GeoPoint gp = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
-
-			if (venue.getCheckins() > 0) {
-				createMarker(gp, venue.getFoursquareId(), venue.getCheckins(), venue.getName(), true);
-			} else if (venue.getCheckinsForWeek() > 0) {
-				createMarker(gp, venue.getFoursquareId(), venue.getCheckinsForWeek(), venue.getName(), false); // !!!
-															       // getCheckinsForWeek
-			}
-		}
-		
-		if (itemizedoverlay.size() > 0) {
-			mapView.getOverlays().add(itemizedoverlay);
-		}
-		checkUserState();
-		mapView.invalidate();
-		*/
 		
 	}
 
