@@ -170,6 +170,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 
 		// Executor
 		exe = new Executor(ActivityMap.this);
+		//Switched to counter paradigm for update
+		/*
 		exe.setExecutorListener(new ExecutorInterface() {
 			@Override
 			public void onErrorReceived() {
@@ -181,6 +183,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 				actionFinished(action);
 			}
 		});
+		*/
 
 		// Views
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
@@ -453,9 +456,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in), (Button) findViewById(R.id.btn_from),
 				true);
 
-		// TEst
-		// AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
-
 	}
 
 	@Override
@@ -583,6 +583,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
 		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
+		AppCAP.getCounter().getLastResponseReset();
 	}
 
 	@Override
