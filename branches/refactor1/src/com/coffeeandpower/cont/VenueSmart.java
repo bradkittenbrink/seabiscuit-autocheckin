@@ -2,6 +2,8 @@ package com.coffeeandpower.cont;
 
 import java.util.ArrayList;
 
+import org.json.JSONObject;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -65,6 +67,26 @@ public class VenueSmart implements Parcelable{
 			out.writeInt(checkedIn);
 		}
 	}
+	public VenueSmart(JSONObject objVenue, ArrayList<CheckinData> arrayCheckins)
+	{
+		this.venueId = objVenue.optString("venue_id");
+		this.name = objVenue.optString("name");
+		this.address = objVenue.optString("address");
+		this.city = objVenue.optString("city");
+		this.state = objVenue.optString("state");
+		this.distance = objVenue.optString("distance");
+		this.foursquareId = objVenue.optString("foursquare_id");
+		this.checkins = objVenue.optInt("checkins");
+		this.checkinsForWeek = objVenue.optInt("checkins_for_week");
+		this.checkinsForInterval = objVenue.optInt("checkins_for_interval");
+		this.photoURL = objVenue.optString("photo_url");
+		this.phone = objVenue.optString("phone");
+		this.formattedPhone = objVenue.optString("formatted_phone");
+		this.lat = objVenue.optDouble("lat");
+		this.lng = objVenue.optDouble("lng");
+		this.arrayCheckins = arrayCheckins;
+	}
+	
 
 	public VenueSmart(String venueId, String name, String address, String city, String state, String distance, String foursquareId, int checkins,
 			int checkinsForWeek, int checkinsForInterval, String photoURL, String phone, String formattedPhone, double lat, double lng,

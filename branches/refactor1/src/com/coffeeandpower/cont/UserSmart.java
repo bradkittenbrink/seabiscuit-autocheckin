@@ -2,6 +2,8 @@ package com.coffeeandpower.cont;
 
 import java.io.Serializable;
 
+import org.json.JSONObject;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -35,6 +37,29 @@ public class UserSmart implements Parcelable {
 	public void setFirstInList(boolean isFirstInList) {
 		this.isFirstInList = isFirstInList;
 	}
+	
+	public UserSmart(JSONObject objUser)
+	{
+		super();		
+		this.checkInId = objUser.optInt("checkin_id");
+		this.userId = objUser.optInt("id");
+		this.nickName = objUser.optString("nickname");
+		this.statusText = objUser.optString("status_text");
+		this.photo = objUser.optString("photo");
+		this.majorJobCategory = objUser.optString("major_job_category");
+		this.minorJobCategory = objUser.optString("minor_job_category");
+		this.headLine = objUser.optString("headline");
+		this.fileName = objUser.optString("filename");
+		this.lat = objUser.optDouble("lat");
+		this.lng = objUser.optDouble("lng");
+		this.checkedIn = objUser.optInt("checked_in");
+		this.foursquareId = objUser.optString("foursquare");
+		this.venueName = objUser.optString("venue_name");
+		this.checkInCount = objUser.optInt("checkin_count");
+		this.skills = objUser.optString("skills");
+		this.met = objUser.optBoolean("met");
+	}
+	
 
 	public UserSmart(int checkInId, int userId, String nickName, String statusText, String photo, String majorJobCategory,
 			String minorJobCategory, String headLine, String fileName, double lat, double lng, int checkedIn, String foursquareId,
