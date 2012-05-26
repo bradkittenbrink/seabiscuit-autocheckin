@@ -418,7 +418,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			}
 			message.setData(bundle);
 			
-			Log.d("PeoplePlaces","ActivityMap.update: Sending handler message...");
+			Log.d("PeoplePlaces","ActivityPeopleAndPlaces.update: Sending handler message...");
 			taskHandler.sendMessage(message);
 			
 			

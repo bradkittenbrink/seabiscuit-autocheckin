@@ -170,7 +170,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 
 		// Executor
 		exe = new Executor(ActivityMap.this);
-		//Switched to counter paradigm for update
+		//Switched to counter paradigm for map annotation update
 		/*
 		exe.setExecutorListener(new ExecutorInterface() {
 			@Override
