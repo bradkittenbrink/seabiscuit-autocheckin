@@ -673,6 +673,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			DataHolder result = counterdata.value;
 						
 			Object[] obj = (Object[]) result.getObject();
+			//TODO Check to see if there is data in the object
 			@SuppressWarnings("unchecked")
 			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
 			//ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];

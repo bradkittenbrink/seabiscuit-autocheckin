@@ -2628,8 +2628,12 @@ public class HttpUtil {
 	public DataHolder getNearestVenuesWithCheckinsToCoordinate(double[] coords) {
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+		int testVar = AppCAP.getLoggedInUserId();
 		HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API + "?action=getNearestVenuesAndUsersWithCheckinsDuringInterval"
-				+ "&lat=" + coords[4] + "&lng=" + coords[5]);
+		+ "&lat=" + coords[0] + "&lng=" + coords[1] + "&user_id=" + AppCAP.getLoggedInUserId());
+
+		//HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API + "?action=getNearestVenuesAndUsersWithCheckinsDuringInterval"
+		//		+ "&lat=" + coords[4] + "&lng=" + coords[5]);
 
 		try {
 			// Execute HTTP Get Request
@@ -2685,18 +2689,7 @@ public class HttpUtil {
 										}
 									}
 
-									venues.add(new VenueSmart(objVenue.optString("venue_id"), objVenue
-											.optString("name"), objVenue.optString("address"), objVenue
-											.optString("city"), objVenue.optString("state"), objVenue
-											.optString("distance"), objVenue.optString("foursquare_id"),
-											objVenue.optInt("checkins"), objVenue
-													.optInt("checkins_for_week"), objVenue
-													.optInt("checkins_for_interval"), objVenue
-													.optString("photo_url"), objVenue
-													.optString("phone"), objVenue
-													.optString("formatted_phone"), objVenue
-													.optDouble("lat"), objVenue.optDouble("lng"),
-											arrayCheckins));
+									venues.add(new VenueSmart(objVenue,arrayCheckins));
 								}
 							}
 						}
@@ -2713,23 +2706,7 @@ public class HttpUtil {
 								JSONObject objUser = arrayUsers.optJSONObject(x);
 								if (objUser != null) {
 
-									UserSmart singleUserMap = new UserSmart(
-											objUser.optInt("checkin_id"),
-											objUser.optInt("id"),
-											objUser.optString("nickname"),
-											objUser.optString("status_text"),
-											objUser.optString("photo"),
-											objUser.optString("major_job_category"),
-											objUser.optString("minor_job_category"),
-											// smarterer_name
-											// !?!?!?!??!
-											objUser.optString("headline"), objUser.optString("filename"),
-											objUser.optDouble("lat"), objUser.optDouble("lng"),
-											objUser.optInt("checked_in"),
-											objUser.optString("foursquare"),
-											objUser.optString("venue_name"),
-											objUser.optInt("checkin_count"), objUser.optString("skills"),
-											objUser.optBoolean("met"));
+									UserSmart singleUserMap = new UserSmart(objUser);
 
 									if (singleUserMap.getCheckedIn() == 1) {
 										if (!isFirstInList1) {
@@ -2742,13 +2719,40 @@ public class HttpUtil {
 											isFirstInList0 = !isFirstInList0;
 										}
 									}
-
 									users.add(singleUserMap);
 								}
 							}
 						}
+						//Array Contacts
+						ArrayList<UserSmart> contacts = new ArrayList<UserSmart>();
+						JSONArray arrayContacts = objPayload.optJSONArray("contacts");
+						if (arrayUsers != null) {
 
-						result.setObject(new Object[] { venues, users });
+							boolean isFirstInList1 = false;
+							boolean isFirstInList0 = false;
+
+							for (int x = 0; x < arrayContacts.length(); x++) {
+								JSONObject objUser = arrayContacts.optJSONObject(x);
+								if (objUser != null) {
+
+									UserSmart singleUserMap = new UserSmart(objUser);
+
+									if (singleUserMap.getCheckedIn() == 1) {
+										if (!isFirstInList1) {
+											singleUserMap.setFirstInList(true);
+											isFirstInList1 = !isFirstInList1;
+										}
+									} else {
+										if (!isFirstInList0) {
+											singleUserMap.setFirstInList(true);
+											isFirstInList0 = !isFirstInList0;
+										}
+									}
+									users.add(singleUserMap);
+								}
+							}
+						}
+						result.setObject(new Object[] { venues, users, contacts });
 					}
 					result.setHandlerCode(Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS);
 					result.setResponseMessage("HTTP 200 OK");
