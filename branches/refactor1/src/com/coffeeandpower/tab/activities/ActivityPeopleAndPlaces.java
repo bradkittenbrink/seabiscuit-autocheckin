@@ -38,13 +38,11 @@ import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.utils.Executor;
-import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
-import com.google.android.maps.GeoPoint;
 import com.urbanairship.UAirship;
 
 public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, UserMenu, Observer{
@@ -77,6 +75,8 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	private UserAndTabMenu menu;
 
 	private String type;
+	
+	private boolean initialLoad = false;
 	
 	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
 	protected Handler taskHandler = new Handler() {
@@ -122,16 +122,33 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 	private void setPeopleList() {
 		adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
-		listView.setAdapter(adapterUsers);
-		Utils.animateListView(listView);
+		if(initialLoad)
+		{
+			listView.setAdapter(adapterUsers);
+			Utils.animateListView(listView);
+			initialLoad = false;
+		}
+		else
+		{
+			adapterUsers.notifyDataSetChanged();
+		}
+
 	}
 
 	private void setPlaceList() {
 		isPeopleList = false;
 		((CustomFontView) findViewById(R.id.textview_location_name)).setText("Place");
 		adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
-		listView.setAdapter(adapterPlaces);
-		Utils.animateListView(listView);
+		if(initialLoad)
+		{
+			listView.setAdapter(adapterPlaces);
+			Utils.animateListView(listView);
+			initialLoad = false;
+		}
+		else
+		{
+			adapterPlaces.notifyDataSetChanged();
+		}
 	}
 
 	@Override
@@ -248,6 +265,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		//AppCAP.getCounter().start();
 		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
 		AppCAP.getCounter().getLastResponseReset();
+		initialLoad = true;
 	}
 
 	@Override
