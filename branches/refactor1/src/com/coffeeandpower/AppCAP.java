@@ -99,7 +99,10 @@ public class AppCAP extends Application {
 	public AppCAP() {
 		instance = this;
 	}
-
+	/**
+	 * 
+	 * @category viewLifeCycle
+	 */
 	@Override
 	public void onCreate() {
 		
@@ -148,29 +151,47 @@ public class AppCAP extends Application {
 
 	
 	
-
+	/**
+	 * 
+	 * @category sharedResource
+	 */
 	public static HttpUtil getConnection() {
 		return instance.http;
 	}
-	
+	/**
+	 * 
+	 * @category sharedResource
+	 */
 	public static Counter getCounter () {
 		return instance.timingCounter;
 	}
-	
+	/**
+	 * 
+	 * @category counter
+	 */
 	public static void startCounter() {
 		instance.timingCounter.start();
 			
 	}
 	
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	private static SharedPreferences getSharedPreferences() {
 		return instance.getSharedPreferences(AppCAP.TAG, MODE_PRIVATE);
 	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	public static boolean isFirstStart() {
 		return getSharedPreferences().getBoolean(TAG_FIRST_START, true);
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setNotFirstStart() {
 		getSharedPreferences().edit().putBoolean(TAG_FIRST_START, false).commit();
 	}
@@ -183,30 +204,52 @@ public class AppCAP extends Application {
 		getSharedPreferences().edit().putBoolean(TAG_INFO_DIALOG, false).commit();
 	}
 
+	/**
+	 * 
+	 * @category globalSetting
+	 */
 	public static boolean isMetrics() {
 		return getSharedPreferences().getBoolean(TAG_METRIC_SYSTEM, false);
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	private void setMetricsSys(boolean set) {
 		getSharedPreferences().edit().putBoolean(TAG_METRIC_SYSTEM, set).commit();
 	}
-
-	public static void setUserEmail(String email) {
-		getSharedPreferences().edit().putString(TAG_USER_EMAIL, email).commit();
-	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	public static String getUserEmail() {
 		return getSharedPreferences().getString(TAG_USER_EMAIL, "");
 	}
-
-	public static void setUserEmailPassword(String pass) {
-		getSharedPreferences().edit().putString(TAG_USER_EMAIL_PASSWORD, pass).commit();
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setUserEmail(String email) {
+		getSharedPreferences().edit().putString(TAG_USER_EMAIL, email).commit();
 	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	public static String getUserEmailPassword() {
 		return getSharedPreferences().getString(TAG_USER_EMAIL_PASSWORD, "");
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setUserEmailPassword(String pass) {
+		getSharedPreferences().edit().putString(TAG_USER_EMAIL_PASSWORD, pass).commit();
+	}
+	/**
+	 * 
+	 * @category unknown
+	 */
 	public static String cleanResponseString(String data) {
 		String retS = data;
 		data = Html.fromHtml(data).toString();
@@ -220,69 +263,117 @@ public class AppCAP extends Application {
 		}
 		return retS;
 	}
-
-	public static void setLocalUserPhotoURL(String url) {
-		getSharedPreferences().edit().putString(TAG_USER_PHOT_URL, url).commit();
-	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	public static String getLocalUserPhotoURL() {
 		return getSharedPreferences().getString(TAG_USER_PHOT_URL, "");
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setLocalUserPhotoURL(String url) {
+		getSharedPreferences().edit().putString(TAG_USER_PHOT_URL, url).commit();
+	}
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setLocalUserPhotoLargeURL(String url) {
 		getSharedPreferences().edit().putString(TAG_USER_PHOT_LARGE_URL, url).commit();
 	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	public static String getLocalUserPhotoLargeURL() {
 		return getSharedPreferences().getString(TAG_USER_PHOT_LARGE_URL, "");
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static String setUserLinkedInToken() {
 		return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN, "");
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static String setUserLinkedInTokenSecret() {
 		return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN_SECRET, "");
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static String setUserLinkedInID() {
 		return getSharedPreferences().getString(TAG_USER_LINKEDIN_ID, "");
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setUserLinkedInDetails(String token, String tokenSecret, String id) {
 		getSharedPreferences().edit().putString(TAG_USER_LINKEDIN_ID, id).commit();
 		getSharedPreferences().edit().putString(TAG_USER_LINKEDIN_TOKEN, token).commit();
 		getSharedPreferences().edit().putString(TAG_USER_LINKEDIN_TOKEN_SECRET, tokenSecret).commit();
 	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	public static String getUserLinkedInID() {
 		return getSharedPreferences().getString(TAG_USER_LINKEDIN_ID, "");
 	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	public static String getUserLinkedInToken() {
 		return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN, "");
 	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	public static String getUserLinkedInTokenSecret() {
 		return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN_SECRET, "");
 	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	public static void setLoggedInUserId(int userId) {
 		getSharedPreferences().edit().putInt(TAG_LOGGED_IN_USER_ID, userId).commit();
 	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	public static int getLoggedInUserId() {
 		return getSharedPreferences().getInt(TAG_LOGGED_IN_USER_ID, 0);
 	}
-
-	public static void setLoggedInUserNickname(String nickname) {
-		getSharedPreferences().edit().putString(TAG_LOGGED_IN_USER_NICKNAME, nickname).commit();
-	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static String getLoggedInUserNickname() {
 		return getSharedPreferences().getString(TAG_LOGGED_IN_USER_NICKNAME, "");
 	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static void setLoggedInUserNickname(String nickname) {
+		getSharedPreferences().edit().putString(TAG_LOGGED_IN_USER_NICKNAME, nickname).commit();
+	}
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setUserCoordinates(double[] data) {
 		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "sw_lat", (float) data[0]).commit();
 		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "sw_lng", (float) data[1]).commit();
@@ -295,6 +386,7 @@ public class AppCAP extends Application {
 	/**
 	 * data[0] = sw_lat; data[1] = sw_lng; data[2] = ne_lat; data[3] =
 	 * ne_lng; data[4] = user_lat; data[5] = user_lng;
+	 * @category localUserData
 	 */
 	public static double[] getUserCoordinates() {
 		double[] data = new double[6];
@@ -306,87 +398,150 @@ public class AppCAP extends Application {
 		data[5] = (double) getSharedPreferences().getFloat(TAG_USER_COORDINATES + "user_lng", 0);
 		return data;
 	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	public static boolean isUserCheckedIn() {
 		return getSharedPreferences().getBoolean(TAG_IS_USER_CHECKED_IN, false);
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setUserCheckedIn(boolean set) {
 		getSharedPreferences().edit().putBoolean(TAG_IS_USER_CHECKED_IN, set).commit();
 	}
-
+	/**
+	 * 
+	 * @category unknown
+	 */
 	public static boolean shouldFinishActivities() {
 		return getSharedPreferences().getBoolean(TAG_SHOULD_FINISH_ACTIVITY_MAP, false);
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setShouldFinishActivities(boolean set) {
 		getSharedPreferences().edit().putBoolean(TAG_SHOULD_FINISH_ACTIVITY_MAP, set).commit();
 	}
-
+	/**
+	 * 
+	 * @category unknown
+	 */
 	public static boolean shouldStartLogIn() {
 		return getSharedPreferences().getBoolean(TAG_SHOULD_START_LOG_IN, false);
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setShouldStartLogIn(boolean set) {
 		getSharedPreferences().edit().putBoolean(TAG_SHOULD_START_LOG_IN, set).commit();
 	}
-
+	/**
+	 * 
+	 * @category unknown
+	 */
 	public static boolean isStartingLoginPageFromContacts() {
 		return getSharedPreferences().getBoolean(TAG_START_LOGIN_PAGE_FROM_CONTACTS, false);
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setStartLoginPageFromContacts(boolean set) {
 		getSharedPreferences().edit().putBoolean(TAG_START_LOGIN_PAGE_FROM_CONTACTS, set).commit();
 	}
-
+	/**
+	 * 
+	 * @category unknown
+	 */
 	public static String getCookieString() {
 		return getSharedPreferences().getString(TAG_COOKIE_STRING, "");
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setCookieString(String cookie) {
 		getSharedPreferences().edit().putString(TAG_COOKIE_STRING, cookie).commit();
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setLoggedIn(boolean set) {
 		getSharedPreferences().edit().putBoolean(TAG_IS_LOGGED_IN, set).commit();
 	}
-
+	/**
+	 * 
+	 * @category localUserState
+	 */
 	public static boolean isLoggedIn() {
 		return getSharedPreferences().getBoolean(TAG_IS_LOGGED_IN, false);
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setPushDistance(String dist) {
 		getSharedPreferences().edit().putString(TAG_PUSH_DISTANCE, dist).commit();
 	}
-
+	/**
+	 * 
+	 * @category utility
+	 */
 	public static String getPushDistance() {
 		return getSharedPreferences().getString(TAG_PUSH_DISTANCE, "city");
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setNotificationFrom(String from) {
 		getSharedPreferences().edit().putString(TAG_NOTIFICATION_FROM, from).commit();
 	}
-
+	/**
+	 * 
+	 * @category setter
+	 */
 	public static void setNotificationToggle(boolean res) {
 		getSharedPreferences().edit().putBoolean(TAG_NOTIFICATION_TOGGLE, res).commit();
 	}
-
+	/**
+	 * 
+	 * @category unknown
+	 */
 	public static String getNotificationFrom() {
 		return getSharedPreferences().getString(TAG_NOTIFICATION_FROM, "in city");
 	}
-
+	/**
+	 * 
+	 * @category unknown
+	 */
 	public static boolean getNotificationToggle() {
 		return getSharedPreferences().getBoolean(TAG_NOTIFICATION_TOGGLE, false);
 	}
-
+	/**
+	 * 
+	 * @category utility
+	 */
 	public static int getScreenWidth() {
 		return getSharedPreferences().getInt(TAG_SCREEN_WIDTH, 480);
 	}
-
+	/**
+	 * 
+	 * @category utility
+	 */
 	public static void saveScreenWidth(int screenWidth) {
 		getSharedPreferences().edit().putInt(TAG_SCREEN_WIDTH, screenWidth).commit();
 	}
-
+	/**
+	 * 
+	 * @category unknown
+	 */
 	public static void logInFile(String data) {
 		try {
 			FileOutputStream fOut = instance.openFileOutput("big_log.txt", MODE_WORLD_READABLE);
