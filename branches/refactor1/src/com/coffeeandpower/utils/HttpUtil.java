@@ -2477,9 +2477,8 @@ public class HttpUtil {
 		HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API + "?action=getNearestVenuesAndUsersWithCheckinsDuringInterval"
 		+ "&lat=" + coords[0] + "&lng=" + coords[1] + "&user_id=" + AppCAP.getLoggedInUserId());
 
-		//HttpGet get = new HttpGet(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API + "?action=getNearestVenuesAndUsersWithCheckinsDuringInterval"
-		//		+ "&lat=" + coords[4] + "&lng=" + coords[5]);
-
+		//Check to see what user Id we have (was not matching up with iOS)
+		//int currentUserId = AppCAP.getLoggedInUserId();
 		try {
 			// Execute HTTP Get Request
 			HttpResponse response = client.execute(get);
@@ -2487,13 +2486,15 @@ public class HttpUtil {
 
 			String responseString = EntityUtils.toString(resEntity);
 			RootActivity.log("HttpUtil_getNearestVenuesWithCheckinsToCoordinate: " + responseString);
-
+			//Check to see if we got a response from the network
 			if (responseString != null) {
 
 				JSONObject json = new JSONObject(responseString);
+				//Check to see if you got a valid JSON string
 				if (json != null) {
 
 					JSONObject objPayload = json.optJSONObject("payload");
+					//Check to see if the JSON has a vaild payload
 					if (objPayload != null) {
 						result.setResponseMessage("JSON PARSE ERROR");
 						result.setObject(objPayload);
@@ -2571,7 +2572,7 @@ public class HttpUtil {
 						//Array Contacts
 						ArrayList<UserSmart> contacts = new ArrayList<UserSmart>();
 						JSONArray arrayContacts = objPayload.optJSONArray("contacts");
-						if (arrayUsers != null) {
+						if (arrayContacts != null) {
 
 							boolean isFirstInList1 = false;
 							boolean isFirstInList0 = false;

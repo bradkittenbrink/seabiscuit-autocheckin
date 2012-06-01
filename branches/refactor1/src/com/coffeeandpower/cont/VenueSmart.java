@@ -29,7 +29,7 @@ public class VenueSmart implements Parcelable{
 	private double lng;
 
 	private ArrayList<CheckinData> arrayCheckins;
-
+	
 	public static class CheckinData implements Parcelable {
 		int userId;
 		int checkinCount;
@@ -55,17 +55,35 @@ public class VenueSmart implements Parcelable{
 		
 		@Override
 		public int describeContents() {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
 		@Override
 		public void writeToParcel(Parcel out, int flags) {
-			// TODO Auto-generated method stub
 			out.writeInt(userId);
 			out.writeInt(checkinCount);
 			out.writeInt(checkedIn);
 		}
+		public static final Parcelable.Creator<CheckinData> CREATOR = new Parcelable.Creator<CheckinData>() {
+		            public CheckinData createFromParcel(Parcel in) {
+		                return new CheckinData(in);
+		            }
+		        
+		            public CheckinData[] newArray(int size) {
+		                return new CheckinData[size];
+		            }
+			};
+
+		        private CheckinData(Parcel in) {
+		        	this.userId = in.readInt();
+		        	this.checkinCount = in.readInt();
+		        	this.checkedIn = in.readInt();		    
+		        }
+
+			public static Creator<CheckinData> CREATOR() {
+				// TODO Auto-generated method stub
+				return null;
+			}
 	}
 	public VenueSmart(JSONObject objVenue, ArrayList<CheckinData> arrayCheckins)
 	{
@@ -268,8 +286,42 @@ public class VenueSmart implements Parcelable{
 		out.writeDouble(this.lat);
 		out.writeDouble(this.lng);
 		
-		out.writeList(arrayCheckins);
+		//This should be a list of users, need to get that resolved at some point
+		out.writeTypedList(this.arrayCheckins);
 		
 	}
+	public static final Parcelable.Creator<VenueSmart> CREATOR = new Parcelable.Creator<VenueSmart>() {
+	            public VenueSmart createFromParcel(Parcel in) {
+	                return new VenueSmart(in);
+	            }
+	        
+	            public VenueSmart[] newArray(int size) {
+	                return new VenueSmart[size];
+	            }
+		};
+
+	        private VenueSmart(Parcel in) {
+	            this.venueId = in.readInt();
+	            this.name = in.readString();
+	            this.address = in.readString();
+	            this.city = in.readString();
+	            this.state = in.readString();
+	            this.distance = in.readString();
+	            this.foursquareId = in.readString();
+	            
+	            this.checkins = in.readInt();
+	            this.checkinsForWeek = in.readInt();
+	            this.checkinsForInterval = in.readInt();
+	            
+	            this.photoURL = in.readString();
+	            this.phone = in.readString();
+	            this.formattedPhone = in.readString();
+	            
+	            this.lat = in.readDouble();
+	            this.lng = in.readDouble();
+	            
+	            this.arrayCheckins =  new ArrayList<CheckinData>();
+	            in.readTypedList(this.arrayCheckins,CheckinData.CREATOR);
+	        }
 
 }

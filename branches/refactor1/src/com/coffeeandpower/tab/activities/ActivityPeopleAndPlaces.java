@@ -61,8 +61,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 	private DataHolder result;
 
-	private Executor exe;
-
 	private ArrayList<UserSmart> arrayUsers;
 	private ArrayList<VenueSmart> arrayVenues;
 
@@ -160,22 +158,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 		((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
 
-		// Executor
-		exe = new Executor(ActivityPeopleAndPlaces.this);
-		/*
-		exe.setExecutorListener(new ExecutorInterface() {
-			@Override
-			public void onErrorReceived() {
-				errorReceived();
-			}
-
-			@Override
-			public void onActionFinished(int action) {
-				actionFinished(action);
-			}
-		});
-		*/
-
 		// Default View
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
 		pager.setCurrentScreen(SCREEN_USER, false);
@@ -199,8 +181,11 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 					}
 				} else {
 					Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
-					intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
-					intent.putExtra("coords", data);
+					intent.putExtra("venueSmart", (VenueSmart) adapterPlaces.getItem(position));
+					//We are sending the whole place object so we won't need the 4sqId seperately
+					//intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
+					//I don't know what data is, but I don't think we will need
+					//intent.putExtra("coords", data);
 					startActivity(intent);
 				}
 
@@ -251,7 +236,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 					userLat = data[4];
 					userLng = data[5];
-					exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(data, true);
 				} else {
 
 				}
@@ -369,46 +353,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			menu.onClickCheckIn(v);
 		} else {
 			showDialog(DIALOG_MUST_BE_A_MEMBER);
-		}
-	}
-
-	public void errorReceived() {
-
-	}
-
-	public void actionFinished(int action) {
-
-		result = exe.getResult();
-
-		switch (action) {
-
-		case Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS:
-			if (result.getObject() != null && result.getObject() instanceof Object[]) {
-				Object[] obj = (Object[]) result.getObject();
-				arrayVenues = (ArrayList<VenueSmart>) obj[0];
-				arrayUsers = (ArrayList<UserSmart>) obj[1];
-
-				// Sort users list
-				if (arrayUsers != null) {
-					Collections.sort(arrayUsers, new Comparator<UserSmart>() {
-						@Override
-						public int compare(UserSmart m1, UserSmart m2) {
-							if (m1.getCheckedIn() > m2.getCheckedIn()) {
-								return -1;
-							}
-							return 1;
-						}
-					});
-				}
-
-				if (type.equals("people")) {
-					setPeopleList();
-				} else {
-					setPlaceList();
-				}
-
-			}
-			break;
 		}
 	}
 	
