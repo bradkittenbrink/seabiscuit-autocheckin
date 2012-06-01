@@ -79,27 +79,31 @@ public class Counter extends Observable {
             @Override
             public void run()
             {
-        	    
-        	    Log.d("Timer","Calling function with coordinate: " + AppCAP.getUserCoordinates());
-                    
-        	    if(delayHttp)
-        	    {
-        		    delayHttp = false;    
-        	    }
-        	    else
-        	    {
-        		    response = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
-        		    Log.d("Timer","Received Response: " + response.toString());
-        	    }
-                    
-                    // Now post a notification with response.object	
-                    setChanged();
-			
-                    Log.d("Timer","Sending notifyObservers...");
-                    notifyObservers(new CounterData(CounterData.triggertype, response));
-        	    
-                    Log.d("Counter","Posting runnable delayed for 10 seconds...");
-        	    taskHandler.postDelayed(runTimer, tick * 1000);
+        	    // We are now on the main thread, so kick off the API call in a worker thread
+        	    new Thread(new Runnable() {
+        		    public void run() {
+                        	    Log.d("Timer","Calling function with coordinate: " + AppCAP.getUserCoordinates());
+                                    
+                        	    if(delayHttp)
+                        	    {
+                        		    delayHttp = false;    
+                        	    }
+                        	    else
+                        	    {
+                        		    response = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
+                        		    Log.d("Timer","Received Response: " + response.toString());
+                        	    }
+                                    
+                                    // Now post a notification with response.object	
+                                    setChanged();
+                			
+                                    Log.d("Timer","Sending notifyObservers...");
+                                    notifyObservers(new CounterData(CounterData.triggertype, response));
+                        	    
+                                    Log.d("Counter","Posting runnable delayed for 10 seconds...");
+                        	    taskHandler.postDelayed(runTimer, tick * 1000);
+        		    }
+        	    }).start();
             }
         };
 	
