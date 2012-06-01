@@ -55,8 +55,13 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 	private ListView listView;
 	private ProgressDialog progress;
 
+	private ArrayList<UserSmart> arrayUsers;
 
 	private DataHolder result;
+	
+	private boolean initialLoad = true;
+	
+	private ImageView blankSlateImg;
 
 	/**
 	 * Check if user is checked in or not
@@ -109,6 +114,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
 
+		
 
 
 		// User and Tab Menu
@@ -151,8 +157,11 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			}
 			
 			//Display the list of users if the user is logged in
-			listView = (ListView) findViewById(R.id.list);
+			listView = (ListView) findViewById(R.id.contacts_listview);
 			//TODO Need to add listview listener here
+			
+			blankSlateImg = (ImageView) findViewById(R.id.contacts_blank_slate_img);
+			
 
 
 		} else {
@@ -326,11 +335,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 	public void onClickContacts(View v) {
 		// menu.onClickContacts(v);
 	}
-	private void setPeopleList(ArrayList<UserSmart> arrayUsers) {
-		adapterUsers = new MyUsersAdapter(ActivityContacts.this, arrayUsers);
-		listView.setAdapter(adapterUsers);
-		Utils.animateListView(listView);
-	}
+	
 	
 	
 	//Observer callback implementation
@@ -355,7 +360,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			bundle.putParcelableArrayList("users", arrayUsers);
 			message.setData(bundle);
 			
-			Log.d("Contacts","Contacts.update: Sending handler message...");
+			Log.d("Contacts","Contacts.update: Sending handler message with " + arrayUsers.size() + " contacts...");
 			taskHandler.sendMessage(message);
 			
 			
@@ -364,12 +369,30 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			Log.d("PeoplePlaces","Error: Received unexpected data type: " + data.getClass().toString());
 	}
 	
-	private void updateUsersAndCheckinsFromApiResult(ArrayList<UserSmart> arrayUsers) {
+	
+	private void setContactList() {
+		
+		Log.d("Contacts","setContactList()");
+		if(initialLoad)
+		{			
+			adapterUsers = new MyUsersAdapter(ActivityContacts.this, this.arrayUsers);
+			listView.setAdapter(adapterUsers);
+			Utils.animateListView(listView);
+			initialLoad = false;
+		}
+		else
+		{
+			adapterUsers.notifyDataSetChanged();
+		}
+
+	}
+	
+	private void updateUsersAndCheckinsFromApiResult(ArrayList<UserSmart> newUsersArray) {
 		Log.d("Contacts","updateUsersAndCheckinsFromApiResult()");
 				
 		// Sort users list
-		if (arrayUsers != null) {
-			Collections.sort(arrayUsers, new Comparator<UserSmart>() {
+		if (newUsersArray != null) {
+			Collections.sort(newUsersArray, new Comparator<UserSmart>() {
 				@Override
 				public int compare(UserSmart m1, UserSmart m2) {
 					if (m1.getCheckedIn() > m2.getCheckedIn()) {
@@ -379,8 +402,18 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 				}
 			});
 		}
+		
+		if (newUsersArray.size() == 0) {
+			blankSlateImg.setVisibility(View.VISIBLE);
+		} else {
+			blankSlateImg.setVisibility(View.INVISIBLE);
+		}
+		
 		//Populate table view
-		setPeopleList(arrayUsers);
+		this.arrayUsers = newUsersArray;
+		setContactList();
+		
+		Log.d("Contacts","Set local array with " + newUsersArray.size() + " contacts.");
 	}
 	
 	

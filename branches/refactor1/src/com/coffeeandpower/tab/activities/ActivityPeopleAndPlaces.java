@@ -121,9 +121,10 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	}
 
 	private void setPeopleList() {
-		adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
+		
 		if(initialLoad)
 		{
+			adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
 			listView.setAdapter(adapterUsers);
 			Utils.animateListView(listView);
 			initialLoad = false;
@@ -138,9 +139,10 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	private void setPlaceList() {
 		isPeopleList = false;
 		((CustomFontView) findViewById(R.id.textview_location_name)).setText("Place");
-		adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
+		
 		if(initialLoad)
 		{
+			adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
 			listView.setAdapter(adapterPlaces);
 			Utils.animateListView(listView);
 			initialLoad = false;
