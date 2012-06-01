@@ -246,5 +246,35 @@ public class UserSmart implements Parcelable {
 		out.writeInt(this.isFirstInList ? 1 : 0);
 		
 	}
+	
+	public static final Parcelable.Creator<UserSmart> CREATOR = new Parcelable.Creator<UserSmart>() {
+            public UserSmart createFromParcel(Parcel in) {
+                return new UserSmart(in);
+            }
+        
+            public UserSmart[] newArray(int size) {
+                return new UserSmart[size];
+            }
+	};
+
+        private UserSmart(Parcel in) {
+            this.checkInId = in.readInt();
+            this.userId = in.readInt();
+            this.nickName = in.readString();
+            this.statusText = in.readString();
+            this.photo = in.readString();
+            this.majorJobCategory = in.readString();
+            this.minorJobCategory = in.readString();
+            this.headLine = in.readString();
+            this.fileName = in.readString();
+            this.lat = in.readDouble();
+            this.lng = in.readDouble();
+            this.checkedIn = in.readInt();
+            this.skills = in.readString();
+            this.met = ( in.readInt() == 1 ? true : false );
+            this.isFirstInList = ( in.readInt() == 1 ? true : false );
+        		    
+        		    
+        }
 
 }

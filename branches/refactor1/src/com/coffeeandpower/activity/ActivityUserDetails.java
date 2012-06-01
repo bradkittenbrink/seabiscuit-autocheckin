@@ -122,13 +122,14 @@ public class ActivityUserDetails extends RootActivity {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 
+			//Not used so being removed
 			String foursquareId = extras.getString("mapuserdata");
 			String fromAct = extras.getString("from_act");
 
 			if (fromAct != null) {
 				if (fromAct.equals("list")) {
 					// From list
-					mud = (UserSmart) extras.getSerializable("mapuserobject");
+					mud = (UserSmart) extras.getParcelable("mapuserobject");
 				}
 			}
 		}
