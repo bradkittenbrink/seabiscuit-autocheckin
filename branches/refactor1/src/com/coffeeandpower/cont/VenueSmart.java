@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class VenueSmart implements Parcelable{
 
-	private String venueId;
+	private int venueId;
 	private String name;
 	private String address;
 	private String city;
@@ -69,7 +69,7 @@ public class VenueSmart implements Parcelable{
 	}
 	public VenueSmart(JSONObject objVenue, ArrayList<CheckinData> arrayCheckins)
 	{
-		this.venueId = objVenue.optString("venue_id");
+		this.venueId = objVenue.optInt("venue_id");
 		this.name = objVenue.optString("name");
 		this.address = objVenue.optString("address");
 		this.city = objVenue.optString("city");
@@ -88,7 +88,7 @@ public class VenueSmart implements Parcelable{
 	}
 	
 
-	public VenueSmart(String venueId, String name, String address, String city, String state, String distance, String foursquareId, int checkins,
+	public VenueSmart(int venueId, String name, String address, String city, String state, String distance, String foursquareId, int checkins,
 			int checkinsForWeek, int checkinsForInterval, String photoURL, String phone, String formattedPhone, double lat, double lng,
 			ArrayList<CheckinData> arrayCheckins) {
 		this.venueId = venueId;
@@ -109,11 +109,11 @@ public class VenueSmart implements Parcelable{
 		this.arrayCheckins = arrayCheckins;
 	}
 
-	public String getVenueId() {
+	public int getVenueId() {
 		return venueId;
 	}
 
-	public void setVenueId(String venueId) {
+	public void setVenueId(int venueId) {
 		this.venueId = venueId;
 	}
 
@@ -249,7 +249,7 @@ public class VenueSmart implements Parcelable{
 		// TODO Auto-generated method stub
 		
 		
-		out.writeString(this.venueId);
+		out.writeInt(this.venueId);
 		out.writeString(this.name);
 		out.writeString(this.address);
 		out.writeString(this.city);

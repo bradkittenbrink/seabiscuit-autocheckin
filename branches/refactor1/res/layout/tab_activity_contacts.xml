@@ -59,6 +59,18 @@
                     android:text="@string/tab_activity_contacts_contact"
                     android:textColor="#ffffff"
                     android:textSize="25dip" />
+                
+            <ListView
+                android:id="@+id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/tab_bar"
+                android:layout_below="@+id/dummy_layout"
+                android:cacheColorHint="#00000000"
+                android:dividerHeight="1dip"
+                android:divider="#4a4a4a" >
+            </ListView>
+                
             </RelativeLayout>
 
             <ImageView

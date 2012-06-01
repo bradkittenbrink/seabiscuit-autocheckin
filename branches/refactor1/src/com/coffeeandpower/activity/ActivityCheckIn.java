@@ -1,9 +1,15 @@
 package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Observable;
+import java.util.Observer;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -17,7 +23,10 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserShort;
+import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
+import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
 import com.coffeeandpower.utils.Executor;
@@ -30,8 +39,9 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.urbanairship.UAirship;
 
-public class ActivityCheckIn extends RootActivity {
+public class ActivityCheckIn extends RootActivity implements Observer {
 
 	// Map items
 	private MapView mapView;
@@ -58,6 +68,28 @@ public class ActivityCheckIn extends RootActivity {
 	private DataHolder result;
 
 	private Executor exe;
+	
+	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
+	protected Handler taskHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			/*
+			if (type.equals("people")) {
+				// pass message data along to venue update method
+				ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("users");
+				updateUsersAndCheckinsFromApiResult(usersArray);
+			}
+			else
+			{
+				// pass message data along to venue update method
+				ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
+				updateVenuesAndCheckinsFromApiResult(venueArray);
+			}
+			*/
+			super.handleMessage(msg);
+		}
+	};
 
 	private ArrayList<UserShort> checkedInUsers;
 
@@ -153,6 +185,25 @@ public class ActivityCheckIn extends RootActivity {
 
 		// Get users checked in venue
 		getUsersCheckedIn(venue);
+	}
+	
+	@Override
+	protected void onStart() {
+		Log.d("CheckIn","ActivityCheckIn.onStart()");
+		super.onStart();
+
+		//UAirship.shared().getAnalytics().activityStarted(this);
+		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
+		AppCAP.getCounter().getLastResponseReset();
+	}
+
+	@Override
+	public void onStop() {
+		Log.d("CheckIn","ActivityCheckIn.onStop()");
+		super.onStop();
+
+		//UAirship.shared().getAnalytics().activityStopped(this);
+		AppCAP.getCounter().deleteObserver(this);
 	}
 
 	/**
@@ -262,5 +313,46 @@ public class ActivityCheckIn extends RootActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 	}
+	
+	@Override
+	public void update(Observable observable, Object data) {
+		/*
+		 * verify that the data is really of type CounterData, and log the
+		 * details
+		 */
+		if (data instanceof CounterData) {
+			CounterData counterdata = (CounterData) data;
+			DataHolder result = counterdata.value;
+						
+			Object[] obj = (Object[]) result.getObject();
+			@SuppressWarnings("unchecked")
+			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			Iterator<VenueSmart> itr = arrayVenues.iterator();
+			while(itr.hasNext())
+			{
+				if(this.venue.getVenueId() == itr.next().getVenueId())       
+				{
+					//Grab the network data that matches the venueId
+					VenueSmart currentVenue = itr.next();
+					Message message = new Message();
+					Bundle bundle = new Bundle();
+					bundle.putCharSequence("type", counterdata.type);
+					bundle.putParcelable("venue", currentVenue);
+					message.setData(bundle);
+					
+					Log.d("CheckIn","ActivityCheckIn.update: Sending handler message...");
+					taskHandler.sendMessage(message);
+					break;
+				}
+				
+			}
+			
+			
+		}
+		else
+			Log.d("CheckIn","Error: Received unexpected data type: " + data.getClass().toString());
+	}
+	
+	
 
 }

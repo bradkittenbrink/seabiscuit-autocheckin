@@ -303,7 +303,7 @@ public class Executor {
 	 * @param venueId
 	 * @param lastChatIDString
 	 */
-	public synchronized void venueChat(final String venueId, final String lastChatIDString, final String message, final boolean isSend) {
+	public synchronized void venueChat(final int venueId, final String lastChatIDString, final String message, final boolean isSend) {
 		progress.setMessage(isSend ? "Sending..." : "Loading...");
 		progress.show();
 		new Thread(new Runnable() {

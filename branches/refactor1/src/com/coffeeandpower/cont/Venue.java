@@ -2,11 +2,14 @@ package com.coffeeandpower.cont;
 
 import java.io.Serializable;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 @SuppressWarnings("serial")
 public class Venue implements Serializable {
 
 	private String foursquareId;
-	private String venueId;
+	private int venueId;
 	private String name;
 	private String address;
 	private String crossStreet;
@@ -38,10 +41,73 @@ public class Venue implements Serializable {
 	 * Create empty venue obj
 	 */
 	public Venue() {
-		this("", "", "", "", "", 0, 0, 0, "", "", "", "", "", "", "", 0, 0, 0, 0, "", "", "", "");
+		this("", 0, "", "", "", 0, 0, 0, "", "", "", "", "", "", "", 0, 0, 0, 0, "", "", "", "");
+	}
+	
+	public Venue(JSONObject venue)
+	{
+		
+		this.venueId = venue.optInt("id");
+		this.name = venue.optString("name");
+		this.foursquareId = venue.optString("foursquare_id");
+		
+		// Location
+		// Object
+		JSONObject locationObj = venue.optJSONObject("location");
+		if (locationObj != null) {
+			
+			this.address = locationObj.optString("address");
+			this.crossStreet = locationObj.optString("crossStreet");
+			this.lat = locationObj.optDouble("lat");
+			this.lng = locationObj.optDouble("lng");
+			this.distance = locationObj.optInt("distance");
+			this.postalCode = locationObj.optString("postalCode");
+			this.city = locationObj.optString("city");
+			this.state = locationObj.optString("state");
+			this.country = locationObj.optString("country");
+			
+		}
+		
+		// Categories
+		// Array
+		JSONArray categoriesArray = venue.optJSONArray("categories");
+		if (categoriesArray != null) {
+
+			if (categoriesArray.length() > 0) {
+				//TODO: This only gets the first category
+				JSONObject cat = categoriesArray.optJSONObject(0);
+				if (cat != null) {
+
+					this.categoryName = cat.optString("name");
+					this.categoryPluralName = cat
+							.optString("pluralName");
+					this.categoryShortName = cat
+							.optString("shortName");
+				}
+			}
+		}
+
+		// Stats
+		// Object
+		JSONObject statsObj = venue.optJSONObject("stats");
+		if (statsObj != null) {
+
+			this.checkinsCount = statsObj.optInt("checkinsCount");
+			this.usersCount = statsObj.optInt("usersCount");
+			this.tipCount = statsObj.optInt("tipCount");
+		}
+
+		// HereNow
+		// Object
+		JSONObject hereNowObj = venue.optJSONObject("hereNow");
+		if (hereNowObj != null) {
+
+			this.hereNowCount = hereNowObj.optInt("count");
+		}
+		
 	}
 
-	public Venue(String foursquareId, String venueId, String name, String address, String crossStreet, double lat, double lng, int distance,
+	public Venue(String foursquareId, int venueId, String name, String address, String crossStreet, double lat, double lng, int distance,
 			String postalCode, String city, String state, String country, String categoryName, String categoryPluralName,
 			String categoryShortName, int checkinsCount, int usersCount, int tipCount, int hereNowCount, String phone, String icon,
 			String photoUrl, String checkinTime) {
@@ -87,11 +153,11 @@ public class Venue implements Serializable {
 		this.checkinTime = checkinTime;
 	}
 
-	public String getVenueId() {
+	public int getVenueId() {
 		return venueId;
 	}
 
-	public void setVenueId(String venueId) {
+	public void setVenueId(int venueId) {
 		this.venueId = venueId;
 	}
 

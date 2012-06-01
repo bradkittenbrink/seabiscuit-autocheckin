@@ -22,8 +22,20 @@ public class MyUsersAdapter extends BaseAdapter {
 	private LayoutInflater inflater;
 	public ImageLoader imageLoader;
 
-	private double myLat;
-	private double myLng;
+	private double myLat = 0;
+	private double myLng = 0;
+	
+	public MyUsersAdapter(Activity context, ArrayList<UserSmart> mudArray) {
+
+		this.inflater = context.getLayoutInflater();
+		this.imageLoader = new ImageLoader(context.getApplicationContext());
+
+		if (mudArray != null) {
+			this.mudArray = mudArray;
+		} else {
+			this.mudArray = new ArrayList<UserSmart>();
+		}
+	}
 
 	public MyUsersAdapter(Activity context, ArrayList<UserSmart> mudArray, double myLat, double myLng) {
 
@@ -114,9 +126,16 @@ public class MyUsersAdapter extends BaseAdapter {
 
 		// Deafult gray line state is gone
 		holder.textGrayLine.setVisibility(View.GONE);
-
-		holder.textDistance.setText(RootActivity.getDistanceBetween(myLat, myLng, mudArray.get(position).getLat(), mudArray.get(position)
+		//Not the best check since 0, 0 is a valid lat, long, but there is no coffee or power off the coast of Africa so we should be good
+		if(myLat == 0 || myLng == 0)
+		{
+			//If we have no position fill that space with something else
+		}
+		else
+		{
+			holder.textDistance.setText(RootActivity.getDistanceBetween(myLat, myLng, mudArray.get(position).getLat(), mudArray.get(position)
 				.getLng()));
+		}
 
 		// Check if we have hereNow user
 		if (mudArray.get(position).getCheckedIn() == 1 && mudArray.get(position).isFirstInList()) {

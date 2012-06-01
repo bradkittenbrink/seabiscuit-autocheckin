@@ -119,7 +119,7 @@ public class ActivityCheckInList extends ListActivity {
 		switch (action) {
 		case Executor.HANDLE_VENUES_CLOSE_TO_LOCATION:
 			if (result.getObject() != null) {
-				((ArrayList<Venue>) result.getObject()).add(new Venue("add_place", "", "Add Place...", "", "", 0, 0, 0, "", "", "",
+				((ArrayList<Venue>) result.getObject()).add(new Venue("add_place", 0, "Add Place...", "", "", 0, 0, 0, "", "", "",
 						"", "", "", "", 0, 0, 0, 0, "", "", "", ""));
 				adapter = new MyVenuesAdapter(ActivityCheckInList.this, (ArrayList<Venue>) result.getObject());
 				setListAdapter(adapter);

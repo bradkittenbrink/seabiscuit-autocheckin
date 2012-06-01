@@ -276,7 +276,7 @@ public class HttpUtil {
 										Venue venue = new Venue();
 										venue.setCheckinsCount(objFromArray.optInt("count"));
 										venue.setFoursquareId(objFromArray.optString("foursquare_id"));
-										venue.setVenueId(objFromArray.optString("venue_id"));
+										venue.setVenueId(objFromArray.optInt("venue_id"));
 										venue.setName(objFromArray.optString("name"));
 										venue.setAddress(objFromArray.optString("address"));
 										venue.setCity(objFromArray.optString("city"));
@@ -306,7 +306,7 @@ public class HttpUtil {
 									Venue venue = new Venue();
 									venue.setCheckinsCount(objFromArray.optInt("count"));
 									venue.setFoursquareId(objFromArray.optString("foursquare_id"));
-									venue.setVenueId(objFromArray.optString("venue_id"));
+									venue.setVenueId(objFromArray.optInt("venue_id"));
 									venue.setName(objFromArray.optString("name"));
 									venue.setAddress(objFromArray.optString("address"));
 									venue.setCity(objFromArray.optString("city"));
@@ -1060,7 +1060,7 @@ public class HttpUtil {
 										}
 									}
 
-									venues.add(new VenueSmart(objVenue.optString("venue_id"), objVenue
+									venues.add(new VenueSmart(objVenue.optInt("venue_id"), objVenue
 											.optString("name"), objVenue.optString("address"), objVenue
 											.optString("city"), objVenue.optString("state"), objVenue
 											.optString("distance"), objVenue.optString("foursquare_id"),
@@ -1478,7 +1478,7 @@ public class HttpUtil {
 
 										}
 										result.setHandlerCode(Executor.HANDLE_ADD_PLACE);
-										result.setObject(new Venue("", venueObj.optString("id"), venueObj
+										result.setObject(new Venue("", venueObj.optInt("id"), venueObj
 												.optString("name"), locationObj.optString("address"),
 												locationObj.optString("crossStreet"), locationObj
 														.optDouble("lat"), locationObj
@@ -1881,7 +1881,7 @@ public class HttpUtil {
 	 * @param lastChatIDString
 	 * @return
 	 */
-	public DataHolder venueChatForVenueWithID(String venueId, String lastChatIDString, String message, boolean isSend) {
+	public DataHolder venueChatForVenueWithID(int venueId, String lastChatIDString, String message, boolean isSend) {
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
@@ -1889,7 +1889,7 @@ public class HttpUtil {
 
 		try {
 			params.add(new BasicNameValuePair("action", isSend ? "sendVenueChat" : "getVenueChat"));
-			params.add(new BasicNameValuePair("venue_id", venueId));
+			params.add(new BasicNameValuePair("venue_id", Integer.toString(venueId)));
 			params.add(new BasicNameValuePair("last_id", lastChatIDString));
 			params.add(new BasicNameValuePair("message", message));
 			post.setEntity(new UrlEncodedFormEntity(params));
@@ -2343,87 +2343,10 @@ public class HttpUtil {
 								ArrayList<Venue> venuesArray = new ArrayList<Venue>();
 
 								for (int m = 0; m < venues.length(); m++) {
-
+									
 									JSONObject venue = venues.optJSONObject(m);
 									if (venue != null) {
-
-										String id = venue.optString("id");
-										String name = venue.optString("name");
-										String address = "";
-										String crossStreet = "";
-										double lat = 0;
-										double lng = 0;
-										int distance = 0;
-										String postalCode = "";
-										String city = "";
-										String state = "";
-										String country = "";
-										String categoryName = "";
-										String categoryPluralName = "";
-										String categoryShortName = "";
-										int checkinsCount = 0;
-										int usersCount = 0;
-										int tipCount = 0;
-										int hereNowCount = 0;
-
-										// Location
-										// Object
-										JSONObject locationObj = venue.optJSONObject("location");
-										if (locationObj != null) {
-
-											address = locationObj.optString("address");
-											crossStreet = locationObj.optString("crossStreet");
-											lat = locationObj.optDouble("lat");
-											lng = locationObj.optDouble("lng");
-											distance = locationObj.optInt("distance");
-											postalCode = locationObj.optString("postalCode");
-											city = locationObj.optString("city");
-											state = locationObj.optString("state");
-											country = locationObj.optString("country");
-										}
-
-										// Categories
-										// Array
-										JSONArray categoriesArray = venue.optJSONArray("categories");
-										if (categoriesArray != null) {
-
-											if (categoriesArray.length() > 0) {
-
-												JSONObject cat = categoriesArray.optJSONObject(0);
-												if (cat != null) {
-
-													categoryName = cat.optString("name");
-													categoryPluralName = cat
-															.optString("pluralName");
-													categoryShortName = cat
-															.optString("shortName");
-												}
-											}
-										}
-
-										// Stats
-										// Object
-										JSONObject statsObj = venue.optJSONObject("stats");
-										if (statsObj != null) {
-
-											checkinsCount = statsObj.optInt("checkinsCount");
-											usersCount = statsObj.optInt("usersCount");
-											tipCount = statsObj.optInt("tipCount");
-										}
-
-										// HereNow
-										// Object
-										JSONObject hereNowObj = venue.optJSONObject("hereNow");
-										if (hereNowObj != null) {
-
-											hereNowCount = hereNowObj.optInt("count");
-										}
-
-										venuesArray.add(new Venue(id, "", name, address, crossStreet, lat,
-												lng, distance, postalCode, city, state, country,
-												categoryName, categoryPluralName, categoryShortName,
-												checkinsCount, usersCount, tipCount, hereNowCount,
-												"", "", "", ""));
+										venuesArray.add(new Venue(venue));
 									}
 								}
 
@@ -2504,89 +2427,11 @@ public class HttpUtil {
 							if (venues != null) {
 
 								ArrayList<Venue> venuesArray = new ArrayList<Venue>();
-
 								for (int m = 0; m < venues.length(); m++) {
 
 									JSONObject venue = venues.optJSONObject(m);
 									if (venue != null) {
-
-										String id = venue.optString("id");
-										String name = venue.optString("name");
-										String address = "";
-										String crossStreet = "";
-										double lat = 0;
-										double lng = 0;
-										int distance = 0;
-										String postalCode = "";
-										String city = "";
-										String state = "";
-										String country = "";
-										String categoryName = "";
-										String categoryPluralName = "";
-										String categoryShortName = "";
-										int checkinsCount = 0;
-										int usersCount = 0;
-										int tipCount = 0;
-										int hereNowCount = 0;
-
-										// Location
-										// Object
-										JSONObject locationObj = venue.optJSONObject("location");
-										if (locationObj != null) {
-
-											address = locationObj.optString("address");
-											crossStreet = locationObj.optString("crossStreet");
-											lat = locationObj.optDouble("lat");
-											lng = locationObj.optDouble("lng");
-											distance = locationObj.optInt("distance");
-											postalCode = locationObj.optString("postalCode");
-											city = locationObj.optString("city");
-											state = locationObj.optString("state");
-											country = locationObj.optString("country");
-										}
-
-										// Categories
-										// Array
-										JSONArray categoriesArray = venue.optJSONArray("categories");
-										if (categoriesArray != null) {
-
-											if (categoriesArray.length() > 0) {
-
-												JSONObject cat = categoriesArray.optJSONObject(0);
-												if (cat != null) {
-
-													categoryName = cat.optString("name");
-													categoryPluralName = cat
-															.optString("pluralName");
-													categoryShortName = cat
-															.optString("shortName");
-												}
-											}
-										}
-
-										// Stats
-										// Object
-										JSONObject statsObj = venue.optJSONObject("stats");
-										if (statsObj != null) {
-
-											checkinsCount = statsObj.optInt("checkinsCount");
-											usersCount = statsObj.optInt("usersCount");
-											tipCount = statsObj.optInt("tipCount");
-										}
-
-										// HereNow
-										// Object
-										JSONObject hereNowObj = venue.optJSONObject("hereNow");
-										if (hereNowObj != null) {
-
-											hereNowCount = hereNowObj.optInt("count");
-										}
-
-										venuesArray.add(new Venue(id, "", name, address, crossStreet, lat,
-												lng, distance, postalCode, city, state, country,
-												categoryName, categoryPluralName, categoryShortName,
-												checkinsCount, usersCount, tipCount, hereNowCount,
-												"", "", "", ""));
+										venuesArray.add(new Venue(venue));
 									}
 								}
 

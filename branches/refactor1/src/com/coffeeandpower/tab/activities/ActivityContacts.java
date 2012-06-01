@@ -1,11 +1,22 @@
 package com.coffeeandpower.tab.activities;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Observable;
+import java.util.Observer;
+
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -13,27 +24,37 @@ import android.widget.ToggleButton;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.adapters.MyUsersAdapter;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.utils.Executor;
+import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
+import com.urbanairship.UAirship;
 
-public class ActivityContacts extends RootActivity implements TabMenu, UserMenu {
+public class ActivityContacts extends RootActivity implements TabMenu, UserMenu, Observer {
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_USER = 1;
 
 	private HorizontalPagerModified pager;
-
+	
+	private MyUsersAdapter adapterUsers;
 
 	private UserAndTabMenu menu;
 
 	private Executor exe;
+	
+	private ListView listView;
+	private ProgressDialog progress;
+
 
 	private DataHolder result;
 
@@ -43,6 +64,20 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 	private void checkUserState() {
 
 	}
+	
+	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
+	protected Handler taskHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+
+			// pass message data along to venue update method
+			ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("users");
+			updateUsersAndCheckinsFromApiResult(usersArray);
+
+			super.handleMessage(msg);
+		}
+	};
 
 
 	@Override
@@ -69,6 +104,12 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 		// Horizontal Pager
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
 		pager.setCurrentScreen(SCREEN_USER, false);
+		
+		
+		progress = new ProgressDialog(this);
+		progress.setMessage("Loading...");
+
+
 
 		// User and Tab Menu
 		menu = new UserAndTabMenu(this);
@@ -108,6 +149,10 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 				((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
 				((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
 			}
+			
+			//Display the list of users if the user is logged in
+			listView = (ListView) findViewById(R.id.list);
+			//TODO Need to add listview listener here
 
 
 		} else {
@@ -152,6 +197,30 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 			pager.setCurrentScreen(SCREEN_SETTINGS, true);
 		} else {
 			pager.setCurrentScreen(SCREEN_USER, true);
+		}
+	}
+	
+	@Override
+	protected void onStart() {
+		Log.d("Contacts","ActivityContacts.onStart()");
+		super.onStart();
+		//If the user isn't logged in then we will displaying the login screen not the list of contacts.
+		if (AppCAP.isLoggedIn())
+		{
+			UAirship.shared().getAnalytics().activityStarted(this);
+			AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
+			AppCAP.getCounter().getLastResponseReset();
+		}
+	}
+
+	@Override
+	public void onStop() {
+		Log.d("Contacts","ActivityContacts.onStop()");
+		super.onStop();
+		if (AppCAP.isLoggedIn())
+		{
+			UAirship.shared().getAnalytics().activityStopped(this);
+			AppCAP.getCounter().deleteObserver(this);
 		}
 	}
 
@@ -257,5 +326,63 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 	public void onClickContacts(View v) {
 		// menu.onClickContacts(v);
 	}
+	private void setPeopleList(ArrayList<UserSmart> arrayUsers) {
+		adapterUsers = new MyUsersAdapter(ActivityContacts.this, arrayUsers);
+		listView.setAdapter(adapterUsers);
+		Utils.animateListView(listView);
+	}
+	
+	
+	//Observer callback implementation
+	@Override
+	public void update(Observable observable, Object data) {
+		/*
+		 * verify that the data is really of type CounterData, and log the
+		 * details
+		 */
+		if (data instanceof CounterData) {
+			CounterData counterdata = (CounterData) data;
+			DataHolder result = counterdata.value;
+						
+			Object[] obj = (Object[]) result.getObject();
+			//Third object is Contacts (0 is places, 1 is people)
+			@SuppressWarnings("unchecked")
+			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[2];
+			
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putCharSequence("type", counterdata.type);
+			bundle.putParcelableArrayList("users", arrayUsers);
+			message.setData(bundle);
+			
+			Log.d("Contacts","Contacts.update: Sending handler message...");
+			taskHandler.sendMessage(message);
+			
+			
+		}
+		else
+			Log.d("PeoplePlaces","Error: Received unexpected data type: " + data.getClass().toString());
+	}
+	
+	private void updateUsersAndCheckinsFromApiResult(ArrayList<UserSmart> arrayUsers) {
+		Log.d("Contacts","updateUsersAndCheckinsFromApiResult()");
+				
+		// Sort users list
+		if (arrayUsers != null) {
+			Collections.sort(arrayUsers, new Comparator<UserSmart>() {
+				@Override
+				public int compare(UserSmart m1, UserSmart m2) {
+					if (m1.getCheckedIn() > m2.getCheckedIn()) {
+						return -1;
+					}
+					return 1;
+				}
+			});
+		}
+		//Populate table view
+		setPeopleList(arrayUsers);
+	}
+	
+	
 
 }
