@@ -204,10 +204,12 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 				listHereNow.setVisibility(View.GONE);
 				((CustomFontView) findViewById(R.id.textview_here)).setVisibility(View.GONE);
 			} else {
-				this.listHereNowAdapter = new MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersHereNow);
-				listHereNow.setAdapter(this.listHereNowAdapter);
+				
 				if(initialLoadNow)
 				{
+					this.listHereNowAdapter = new MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersHereNow);
+					listHereNow.setAdapter(this.listHereNowAdapter);
+					
         				listHereNow.postDelayed(new Runnable() {
         					@Override
         					public void run() {
