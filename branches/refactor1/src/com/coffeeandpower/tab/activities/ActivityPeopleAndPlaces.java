@@ -122,6 +122,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		
 		if(initialLoad)
 		{
+			Log.d("ActivityPeopleAndPlaces","People List Initial Load");
 			adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
 			listView.setAdapter(adapterUsers);
 			Utils.animateListView(listView);
@@ -140,6 +141,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		
 		if(initialLoad)
 		{
+			Log.d("ActivityPeopleAndPlaces","Place List Initial Load");
 			adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
 			listView.setAdapter(adapterPlaces);
 			Utils.animateListView(listView);
@@ -154,6 +156,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d("ActivityPeopleAndPlaces","ActivityPeopleAndPlaces.onCreate()");
 		setContentView(R.layout.tab_activity_people_and_places);
 
 		((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
@@ -162,6 +165,8 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
 		pager.setCurrentScreen(SCREEN_USER, false);
 
+		initialLoad = true;
+		
 		((CustomFontView) findViewById(R.id.textview_location_name)).setText("People");
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
@@ -251,7 +256,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		//AppCAP.getCounter().start();
 		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
 		AppCAP.getCounter().getLastResponseReset();
-		initialLoad = true;
+		
 	}
 
 	@Override
