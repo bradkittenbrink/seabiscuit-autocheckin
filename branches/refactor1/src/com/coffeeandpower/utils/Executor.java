@@ -10,6 +10,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.Venue;
+import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.views.CustomDialog;
 import com.google.android.maps.GeoPoint;
 
@@ -221,7 +222,7 @@ public class Executor {
 		}).start();
 	}
 
-	public synchronized void checkIn(final Venue venue, final int checkInTime, final int checkOutTime, final String statusText) {
+	public synchronized void checkIn(final VenueSmart venue, final int checkInTime, final int checkOutTime, final String statusText) {
 		progress.setMessage("Checking in...");
 		progress.show();
 		new Thread(new Runnable() {

@@ -29,6 +29,7 @@ import com.coffeeandpower.cont.UserShort;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
@@ -235,15 +236,25 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		
 		//FIXME
 		//This needs to get fixed, but requires either creating fake venue class or unifying venue and venueSmart
-		//exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString());
+		exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString());
 	}
 	
 	private ArrayList<UserShort> convertUserSmart2UserShort(ArrayList<UserSmart> userList) {
 		ArrayList<UserShort> shortUsers = new ArrayList<UserShort>();
-		for (UserSmart currSmartUser : userList) {
-			//(int id, String nickName, String statusText, String about, String joinDate, String imageURL, String hourlyBilingRate)
-			shortUsers.add(new UserShort(currSmartUser.getUserId() , currSmartUser.getNickName(), currSmartUser.getStatusText(), "About Me",
-					"Join Date", currSmartUser.getFileName(), "120"));
+		for (CheckinData currCheckedIn : venue.getArrayCheckins())
+		{
+			for (UserSmart currSmartUser : userList) {
+				if(currCheckedIn.getUserId() == currSmartUser.getUserId())
+				{
+					if(currCheckedIn.getCheckedIn() == 1)
+					{
+						//(int id, String nickName, String statusText, String about, String joinDate, String imageURL, String hourlyBilingRate)
+						shortUsers.add(new UserShort(currSmartUser.getUserId() , currSmartUser.getNickName(), currSmartUser.getStatusText(), "About Me",
+					"Join Date", currSmartUser.getFileName(), "NA"));
+					}
+					break;
+				}
+			}
 			
 		}
 		

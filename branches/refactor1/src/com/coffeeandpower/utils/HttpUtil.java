@@ -2238,7 +2238,7 @@ public class HttpUtil {
 	 * 
 	 * @return
 	 */
-	public DataHolder checkIn(Venue venue, int checkInTime, int checkOutTime, String statusText) {
+	public DataHolder checkIn(VenueSmart venue, int checkInTime, int checkOutTime, String statusText) {
 
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
@@ -2259,7 +2259,7 @@ public class HttpUtil {
 			params.add(new BasicNameValuePair("address", venue.getAddress() + ""));
 			params.add(new BasicNameValuePair("city", venue.getCity() + ""));
 			params.add(new BasicNameValuePair("state", venue.getState() + ""));
-			params.add(new BasicNameValuePair("zip", venue.getPostalCode() + ""));
+			params.add(new BasicNameValuePair("zip", venue.zip + ""));
 			params.add(new BasicNameValuePair("phone", ""));
 			params.add(new BasicNameValuePair("status", statusText + ""));
 

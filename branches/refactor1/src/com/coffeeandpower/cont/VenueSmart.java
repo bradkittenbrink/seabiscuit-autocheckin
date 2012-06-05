@@ -14,6 +14,7 @@ public class VenueSmart implements Parcelable{
 	private String address;
 	private String city;
 	private String state;
+	public String zip;
 	private String distance;
 	private String foursquareId;
 
@@ -92,6 +93,7 @@ public class VenueSmart implements Parcelable{
 		this.address = objVenue.optString("address");
 		this.city = objVenue.optString("city");
 		this.state = objVenue.optString("state");
+		this.zip = objVenue.optString("zip");
 		this.distance = objVenue.optString("distance");
 		this.foursquareId = objVenue.optString("foursquare_id");
 		this.checkins = objVenue.optInt("checkins");
