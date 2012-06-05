@@ -7,12 +7,14 @@ import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.cont.DataHolder;
+import com.google.android.maps.GeoPoint;
 
 public class Counter extends Observable {
 	
 	private Integer tick = 0;
 	private Integer trigger = 0; // trigger every N steps
-	private DataHolder response;
+	private DataHolder venuesWithCheckinsResponse;
+	private DataHolder nearbyVenuesResponse;
 	
 	private boolean isRunning = false;
 	private boolean delayHttp = false;
@@ -22,7 +24,7 @@ public class Counter extends Observable {
 
 	//CounterWorkerThread workerThread = new CounterWorkerThread();
 	public void getLastResponseReset() {
-		if(response != null)
+		if(venuesWithCheckinsResponse != null)
 		{
                     delayHttp = true;
 		}
@@ -82,25 +84,47 @@ public class Counter extends Observable {
         	    // We are now on the main thread, so kick off the API call in a worker thread
         	    new Thread(new Runnable() {
         		    public void run() {
-                        	    Log.d("Timer","Calling function with coordinate: " + AppCAP.getUserCoordinates());
-                                    
-                        	    if(delayHttp)
-                        	    {
-                        		    delayHttp = false;    
-                        	    }
-                        	    else
-                        	    {
-                        		    response = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
-                        		    Log.d("Timer","Received Response: " + response.toString());
-                        	    }
-                                    
-                                    // Now post a notification with response.object	
-                                    setChanged();
-                			
-                                    Log.d("Timer","Sending notifyObservers...");
-                                    notifyObservers(new CounterData(CounterData.triggertype, response));
+        			    
+        			    if (AppCAP.getUserLatLon()[0] == 0 && AppCAP.getUserLatLon()[1] == 0) {
+        				    Log.d("Counter","User position is currently 0-0, skipping API calls until a position is received.");
+        			    } else {
+                                	    Log.d("Timer","Calling functions with coordinates: " + AppCAP.getUserLatLon()[0] + ", " + AppCAP.getUserLatLon()[1]);
+                                            
+                                	    if(delayHttp)
+                                	    {
+                                		    delayHttp = false;    
+                                	    }
+                                	    else
+                                	    {
+                                		    venuesWithCheckinsResponse = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserLatLon());
+                                		    Log.d("Timer","Received VenuesWithCheckins: " + venuesWithCheckinsResponse.toString());
+                                		    
+                                		    final GeoPoint gp = new GeoPoint((int)(AppCAP.getUserLatLon()[0]*1E6), (int)(AppCAP.getUserLatLon()[1]*1E6));
+                                		    nearbyVenuesResponse = AppCAP.getConnection().getVenuesCloseToLocation(gp,20);
+                                		    Log.d("Timer","Received VenuesWithCheckins: " + venuesWithCheckinsResponse.toString());
+                                		    
+                                		    Log.d("Counter","Received Response: " + venuesWithCheckinsResponse.getResponseMessage());
+                                        	    Log.d("Counter","Received Response: " + nearbyVenuesResponse.getResponseMessage());
+                                        	    
+                                        	    if (!venuesWithCheckinsResponse.getResponseMessage().equals("HTTP 200 OK")) {
+                                        		    Log.d("Counter","Skipping notifyObservers.");
+                                        	    } else {
+                                        		 
+                                                            Log.d("Timer","Sending notifyObservers...");
+                                                            
+                                                            // Send notify for nearby venues
+                                                            setChanged();
+                                                            notifyObservers(new CounterData(venuesWithCheckinsResponse,nearbyVenuesResponse));
+                                                	    
+                                        	    }                                		    
+                                	    }
+                                	    
+                                	    
+                                	    
+                                	    
+        			    }
                         	    
-                                    Log.d("Counter","Posting runnable delayed for 10 seconds...");
+                        	    Log.d("Counter","Posting runnable delayed for 10 seconds...");
                         	    taskHandler.postDelayed(runTimer, tick * 1000);
         		    }
         	    }).start();

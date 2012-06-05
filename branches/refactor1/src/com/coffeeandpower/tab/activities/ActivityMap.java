@@ -670,7 +670,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			DataHolder result = counterdata.value;
+			DataHolder result = counterdata.venuesWithCheckins;
 						
 			Object[] obj = (Object[]) result.getObject();
 			//TODO Check to see if there is data in the object

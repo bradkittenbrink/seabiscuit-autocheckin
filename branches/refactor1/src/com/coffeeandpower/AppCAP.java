@@ -399,6 +399,16 @@ public class AppCAP extends Application {
 		return data;
 	}
 	/**
+	 * data[0] = user_lat; data[1] = user_lng;
+	 * @category localUserData
+	 */
+	public static double[] getUserLatLon() {
+		double[] data = new double[2];
+		data[0] = (double) getSharedPreferences().getFloat(TAG_USER_COORDINATES + "user_lat", 0);
+		data[1] = (double) getSharedPreferences().getFloat(TAG_USER_COORDINATES + "user_lng", 0);
+		return data;
+	}
+	/**
 	 * 
 	 * @category localUserData
 	 */

@@ -4,11 +4,17 @@ import com.coffeeandpower.cont.DataHolder;
 
 public class CounterData {
 	public static String triggertype = "trigger";
+	
 	public static String counttype = "count";
-	public DataHolder value;
+	
+	public DataHolder nearbyVenues;
+	public DataHolder venuesWithCheckins;
+	
 	public String type = "unknown";
-	public CounterData(String type, DataHolder value) {
-		this.type = type;
-		this.value = value;
+	
+	public CounterData(DataHolder newVenuesWithCheckins,DataHolder newNearbyVenues) {
+		this.type = CounterData.triggertype;
+		this.venuesWithCheckins = newVenuesWithCheckins;
+		this.nearbyVenues = newNearbyVenues;
 	}
 }

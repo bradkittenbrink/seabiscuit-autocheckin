@@ -454,7 +454,7 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 		 */
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			DataHolder result = counterdata.value;
+			DataHolder result = counterdata.venuesWithCheckins;
 						
 			Object[] obj = (Object[]) result.getObject();
 			@SuppressWarnings("unchecked")

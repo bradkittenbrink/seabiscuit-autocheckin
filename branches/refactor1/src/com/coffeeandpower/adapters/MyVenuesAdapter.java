@@ -13,20 +13,21 @@ import android.widget.TextView;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.Venue;
+import com.coffeeandpower.cont.VenueSmart;
 
 public class MyVenuesAdapter extends BaseAdapter {
 
-	private ArrayList<Venue> venues;
+	private ArrayList<VenueSmart> venues;
 	private LayoutInflater inflater;
 
-	public MyVenuesAdapter(Activity context, ArrayList<Venue> venues) {
+	public MyVenuesAdapter(Activity context, ArrayList<VenueSmart> venues) {
 
 		this.inflater = context.getLayoutInflater();
 
 		if (venues != null) {
 			this.venues = venues;
 		} else {
-			this.venues = new ArrayList<Venue>();
+			this.venues = new ArrayList<VenueSmart>();
 		}
 	}
 
@@ -71,8 +72,10 @@ public class MyVenuesAdapter extends BaseAdapter {
 		}
 
 		holder.textAddress.setText(venues.get(position).getAddress());
+		
 		holder.textDistance.setText(venues.get(position).getFoursquareId().equals("add_place") ? "" : RootActivity
-				.formatToMetricsOrImperial(venues.get(position).getDistance()));
+				.formatToMetricsOrImperial(venues.get(position).getDistanceFloat()));
+		
 		holder.textName.setText(venues.get(position).getName());
 		if (venues.get(position).getFoursquareId().equals("add_place"))
 			holder.textName.setTypeface(Typeface.DEFAULT, Typeface.BOLD_ITALIC);

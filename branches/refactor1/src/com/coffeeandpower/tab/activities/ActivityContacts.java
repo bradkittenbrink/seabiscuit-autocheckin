@@ -347,7 +347,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		 */
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			DataHolder result = counterdata.value;
+			DataHolder result = counterdata.venuesWithCheckins;
 						
 			Object[] obj = (Object[]) result.getObject();
 			//Third object is Contacts (0 is places, 1 is people)

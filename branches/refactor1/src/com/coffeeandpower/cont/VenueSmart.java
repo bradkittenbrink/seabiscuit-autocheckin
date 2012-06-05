@@ -105,6 +105,10 @@ public class VenueSmart implements Parcelable{
 		this.arrayCheckins = arrayCheckins;
 	}
 	
+	public static VenueSmart createVenueFromJSON(JSONObject obj) {
+		return new VenueSmart(obj,null);
+	}
+	
 	/**
 	 * Create empty venue obj
 	 */
@@ -132,6 +136,11 @@ public class VenueSmart implements Parcelable{
 		this.lat = lat;
 		this.lng = lng;
 		this.arrayCheckins = arrayCheckins;
+	}
+	
+	
+	public static VenueSmart createVenuePlaceholder(String fourSquareId,String name) {
+		return new VenueSmart(0,name,"","","","",fourSquareId,0,0,0,"","","",0,0,null);		
 	}
 
 	public int getVenueId() {
@@ -176,6 +185,13 @@ public class VenueSmart implements Parcelable{
 
 	public String getDistance() {
 		return distance;
+	}
+	
+	public float getDistanceFloat() {
+		if (distance.equals(""))
+			return 0;
+		else
+			return new Float(distance).floatValue();
 	}
 
 	public void setDistance(String distance) {

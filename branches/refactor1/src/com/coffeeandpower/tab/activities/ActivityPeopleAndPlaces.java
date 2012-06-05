@@ -59,7 +59,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 	private HorizontalPagerModified pager;
 
-	private DataHolder result;
+	//private DataHolder result;
 
 	private ArrayList<UserSmart> arrayUsers;
 	private ArrayList<VenueSmart> arrayVenues;
@@ -74,7 +74,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 	private String type;
 	
-	private boolean initialLoad = false;
+	private boolean initialLoad = true;
 	
 	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
 	protected Handler taskHandler = new Handler() {
@@ -252,11 +252,10 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	protected void onStart() {
 		Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStart()");
 		super.onStart();
+		initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
-		//AppCAP.getCounter().start();
 		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
-		AppCAP.getCounter().getLastResponseReset();
-		
+		AppCAP.getCounter().getLastResponseReset();		
 	}
 
 	@Override
@@ -264,7 +263,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
-		//AppCAP.getCounter().stop();
 		AppCAP.getCounter().deleteObserver(this);
 	}
 
@@ -369,9 +367,9 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		 */
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			DataHolder result = counterdata.value;
+			DataHolder venuesWithCheckins = counterdata.venuesWithCheckins;
 						
-			Object[] obj = (Object[]) result.getObject();
+			Object[] obj = (Object[]) venuesWithCheckins.getObject();
 			@SuppressWarnings("unchecked")
 			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
 			@SuppressWarnings("unchecked")

@@ -407,6 +407,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -465,6 +466,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -503,6 +505,7 @@ public class HttpUtil {
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 
@@ -566,6 +569,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -690,6 +694,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -773,6 +778,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -838,6 +844,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1016,7 +1023,6 @@ public class HttpUtil {
 			RootActivity.log("HttpUtil_getVenuesAndUsersWithCheckinsInBoundsDuringInterval: " + responseString);
 
 			if (responseString != null) {
-				result.setResponseMessage("JSON Parsing error");
 
 				JSONObject json = new JSONObject(responseString);
 				if (json != null) {
@@ -1145,6 +1151,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1232,6 +1239,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1291,6 +1299,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1350,6 +1359,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1408,6 +1418,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1513,6 +1524,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1572,6 +1584,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1631,6 +1644,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1692,6 +1706,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1744,6 +1759,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1805,6 +1821,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1869,6 +1886,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -1976,6 +1994,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -2091,6 +2110,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -2150,6 +2170,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -2206,6 +2227,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -2277,6 +2299,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 
@@ -2378,6 +2401,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 
 		}
@@ -2426,17 +2450,18 @@ public class HttpUtil {
 							JSONArray venues = response.optJSONArray("venues");
 							if (venues != null) {
 
-								ArrayList<Venue> venuesArray = new ArrayList<Venue>();
+								ArrayList<VenueSmart> venuesArray = new ArrayList<VenueSmart>();
 								for (int m = 0; m < venues.length(); m++) {
 
 									JSONObject venue = venues.optJSONObject(m);
 									if (venue != null) {
-										venuesArray.add(new Venue(venue));
+										venuesArray.add(VenueSmart.createVenueFromJSON(venue));
 									}
 								}
 
 								result.setHandlerCode(Executor.HANDLE_VENUES_CLOSE_TO_LOCATION);
 								result.setObject(venuesArray);
+								result.setResponseMessage("HTTP 200 OK");
 								return result;
 							}
 						}
@@ -2446,21 +2471,27 @@ public class HttpUtil {
 
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
+			result.setResponseMessage("UnsupportedEncodingException Error: " + e);
 			return result;
 
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
+			result.setResponseMessage("ClientProtocolException Error: " + e);
 			return result;
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			result.setResponseMessage("IOException Error: " + e);
 			return result;
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 
 		}
+		
+		result.setResponseMessage("Unhandled Exception");
 		return result;
 	}
 
@@ -2620,6 +2651,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -2690,6 +2722,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -2776,6 +2809,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 
@@ -2834,6 +2868,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 		}
 		return result;
@@ -2911,6 +2946,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 
 		}
@@ -2993,6 +3029,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 
 		}
@@ -3083,6 +3120,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 
 		}
@@ -3169,6 +3207,7 @@ public class HttpUtil {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			result.setResponseMessage("JSON Parsing Error: " + e);
 			return result;
 
 		}
