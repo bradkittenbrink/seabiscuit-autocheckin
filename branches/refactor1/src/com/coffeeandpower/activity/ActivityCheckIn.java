@@ -2,8 +2,11 @@ package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+
+import org.apache.http.NameValuePair;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -48,7 +51,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	private MapController mapController;
 	private MyItemizedOverlay2 itemizedoverlay;
 
-	private Venue venue;
+	private VenueSmart venue;
 
 	// Views
 	private CustomFontView textHours;
@@ -66,33 +69,31 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	private int checkInDuration;
 
 	private DataHolder result;
+	
+	//TODO
+	//Eliminate these and make them local variables
+	ArrayList<UserSmart> usersArray;
+	//This needs to be a member variable due to click callback
+	ArrayList<UserShort> checkedInUsers;
 
 	private Executor exe;
 	
-	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
+	// Scheduler - create a custom message handler for use in passing userdata data from background API call to main thread
 	protected Handler taskHandler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
-			/*
-			if (type.equals("people")) {
-				// pass message data along to venue update method
-				ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("users");
-				updateUsersAndCheckinsFromApiResult(usersArray);
-			}
-			else
-			{
-				// pass message data along to venue update method
-				ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
-				updateVenuesAndCheckinsFromApiResult(venueArray);
-			}
-			*/
+			usersArray = msg.getData().getParcelableArrayList("users");
+			//FIXME
+			//For now we are going to convert from UserSmart to UserShort
+			//Eventually UserShort should just be eliminated
+			checkedInUsers = convertUserSmart2UserShort(usersArray);
+			populateUsersIfExist();
+			
 			super.handleMessage(msg);
 		}
 	};
-
-	private ArrayList<UserShort> checkedInUsers;
-
+	
 	{
 		checkInDuration = 1; // default 1 hour checkin duration, slider
 				     // sets
@@ -108,8 +109,14 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.activity_check_in);
+		
+		usersArray = new ArrayList<UserSmart>();
+		checkedInUsers = new ArrayList<UserShort>();
+
+
 
 		// Executor
+		/*
 		exe = new Executor(ActivityCheckIn.this);
 		exe.setExecutorListener(new ExecutorInterface() {
 			@Override
@@ -122,13 +129,14 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 				actionFinished(action);
 			}
 		});
+		*/
 
 		// Get Data from Intent
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			venue = (Venue) extras.getSerializable("venue");
+			venue = (VenueSmart) extras.getParcelable("venue");
 		} else {
-			venue = new Venue();
+			venue = new VenueSmart();
 		}
 
 		// Views
@@ -182,9 +190,6 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 				}
 			}
 		});
-
-		// Get users checked in venue
-		getUsersCheckedIn(venue);
 	}
 	
 	@Override
@@ -204,15 +209,6 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 
 		//UAirship.shared().getAnalytics().activityStopped(this);
 		AppCAP.getCounter().deleteObserver(this);
-	}
-
-	/**
-	 * Get checkedin users in venue
-	 * 
-	 * @param v
-	 */
-	public void getUsersCheckedIn(Venue v) {
-		exe.getUsersCheckedInAtFoursquareID(v.getFoursquareId());
 	}
 
 	private void createMarker(GeoPoint point) {
@@ -236,8 +232,22 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	public void onClickCheckIn(View v) {
 		final int checkInTime = (int) (System.currentTimeMillis() / 1000);
 		final int checkOutTime = checkInTime + checkInDuration * 3600;
-
-		exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString());
+		
+		//FIXME
+		//This needs to get fixed, but requires either creating fake venue class or unifying venue and venueSmart
+		//exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString());
+	}
+	
+	private ArrayList<UserShort> convertUserSmart2UserShort(ArrayList<UserSmart> userList) {
+		ArrayList<UserShort> shortUsers = new ArrayList<UserShort>();
+		for (UserSmart currSmartUser : userList) {
+			//(int id, String nickName, String statusText, String about, String joinDate, String imageURL, String hourlyBilingRate)
+			shortUsers.add(new UserShort(currSmartUser.getUserId() , currSmartUser.getNickName(), currSmartUser.getStatusText(), "About Me",
+					"Join Date", currSmartUser.getFileName(), "120"));
+			
+		}
+		
+		return shortUsers;		
 	}
 
 	private void populateUsersIfExist() {
@@ -294,6 +304,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 			ActivityCheckIn.this.finish();
 			break;
 
+			/*
 		case Executor.HANDLE_GET_CHECHED_USERS_IN_FOURSQUARE:
 			if (result.getObject() != null) {
 				if (result.getObject() instanceof ArrayList<?>) {
@@ -302,6 +313,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 				}
 			}
 			break;
+			*/
 		}
 	}
 
@@ -326,33 +338,19 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 						
 			Object[] obj = (Object[]) result.getObject();
 			@SuppressWarnings("unchecked")
-			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-			Iterator<VenueSmart> itr = arrayVenues.iterator();
-			while(itr.hasNext())
-			{
-				if(this.venue.getVenueId() == itr.next().getVenueId())       
-				{
-					//Grab the network data that matches the venueId
-					VenueSmart currentVenue = itr.next();
-					Message message = new Message();
-					Bundle bundle = new Bundle();
-					bundle.putCharSequence("type", counterdata.type);
-					bundle.putParcelable("venue", currentVenue);
-					message.setData(bundle);
-					
-					Log.d("CheckIn","ActivityCheckIn.update: Sending handler message...");
-					taskHandler.sendMessage(message);
-					break;
-				}
-				
-			}
+			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
 			
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putCharSequence("type", counterdata.type);
+			bundle.putParcelableArrayList("users", arrayUsers);
+
+			message.setData(bundle);
 			
+			Log.d("CheckIn","ActivityCheckIn.update: Sending handler message...");
+			taskHandler.sendMessage(message);
 		}
 		else
 			Log.d("CheckIn","Error: Received unexpected data type: " + data.getClass().toString());
 	}
-	
-	
-
 }

@@ -105,6 +105,13 @@ public class VenueSmart implements Parcelable{
 		this.arrayCheckins = arrayCheckins;
 	}
 	
+	/**
+	 * Create empty venue obj
+	 */
+	public VenueSmart() {
+		this(0, "", "", "", "", "", "", 0, 0, 0, "", "", "", 0, 0, new ArrayList<CheckinData>());
+	}
+	
 
 	public VenueSmart(int venueId, String name, String address, String city, String state, String distance, String foursquareId, int checkins,
 			int checkinsForWeek, int checkinsForInterval, String photoURL, String phone, String formattedPhone, double lat, double lng,

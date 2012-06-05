@@ -336,7 +336,8 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 				venue.setState(AppCAP.cleanResponseString(selectedVenue.getState()));
 
 				Intent intent = new Intent(ActivityPlaceDetails.this, ActivityCheckIn.class);
-				intent.putExtra("venue", venue);
+				//intent.putExtra("venue", venue);
+				intent.putExtra("venue", this.selectedVenue);
 				startActivity(intent);
 			}
 		} else {
