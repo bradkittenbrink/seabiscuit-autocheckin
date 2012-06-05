@@ -157,7 +157,6 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		UAirship.shared().getAnalytics().activityStarted(this);
 		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
 		AppCAP.getCounter().getLastResponseReset();
-		
 	}
 
 	@Override
@@ -223,12 +222,12 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 			bundle.putParcelableArrayList("venues", arrayVenues);
 			message.setData(bundle);
 			
-			Log.d("PeoplePlaces","ActivityPeopleAndPlaces.update: Sending handler message...");
+			Log.d("CheckInList","ActivityCheckInList.update: Sending handler message...");
 			taskHandler.sendMessage(message);
 			
 			
 		}
 		else
-			Log.d("PeoplePlaces","Error: Received unexpected data type: " + data.getClass().toString());
+			Log.d("CheckInList","Error: Received unexpected data type: " + data.getClass().toString());
 	}
 }

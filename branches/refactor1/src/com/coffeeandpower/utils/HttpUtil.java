@@ -1069,7 +1069,7 @@ public class HttpUtil {
 									venues.add(new VenueSmart(objVenue.optInt("venue_id"), objVenue
 											.optString("name"), objVenue.optString("address"), objVenue
 											.optString("city"), objVenue.optString("state"), objVenue
-											.optString("distance"), objVenue.optString("foursquare_id"),
+											.optDouble("distance"), objVenue.optString("foursquare_id"),
 											objVenue.optInt("checkins"), objVenue
 													.optInt("checkins_for_week"), objVenue
 													.optInt("checkins_for_interval"), objVenue
@@ -2455,7 +2455,10 @@ public class HttpUtil {
 
 									JSONObject venue = venues.optJSONObject(m);
 									if (venue != null) {
-										venuesArray.add(VenueSmart.createVenueFromJSON(venue));
+										JSONObject location = venue.optJSONObject("location");
+										String fourSquareId = venue.optString("venue_id");
+										String name = venue.optString("name");
+										venuesArray.add(new VenueSmart(fourSquareId, name, location));
 									}
 								}
 

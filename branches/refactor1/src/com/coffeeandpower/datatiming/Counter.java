@@ -92,7 +92,12 @@ public class Counter extends Observable {
                                             
                                 	    if(delayHttp)
                                 	    {
-                                		    delayHttp = false;    
+                                		    delayHttp = false;
+                                                    Log.d("Timer","Sending notifyObservers...");
+                                                    
+                                                    // Send notify for nearby venues
+                                                    setChanged();
+                                                    notifyObservers(new CounterData(venuesWithCheckinsResponse,nearbyVenuesResponse));
                                 	    }
                                 	    else
                                 	    {

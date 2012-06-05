@@ -15,7 +15,7 @@ public class VenueSmart implements Parcelable{
 	private String city;
 	private String state;
 	public String zip;
-	private String distance;
+	private double distance;
 	private String foursquareId;
 
 	private int checkins;
@@ -93,8 +93,8 @@ public class VenueSmart implements Parcelable{
 		this.address = objVenue.optString("address");
 		this.city = objVenue.optString("city");
 		this.state = objVenue.optString("state");
-		this.zip = objVenue.optString("zip");
-		this.distance = objVenue.optString("distance");
+		this.zip = objVenue.optString("postalCode");
+		this.distance = objVenue.optDouble("distance");
 		this.foursquareId = objVenue.optString("foursquare_id");
 		this.checkins = objVenue.optInt("checkins");
 		this.checkinsForWeek = objVenue.optInt("checkins_for_week");
@@ -107,6 +107,30 @@ public class VenueSmart implements Parcelable{
 		this.arrayCheckins = arrayCheckins;
 	}
 	
+	public VenueSmart(String foursquareId, String name, JSONObject objVenue)
+	{
+		//this.venueId = venue_id;
+		this.foursquareId = foursquareId;
+		this.name = name;
+		//this.venueId = objVenue.optInt("venue_id");
+		//this.name = objVenue.optString("name");
+		this.address = objVenue.optString("address");
+		this.city = objVenue.optString("city");
+		this.state = objVenue.optString("state");
+		this.zip = objVenue.optString("postalCode");
+		this.distance = objVenue.optDouble("distance");
+		this.checkins = objVenue.optInt("checkins");
+		this.checkinsForWeek = objVenue.optInt("checkins_for_week");
+		this.checkinsForInterval = objVenue.optInt("checkins_for_interval");
+		this.photoURL = objVenue.optString("photo_url");
+		this.phone = objVenue.optString("phone");
+		this.formattedPhone = objVenue.optString("formatted_phone");
+		this.lat = objVenue.optDouble("lat");
+		this.lng = objVenue.optDouble("lng");
+	}
+	
+	
+	
 	public static VenueSmart createVenueFromJSON(JSONObject obj) {
 		return new VenueSmart(obj,null);
 	}
@@ -115,11 +139,11 @@ public class VenueSmart implements Parcelable{
 	 * Create empty venue obj
 	 */
 	public VenueSmart() {
-		this(0, "", "", "", "", "", "", 0, 0, 0, "", "", "", 0, 0, new ArrayList<CheckinData>());
+		this(0, "", "", "", "", 0 , "", 0, 0, 0, "", "", "", 0, 0, new ArrayList<CheckinData>());
 	}
 	
 
-	public VenueSmart(int venueId, String name, String address, String city, String state, String distance, String foursquareId, int checkins,
+	public VenueSmart(int venueId, String name, String address, String city, String state, double distance, String foursquareId, int checkins,
 			int checkinsForWeek, int checkinsForInterval, String photoURL, String phone, String formattedPhone, double lat, double lng,
 			ArrayList<CheckinData> arrayCheckins) {
 		this.venueId = venueId;
@@ -142,7 +166,7 @@ public class VenueSmart implements Parcelable{
 	
 	
 	public static VenueSmart createVenuePlaceholder(String fourSquareId,String name) {
-		return new VenueSmart(0,name,"","","","",fourSquareId,0,0,0,"","","",0,0,null);		
+		return new VenueSmart(0,name,"","","",0,fourSquareId,0,0,0,"","","",0,0,null);		
 	}
 
 	public int getVenueId() {
@@ -185,18 +209,15 @@ public class VenueSmart implements Parcelable{
 		this.state = state;
 	}
 
-	public String getDistance() {
+	public Double getDistance() {
 		return distance;
 	}
 	
 	public float getDistanceFloat() {
-		if (distance.equals(""))
-			return 0;
-		else
-			return new Float(distance).floatValue();
+		return (float) distance;
 	}
 
-	public void setDistance(String distance) {
+	public void setDistance(double distance) {
 		this.distance = distance;
 	}
 
@@ -297,7 +318,7 @@ public class VenueSmart implements Parcelable{
 		out.writeString(this.address);
 		out.writeString(this.city);
 		out.writeString(this.state);
-		out.writeString(this.distance);
+		out.writeDouble(this.distance);
 		out.writeString(this.foursquareId);
 		
 		out.writeInt(this.checkins);
@@ -331,7 +352,7 @@ public class VenueSmart implements Parcelable{
 	            this.address = in.readString();
 	            this.city = in.readString();
 	            this.state = in.readString();
-	            this.distance = in.readString();
+	            this.distance = in.readDouble();
 	            this.foursquareId = in.readString();
 	            
 	            this.checkins = in.readInt();
