@@ -25,7 +25,7 @@ public class Counter extends Observable {
 
 	//CounterWorkerThread workerThread = new CounterWorkerThread();
 	public void getLastResponseReset() {
-		if(isFirstRun)
+		if(!isFirstRun)
 		{
                     delayHttp = true;
 		}
@@ -97,7 +97,7 @@ public class Counter extends Observable {
                                 	    if(delayHttp)
                                 	    {
                                 		    delayHttp = false;
-                                                    Log.d("Timer","Sending notifyObservers...");
+                                                    Log.d("Timer","Sending notifyObservers with cached data...");
                                                     
                                                     // Send notify for nearby venues
                                                     setChanged();
@@ -124,7 +124,7 @@ public class Counter extends Observable {
                                         		    Log.d("Counter","Skipping notifyObservers.");
                                         	    } else {
                                         		 
-                                                            Log.d("Timer","Sending notifyObservers...");
+                                                            Log.d("Timer","Sending notifyObservers with received data...");
                                                             
                                                             // Send notify for nearby venues
                                                             setChanged();
