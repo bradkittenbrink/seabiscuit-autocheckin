@@ -2456,7 +2456,7 @@ public class HttpUtil {
 									JSONObject venue = venues.optJSONObject(m);
 									if (venue != null) {
 										JSONObject location = venue.optJSONObject("location");
-										String fourSquareId = venue.optString("venue_id");
+										String fourSquareId = venue.optString("id");
 										String name = venue.optString("name");
 										venuesArray.add(new VenueSmart(fourSquareId, name, location));
 									}

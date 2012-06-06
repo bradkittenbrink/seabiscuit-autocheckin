@@ -41,6 +41,9 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 
 	private MyVenuesAdapter adapter;
 	
+	ArrayList<VenueSmart> venueArray;
+	ArrayList<VenueSmart> checkinVenueArray;
+	
 	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
 	protected Handler taskHandler = new Handler() {
 
@@ -48,8 +51,9 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		public void handleMessage(Message msg) {
 
 			// pass message data along to venue update method
-			ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
+			venueArray = msg.getData().getParcelableArrayList("venues");
 			//updateVenuesAndCheckinsFromApiResult(venueArray);
+			checkinVenueArray = msg.getData().getParcelableArrayList("venuesWCheckins");
 			
 			if(initialLoad)
 			{
@@ -61,8 +65,8 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 			}
 			else
 			{
-				adapter = new MyVenuesAdapter(ActivityCheckInList.this, venueArray);
-				setListAdapter(adapter);
+				//adapter = new MyVenuesAdapter(ActivityCheckInList.this, venueArray);
+				//setListAdapter(adapter);
 				adapter.notifyDataSetChanged();
 			}
 			
@@ -122,7 +126,21 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 					}).show();
 		} else {
 			Intent intent = new Intent(ActivityCheckInList.this, ActivityCheckIn.class);
-			intent.putExtra("venue", (Venue) adapter.getItem(position));
+			//The 4square API doesn't have all the data we need, so we cross reference the 4squareId to our list of
+			//venues with checkins and if the venue has or has had checkins we fill that data into the venue class
+			VenueSmart selectedVenue = (VenueSmart) adapter.getItem(position);
+			for(VenueSmart currVenue:checkinVenueArray)
+			{
+				//Find the venue by the FoursquareId
+				if(currVenue.getFoursquareId().equals(selectedVenue.getFoursquareId()))
+				{
+					selectedVenue.setVenueId(currVenue.getVenueId());
+					selectedVenue.setArrayCheckins(currVenue.getArrayCheckins());
+					break;
+				}
+				
+			}
+			intent.putExtra("venue", selectedVenue);
 			startActivityForResult(intent, AppCAP.ACT_CHECK_IN);
 		}
 	}
@@ -211,15 +229,21 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
 			DataHolder nearbyVenues = counterdata.nearbyVenues;
+			DataHolder venuesWithCheckins = counterdata.venuesWithCheckins;
 						
 			@SuppressWarnings("unchecked")
 			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) nearbyVenues.getObject();
 			arrayVenues.add(VenueSmart.createVenuePlaceholder("add_place", "Add New Place..."));
 			
+			Object[] obj = (Object[]) venuesWithCheckins.getObject();
+			@SuppressWarnings("unchecked")
+			ArrayList<VenueSmart> arrayVenuesWCheckins = (ArrayList<VenueSmart>) obj[0];
+						
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putCharSequence("type", counterdata.type);
 			bundle.putParcelableArrayList("venues", arrayVenues);
+			bundle.putParcelableArrayList("venuesWCheckins", arrayVenuesWCheckins);
 			message.setData(bundle);
 			
 			Log.d("CheckInList","ActivityCheckInList.update: Sending handler message...");

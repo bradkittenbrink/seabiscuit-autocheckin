@@ -104,6 +104,8 @@ public class Counter extends Observable {
                                 		    venuesWithCheckinsResponse = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserLatLon());
                                 		    Log.d("Timer","Received VenuesWithCheckins: " + venuesWithCheckinsResponse.toString());
                                 		    
+                                		    //If we aren't logged in we don't want to run this http request
+                                		    //if (AppCAP.isLoggedIn()==false)
                                 		    final GeoPoint gp = new GeoPoint((int)(AppCAP.getUserLatLon()[0]*1E6), (int)(AppCAP.getUserLatLon()[1]*1E6));
                                 		    nearbyVenuesResponse = AppCAP.getConnection().getVenuesCloseToLocation(gp,20);
                                 		    Log.d("Timer","Received VenuesWithCheckins: " + venuesWithCheckinsResponse.toString());
@@ -122,11 +124,7 @@ public class Counter extends Observable {
                                                             notifyObservers(new CounterData(venuesWithCheckinsResponse,nearbyVenuesResponse));
                                                 	    
                                         	    }                                		    
-                                	    }
-                                	    
-                                	    
-                                	    
-                                	    
+                                	    }                                	    
         			    }
                         	    
                         	    Log.d("Counter","Posting runnable delayed for 10 seconds...");
