@@ -18,13 +18,14 @@ public class Counter extends Observable {
 	
 	private boolean isRunning = false;
 	private boolean delayHttp = false;
+	private boolean isFirstRun = true;
 	
 	// Scheduler
 	protected Handler taskHandler = new Handler();
 
 	//CounterWorkerThread workerThread = new CounterWorkerThread();
 	public void getLastResponseReset() {
-		if(venuesWithCheckinsResponse != null)
+		if(isFirstRun)
 		{
                     delayHttp = true;
 		}
@@ -39,6 +40,7 @@ public class Counter extends Observable {
 		super();
 		this.tick = tick;
 		this.trigger = trigger;
+		this.isFirstRun = true;
 	}
 
 	public void stop() {
@@ -85,6 +87,8 @@ public class Counter extends Observable {
         	    new Thread(new Runnable() {
         		    public void run() {
         			    
+        			    
+        			    
         			    if (AppCAP.getUserLatLon()[0] == 0 && AppCAP.getUserLatLon()[1] == 0) {
         				    Log.d("Counter","User position is currently 0-0, skipping API calls until a position is received.");
         			    } else {
@@ -101,6 +105,9 @@ public class Counter extends Observable {
                                 	    }
                                 	    else
                                 	    {
+                                		    if (isFirstRun)
+                        				    isFirstRun = false;
+                                		    
                                 		    venuesWithCheckinsResponse = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserLatLon());
                                 		    Log.d("Timer","Received VenuesWithCheckins: " + venuesWithCheckinsResponse.toString());
                                 		    
