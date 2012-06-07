@@ -179,6 +179,8 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 
 			arrayUsersInVenue = selectedVenue.getArrayCheckins();
 
+			arrayUsersHereNow.clear();
+			arrayUsersWereHere.clear();
 			for (CheckinData cd : arrayUsersInVenue) {
 				if (cd.getCheckedIn() == 1) {
 					// user is here now
