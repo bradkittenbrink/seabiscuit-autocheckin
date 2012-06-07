@@ -208,7 +208,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 				} else {
 					Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
 					intent.putExtra("venueSmart", (VenueSmart) adapterPlaces.getItem(position));
-					//We are sending the whole place object so we won't need the 4sqId seperately
+					//We are sending the whole place object so we won't need the 4sqId separately
 					//intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
 					//I don't know what data is, but I don't think we will need
 					//intent.putExtra("coords", data);

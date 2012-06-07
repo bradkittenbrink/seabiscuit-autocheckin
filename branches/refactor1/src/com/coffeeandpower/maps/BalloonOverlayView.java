@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.activity.ActivityPlaceDetails;
+import com.coffeeandpower.cont.VenueSmart;
 
 public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout {
 
@@ -24,6 +25,7 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 	private int balloonBottomOffset;
 
 	private String foursquareIdKey;
+	private VenueSmart pinVenue;
 
 	public BalloonOverlayView(final Context context, int balloonBottomOffset) {
 		super(context);
@@ -45,10 +47,11 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 		next.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 
-				if (foursquareIdKey != null) {
+				if (pinVenue != null) {
 					Intent intent = new Intent(context, ActivityPlaceDetails.class);
-					intent.putExtra("foursquare_id", foursquareIdKey);
-					intent.putExtra("coords", AppCAP.getUserCoordinates());
+					intent.putExtra("venueSmart", pinVenue);
+					//intent.putExtra("foursquare_id", foursquareIdKey);
+					//intent.putExtra("coords", AppCAP.getUserCoordinates());
 					context.startActivity(intent);
 				}
 				layout.setVisibility(GONE);
@@ -63,6 +66,7 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
 
 	public void setData(Item item) {
 		this.foursquareIdKey = item.getFoursquareIdKey();
+		this.pinVenue = item.getVenueSmartData();
 
 		layout.setVisibility(VISIBLE);
 

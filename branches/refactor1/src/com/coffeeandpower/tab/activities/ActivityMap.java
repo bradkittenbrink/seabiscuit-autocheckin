@@ -296,8 +296,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	 * @param venueName
 	 * @param isList
 	 */
-	private void createMarker(GeoPoint point, String foursquareIdKey, int checkinsSum, String venueName, boolean isPin) {
-		if (foursquareIdKey != null) {
+	private void createMarker(GeoPoint point, VenueSmart currVenueSmart, int checkinsSum, String venueName, boolean isPin) {
+		if (currVenueSmart != null) {
 			String checkStr = "";
 			if (!isPin) {
 				checkStr = checkinsSum == 1 ? " checkin in the last week" : " checkins in the last week";
@@ -307,7 +307,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			venueName = AppCAP.cleanResponseString(venueName);
 
 			MyOverlayItem overlayitem = new MyOverlayItem(point, venueName, checkinsSum + checkStr);
-			overlayitem.setMapUserData(foursquareIdKey);
+			//overlayitem.setMapUserData(foursquareIdKey);
+			overlayitem.setVenueSmartData(currVenueSmart);
 
 			if (myLocationOverlay.getMyLocation() != null) {
 				overlayitem.setMyLocationCoords(myLocationOverlay.getMyLocation().getLatitudeE6(), myLocationOverlay.getMyLocation()
@@ -669,9 +670,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			GeoPoint gp = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
 
 			if (venue.getCheckins() > 0) {
-				createMarker(gp, venue.getFoursquareId(), venue.getCheckins(), venue.getName(), true);
+				createMarker(gp, venue, venue.getCheckins(), venue.getName(), true);
 			} else if (venue.getCheckinsForWeek() > 0) {
-				createMarker(gp, venue.getFoursquareId(), venue.getCheckinsForWeek(), venue.getName(), false); // !!!
+				createMarker(gp, venue, venue.getCheckinsForWeek(), venue.getName(), false); // !!!
 															       // getCheckinsForWeek
 			}
 		}
