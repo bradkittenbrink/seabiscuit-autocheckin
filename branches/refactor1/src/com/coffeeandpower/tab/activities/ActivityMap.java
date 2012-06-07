@@ -101,6 +101,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			
 			// pass message data along to venue update method
 			ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
+			ArrayList<UserSmart> userArray = msg.getData().getParcelableArrayList("users");
 			updateVenuesAndCheckinsFromApiResult(venueArray);
 			
 			super.handleMessage(msg);
@@ -442,7 +443,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		hideBaloons();
 
 		//exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(getSWAndNECoordinatesBounds(mapView), false);
-		//AppCAP.getCounter().manualTrigger();
+		AppCAP.getCounter().manualTrigger();
 
 		// For every refresh save Map coordinates
 		AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
@@ -612,6 +613,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			break;
 
 		case Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS:
+			/*
 			if (result.getObject() != null) {
 				if (result.getObject() instanceof Object[]) {
 
@@ -656,6 +658,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 				}
 			}
 			break;
+			*/
 
 		}
 	}
@@ -669,19 +672,19 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			DataHolder result = counterdata.venuesWithCheckins;
+			DataHolder venuesWithCheckins = counterdata.venuesWithCheckins;
 						
-			Object[] obj = (Object[]) result.getObject();
-			//TODO Check to see if there is data in the object
+			Object[] obj = (Object[]) venuesWithCheckins.getObject();
 			@SuppressWarnings("unchecked")
 			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-			//ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+			@SuppressWarnings("unchecked")
+			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
 			
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putCharSequence("type", counterdata.type);
-			//bundle.putInt("value", counterdata.value);
 			bundle.putParcelableArrayList("venues", arrayVenues);
+			bundle.putParcelableArrayList("users", arrayUsers);
 			message.setData(bundle);
 			
 			Log.d("Map","ActivityMap.update: Sending handler message...");
@@ -695,6 +698,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	private void updateVenuesAndCheckinsFromApiResult(ArrayList<VenueSmart> venueArray) {
 		
 		Log.d("Map","updateVenuesAndCheckinsFromApiResult()");
+		itemizedoverlay.clear();
 		
 		for (VenueSmart venue : venueArray) {
 			GeoPoint gp = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
