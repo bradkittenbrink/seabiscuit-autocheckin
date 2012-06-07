@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class VenueSmart implements Parcelable{
+public class VenueSmart implements Parcelable, Comparable{
 
 	private int venueId;
 	private String name;
@@ -369,5 +369,25 @@ public class VenueSmart implements Parcelable{
 	            this.arrayCheckins =  new ArrayList<CheckinData>();
 	            in.readTypedList(this.arrayCheckins,CheckinData.CREATOR);
 	        }
+
+		@Override
+		public int compareTo(Object obj) {
+			
+			// Compare VenueSmarts based on distance from user
+			// This is used by the CheckInList view to sort the venues by distance
+			if (obj instanceof VenueSmart) {
+				VenueSmart otherVenue = (VenueSmart)obj;
+				
+				if (otherVenue.distance < this.distance)
+					return 1;
+				if (otherVenue.distance > this.distance)
+					return -1;
+				else
+					return 0;
+			}
+			
+			// Return less than if other obj is not a VenueSmart
+			return -1;
+		}
 
 }

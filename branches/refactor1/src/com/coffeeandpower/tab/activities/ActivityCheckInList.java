@@ -1,6 +1,8 @@
 package com.coffeeandpower.tab.activities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -47,11 +49,16 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
 	protected Handler taskHandler = new Handler() {
 
+		@SuppressWarnings("unchecked")  // suppress warning on Collections.sort
 		@Override
 		public void handleMessage(Message msg) {
 
 			// pass message data along to venue update method
 			venueArray = msg.getData().getParcelableArrayList("venues");
+			Collections.sort(venueArray);
+			
+			venueArray.add(VenueSmart.createVenuePlaceholder("add_place", "Add New Place..."));
+			
 			//updateVenuesAndCheckinsFromApiResult(venueArray);
 			checkinVenueArray = msg.getData().getParcelableArrayList("venuesWCheckins");
 			
@@ -233,7 +240,7 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 						
 			@SuppressWarnings("unchecked")
 			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) nearbyVenues.getObject();
-			arrayVenues.add(VenueSmart.createVenuePlaceholder("add_place", "Add New Place..."));
+			
 			
 			Object[] obj = (Object[]) venuesWithCheckins.getObject();
 			@SuppressWarnings("unchecked")

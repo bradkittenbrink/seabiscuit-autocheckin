@@ -49,6 +49,9 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_USER = 1;
+	
+	private static final String PLACES_SCREEN_TITLE = "Venues";
+	private static final String PEOPLE_SCREEN_TITLE = "People";
 
 	private MyUsersAdapter adapterUsers;
 	private MyPlacesAdapter adapterPlaces;
@@ -137,7 +140,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 	private void setPlaceList() {
 		isPeopleList = false;
-		((CustomFontView) findViewById(R.id.textview_location_name)).setText("Place");
+		((CustomFontView) findViewById(R.id.textview_location_name)).setText(PLACES_SCREEN_TITLE);
 		
 		if(initialLoad)
 		{
@@ -167,7 +170,8 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 		initialLoad = true;
 		
-		((CustomFontView) findViewById(R.id.textview_location_name)).setText("People");
+		
+		
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
 
@@ -221,10 +225,12 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 				((RelativeLayout) findViewById(R.id.rel_people)).setBackgroundResource(R.drawable.bg_tabbar_selected);
 				((ImageView) findViewById(R.id.imageview_people)).setImageResource(R.drawable.tab_people_pressed);
 				((TextView) findViewById(R.id.text_people)).setTextColor(Color.WHITE);
+				((CustomFontView) findViewById(R.id.textview_location_name)).setText(PEOPLE_SCREEN_TITLE);
 			} else {
 				((RelativeLayout) findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_selected);
 				((ImageView) findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
 				((TextView) findViewById(R.id.text_places)).setTextColor(Color.WHITE);
+				((CustomFontView) findViewById(R.id.textview_location_name)).setText(PLACES_SCREEN_TITLE);
 			}
 
 			// Check is it click from Activity or Balloon
@@ -246,6 +252,8 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 				}
 			}
 		}
+		
+		
 	}
 	
 	@Override

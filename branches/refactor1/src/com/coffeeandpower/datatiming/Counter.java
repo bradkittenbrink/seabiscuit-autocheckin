@@ -12,12 +12,11 @@ import com.google.android.maps.GeoPoint;
 public class Counter extends Observable {
 	
 	private Integer tick = 0;
-	private Integer trigger = 0; // trigger every N steps
 	private DataHolder venuesWithCheckinsResponse;
 	private DataHolder nearbyVenuesResponse;
 	
 	private boolean isRunning = false;
-	private boolean delayHttp = false;
+	private boolean delayHttp = false;	// Flag used to delay HTTP call if there is cached data
 	private boolean isFirstRun = true;
 	
 	// Scheduler
@@ -39,7 +38,6 @@ public class Counter extends Observable {
 	public Counter(Integer tick, Integer trigger) {
 		super();
 		this.tick = tick;
-		this.trigger = trigger;
 		this.isFirstRun = true;
 	}
 
@@ -101,7 +99,15 @@ public class Counter extends Observable {
                                                     
                                                     // Send notify for nearby venues
                                                     setChanged();
-                                                    notifyObservers(new CounterData(venuesWithCheckinsResponse,nearbyVenuesResponse));
+                                                    
+                                                    // Response objects should already be set if execution reaches this point
+                                                    // but I saw a crash once where they weren't, which I can't recreate.
+                                                    if (venuesWithCheckinsResponse == null) 
+                                                	    Log.e("Counter","Error! venuesWithCheckinsResponse was null but delayHttp got set...");
+                                                    else if (nearbyVenuesResponse == null) 
+                                                	    Log.e("Counter","Error! nearbyVenuesResponse was null but delayHttp got set...");
+                                                    else 
+                                                	    notifyObservers(new CounterData(venuesWithCheckinsResponse,nearbyVenuesResponse));
                                 	    }
                                 	    else
                                 	    {
@@ -141,75 +147,4 @@ public class Counter extends Observable {
             }
         };
 	
-        
-        /*
-	private class CounterWorkerThread implements Runnable {
-		Thread thread = null;
-		private boolean run = false;
-
-		CounterWorkerThread() {
-			thread = new Thread(this);
-		}
-
-		public void start() {
-			Log.d("Counter","Counter.start(): " + this.run);
-			if (this.run == false) {
-        			this.run = true;
-        			if ( thread == null) {
-        				thread = new Thread(this);
-        			}
-        			thread.start();
-        			Log.d("timer","Counter is started.");
-			}
-		}
-
-		public void stop() {
-			Log.d("Counter","Counter.stop(): " + this.run);
-			if (this.run == true) {
-				Log.d("timer","Stopping counter...");
-        			this.run = false;
-        			thread.interrupt();
-        			thread = null;
-        			Log.d("timer","Counter is stopped.");
-			}
-		}
-		public void manualTrigger() {
-			this.stop();
-			this.start();
-		}
-
-		public void run() {
-			Log.d("Counter","Counter.run()");
-			try {
-				while (run == true) {
-					count++;
-					
-		                        Log.d("Timer","Calling function with coordinate: " + AppCAP.getUserCoordinates());
-		                        
-		                        response = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
-		        		//AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
-					//Object[] obj = (Object[]) response.getObject();
-
-		                        
-		                        Log.d("Timer","Received Response: " + response.toString());
-		                        
-		                        // Now post a notification with response.object
-					
-					setChanged();
-					
-					Log.d("Timer","Sending notifyObservers...");
-					notifyObservers(new CounterData(CounterData.triggertype, response));
-					
-					Thread.sleep(tick * 1000);
-				}
-			} catch (InterruptedException interruptEx) {
-				//do nothing here
-			} catch (Exception ex) {
-			
-				ex.printStackTrace();
-			}
-		}
-	}
-	
-	*/
 }

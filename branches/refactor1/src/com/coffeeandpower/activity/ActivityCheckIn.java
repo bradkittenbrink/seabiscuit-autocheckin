@@ -117,7 +117,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 
 
 		// Executor
-		/*
+		
 		exe = new Executor(ActivityCheckIn.this);
 		exe.setExecutorListener(new ExecutorInterface() {
 			@Override
@@ -130,7 +130,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 				actionFinished(action);
 			}
 		});
-		*/
+		
 
 		// Get Data from Intent
 		Bundle extras = getIntent().getExtras();
