@@ -21,6 +21,8 @@ public class Counter extends Observable {
 	private boolean delayHttp = false;	// Flag used to delay HTTP call if there is cached data
 	private boolean isFirstRun = true;
 	
+	private int numberOfCalls = 0;
+	
 	// Scheduler
 	protected Handler taskHandler = new Handler();
 
@@ -30,6 +32,8 @@ public class Counter extends Observable {
 		{
                     delayHttp = true;
 		}
+		//The user is moving around the activities lets keep the data fresh
+		this.numberOfCalls = 0;
 		//Restart the timer
 		stop();
 		start();
@@ -145,8 +149,18 @@ public class Counter extends Observable {
                                 	    }                                	    
         			    }
                         	    
-                        	    Log.d("Counter","Posting runnable delayed for 10 seconds...");
-                        	    taskHandler.postDelayed(runTimer, tick * 1000);
+        			    //We are going stop the timer if the user hasn't moved views in a while
+        			    numberOfCalls++;
+        			    //Currently 10 second interval with 20 calls so 3.3bar minutes
+        			    if(numberOfCalls < 20)
+        			    {
+        				    Log.d("Counter","Posting runnable delayed for 10 seconds...");
+        				    taskHandler.postDelayed(runTimer, tick * 1000);
+        			    }
+        			    else
+        			    {
+                                	    Log.d("Counter","Turning off counter until user activity");
+        			    }
         		    }
         	    }).start();
             }
