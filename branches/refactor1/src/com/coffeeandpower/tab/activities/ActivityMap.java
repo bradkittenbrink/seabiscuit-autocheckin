@@ -38,7 +38,6 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.datatiming.Counter;
 import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
@@ -82,9 +81,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	private MyLocationOverlay myLocationOverlay;
 	private MyItemizedOverlay itemizedoverlay;
 	private LocationManager locationManager;
-	
-	//Test counter 
-	//private Counter counter = null;
 
 	// Current user
 	private User loggedUser;
@@ -102,43 +98,12 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			// pass message data along to venue update method
 			ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
 			ArrayList<UserSmart> userArray = msg.getData().getParcelableArrayList("users");
-			updateVenuesAndCheckinsFromApiResult(venueArray);
+			updateVenuesAndCheckinsFromApiResult(venueArray, userArray);
+
 			
 			super.handleMessage(msg);
 		}
 	};
-	
-	/*
-	private Runnable updateTimer = new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Log.d("Timer","Received trigger...");
-                taskHandler.postDelayed(updateTimer, 10 * 1000);
-                
-                if(myLocationOverlay.getMyLocation() != null)
-                {
-                        DataHolder response;
-                        double[] currentCoords = new double[2];
-                        currentCoords[0] = ((double)myLocationOverlay.getMyLocation().getLatitudeE6()/1E6);
-                        currentCoords[1] = ((double)myLocationOverlay.getMyLocation().getLongitudeE6()/1E6);
-                        
-                        Log.d("Timer","Calling function with coordinate: " + AppCAP.getUserCoordinates());
-                        
-                        response = AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
-                        
-                        Log.d("Timer","Received Response: " + response.toString());
-                        
-                        // Now post a notification with response.object
-                }
-                else
-                {
-                	Log.d("Timer","Skipped call to API.");
-                }
-            }
-        };
-        */
 
 	/**
 	 * Check if user is checked in or not
@@ -695,7 +660,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	}
 	
 	
-	private void updateVenuesAndCheckinsFromApiResult(ArrayList<VenueSmart> venueArray) {
+	private void updateVenuesAndCheckinsFromApiResult(ArrayList<VenueSmart> venueArray, ArrayList<UserSmart> arrayUsers) {
 		
 		Log.d("Map","updateVenuesAndCheckinsFromApiResult()");
 		itemizedoverlay.clear();
@@ -708,6 +673,16 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			} else if (venue.getCheckinsForWeek() > 0) {
 				createMarker(gp, venue.getFoursquareId(), venue.getCheckinsForWeek(), venue.getName(), false); // !!!
 															       // getCheckinsForWeek
+			}
+		}
+		
+		for (UserSmart user : arrayUsers) {
+			if (user.getUserId() == AppCAP.getLoggedInUserId()) {
+				if (user.getCheckedIn() == 1) {
+					AppCAP.setUserCheckedIn(true);
+				} else {
+					AppCAP.setUserCheckedIn(false);
+				}
 			}
 		}
 		
