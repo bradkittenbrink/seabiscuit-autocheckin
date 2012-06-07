@@ -350,10 +350,12 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (foursquareId != null && foursquareId.length() > 0) {
+		if (arrayUsersHereNow.size() > 0) {
 			arrayUsersHereNow.clear();
+		}
+		if (arrayUsersWereHere.size() > 0)
+		{
 			arrayUsersWereHere.clear();
-			//exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(data, true);
 		}
 	}
 
