@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -54,10 +55,14 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		public void handleMessage(Message msg) {
 
 			// pass message data along to venue update method
-			venueArray = msg.getData().getParcelableArrayList("venues");
-			if (venueArray != null && venueArray instanceof ArrayList<?>)
+			if (venueArray != null)
+				venueArray.clear();
+			ArrayList<Parcelable> venueArrayReference = msg.getData().getParcelableArrayList("venues");
+			if (venueArrayReference != null && venueArrayReference instanceof ArrayList<?>)
 			{
-        			Collections.sort(venueArray);
+        			venueArray = (ArrayList<VenueSmart>)venueArrayReference.clone();
+				Collections.sort(venueArray);
+        			Log.d("CheckInList","Adding an add_place placeholder to list...");
         			venueArray.add(VenueSmart.createVenuePlaceholder("add_place", "Add New Place..."));
         			
         			//updateVenuesAndCheckinsFromApiResult(venueArray);
@@ -249,7 +254,10 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 			bundle.putParcelableArrayList("venuesWCheckins", arrayVenuesWCheckins);
 			message.setData(bundle);
 			
-			Log.d("CheckInList","ActivityCheckInList.update: Sending handler message...");
+			Log.d("CheckInList","ActivityCheckInList.update: Sending handler message with " + arrayVenues.size() + " venues...");
+			for (VenueSmart tempVenue:arrayVenues) {
+				Log.d("CheckInList","Venue: " + tempVenue.getName());
+			}
 			taskHandler.sendMessage(message);
 			
 			

@@ -1,5 +1,6 @@
 package com.coffeeandpower.datatiming;
 
+import java.util.ArrayList;
 import java.util.Observable;
 
 import android.os.Handler;
@@ -7,6 +8,7 @@ import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.VenueSmart;
 import com.google.android.maps.GeoPoint;
 
 public class Counter extends Observable {
@@ -89,13 +91,14 @@ public class Counter extends Observable {
         			    
         			    if (AppCAP.getUserLatLon()[0] == 0 && AppCAP.getUserLatLon()[1] == 0) {
         				    Log.d("Counter","User position is currently 0-0, skipping API calls until a position is received.");
-        			    } else {
-                                	    Log.d("Timer","Calling functions with coordinates: " + AppCAP.getUserLatLon()[0] + ", " + AppCAP.getUserLatLon()[1]);
-                                            
+        			    } else {                                            
                                 	    if(delayHttp)
                                 	    {
                                 		    delayHttp = false;
-                                                    Log.d("Timer","Sending notifyObservers with cached data...");
+                                                    
+                                                    @SuppressWarnings("unchecked")
+                            			    ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) nearbyVenuesResponse.getObject();
+                                                    Log.d("Timer","Sending notifyObservers with cached data (" + arrayVenues.size() + " nearby venues)...");
                                                     
                                                     // Send notify for nearby venues
                                                     setChanged();
@@ -111,6 +114,8 @@ public class Counter extends Observable {
                                 	    }
                                 	    else
                                 	    {
+                                		    Log.d("Timer","Calling functions with coordinates: " + AppCAP.getUserLatLon()[0] + ", " + AppCAP.getUserLatLon()[1]);
+                                		    
                                 		    if (isFirstRun)
                         				    isFirstRun = false;
                                 		    

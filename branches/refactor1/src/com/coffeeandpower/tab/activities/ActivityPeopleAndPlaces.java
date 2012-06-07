@@ -148,6 +148,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		}
 		else
 		{
+			adapterUsers.setNewData(arrayUsers);
 			adapterUsers.notifyDataSetChanged();
 		}
 
@@ -167,6 +168,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		}
 		else
 		{
+			adapterPlaces.setNewData(arrayVenues);
 			adapterPlaces.notifyDataSetChanged();
 		}
 	}

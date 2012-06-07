@@ -71,6 +71,8 @@
                     android:layout_height="fill_parent"
                     android:apiKey="08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA"
                     android:clickable="true" />
+                
+                <!-- 08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA -->
 
                 <RelativeLayout
                     android:id="@+id/rel_refresh"

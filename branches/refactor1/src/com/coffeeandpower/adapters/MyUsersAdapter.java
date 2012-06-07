@@ -14,6 +14,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.imageutil.ImageLoader;
 
 public class MyUsersAdapter extends BaseAdapter {
@@ -49,6 +50,10 @@ public class MyUsersAdapter extends BaseAdapter {
 		} else {
 			this.mudArray = new ArrayList<UserSmart>();
 		}
+	}
+	
+	public void setNewData(ArrayList<UserSmart>newUsers) {
+		this.mudArray = newUsers;
 	}
 
 	@Override
