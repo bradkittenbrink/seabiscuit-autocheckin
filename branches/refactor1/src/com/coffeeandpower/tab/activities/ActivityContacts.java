@@ -159,7 +159,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			}
 			
 			//Display the list of users if the user is logged in
-			listView = (ListView) findViewById(R.id.contacts_listview);
+			//listView = (ListView) findViewById(R.id.contacts_listview);
 			//TODO Need to add listview listener here
 			
 			blankSlateImg = (ImageView) findViewById(R.id.contacts_blank_slate_img);
