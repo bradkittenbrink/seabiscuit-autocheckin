@@ -2615,20 +2615,10 @@ public class HttpUtil {
 								JSONObject objUser = arrayContacts.optJSONObject(x);
 								if (objUser != null) {
 
-									UserSmart singleUserMap = new UserSmart(objUser);
-
-									if (singleUserMap.getCheckedIn() == 1) {
-										if (!isFirstInList1) {
-											singleUserMap.setFirstInList(true);
-											isFirstInList1 = !isFirstInList1;
-										}
-									} else {
-										if (!isFirstInList0) {
-											singleUserMap.setFirstInList(true);
-											isFirstInList0 = !isFirstInList0;
-										}
-									}
-									users.add(singleUserMap);
+									UserSmart singleUserMap = new UserSmart(0, objUser.optInt("other_user_id"), "", "", "", "",
+											"", "", "", 0.0, 0.0, 0, "",
+											"", 0, "", false);
+									contacts.add(singleUserMap);
 								}
 							}
 						}

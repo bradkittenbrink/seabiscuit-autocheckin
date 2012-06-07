@@ -78,6 +78,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 
 			// pass message data along to venue update method
 			ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("users");
+			//FIXME
+			//We aren't getting the full list of contacts, so we should disable this for now.
 			updateUsersAndCheckinsFromApiResult(usersArray);
 
 			super.handleMessage(msg);
@@ -237,7 +239,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 	protected void onResume() {
 		super.onResume();
 
-		/*if (AppCAP.shouldFinishActivities()) {
+		if (AppCAP.shouldFinishActivities()) {
 			onBackPressed();
 		} else {
 			// Get Notification settings from shared prefs
@@ -250,7 +252,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 
 			// Get contacts list
 			exe.getContactsList();
-		}*/
+		}
 	}
 
 	private void errorReceived() {
@@ -350,9 +352,32 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			DataHolder result = counterdata.venuesWithCheckins;
 						
 			Object[] obj = (Object[]) result.getObject();
+			//Get the array of people, to cross reference against the contact ids
+			@SuppressWarnings("unchecked")
+			ArrayList<UserSmart> arrayPeople = (ArrayList<UserSmart>) obj[1];
+
 			//Third object is Contacts (0 is places, 1 is people)
 			@SuppressWarnings("unchecked")
-			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[2];
+			ArrayList<UserSmart> arrayContactIds = (ArrayList<UserSmart>) obj[2];
+			
+			ArrayList<UserSmart> arrayUsers = new ArrayList<UserSmart>();
+			//The contact Users don't have the full set of info so we need to grab the
+			//data from the People list
+			for(UserSmart currContact : arrayContactIds){
+				for(UserSmart currPerson : arrayPeople)
+				{
+					if(currContact.getUserId() == currPerson.getUserId())
+					{
+						arrayUsers.add(currPerson);
+						break;
+					}
+					
+				}
+				
+				
+			}
+			
+			
 			
 			Message message = new Message();
 			Bundle bundle = new Bundle();

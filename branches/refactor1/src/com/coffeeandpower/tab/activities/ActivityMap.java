@@ -170,8 +170,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 
 		// Executor
 		exe = new Executor(ActivityMap.this);
-		//Switched to counter paradigm for map annotation update
-		/*
+		//We need this to get the user Id
 		exe.setExecutorListener(new ExecutorInterface() {
 			@Override
 			public void onErrorReceived() {
@@ -183,7 +182,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 				actionFinished(action);
 			}
 		});
-		*/
+		
 
 		// Views
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
