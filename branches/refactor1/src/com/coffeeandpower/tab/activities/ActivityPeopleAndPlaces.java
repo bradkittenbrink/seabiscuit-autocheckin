@@ -82,19 +82,34 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
 	protected Handler taskHandler = new Handler() {
 
+		// handleMessage - on the main thread
 		@Override
 		public void handleMessage(Message msg) {
 
 			if (type.equals("people")) {
-				// pass message data along to venue update method
-				ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("users");
-				updateUsersAndCheckinsFromApiResult(usersArray);
+				
+				arrayUsers = msg.getData().getParcelableArrayList("users");
+				
+				// Sort users list
+				if (arrayUsers != null) {
+					Collections.sort(arrayUsers, new Comparator<UserSmart>() {
+						@Override
+						public int compare(UserSmart m1, UserSmart m2) {
+							if (m1.getCheckedIn() > m2.getCheckedIn()) {
+								return -1;
+							}
+							return 1;
+						}
+					});
+				}
+				//Populate table view
+				setPeopleList();
 			}
 			else
 			{
 				// pass message data along to venue update method
-				ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
-				updateVenuesAndCheckinsFromApiResult(venueArray);
+				arrayVenues = msg.getData().getParcelableArrayList("venues");
+				setPlaceList();	
 			}
 
 			super.handleMessage(msg);
@@ -254,7 +269,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		}
 		
 		
-	}
+	}   // end onCreate()
 	
 	@Override
 	protected void onStart() {
@@ -402,34 +417,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			Log.d("PeoplePlaces","Error: Received unexpected data type: " + data.getClass().toString());
 	}
 	
-	private void updateUsersAndCheckinsFromApiResult(ArrayList<UserSmart> userArray) {
-		Log.d("PeoplePlaces","updateUsersAndCheckinsFromApiResult()");
-		
-		arrayUsers = userArray;
-		
-		// Sort users list
-		if (arrayUsers != null) {
-			Collections.sort(arrayUsers, new Comparator<UserSmart>() {
-				@Override
-				public int compare(UserSmart m1, UserSmart m2) {
-					if (m1.getCheckedIn() > m2.getCheckedIn()) {
-						return -1;
-					}
-					return 1;
-				}
-			});
-		}
-		//Populate table view
-		setPeopleList();
-	}
 
-	
-	private void updateVenuesAndCheckinsFromApiResult(ArrayList<VenueSmart> venueArray) {
-		
-		Log.d("PeoplePlaces","updateVenuesAndCheckinsFromApiResult()");
-		
-		arrayVenues = venueArray;
-		setPlaceList();		
-	}
 
 }

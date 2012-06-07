@@ -219,8 +219,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		if (AppCAP.isLoggedIn())
 		{
 			UAirship.shared().getAnalytics().activityStarted(this);
-			AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
-			AppCAP.getCounter().getLastResponseReset();
+			//AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
+			//AppCAP.getCounter().getLastResponseReset();
 		}
 	}
 
@@ -231,7 +231,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		if (AppCAP.isLoggedIn())
 		{
 			UAirship.shared().getAnalytics().activityStopped(this);
-			AppCAP.getCounter().deleteObserver(this);
+			//AppCAP.getCounter().deleteObserver(this);
 		}
 	}
 

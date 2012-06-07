@@ -55,32 +55,28 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 
 			// pass message data along to venue update method
 			venueArray = msg.getData().getParcelableArrayList("venues");
-			Collections.sort(venueArray);
-			
-			venueArray.add(VenueSmart.createVenuePlaceholder("add_place", "Add New Place..."));
-			
-			//updateVenuesAndCheckinsFromApiResult(venueArray);
-			checkinVenueArray = msg.getData().getParcelableArrayList("venuesWCheckins");
-			
-			if(initialLoad)
+			if (venueArray != null && venueArray instanceof ArrayList<?>)
 			{
-				Log.d("ActivityPeopleAndPlaces","Place List Initial Load");
-				adapter = new MyVenuesAdapter(ActivityCheckInList.this, venueArray);
-				setListAdapter(adapter);
-				Utils.animateListView(getListView());
-				initialLoad = false;
+        			Collections.sort(venueArray);
+        			venueArray.add(VenueSmart.createVenuePlaceholder("add_place", "Add New Place..."));
+        			
+        			//updateVenuesAndCheckinsFromApiResult(venueArray);
+        			checkinVenueArray = msg.getData().getParcelableArrayList("venuesWCheckins");
+        			
+        			if(initialLoad)	{
+        				Log.d("ActivityPeopleAndPlaces","Place List Initial Load");
+        				adapter = new MyVenuesAdapter(ActivityCheckInList.this, venueArray);
+        				setListAdapter(adapter);
+        				Utils.animateListView(getListView());
+        				initialLoad = false;
+        			} else {
+        				//adapter = new MyVenuesAdapter(ActivityCheckInList.this, venueArray);
+        				//setListAdapter(adapter);
+        				adapter.setNewData(venueArray);
+        				adapter.notifyDataSetChanged();
+        			}
 			}
-			else
-			{
-				//adapter = new MyVenuesAdapter(ActivityCheckInList.this, venueArray);
-				//setListAdapter(adapter);
-				adapter.notifyDataSetChanged();
-			}
 			
-			
-			
-		
-
 			super.handleMessage(msg);
 		}
 	};

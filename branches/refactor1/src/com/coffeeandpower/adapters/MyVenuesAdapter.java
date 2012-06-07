@@ -30,6 +30,11 @@ public class MyVenuesAdapter extends BaseAdapter {
 			this.venues = new ArrayList<VenueSmart>();
 		}
 	}
+	
+	
+	public void setNewData(ArrayList<VenueSmart>newVenues) {
+		this.venues = newVenues;
+	}
 
 	@Override
 	public int getCount() {
