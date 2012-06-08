@@ -375,12 +375,15 @@ public class AppCAP extends Application {
 	 * @category setter
 	 */
 	public static void setUserCoordinates(double[] data) {
-		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "sw_lat", (float) data[0]).commit();
-		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "sw_lng", (float) data[1]).commit();
-		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "ne_lat", (float) data[2]).commit();
-		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "ne_lng", (float) data[3]).commit();
-		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "user_lat", (float) data[4]).commit();
-		getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "user_lng", (float) data[5]).commit();
+		if(data[4]!=0 && data[5]!=0)
+		{
+			getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "sw_lat", (float) data[0]).commit();
+			getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "sw_lng", (float) data[1]).commit();
+			getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "ne_lat", (float) data[2]).commit();
+			getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "ne_lng", (float) data[3]).commit();
+			getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "user_lat", (float) data[4]).commit();
+			getSharedPreferences().edit().putFloat(TAG_USER_COORDINATES + "user_lng", (float) data[5]).commit();
+		}
 	}
 
 	/**

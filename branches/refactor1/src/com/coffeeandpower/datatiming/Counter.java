@@ -160,6 +160,7 @@ public class Counter extends Observable {
         			    else
         			    {
                                 	    Log.d("Counter","Turning off counter until user activity");
+                                	    //TODO We should also turn off the GPS at this point as well
         			    }
         		    }
         	    }).start();
