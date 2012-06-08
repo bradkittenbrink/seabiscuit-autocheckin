@@ -233,8 +233,8 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		super.onStart();
 		//initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
-		AppCAP.getCounter().getLastResponseReset();		
+		
+		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);	
 	}
 
 	@Override
@@ -242,7 +242,8 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		Log.d("UserDetails","ActivityUserDetails.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
-		AppCAP.getCounter().deleteObserver(this);
+
+		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
 	}
 	
 
@@ -659,7 +660,7 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		 */
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			DataHolder venuesWithCheckins = counterdata.venuesWithCheckins;
+			DataHolder venuesWithCheckins = counterdata.getData();
 						
 			Object[] obj = (Object[]) venuesWithCheckins.getObject();
 			@SuppressWarnings("unchecked")

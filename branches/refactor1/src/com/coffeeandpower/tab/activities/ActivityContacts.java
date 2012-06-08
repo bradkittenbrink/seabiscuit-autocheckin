@@ -27,6 +27,7 @@ import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyUsersAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.datatiming.CachedNetworkData;
 import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
@@ -219,8 +220,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		if (AppCAP.isLoggedIn())
 		{
 			UAirship.shared().getAnalytics().activityStarted(this);
-			//AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
-			//AppCAP.getCounter().getLastResponseReset();
+			AppCAP.getCounter().getCachedDataForAPICall("contactsList",this);
 		}
 	}
 
@@ -231,7 +231,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		if (AppCAP.isLoggedIn())
 		{
 			UAirship.shared().getAnalytics().activityStopped(this);
-			//AppCAP.getCounter().deleteObserver(this);
+			AppCAP.getCounter().stoppedObservingAPICall("contactsList",this);
 		}
 	}
 
@@ -349,40 +349,19 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		 */
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			DataHolder result = counterdata.venuesWithCheckins;
-						
-			Object[] obj = (Object[]) result.getObject();
+			DataHolder result = counterdata.getData();
+				
+			Log.d("ActivityContacts","Warning: API callback temporarily disabled...");
+			
+			
 			//Get the array of people, to cross reference against the contact ids
 			@SuppressWarnings("unchecked")
-			ArrayList<UserSmart> arrayPeople = (ArrayList<UserSmart>) obj[1];
-
-			//Third object is Contacts (0 is places, 1 is people)
-			@SuppressWarnings("unchecked")
-			ArrayList<UserSmart> arrayContactIds = (ArrayList<UserSmart>) obj[2];
-			
-			ArrayList<UserSmart> arrayUsers = new ArrayList<UserSmart>();
-			//The contact Users don't have the full set of info so we need to grab the
-			//data from the People list
-			for(UserSmart currContact : arrayContactIds){
-				for(UserSmart currPerson : arrayPeople)
-				{
-					if(currContact.getUserId() == currPerson.getUserId())
-					{
-						arrayUsers.add(currPerson);
-						break;
-					}
-					
-				}
+			ArrayList<UserSmart> arrayPeople = (ArrayList<UserSmart>) result.getObject();
 				
-				
-			}
-			
-			
-			
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putCharSequence("type", counterdata.type);
-			bundle.putParcelableArrayList("users", arrayUsers);
+			bundle.putParcelableArrayList("users", arrayPeople);
 			message.setData(bundle);
 			
 			Log.d("Contacts","Contacts.update: Sending handler message with " + arrayUsers.size() + " contacts...");

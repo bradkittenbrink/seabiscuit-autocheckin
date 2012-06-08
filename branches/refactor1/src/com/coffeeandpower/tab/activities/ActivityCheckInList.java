@@ -28,6 +28,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.datatiming.CachedNetworkData;
 import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
@@ -43,6 +44,9 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 	private boolean initialLoad = true;
 
 	private MyVenuesAdapter adapter;
+	
+	private DataHolder venuesWithCheckinsHolderWORKERTHREAD;
+	private DataHolder nearbyVenuesHolderWORKERTHREAD;
 	
 	ArrayList<VenueSmart> venueArray;
 	ArrayList<VenueSmart> checkinVenueArray;
@@ -181,8 +185,9 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		super.onStart();
 		initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
-		AppCAP.getCounter().getLastResponseReset();
+
+		AppCAP.getCounter().getCachedDataForAPICalls("venuesWithCheckins","nearbyVenues",this);	
+		//AppCAP.getCounter().getCachedDataForAPICall("nearbyVenues",this);
 	}
 
 	@Override
@@ -190,7 +195,8 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		Log.d("CheckIn","ActivityCheckInList.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
-		AppCAP.getCounter().deleteObserver(this);
+		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);	
+		AppCAP.getCounter().stoppedObservingAPICall("nearbyVenues",this);
 	}
 
 	@Override
@@ -234,16 +240,29 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		 * verify that the data is really of type CounterData, and log the
 		 * details
 		 */
-		if (data instanceof CounterData) {
-			CounterData counterdata = (CounterData) data;
-			DataHolder nearbyVenues = counterdata.nearbyVenues;
-			DataHolder venuesWithCheckins = counterdata.venuesWithCheckins;
-						
+		
+		CachedNetworkData cachedData = (CachedNetworkData)observable;
+		CounterData counterdata = (CounterData) data;
+		
+		if (cachedData.getType().equals("nearbyVenues")) {
+			Log.d("CheckInList","Received nearbyVenues data.");
+			this.nearbyVenuesHolderWORKERTHREAD = counterdata.getData();
+			
+		} else if (cachedData.getType().equals("venuesWithCheckins")) {
+			Log.d("CheckInList","Received venuesWithCheckins data.");
+			this.venuesWithCheckinsHolderWORKERTHREAD = counterdata.getData();
+			
+		}
+		
+		
+		if (this.nearbyVenuesHolderWORKERTHREAD != null && this.venuesWithCheckinsHolderWORKERTHREAD != null) {
+				
+			Log.d("CheckInList","We have data for both APIs...");
 			@SuppressWarnings("unchecked")
-			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) nearbyVenues.getObject();
+			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) nearbyVenuesHolderWORKERTHREAD.getObject();
 			
 			
-			Object[] obj = (Object[]) venuesWithCheckins.getObject();
+			Object[] obj = (Object[]) venuesWithCheckinsHolderWORKERTHREAD.getObject();
 			@SuppressWarnings("unchecked")
 			ArrayList<VenueSmart> arrayVenuesWCheckins = (ArrayList<VenueSmart>) obj[0];
 						
@@ -258,11 +277,21 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 			for (VenueSmart tempVenue:arrayVenues) {
 				Log.d("CheckInList","Venue: " + tempVenue.getName());
 			}
-			taskHandler.sendMessage(message);
 			
+			this.nearbyVenuesHolderWORKERTHREAD = null;
+			this.venuesWithCheckinsHolderWORKERTHREAD = null;
 			
+			taskHandler.sendMessage(message);			
 		}
+		
+		if (this.nearbyVenuesHolderWORKERTHREAD == null)
+			Log.d("CheckInList","nearbyVenuesHolderWORKERTHREAD is null.");
 		else
-			Log.d("CheckInList","Error: Received unexpected data type: " + data.getClass().toString());
+			Log.d("CheckInList","nearbyVenuesHolderWORKERTHREAD has data.");
+		
+		if (this.venuesWithCheckinsHolderWORKERTHREAD == null)
+			Log.d("CheckInList","venuesWithCheckinsHolderWORKERTHREAD is null.");
+		else
+			Log.d("CheckInList","venuesWithCheckinsHolderWORKERTHREAD has data.");
 	}
 }

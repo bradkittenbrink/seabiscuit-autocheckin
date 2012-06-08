@@ -7,14 +7,16 @@ public class CounterData {
 	
 	public static String counttype = "count";
 	
-	public DataHolder nearbyVenues;
-	public DataHolder venuesWithCheckins;
+	private DataHolder data;
 	
 	public String type = "unknown";
 	
-	public CounterData(DataHolder newVenuesWithCheckins,DataHolder newNearbyVenues) {
+	public CounterData(DataHolder myData) {
 		this.type = CounterData.triggertype;
-		this.venuesWithCheckins = newVenuesWithCheckins;
-		this.nearbyVenues = newNearbyVenues;
+		this.data = myData;
+	}
+	
+	public DataHolder getData() {
+		return data;
 	}
 }

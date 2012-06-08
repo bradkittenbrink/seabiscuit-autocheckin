@@ -199,8 +199,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		super.onStart();
 
 		//UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
-		AppCAP.getCounter().getLastResponseReset();
+		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
 	}
 
 	@Override
@@ -209,7 +208,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		super.onStop();
 
 		//UAirship.shared().getAnalytics().activityStopped(this);
-		AppCAP.getCounter().deleteObserver(this);
+		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
 	}
 
 	private void createMarker(GeoPoint point) {
@@ -346,11 +345,11 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		 */
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			DataHolder result = counterdata.venuesWithCheckins;
+			DataHolder result = counterdata.getData();
 						
 			Object[] obj = (Object[]) result.getObject();
 			@SuppressWarnings("unchecked")
-			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[0];
 			
 			Message message = new Message();
 			Bundle bundle = new Bundle();

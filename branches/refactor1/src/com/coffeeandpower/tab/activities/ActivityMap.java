@@ -409,7 +409,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		hideBaloons();
 
 		//exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(getSWAndNECoordinatesBounds(mapView), false);
-		AppCAP.getCounter().manualTrigger();
+		//AppCAP.getCounter().manualTrigger();
 
 		// For every refresh save Map coordinates
 		AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
@@ -548,8 +548,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		Log.d("ActivityMap","ActivityMap.onStart()");
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
-		AppCAP.getCounter().getLastResponseReset();
+		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
 	}
 
 	@Override
@@ -558,7 +557,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
 		
-		AppCAP.getCounter().deleteObserver(this);
+		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
 	}
 
 	private void errorReceived() {
@@ -576,57 +575,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 					useUserData();
 				}
 			}
-			break;
-
-		case Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS:
-			/*
-			if (result.getObject() != null) {
-				if (result.getObject() instanceof Object[]) {
-
-					// Remove all markers from MapView
-					itemizedoverlay.clear();
-
-					for (int i = mapView.getOverlays().size(); i > 1; i--) {
-						mapView.getOverlays().remove(i - 1);
-					}
-
-					Object[] obj = (Object[]) result.getObject();
-
-					ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-					ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
-
-					for (VenueSmart venue : arrayVenues) {
-						GeoPoint gp = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
-
-						if (venue.getCheckins() > 0) {
-							createMarker(gp, venue.getFoursquareId(), venue.getCheckins(), venue.getName(), true);
-						} else if (venue.getCheckinsForWeek() > 0) {
-							createMarker(gp, venue.getFoursquareId(), venue.getCheckinsForWeek(), venue.getName(), false); // !!!
-																		       // getCheckinsForWeek
-						}
-					}
-
-					for (UserSmart user : arrayUsers) {
-						if (user.getUserId() == AppCAP.getLoggedInUserId()) {
-							if (user.getCheckedIn() == 1) {
-								AppCAP.setUserCheckedIn(true);
-							} else {
-								AppCAP.setUserCheckedIn(false);
-							}
-						}
-					}
-
-					if (itemizedoverlay.size() > 0) {
-						mapView.getOverlays().add(itemizedoverlay);
-					}
-					checkUserState();
-					mapView.invalidate();
-				}
-			}
-			break;
-			*/
-
 		}
+
 	}
 	@Override
 	public void update(Observable observable, Object data) {
@@ -638,7 +588,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			DataHolder venuesWithCheckins = counterdata.venuesWithCheckins;
+			DataHolder venuesWithCheckins = counterdata.getData();
 						
 			Object[] obj = (Object[]) venuesWithCheckins.getObject();
 			@SuppressWarnings("unchecked")

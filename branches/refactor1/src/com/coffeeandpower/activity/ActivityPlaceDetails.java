@@ -147,8 +147,8 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 		Log.d("PlaceDetail","ActivityPlaceDetail.onStart()");
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
-		AppCAP.getCounter().getLastResponseReset();
+		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
+		
 		initialLoadNow = true;
 		initialLoadWere = true;
 	}
@@ -158,7 +158,8 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 		Log.d("PlaceDetail","ActivityPlaceDetail.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
-		AppCAP.getCounter().deleteObserver(this);
+
+		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
 	}
 
 	private void fillData() {
@@ -374,74 +375,7 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 		super.onDestroy();
 	}
 
-	/*
-	private void errorReceived() {
-	}
-
-	private void actionFinished(int action) {
-		result = exe.getResult();
-
-		switch (action) {
-		case Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS:
-			if (result.getObject() != null && result.getObject() instanceof Object[]) {
-				Object[] obj = (Object[]) result.getObject();
-				arrayVenues = (ArrayList<VenueSmart>) obj[0];
-				arrayUsers = (ArrayList<UserSmart>) obj[1];
-				for (VenueSmart v : arrayVenues) {
-					if (v.getFoursquareId().equals(foursquareId)) {
-						selectedVenue = v;
-					}
-				}
-
-				// Sort users list
-				if (arrayUsers != null) {
-					Collections.sort(arrayUsers, new Comparator<UserSmart>() {
-						@Override
-						public int compare(UserSmart m1, UserSmart m2) {
-							if (m1.getCheckedIn() > m2.getCheckedIn()) {
-								return -1;
-							}
-							return 1;
-						}
-					});
-				}
-
-				// Fill veneu and users data
-				fillData();
-
-				// Get venue chat
-				if (selectedVenue != null)
-					exe.venueChat(selectedVenue.getVenueId(), "0", "", false);
-			}
-			break;
-
-		case Executor.HANDLE_VENUE_CHAT:
-			if (result != null && result.getObject() != null && (result.getObject() instanceof ArrayList<?>)) {
-				ArrayList<Object> tempArray = (ArrayList<Object>) result.getObject();
-
-				if (tempArray.size() == 4) {
-					if (tempArray.get(3) instanceof ArrayList<?>) {
-
-						// Calculate number of users
-						HashSet<String> usersIDs = new HashSet<String>();
-						String lastEntry = "";
-						for (VenueChatEntry entry : (ArrayList<VenueChatEntry>) tempArray.get(3)) {
-							if (entry.getSystemType() != null && !entry.getSystemType().equals("checkin")) {
-								usersIDs.add(entry.getUserId());
-								lastEntry = entry.getEntry().length() > 0 ? "\"" + entry.getEntry() + "\"" : "" ;
-							}
-						}
-						((CustomFontView) findViewById(R.id.textview_chat_places)).setText(usersIDs.size() == 0 ? ""
-								: usersIDs.size() + "");
-						((CustomFontView) findViewById(R.id.textview_chat_places_name))
-								.setText(usersIDs.size() == 0 ? "Tap here to chat." : lastEntry);
-					}
-				}
-			}
-			break;
-		}
-	}
-	*/
+	
 
 	public void onClickChat(View v) {
 		Intent intent = new Intent(ActivityPlaceDetails.this, ActivityPlaceChat.class);
@@ -458,7 +392,7 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 		 */
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			DataHolder result = counterdata.venuesWithCheckins;
+			DataHolder result = counterdata.getData();
 						
 			Object[] obj = (Object[]) result.getObject();
 			@SuppressWarnings("unchecked")

@@ -279,8 +279,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		super.onStart();
 		initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().addObserver(this); // add this object as a Counter observer
-		AppCAP.getCounter().getLastResponseReset();		
+		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);	
 	}
 
 	@Override
@@ -288,7 +287,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
-		AppCAP.getCounter().deleteObserver(this);
+		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
 	}
 
 	@Override
@@ -392,7 +391,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		 */
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			DataHolder venuesWithCheckins = counterdata.venuesWithCheckins;
+			DataHolder venuesWithCheckins = counterdata.getData();
 						
 			Object[] obj = (Object[]) venuesWithCheckins.getObject();
 			@SuppressWarnings("unchecked")

@@ -233,7 +233,7 @@ public class Executor {
 				//FIXME
 				//This assumes that the checkin is going to be successful, it doesn't look like there
 				//is curreently any code to verify that the checkin was successful
-				AppCAP.checkInDataObserable.notifyObservers(new CounterData(venue, statusText));
+				//AppCAP.checkInDataObserable.notifyObservers(new CounterData(venue, statusText));
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		}).start();
