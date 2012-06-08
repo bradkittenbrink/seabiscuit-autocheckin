@@ -27,6 +27,7 @@ import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyUsersAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.datatiming.CachedNetworkData;
 import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.inter.TabMenu;
@@ -78,7 +79,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		public void handleMessage(Message msg) {
 
 			// pass message data along to venue update method
-			ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("users");
+			ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("contacts");
 			//FIXME
 			//We aren't getting the full list of contacts, so we should disable this for now.
 			updateUsersAndCheckinsFromApiResult(usersArray);
@@ -148,7 +149,9 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 					(Button) findViewById(R.id.btn_from), false);
 
 			// Get contacts list
-			exe.getContactsList();
+			//FIXME
+			//We are eliminating all .exe's
+			//exe.getContactsList();
 
 			if (AppCAP.isUserCheckedIn()) {
 				((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
@@ -160,7 +163,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			}
 			
 			//Display the list of users if the user is logged in
-			//listView = (ListView) findViewById(R.id.contacts_listview);
+			listView = (ListView) findViewById(R.id.contacts_listview);
 			//TODO Need to add listview listener here
 			
 			blankSlateImg = (ImageView) findViewById(R.id.contacts_blank_slate_img);
@@ -251,7 +254,9 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 					(Button) findViewById(R.id.btn_from), false);
 
 			// Get contacts list
-			exe.getContactsList();
+			//FIXME
+			//We are eliminating all .exe's
+			//exe.getContactsList();
 		}
 	}
 
@@ -349,26 +354,21 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		 */
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
-			DataHolder result = counterdata.getData();
-				
-			Log.d("Contacts","Warning: API callback temporarily disabled...");
 			
-			/*
-			//Get the array of people, to cross reference against the contact ids
+			DataHolder contacts = counterdata.getData();
+			//Object[] obj = (Object[]) contacts.getObject();
 			@SuppressWarnings("unchecked")
-			ArrayList<UserSmart> arrayPeople = (ArrayList<UserSmart>) result.getObject();
+			ArrayList<UserSmart> arrayContacts = (ArrayList<UserSmart>) contacts.getObject();				
+			Log.d("Contacts","Warning: API callback temporarily disabled...");
 				
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putCharSequence("type", counterdata.type);
-			bundle.putParcelableArrayList("users", arrayPeople);
+			bundle.putParcelableArrayList("contacts", arrayContacts);
 			message.setData(bundle);
 			
-			Log.d("Contacts","Contacts.update: Sending handler message with " + arrayUsers.size() + " contacts...");
-			taskHandler.sendMessage(message);
-			*/
-			
-			
+			Log.d("Contacts","Contacts.update: Sending handler message with " + arrayContacts.size() + " contacts...");
+			taskHandler.sendMessage(message);			
 		}
 		else
 			Log.d("Contacts","Error: Received unexpected data type: " + data.getClass().toString());

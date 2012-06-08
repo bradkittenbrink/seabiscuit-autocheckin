@@ -25,6 +25,7 @@ public class UserSmart implements Parcelable {
 	private int checkedIn;
 	private String foursquareId;
 	private String venueName;
+	private int venueId;
 	private int checkInCount;
 	private String skills;
 	private boolean met;
@@ -55,6 +56,7 @@ public class UserSmart implements Parcelable {
 		this.checkedIn = objUser.optInt("checked_in");
 		this.foursquareId = objUser.optString("foursquare");
 		this.venueName = objUser.optString("venue_name");
+		this.venueId = objUser.optInt("venue_id");
 		this.checkInCount = objUser.optInt("checkin_count");
 		this.skills = objUser.optString("skills");
 		this.met = objUser.optBoolean("met");

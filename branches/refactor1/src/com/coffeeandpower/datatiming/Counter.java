@@ -52,7 +52,11 @@ public class Counter {
 		else if (apicall.equals("contactsList")) {
 			Log.d("Counter","Enabling contactsList.");
 			contactsListCache.isActive = true;
-			nearbyVenuesCache.addObserver(context);
+			contactsListCache.addObserver(context);
+		}
+		else
+		{
+			Log.d("Counter","INVALID OPTION FOR OBSERVER REGISTRATION");
 		}
 		
 		//The user is moving around the activities lets keep the data fresh

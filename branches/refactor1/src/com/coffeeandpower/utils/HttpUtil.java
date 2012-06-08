@@ -1736,11 +1736,22 @@ public class HttpUtil {
 			RootActivity.log("HttpUtil_getContactList: " + responseString);
 
 			if (responseString != null) {
-
 				JSONObject json = new JSONObject(responseString);
-				if (json != null) {
+				JSONArray contacts = json.optJSONArray("payload");
+				//FIXME
+				//Need to read in error field and respond appropriately
+				ArrayList<UserSmart> contactsArray = new ArrayList<UserSmart>();
+				if (contacts != null) {
+					for (int m = 0; m < contacts.length(); m++) {
 
-					result.setHandlerCode(Executor.HANDLE_GET_CONTACTS_LIST);
+						JSONObject currContact = contacts.optJSONObject(m);
+						if (currContact != null) {
+							contactsArray.add(new UserSmart(currContact));				
+	
+						}
+					}
+					result.setObject(contactsArray);
+					result.setResponseMessage("HTTP 200 OK");
 					return result;
 				}
 			}
