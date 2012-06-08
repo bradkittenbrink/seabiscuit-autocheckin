@@ -235,7 +235,8 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		final int checkOutTime = checkInTime + checkInDuration * 3600;
 		
 		//FIXME
-		//This needs to get fixed, but requires either creating fake venue class or unifying venue and venueSmart
+		//The Venue and VenueSmart classes still need to be unified, this is designed for Venue,
+		//but is being passed in as a VenueSmart
 		exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString());
 	}
 	
