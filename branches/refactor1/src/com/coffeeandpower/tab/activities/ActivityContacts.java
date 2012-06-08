@@ -351,9 +351,9 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			CounterData counterdata = (CounterData) data;
 			DataHolder result = counterdata.getData();
 				
-			Log.d("ActivityContacts","Warning: API callback temporarily disabled...");
+			Log.d("Contacts","Warning: API callback temporarily disabled...");
 			
-			
+			/*
 			//Get the array of people, to cross reference against the contact ids
 			@SuppressWarnings("unchecked")
 			ArrayList<UserSmart> arrayPeople = (ArrayList<UserSmart>) result.getObject();
@@ -366,11 +366,12 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			
 			Log.d("Contacts","Contacts.update: Sending handler message with " + arrayUsers.size() + " contacts...");
 			taskHandler.sendMessage(message);
+			*/
 			
 			
 		}
 		else
-			Log.d("PeoplePlaces","Error: Received unexpected data type: " + data.getClass().toString());
+			Log.d("Contacts","Error: Received unexpected data type: " + data.getClass().toString());
 	}
 	
 	
