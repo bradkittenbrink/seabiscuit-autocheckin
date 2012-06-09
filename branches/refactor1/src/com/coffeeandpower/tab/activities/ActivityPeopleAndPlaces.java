@@ -90,6 +90,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 				
 				arrayUsers = msg.getData().getParcelableArrayList("users");
 				
+				
 				// Sort users list
 				if (arrayUsers != null) {
 					Collections.sort(arrayUsers, new Comparator<UserSmart>() {

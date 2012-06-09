@@ -3,6 +3,7 @@ package com.coffeeandpower.adapters;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,6 +101,8 @@ public class MyUsersAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		ViewHolder holder;
+		
+		Log.d("MyUsersAdapter","getView for " + AppCAP.cleanResponseString(mudArray.get(position).getNickName()) + ", image: " + mudArray.get(position).getFileName() );
 
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.item_list_about_person, null);
@@ -109,6 +112,7 @@ public class MyUsersAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
+		// Display image
 		if (AppCAP.isLoggedIn()) {
 			holder.textNickName.setText(AppCAP.cleanResponseString(mudArray.get(position).getNickName()));
 			imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage, R.drawable.default_avatar50, 70);
@@ -117,6 +121,7 @@ public class MyUsersAdapter extends BaseAdapter {
 			imageLoader.DisplayImage("", holder.profileImage, R.drawable.default_avatar50_login, 70);
 		}
 
+		// Display status text
 		if (mudArray.get(position).getStatusText() != null && mudArray.get(position).getStatusText().length() > 0) {
 			holder.textStatus.setText("\"" + AppCAP.cleanResponseString(mudArray.get(position).getStatusText()) + "\"");
 		} else {
@@ -124,6 +129,7 @@ public class MyUsersAdapter extends BaseAdapter {
 		}
 		holder.textVenueName.setText(AppCAP.cleanResponseString(mudArray.get(position).getVenueName()));
 
+		// Display major job category
 		String jobName = mudArray.get(position).getMajorJobCategory();
 		if (jobName != null && jobName.length() > 1)
 			jobName = jobName.substring(0, 1).toUpperCase() + jobName.substring(1);

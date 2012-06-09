@@ -31,14 +31,10 @@ import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.adapters.MyUsersAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
-import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.datatiming.CachedNetworkData;
 import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
-import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Utils;
-import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.views.CustomFontView;
@@ -56,14 +52,14 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 
 	private UserAndTabMenu menu;
 
-	private Executor exe;
+	//private Executor exe;
 	
 	private ListView listView;
 	private ProgressDialog progress;
 
 	private ArrayList<UserSmart> arrayUsers;
 
-	private DataHolder result;
+	//private DataHolder result;
 	
 	private boolean initialLoad = true;
 	
@@ -97,6 +93,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		setContentView(R.layout.tab_activity_contacts);
 
 		// Executor
+		/*
 		exe = new Executor(ActivityContacts.this);
 		exe.setExecutorListener(new ExecutorInterface() {
 			@Override
@@ -108,7 +105,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			public void onActionFinished(int action) {
 				actionFinished(action);
 			}
-		});
+		});*/
 
 		((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
 
@@ -276,10 +273,12 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		}
 	}
 
+	/*
 	private void errorReceived() {
 
 	}
 
+	
 	private void actionFinished(int action) {
 		result = exe.getResult();
 
@@ -289,7 +288,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 
 			break;
 		}
-	}
+	}*/
 
 	@Override
 	public void onBackPressed() {
@@ -399,23 +398,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 	}
 	
 	
-	private void setContactList() {
-		
-		Log.d("Contacts","setContactList()");
-		if(initialLoad)
-		{
-			Log.d("ActivityContacts","Contacts List Initial Load");
-			adapterUsers = new MyUsersAdapter(ActivityContacts.this, this.arrayUsers);
-			listView.setAdapter(adapterUsers);
-			Utils.animateListView(listView);
-			initialLoad = false;
-		}
-		else
-		{
-			adapterUsers.notifyDataSetChanged();
-		}
 
-	}
 	
 	private void updateUsersAndCheckinsFromApiResult(ArrayList<UserSmart> newUsersArray) {
 		Log.d("Contacts","updateUsersAndCheckinsFromApiResult()");
@@ -439,9 +422,24 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			blankSlateImg.setVisibility(View.INVISIBLE);
 		}
 		
+		
+		
 		//Populate table view
 		this.arrayUsers = newUsersArray;
-		setContactList();
+
+		if(initialLoad)
+		{
+			Log.d("ActivityContacts","Contacts List Initial Load");
+			adapterUsers = new MyUsersAdapter(ActivityContacts.this, this.arrayUsers);
+			listView.setAdapter(adapterUsers);
+			Utils.animateListView(listView);
+			initialLoad = false;
+		}
+		else
+		{
+			adapterUsers.setNewData(arrayUsers);
+			adapterUsers.notifyDataSetChanged();
+		}
 		
 		Log.d("Contacts","Set local array with " + newUsersArray.size() + " contacts.");
 	}

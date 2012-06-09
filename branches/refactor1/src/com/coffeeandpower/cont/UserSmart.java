@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 @SuppressWarnings("serial")
 public class UserSmart implements Parcelable {
@@ -50,7 +51,14 @@ public class UserSmart implements Parcelable {
 		this.majorJobCategory = objUser.optString("major_job_category");
 		this.minorJobCategory = objUser.optString("minor_job_category");
 		this.headLine = objUser.optString("headline");
-		this.fileName = objUser.optString("filename");
+		
+		if (!objUser.optString("filename").equals(""))
+			this.fileName = objUser.optString("filename");
+		else if (!objUser.optString("imageUrl").equals(""))
+			this.fileName = objUser.optString("imageUrl");
+		else
+			Log.d("UserSmart","Warning, could not parse user image URL with keys 'filename' or 'imageUrl'...");
+		
 		this.lat = objUser.optDouble("lat");
 		this.lng = objUser.optDouble("lng");
 		this.checkedIn = objUser.optInt("checked_in");
