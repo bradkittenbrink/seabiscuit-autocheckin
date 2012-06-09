@@ -383,7 +383,15 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			bundle.putParcelableArrayList("contacts", arrayContacts);
 			message.setData(bundle);
 			
-			Log.d("Contacts","Contacts.update: Sending handler message with " + arrayContacts.size() + " contacts...");
+			Log.d("Contacts","Contacts.update: Sending handler message with " + arrayContacts.size() + " contacts:");
+			for (UserSmart aUser:arrayContacts) {
+				
+				if (AppCAP.getLoggedInUserId() == aUser.getUserId()) {
+					Log.d("Contacts"," - Removing self from users array: " + aUser.getNickName());
+					arrayContacts.remove(aUser);
+				}
+			}
+			
 			taskHandler.sendMessage(message);			
 		}
 		else
