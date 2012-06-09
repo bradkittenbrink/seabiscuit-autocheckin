@@ -73,7 +73,7 @@
                 android:layout_centerInParent="true"
                 android:background="@drawable/contacts_blank_slate" />
             
-                                    <ListView
+            <ListView
                android:id="@+id/contacts_listview"
                android:layout_width="fill_parent"
                android:layout_height="fill_parent"

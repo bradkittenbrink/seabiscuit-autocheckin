@@ -395,7 +395,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		
 		Log.d("Contacts","setContactList()");
 		if(initialLoad)
-		{			
+		{
+			Log.d("ActivityContacts","Contacts List Initial Load");
 			adapterUsers = new MyUsersAdapter(ActivityContacts.this, this.arrayUsers);
 			listView.setAdapter(adapterUsers);
 			Utils.animateListView(listView);
