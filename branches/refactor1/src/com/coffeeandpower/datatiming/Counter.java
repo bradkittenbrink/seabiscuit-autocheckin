@@ -11,18 +11,15 @@ import com.google.android.maps.GeoPoint;
 public class Counter {
 	
 	private Integer tick = 0;
-	//private DataHolder venuesWithCheckinsResponse;
-	//private DataHolder nearbyVenuesResponse;
 	
 	private CachedNetworkData venuesWithCheckinsCache = new CachedNetworkData("venuesWithCheckins");
 	private CachedNetworkData nearbyVenuesCache = new CachedNetworkData("nearbyVenues");
 	private CachedNetworkData contactsListCache = new CachedNetworkData("contactsList");
 	
 	private boolean isRunning = false;
-	//private boolean delayHttp = false;	// Flag used to delay HTTP call if there is cached data
-	private boolean isFirstRun = true;
 	
 	private boolean allowCachedDataThisRun = false;
+	private boolean refreshAllDataThisRun = false;
 	
 	private int numberOfCalls = 0;
 	
@@ -35,7 +32,6 @@ public class Counter {
 	public Counter(Integer tick, Integer trigger) {
 		super();
 		this.tick = tick;
-		this.isFirstRun = true;
 	}
 
 	public void getCachedDataForAPICall(String apicall, Observer context) {
@@ -161,6 +157,13 @@ public class Counter {
 		stop();
 		start();
 	}
+	
+	public void refreshAllData() {
+		Log.d("Counter","refreshAllData()");
+		refreshAllDataThisRun = true;
+		stop();
+		start();
+	}
 
 	private Runnable runTimer = new Runnable()
         {
@@ -177,7 +180,7 @@ public class Counter {
         				    Log.d("Counter","User position is currently 0-0, skipping API calls until a position is received.");
         			    } else {                                            
                                 	    
-                        		    Log.d("Counter","API calls: Using coordinates: " + AppCAP.getUserLatLon()[0] + ", " + AppCAP.getUserLatLon()[1] + ", isFirstRun: " + isFirstRun);
+                        		    Log.d("Counter","API calls: Using coordinates: " + AppCAP.getUserLatLon()[0] + ", " + AppCAP.getUserLatLon()[1]);
                         		    Log.d("Counter","Cache Status: venuesWithCheckins: " + venuesWithCheckinsCache.hasData() +
                         				    " nearbyVenues: " + nearbyVenuesCache.hasData() + 
                         				    " contactsList: " + contactsListCache.hasData());
@@ -189,31 +192,34 @@ public class Counter {
                         		    apisCalledThisUpdate = false;
                         		    cachedDataSentThisUpdate = false;
                         		    
-                        		    
-                        		    if (venuesWithCheckinsCache.isActive() || isFirstRun) {
+                        		    // Determine if venuesWithCheckins should run
+                        		    if (venuesWithCheckinsCache.isActive() || 
+                        				    !venuesWithCheckinsCache.hasData() ||
+                        				    refreshAllDataThisRun) {
                         			    
-                        			    if (allowCachedDataThisRun && venuesWithCheckinsCache.hasData()) {
+                        			    if (allowCachedDataThisRun && venuesWithCheckinsCache.hasData() && !refreshAllDataThisRun) {
                         				    Log.d("Counter","Sending cached data for venuesWithCheckins");
                         				    venuesWithCheckinsCache.sendCachedData();
                         				    cachedDataSentThisUpdate = true;
                         			    } else {
-                        				    Log.d("Counter","Refreshing venuesWithCheckinsCache and sending updated data...");
+                        				    Log.d("Counter","Refreshing venuesWithCheckinsCache...");
                                 			    venuesWithCheckinsCache.setNewData(AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserLatLon()));
                                 			    Log.d("Counter","Called VenuesWithCheckins, Received: " + venuesWithCheckinsCache.getData().getResponseMessage());
                                 			    apisCalledThisUpdate = true;
-                        			    }
-                        			    
-                        			    
+                        			    } 
                         		    }
                         		    
-                        		    if (nearbyVenuesCache.isActive() || isFirstRun) {
+                        		    // Determine if venuesWithCheckins should run
+                        		    if (nearbyVenuesCache.isActive() || 
+                        				    !nearbyVenuesCache.hasData() ||
+                        				    refreshAllDataThisRun) {
                         			    
-                        			    if (allowCachedDataThisRun && nearbyVenuesCache.hasData()) {
+                        			    if (allowCachedDataThisRun && nearbyVenuesCache.hasData() && !refreshAllDataThisRun) {
                         				    Log.d("Counter","Sending cached data for nearbyVenues");
                         				    nearbyVenuesCache.sendCachedData();
                         				    cachedDataSentThisUpdate = true;
                         			    } else {
-                        				    Log.d("Counter","Refreshing nearbyVenuesCache and sending updated data...");
+                        				    Log.d("Counter","Refreshing nearbyVenuesCache...");
                                         		    final GeoPoint gp = new GeoPoint((int)(AppCAP.getUserLatLon()[0]*1E6), (int)(AppCAP.getUserLatLon()[1]*1E6));
                                         		    nearbyVenuesCache.setNewData(AppCAP.getConnection().getVenuesCloseToLocation(gp,20));
                                         		    Log.d("Counter","Called VenuesWithCheckins, Received: " + nearbyVenuesCache.getData().getResponseMessage());
@@ -221,21 +227,21 @@ public class Counter {
                         			    }
                         		    }
                         		    
-                        		    if (contactsListCache.isActive() || isFirstRun) {
-                        			    if (allowCachedDataThisRun && contactsListCache.hasData()) {
+                        		 // Determine if contactsList should run
+                        		    if (contactsListCache.isActive() || 
+                        				    !contactsListCache.hasData() ||
+                        				    refreshAllDataThisRun) {
+                        			    
+                        			    if (allowCachedDataThisRun && contactsListCache.hasData() && !refreshAllDataThisRun) {
                         				    Log.d("Counter","Sending cached data for contactsList");
                         				    contactsListCache.sendCachedData();
                         				    cachedDataSentThisUpdate = true;
                         			    } else {
-                                			    Log.d("Counter","Refreshing contactsListCache and sending updated data...");
-                                			 
+                                			    Log.d("Counter","Refreshing contactsListCache...");
                                 			    contactsListCache.setNewData(AppCAP.getConnection().getContactsList());
                                 			    Log.d("Counter","Called getContactsList, Received: " + contactsListCache.getData().getResponseMessage());
                                         		    apisCalledThisUpdate = true;
                         			    }
-                        			    
-                        			    
-                        			    
                         		    }
                         		    
                         		    if (cachedDataSentThisUpdate) {
@@ -247,6 +253,10 @@ public class Counter {
                         		    if (!cachedDataSentThisUpdate && !apisCalledThisUpdate)
                         			    Log.d("Counter","No data consumers active.");
                                 	    
+                        		    
+                        		    // Clear any flags that control behavior for a single update
+                			    allowCachedDataThisRun = false;
+                			    refreshAllDataThisRun = false;
                                 	    
                         	    }  
                         	    
@@ -263,9 +273,8 @@ public class Counter {
                                 	    Log.d("Counter","Turning off counter until user activity");
                                 	    //TODO We should also turn off the GPS at this point as well
         			    }
-        			    if (isFirstRun)
-        				    	isFirstRun = false;
-        			    allowCachedDataThisRun = false;
+        			    
+        			    
         		    }
         		    
         	    }).start();
