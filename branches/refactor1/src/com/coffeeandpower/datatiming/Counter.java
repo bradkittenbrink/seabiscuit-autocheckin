@@ -12,6 +12,9 @@ public class Counter {
 	
 	private Integer tick = 0;
 	
+	private final double defaultLat = 37.7717121657157;
+	private final double defaultLon = -122.4239288438208;
+	
 	private CachedNetworkData venuesWithCheckinsCache = new CachedNetworkData("venuesWithCheckins");
 	private CachedNetworkData nearbyVenuesCache = new CachedNetworkData("nearbyVenues");
 	private CachedNetworkData contactsListCache = new CachedNetworkData("contactsList");
@@ -20,6 +23,11 @@ public class Counter {
 	
 	private boolean allowCachedDataThisRun = false;
 	private boolean refreshAllDataThisRun = false;
+	private boolean skipAPICallsThisRun = false;
+	
+	private double latForAPI;
+	private double lonForAPI;
+	private double[] llArray = new double[2];
 	
 	private int numberOfCalls = 0;
 	
@@ -177,10 +185,23 @@ public class Counter {
         			    //isFirstRun = true;
         			    
         			    if (AppCAP.getUserLatLon()[0] == 0 && AppCAP.getUserLatLon()[1] == 0) {
-        				    Log.d("Counter","User position is currently 0-0, skipping API calls until a position is received.");
-        			    } else {                                            
+        				    Log.d("Counter","User position is currently 0-0, using default position for API calls.");
+        				    //skipAPICallsThisRun = true;
+        				    latForAPI = defaultLat;
+        				    lonForAPI = defaultLon;
+        			    } else {
+        				    
+        				    
+        				    latForAPI = AppCAP.getUserLatLon()[0];
+        				    lonForAPI = AppCAP.getUserLatLon()[1];
+        			    }
+        			    
+        			    llArray[0] = latForAPI;
+				    llArray[1] = lonForAPI;
+        			    
+        			    if (!skipAPICallsThisRun) {                                            
                                 	    
-                        		    Log.d("Counter","API calls: Using coordinates: " + AppCAP.getUserLatLon()[0] + ", " + AppCAP.getUserLatLon()[1]);
+                        		    Log.d("Counter","API calls: Using coordinates: " + latForAPI + ", " + lonForAPI);
                         		    Log.d("Counter","Cache Status: venuesWithCheckins: " + venuesWithCheckinsCache.hasData() +
                         				    " nearbyVenues: " + nearbyVenuesCache.hasData() + 
                         				    " contactsList: " + contactsListCache.hasData());
@@ -203,7 +224,7 @@ public class Counter {
                         				    cachedDataSentThisUpdate = true;
                         			    } else {
                         				    Log.d("Counter","Refreshing venuesWithCheckinsCache...");
-                                			    venuesWithCheckinsCache.setNewData(AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserLatLon()));
+                                			    venuesWithCheckinsCache.setNewData(AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(llArray));
                                 			    Log.d("Counter","Called VenuesWithCheckins, Received: " + venuesWithCheckinsCache.getData().getResponseMessage());
                                 			    apisCalledThisUpdate = true;
                         			    } 
@@ -220,7 +241,7 @@ public class Counter {
                         				    cachedDataSentThisUpdate = true;
                         			    } else {
                         				    Log.d("Counter","Refreshing nearbyVenuesCache...");
-                                        		    final GeoPoint gp = new GeoPoint((int)(AppCAP.getUserLatLon()[0]*1E6), (int)(AppCAP.getUserLatLon()[1]*1E6));
+                                        		    final GeoPoint gp = new GeoPoint((int)(latForAPI*1E6), (int)(lonForAPI*1E6));
                                         		    nearbyVenuesCache.setNewData(AppCAP.getConnection().getVenuesCloseToLocation(gp,20));
                                         		    Log.d("Counter","Called VenuesWithCheckins, Received: " + nearbyVenuesCache.getData().getResponseMessage());
                                         		    apisCalledThisUpdate = true;
@@ -257,6 +278,7 @@ public class Counter {
                         		    // Clear any flags that control behavior for a single update
                 			    allowCachedDataThisRun = false;
                 			    refreshAllDataThisRun = false;
+                			    skipAPICallsThisRun = false;
                                 	    
                         	    }  
                         	    
