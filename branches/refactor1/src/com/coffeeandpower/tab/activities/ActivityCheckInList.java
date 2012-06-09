@@ -187,7 +187,6 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		UAirship.shared().getAnalytics().activityStarted(this);
 
 		AppCAP.getCounter().getCachedDataForAPICalls("venuesWithCheckins","nearbyVenues",this);	
-		//AppCAP.getCounter().getCachedDataForAPICall("nearbyVenues",this);
 	}
 
 	@Override

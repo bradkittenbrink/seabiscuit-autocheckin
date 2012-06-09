@@ -27,6 +27,7 @@ public class Counter {
 	private int numberOfCalls = 0;
 	
 	private boolean apisCalledThisUpdate = false;
+	private boolean cachedDataSentThisUpdate = false;
 	
 	// Scheduler
 	protected Handler taskHandler = new Handler();
@@ -40,18 +41,18 @@ public class Counter {
 	public void getCachedDataForAPICall(String apicall, Observer context) {
 		
 		if (apicall.equals("venuesWithCheckins")) {
-			Log.d("Counter","Enabling venuesWithCheckins.");
-			venuesWithCheckinsCache.isActive = true;
+			Log.d("Counter","Enabling venuesWithCheckins API for " + context.toString());
+			venuesWithCheckinsCache.activate();
 			venuesWithCheckinsCache.addObserver(context);
 		}
 		else if (apicall.equals("nearbyVenues")) {
-			Log.d("Counter","Enabling nearbyVenues.");
-			nearbyVenuesCache.isActive = true;
+			Log.d("Counter","Enabling nearbyVenues API for " + context.toString());
+			nearbyVenuesCache.activate();
 			nearbyVenuesCache.addObserver(context);
 		}
 		else if (apicall.equals("contactsList")) {
-			Log.d("Counter","Enabling contactsList.");
-			contactsListCache.isActive = true;
+			Log.d("Counter","Enabling contactsList API for " + context.toString());
+			contactsListCache.activate();
 			contactsListCache.addObserver(context);
 		}
 		else
@@ -72,18 +73,18 @@ public class Counter {
 	public void getCachedDataForAPICalls(String apicall1, String apicall2, Observer context) {
 		
 		if (apicall1.equals("venuesWithCheckins") || apicall2.equals("venuesWithCheckins")) {
-			Log.d("Counter","Enabling venuesWithCheckins.");
-			venuesWithCheckinsCache.isActive = true;
+			Log.d("Counter","Enabling venuesWithCheckins API for " + context.toString());
+			venuesWithCheckinsCache.activate();
 			venuesWithCheckinsCache.addObserver(context);
 		}
 		if (apicall1.equals("nearbyVenues") || apicall2.equals("nearbyVenues")) {
-			Log.d("Counter","Enabling nearbyVenues.");
-			nearbyVenuesCache.isActive = true;
+			Log.d("Counter","Enabling nearbyVenues API for " + context.toString());
+			nearbyVenuesCache.activate();
 			nearbyVenuesCache.addObserver(context);
 		}
 		if (apicall1.equals("contactsList") || apicall2.equals("contactsList")) {
-			Log.d("Counter","Enabling contactsList.");
-			contactsListCache.isActive = true;
+			Log.d("Counter","Enabling contactsList API for " + context.toString());
+			contactsListCache.activate();
 			nearbyVenuesCache.addObserver(context);
 		}
 		
@@ -99,19 +100,29 @@ public class Counter {
 	
 	public void stoppedObservingAPICall(String apicall, Observer context) {
 		if (apicall.equals("venuesWithCheckins")) {
-			Log.d("Counter","Disabling venuesWithCheckins for " + context.toString() + ".");
-			venuesWithCheckinsCache.isActive = false;
+			Log.d("Counter","Removing venuesWithCheckins observer for " + context.toString() + ".");
 			venuesWithCheckinsCache.deleteObserver(context);
+			if (venuesWithCheckinsCache.countObservers() == 0) {
+				venuesWithCheckinsCache.deactivate();
+				Log.d("Counter","Removed last observer from venuesWithCheckins, deactivating.");
+			}
+			
 		}
 		else if (apicall.equals("nearbyVenues")) {
-			Log.d("Counter","Disabling nearbyVenues for " + context.toString() + ".");
-			nearbyVenuesCache.isActive = false;
+			Log.d("Counter","Removing nearbyVenues observer for " + context.toString() + ".");
 			nearbyVenuesCache.deleteObserver(context);
+			if (nearbyVenuesCache.countObservers() == 0) {
+				nearbyVenuesCache.deactivate();
+				Log.d("Counter","Removed last observer from nearbyVenues, deactivating.");
+			}
 		}
 		else if (apicall.equals("contactsList")) {
-			Log.d("Counter","Disabling contactsList for " + context.toString() + ".");
-			contactsListCache.isActive = false;
+			Log.d("Counter","Removing contactsList observer for " + context.toString() + ".");
 			contactsListCache.deleteObserver(context);
+			if (contactsListCache.countObservers() == 0) {
+				contactsListCache.deactivate();
+				Log.d("Counter","Removed last observer from contactsList, deactivating.");
+			}
 		}
 	}
 	
@@ -167,19 +178,24 @@ public class Counter {
         			    } else {                                            
                                 	    
                         		    Log.d("Counter","API calls: Using coordinates: " + AppCAP.getUserLatLon()[0] + ", " + AppCAP.getUserLatLon()[1] + ", isFirstRun: " + isFirstRun);
-                        		    Log.d("Counter","Current data cache: venuesWithCheckins: " + venuesWithCheckinsCache.hasData() + 
+                        		    Log.d("Counter","Cache Status: venuesWithCheckins: " + venuesWithCheckinsCache.hasData() +
                         				    " nearbyVenues: " + nearbyVenuesCache.hasData() + 
                         				    " contactsList: " + contactsListCache.hasData());
+                        		    Log.d("Counter"," APIs Active: venuesWithCheckins: " + venuesWithCheckinsCache.isActive() +
+                        				    " nearbyVenues: " + nearbyVenuesCache.isActive() + 
+                        				    " contactsList: " + contactsListCache.isActive());
                         		    
                         		    
                         		    apisCalledThisUpdate = false;
+                        		    cachedDataSentThisUpdate = false;
                         		    
                         		    
-                        		    if (venuesWithCheckinsCache.isActive || isFirstRun) {
+                        		    if (venuesWithCheckinsCache.isActive() || isFirstRun) {
                         			    
                         			    if (allowCachedDataThisRun && venuesWithCheckinsCache.hasData()) {
                         				    Log.d("Counter","Sending cached data for venuesWithCheckins");
                         				    venuesWithCheckinsCache.sendCachedData();
+                        				    cachedDataSentThisUpdate = true;
                         			    } else {
                         				    Log.d("Counter","Refreshing venuesWithCheckinsCache and sending updated data...");
                                 			    venuesWithCheckinsCache.setNewData(AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserLatLon()));
@@ -190,11 +206,12 @@ public class Counter {
                         			    
                         		    }
                         		    
-                        		    if (nearbyVenuesCache.isActive || isFirstRun) {
+                        		    if (nearbyVenuesCache.isActive() || isFirstRun) {
                         			    
                         			    if (allowCachedDataThisRun && nearbyVenuesCache.hasData()) {
                         				    Log.d("Counter","Sending cached data for nearbyVenues");
                         				    nearbyVenuesCache.sendCachedData();
+                        				    cachedDataSentThisUpdate = true;
                         			    } else {
                         				    Log.d("Counter","Refreshing nearbyVenuesCache and sending updated data...");
                                         		    final GeoPoint gp = new GeoPoint((int)(AppCAP.getUserLatLon()[0]*1E6), (int)(AppCAP.getUserLatLon()[1]*1E6));
@@ -204,10 +221,11 @@ public class Counter {
                         			    }
                         		    }
                         		    
-                        		    if (contactsListCache.isActive || isFirstRun) {
+                        		    if (contactsListCache.isActive() || isFirstRun) {
                         			    if (allowCachedDataThisRun && contactsListCache.hasData()) {
                         				    Log.d("Counter","Sending cached data for contactsList");
                         				    contactsListCache.sendCachedData();
+                        				    cachedDataSentThisUpdate = true;
                         			    } else {
                                 			    Log.d("Counter","Refreshing contactsListCache and sending updated data...");
                                 			 
@@ -220,9 +238,14 @@ public class Counter {
                         			    
                         		    }
                         		    
-                        		    if (!apisCalledThisUpdate) {
-                        			    Log.d("Counter","No data consumers active.  No API calls made.");
+                        		    if (cachedDataSentThisUpdate) {
+                        			    Log.d("Counter","Cached Data sent this update.");
                         		    }
+                        		    if (apisCalledThisUpdate) {
+                        			    Log.d("Counter","New API calls this made this update.");
+                        		    }
+                        		    if (!cachedDataSentThisUpdate && !apisCalledThisUpdate)
+                        			    Log.d("Counter","No data consumers active.");
                                 	    
                                 	    
                         	    }  

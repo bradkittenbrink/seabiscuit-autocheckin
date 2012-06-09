@@ -8,7 +8,7 @@ import com.coffeeandpower.cont.DataHolder;
 
 public class CachedNetworkData extends Observable{
 
-	public boolean isActive;
+	private boolean isActive;
 	private boolean hasData;
 	
 	private String type;
@@ -21,6 +21,20 @@ public class CachedNetworkData extends Observable{
 		isActive = false;
 		hasData = false;
 		this.type = myType;
+	}
+	
+	public void activate() {
+		Log.d("CachedNetworkData",this.type + ": activate()");
+		this.isActive = true;
+	}
+	
+	public void deactivate() {
+		Log.d("CachedNetworkData",this.type + ": deactivate()");
+		this.isActive = false;
+	}
+	
+	public boolean isActive() {
+		return isActive;
 	}
 	
 	
