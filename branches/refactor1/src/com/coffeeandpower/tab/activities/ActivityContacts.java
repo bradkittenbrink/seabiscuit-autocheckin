@@ -7,6 +7,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,16 +15,19 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.adapters.MyUsersAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
@@ -80,8 +84,6 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 
 			// pass message data along to venue update method
 			ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("contacts");
-			//FIXME
-			//We aren't getting the full list of contacts, so we should disable this for now.
 			updateUsersAndCheckinsFromApiResult(usersArray);
 
 			super.handleMessage(msg);
@@ -165,6 +167,20 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			//Display the list of users if the user is logged in
 			listView = (ListView) findViewById(R.id.contacts_listview);
 			//TODO Need to add listview listener here
+			listView.setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+        				if (!AppCAP.isLoggedIn()) {
+        					showDialog(DIALOG_MUST_BE_A_MEMBER);
+        				} else {
+        					Intent intent = new Intent(ActivityContacts.this, ActivityUserDetails.class);
+        					intent.putExtra("mapuserobject", (UserSmart) adapterUsers.getItem(position));
+        					intent.putExtra("from_act", "list");
+        					startActivity(intent);
+        				}
+				}
+			});
+							
 			
 			blankSlateImg = (ImageView) findViewById(R.id.contacts_blank_slate_img);
 			
