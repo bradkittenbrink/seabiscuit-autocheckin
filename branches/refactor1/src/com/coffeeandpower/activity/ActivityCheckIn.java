@@ -94,6 +94,10 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 			checkedInUsers = convertUserSmart2UserShort(usersArray);
 			populateUsersIfExist();
 			
+			// Deregister since we only want to get a single data update in the checkin view
+			// multiple data updates will result in the checked in users getting replicated
+			AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",ActivityCheckIn.this);
+			
 			super.handleMessage(msg);
 		}
 	};
@@ -257,6 +261,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 					if(currCheckedIn.getCheckedIn() == 1)
 					{
 						//(int id, String nickName, String statusText, String about, String joinDate, String imageURL, String hourlyBilingRate)
+						
 						shortUsers.add(new UserShort(currSmartUser.getUserId() , currSmartUser.getNickName(), currSmartUser.getStatusText(), "About Me",
 					"Join Date", currSmartUser.getFileName(), "NA"));
 					}
