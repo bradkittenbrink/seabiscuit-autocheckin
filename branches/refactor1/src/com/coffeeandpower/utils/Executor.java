@@ -232,8 +232,8 @@ public class Executor {
 				result = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime, statusText);
 				//FIXME
 				//This assumes that the checkin is going to be successful, it doesn't look like there
-				//is curreently any code to verify that the checkin was successful
-				//AppCAP.checkInDataObserable.notifyObservers(new CounterData(venue, statusText));
+				//is currently any code to verify that the checkin was successful
+				AppCAP.getCounter().checkinTrigger(venue);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		}).start();

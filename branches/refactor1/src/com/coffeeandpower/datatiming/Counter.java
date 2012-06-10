@@ -1,11 +1,16 @@
 package com.coffeeandpower.datatiming;
 
+import java.util.ArrayList;
 import java.util.Observer;
 
 import android.os.Handler;
 import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.google.android.maps.GeoPoint;
 
 public class Counter {
@@ -304,6 +309,60 @@ public class Counter {
         	    
             }
         };
+        
+	public void checkinTrigger(VenueSmart checkedInVenue) {
+
+		this.stop();
+		//Venue Related
+		//We need to look at the list of venues with checkins and see if they checked into one of those venues
+		//If they checked into a venue without checkins, we need to add it to the venuesWithCheckinsCache
+		DataHolder venuesWithCheckins = venuesWithCheckinsCache.getData();
+		Object[] obj = (Object[]) venuesWithCheckins.getObject();
+		@SuppressWarnings("unchecked")
+		ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+		boolean venueFound = false;
+		VenueSmart tmpVenue = null;
+		for(VenueSmart currVenue : arrayVenues)
+		{
+			if(currVenue.getVenueId() == checkedInVenue.getVenueId())
+			{
+				venueFound = true;
+				tmpVenue = currVenue;
+				break;
+			}
+		}
+		if(venueFound==false)
+		{
+			arrayVenues.add(checkedInVenue);
+			tmpVenue = checkedInVenue;
+		}
+		//Once we have the correct venue we need to add our user to the list of checkins and increment the total venue checkins
+		CheckinData newCheckinData = new CheckinData(AppCAP.getLoggedInUserId(), 0, 1);
+		//Check to see if we are in the checkins array first erroneously and then add us and increment
+		tmpVenue.getArrayCheckins().add(newCheckinData);
+		tmpVenue.setCheckins(tmpVenue.getCheckins()+1);
+		
+		//People list Related
+		//Find the current logged in user in the people list and update their status to checkedin
+		@SuppressWarnings("unchecked")
+		ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+		boolean userFound = false;
+		for(UserSmart currUser : arrayUsers)
+		{
+			if(currUser.getUserId() == AppCAP.getLoggedInUserId())
+			{
+				currUser.setCheckedIn(1);
+				userFound =  true;
+				break;
+			}
+		}
+		if(userFound == false)
+		{
+			Log.d("Counter","Logged In User not found in People list!!!!!");
+		}
+		//After local cache is updated kickoff a refresh of all data via http
+		this.refreshAllData();
+	}
         
         
 	
