@@ -283,6 +283,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		if (Constants.debugLog)
 			Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStart()");
 		super.onStart();
+		
 		initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
 		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);	
@@ -300,6 +301,8 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		checkUserState();
 
 		if (AppCAP.shouldFinishActivities()) {
 			onBackPressed();

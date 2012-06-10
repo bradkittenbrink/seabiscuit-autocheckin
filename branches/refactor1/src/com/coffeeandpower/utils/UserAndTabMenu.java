@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
@@ -102,7 +104,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 				break;
 
 			case HANDLE_CHECK_OUT:
-				AppCAP.setUserCheckedIn(false);
+				
 				userState.onCheckOut();
 				break;
 
@@ -164,6 +166,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 						public void onClick(DialogInterface dialog, int id) {
 							progress.setMessage("Checking out...");
 							progress.show();
+							AppCAP.setUserCheckedIn(false);
 							new Thread(new Runnable() {
 								@Override
 								public void run() {

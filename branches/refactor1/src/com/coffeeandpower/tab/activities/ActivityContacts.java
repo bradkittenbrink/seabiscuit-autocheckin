@@ -66,12 +66,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 	
 	private ImageView blankSlateImg;
 
-	/**
-	 * Check if user is checked in or not
-	 */
-	private void checkUserState() {
-
-	}
+	
 	
 	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
 	protected Handler taskHandler = new Handler() {
@@ -127,11 +122,16 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 
 			@Override
 			public void onLogOut() {
+				if (Constants.debugLog)
+					Log.d("Contacts","onLogOut()");
+				
 			}
 
 			@Override
 			public void onCheckOut() {
-				checkUserState();
+				if (Constants.debugLog)
+					Log.d("Contacts","onCheckOut()");
+				setupTabBar();
 			}
 		});
 
@@ -153,14 +153,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			//We are eliminating all .exe's
 			//exe.getContactsList();
 
-			if (AppCAP.isUserCheckedIn()) {
-				((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-				((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityContacts.this,
-						R.anim.rotate_indefinitely));
-			} else {
-				((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
-				((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
-			}
+			//setupTabBar();
 			
 			//Display the list of users if the user is logged in
 			listView = (ListView) findViewById(R.id.contacts_listview);
@@ -200,18 +193,23 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 				r1.setVisibility(View.GONE);
 			}
 			
-			if (AppCAP.isUserCheckedIn()) {
-				((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-				((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityContacts.this,
-						R.anim.rotate_indefinitely));
-			} else {
-				((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
-				((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
-			}
+			
 		}
 
 
 
+	}
+	
+	
+	private void setupTabBar() {
+		if (AppCAP.isUserCheckedIn()) {
+			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
+			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityContacts.this,
+					R.anim.rotate_indefinitely));
+		} else {
+			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
+			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
+		}
 	}
 
 	public void onClickLinkedIn(View v) {
@@ -234,6 +232,9 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		if (Constants.debugLog)
 			Log.d("Contacts","ActivityContacts.onStart()");
 		super.onStart();
+		
+		setupTabBar();
+		
 		//If the user isn't logged in then we will displaying the login screen not the list of contacts.
 		if (AppCAP.isLoggedIn())
 		{

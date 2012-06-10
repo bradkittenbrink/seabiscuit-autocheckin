@@ -260,6 +260,13 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		if (Constants.debugLog)
+			Log.d("ActivityMap","ActivityMap.onStart(): " + AppCAP.isUserCheckedIn());
+		
+		checkUserState();
+		
+		
 
 		if (AppCAP.isFirstStart()) {
 			startActivity(new Intent(ActivityMap.this, ActivityEnterInviteCode.class));
@@ -287,6 +294,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 				refreshMapDataSet();
 			}
 		}
+		
 	}
 
 	/**
@@ -400,6 +408,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	}
 
 	private void refreshMapDataSet() {
+		checkUserState();
+		
 		int iconSize = Utils.getScreenDependentItemSize(Utils.REFRESH_ICON_SIZE);
 
 		Animation anim = new RotateAnimation(360.0f, 0.0f, iconSize / 2, iconSize / 2);
@@ -552,6 +562,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		if (Constants.debugLog)
 			Log.d("ActivityMap","ActivityMap.onStart()");
 		super.onStart();
+		checkUserState();
 		UAirship.shared().getAnalytics().activityStarted(this);
 		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
 	}

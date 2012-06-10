@@ -15,6 +15,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,6 +35,7 @@ import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
+import com.coffeeandpower.tab.activities.ActivityContacts;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.Utils;
@@ -239,6 +241,9 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		//FIXME
 		//The Venue and VenueSmart classes still need to be unified, this is designed for Venue,
 		//but is being passed in as a VenueSmart
+		//((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
+		//((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityCheckIn.this,
+		//		R.anim.rotate_indefinitely));
 		exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString());
 	}
 	
