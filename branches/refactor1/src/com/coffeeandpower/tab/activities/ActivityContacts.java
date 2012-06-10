@@ -419,7 +419,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 					//if (m1.getCheckedIn() > m2.getCheckedIn()) {
 					//	return -1;
 					//}
-					return m1.getNickName().compareTo(m2.getNickName());
+					return m1.getNickName().compareToIgnoreCase(m2.getNickName());
 					//return 1;
 				}
 			});
