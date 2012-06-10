@@ -375,6 +375,19 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			@SuppressWarnings("unchecked")
 			ArrayList<UserSmart> arrayContacts = (ArrayList<UserSmart>) contacts.getObject();				
 			Log.d("Contacts","Warning: API callback temporarily disabled...");
+			
+			// Remove self from user array
+			UserSmart selfUser = null;
+			for (UserSmart aUser:arrayContacts) {
+				
+				if (AppCAP.getLoggedInUserId() == aUser.getUserId()) {
+					Log.d("Contacts"," - Removing self from users array: " + aUser.getNickName());
+					selfUser = aUser;
+				}
+			}
+			if (selfUser != null) {
+				arrayContacts.remove(selfUser);
+			}
 				
 			Message message = new Message();
 			Bundle bundle = new Bundle();
@@ -383,13 +396,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			message.setData(bundle);
 			
 			Log.d("Contacts","Contacts.update: Sending handler message with " + arrayContacts.size() + " contacts:");
-			for (UserSmart aUser:arrayContacts) {
-				
-				if (AppCAP.getLoggedInUserId() == aUser.getUserId()) {
-					Log.d("Contacts"," - Removing self from users array: " + aUser.getNickName());
-					arrayContacts.remove(aUser);
-				}
-			}
+			
+			
 			
 			taskHandler.sendMessage(message);			
 		}
