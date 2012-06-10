@@ -90,6 +90,7 @@
     <string name="user_menu_show">Show me new Check Ins</string>
     <string name="user_menu_in_city">in city</string>
     <string name="user_menu_only">Only when I am\nchecked in</string>
+    <string name="googleMapsApiKey">08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA</string>
     
 
 </resources>

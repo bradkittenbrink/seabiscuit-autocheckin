@@ -41,7 +41,7 @@
             android:id="@+id/imageview_mapview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:apiKey="0KQmu8VvEvgbh3EncKFgi0qbT0-lLN-hRuX9WVA" />
+            android:apiKey="@string/googleMapsApiKey" />
 
         <TextView
             android:layout_width="fill_parent"
