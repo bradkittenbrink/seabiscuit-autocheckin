@@ -42,6 +42,7 @@ public class AppCAP extends Application {
 
 	private static final String TAG_USER_EMAIL = "tag_user_email";
 	private static final String TAG_USER_EMAIL_PASSWORD = "tag_user_email_password";
+	private static final String TAG_USER_LAST_VENUE_CHECKIN_ID = "tag_user_last_venue_checkin_id";
 	private static final String TAG_USER_LINKEDIN_TOKEN = "tag_user_linkedin_token";
 	private static final String TAG_USER_LINKEDIN_TOKEN_SECRET = "tag_user_linkedin_token_secret";
 	private static final String TAG_USER_LINKEDIN_ID = "tag_user_linkedin_id";
@@ -249,6 +250,20 @@ public class AppCAP extends Application {
 	 */
 	public static void setUserEmailPassword(String pass) {
 		getSharedPreferences().edit().putString(TAG_USER_EMAIL_PASSWORD, pass).commit();
+	}
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static int getUserLastCheckinVenueId() {
+		return getSharedPreferences().getInt(TAG_USER_LAST_VENUE_CHECKIN_ID, 0);
+	}
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setUserLastCheckinVenueId(int venueId) {
+		getSharedPreferences().edit().putInt(TAG_USER_EMAIL_PASSWORD, venueId).commit();
 	}
 	/**
 	 * 

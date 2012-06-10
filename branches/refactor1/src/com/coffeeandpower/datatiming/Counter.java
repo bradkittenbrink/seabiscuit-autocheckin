@@ -350,9 +350,14 @@ public class Counter {
             }
         };
         
-	public void checkinTrigger(VenueSmart checkedInVenue) {
+	public void checkInTrigger(VenueSmart checkedInVenue) {
 
 		this.stop();
+		//Stow the venue Id for the checkout later
+		//FIXME
+		//Test uninitialized case first
+		//AppCAP.setUserLastCheckinVenueId(checkedInVenue.getVenueId());
+		
 		//Venue Related
 		//We need to look at the list of venues with checkins and see if they checked into one of those venues
 		//If they checked into a venue without checkins, we need to add it to the venuesWithCheckinsCache
@@ -379,6 +384,8 @@ public class Counter {
 		//Once we have the correct venue we need to add our user to the list of checkins and increment the total venue checkins
 		CheckinData newCheckinData = new CheckinData(AppCAP.getLoggedInUserId(), 0, 1);
 		//Check to see if we are in the checkins array first erroneously and then add us and increment
+                //TODO
+                //Implement check
 		tmpVenue.getArrayCheckins().add(newCheckinData);
 		tmpVenue.setCheckins(tmpVenue.getCheckins()+1);
 		
@@ -402,6 +409,78 @@ public class Counter {
 		}
 		//After local cache is updated kickoff a refresh of all data via http
 		this.refreshAllData();
+	}
+	public void checkOutTrigger(){
+		
+		this.stop();
+		boolean waitForServerData = false;
+		//Stow the venue Id for the checkout later
+		int lastVenueId = AppCAP.getUserLastCheckinVenueId();
+		//Check here for case when LastCheckin is not valid, multiple devices will defy this and create brief data discounts
+		//if(yada-yada)
+		//Venue Related
+                //We need to look at the list of venues with checkins and see if they checked into one of those venues
+                //If they checked into a venue without checkins, we need to add it to the venuesWithCheckinsCache
+                DataHolder venuesWithCheckins = venuesWithCheckinsCache.getData();
+                Object[] obj = (Object[]) venuesWithCheckins.getObject();
+                @SuppressWarnings("unchecked")
+                ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+                boolean venueFound = false;
+                VenueSmart tmpVenue = null;
+                for(VenueSmart currVenue : arrayVenues)
+                {
+                	if(currVenue.getVenueId() == lastVenueId)
+                	{
+                		venueFound = true;
+                		tmpVenue = currVenue;
+                		break;
+                	}
+                }
+                if(venueFound==false)
+                {
+                	//This shouldn't really happen, but if it does we just need to wait for server data
+                	//The list of venues with checkins should include the venue the user is checking out of
+                	waitForServerData = true;
+                }
+                //Once we have the correct venue we need to remove our user to the list of checkins and decrement the total venue checkins
+                boolean usersCheckinFound = false;
+                for(CheckinData currCheckIn : tmpVenue.getArrayCheckins() )
+                {
+                	if(currCheckIn.getUserId() == AppCAP.getLoggedInUserId())
+                	{
+                		//Remove the current user from the checkin list
+                		tmpVenue.getArrayCheckins().remove(currCheckIn);
+                		usersCheckinFound =  true;
+                		break;
+                	}
+                }
+                if(usersCheckinFound == false)
+                {
+                	//We can't find our user in the cached venue, we will need to wait for the server data
+                	waitForServerData = true;
+                }
+                
+                //People list Related
+                //Find the current logged in user in the people list and update their status to checkedOut
+                @SuppressWarnings("unchecked")
+                ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+                boolean userFound = false;
+                for(UserSmart currUser : arrayUsers)
+                {
+                	if(currUser.getUserId() == AppCAP.getLoggedInUserId())
+                	{
+                		currUser.setCheckedIn(0);
+                		userFound =  true;
+                		break;
+                	}
+                }
+                if(userFound == false && Constants.debugLog)
+                {
+                	Log.d("Counter","Logged In User not found in People list!!!!!");
+                }
+                //After local cache is updated kickoff a refresh of all data via http
+                this.refreshAllData();
+		
 	}
         
         
