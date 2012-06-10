@@ -276,6 +276,8 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 				}
 			}
+		} else {
+			Log.d("PeopleAndPlaces","Extras was null!");
 		}
 		
 		
@@ -291,7 +293,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStart()");
 		super.onStart();
 		
-		initialLoad = true;
+		//initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
 		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);	
 	}

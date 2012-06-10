@@ -190,7 +190,7 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		if (Constants.debugLog)
 			Log.d("CheckIn","ActivityCheckInList.onStart()");
 		super.onStart();
-		initialLoad = true;
+		//initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
 
 		AppCAP.getCounter().getCachedDataForAPICalls("venuesWithCheckins","nearbyVenues",this);	
