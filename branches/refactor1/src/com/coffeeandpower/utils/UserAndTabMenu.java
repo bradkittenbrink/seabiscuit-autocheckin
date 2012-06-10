@@ -104,7 +104,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 				break;
 
 			case HANDLE_CHECK_OUT:
-				
+				AppCAP.getCounter().checkOutTrigger();
 				userState.onCheckOut();
 				break;
 

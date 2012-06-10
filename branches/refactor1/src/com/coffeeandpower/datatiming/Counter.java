@@ -420,7 +420,6 @@ public class Counter {
 		//if(yada-yada)
 		//Venue Related
                 //We need to look at the list of venues with checkins and see if they checked into one of those venues
-                //If they checked into a venue without checkins, we need to add it to the venuesWithCheckinsCache
                 DataHolder venuesWithCheckins = venuesWithCheckinsCache.getData();
                 Object[] obj = (Object[]) venuesWithCheckins.getObject();
                 @SuppressWarnings("unchecked")
@@ -433,6 +432,12 @@ public class Counter {
                 	{
                 		venueFound = true;
                 		tmpVenue = currVenue;
+                		int numCheckins = tmpVenue.getCheckins();
+                		//Decrement number of users checkedin, should never go below 0
+                		if(numCheckins>0)
+                		{
+                			tmpVenue.setCheckins(numCheckins - 1);
+                		}
                 		break;
                 	}
                 }
@@ -442,22 +447,25 @@ public class Counter {
                 	//The list of venues with checkins should include the venue the user is checking out of
                 	waitForServerData = true;
                 }
-                //Once we have the correct venue we need to remove our user to the list of checkins and decrement the total venue checkins
-                boolean usersCheckinFound = false;
-                for(CheckinData currCheckIn : tmpVenue.getArrayCheckins() )
+                else
                 {
-                	if(currCheckIn.getUserId() == AppCAP.getLoggedInUserId())
-                	{
-                		//Remove the current user from the checkin list
-                		tmpVenue.getArrayCheckins().remove(currCheckIn);
-                		usersCheckinFound =  true;
-                		break;
-                	}
-                }
-                if(usersCheckinFound == false)
-                {
-                	//We can't find our user in the cached venue, we will need to wait for the server data
-                	waitForServerData = true;
+                        //Once we have the correct venue we need to remove our user to the list of checkins
+                        boolean usersCheckinFound = false;
+                        for(CheckinData currCheckIn : tmpVenue.getArrayCheckins() )
+                        {
+                        	if(currCheckIn.getUserId() == AppCAP.getLoggedInUserId())
+                        	{
+                        		//Remove the current user from the checkin list
+                        		tmpVenue.getArrayCheckins().remove(currCheckIn);
+                        		usersCheckinFound =  true;
+                        		break;
+                        	}
+                        }
+                        if(usersCheckinFound == false)
+                        {
+                        	//We can't find our user in the cached venue, we will need to wait for the server data
+                        	waitForServerData = true;
+                        }
                 }
                 
                 //People list Related
@@ -476,7 +484,13 @@ public class Counter {
                 }
                 if(userFound == false && Constants.debugLog)
                 {
-                	Log.d("Counter","Logged In User not found in People list!!!!!");
+			if (Constants.debugLog)
+				Log.d("Counter","Logged In User not found in People list!!!!!");
+                }
+                if(waitForServerData)
+                {
+                	if (Constants.debugLog)
+				Log.d("Counter","NEED TO WAIT FOR SERVER DATA CHECKOUT LOGIC FAILED!!!!!");
                 }
                 //After local cache is updated kickoff a refresh of all data via http
                 this.refreshAllData();
