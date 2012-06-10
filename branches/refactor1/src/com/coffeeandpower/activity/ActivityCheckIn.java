@@ -130,7 +130,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 
 			@Override
 			public void onActionFinished(int action) {
-				actionFinished(action);
+				actionFinished(action);				
 			}
 		});
 		
@@ -318,21 +318,12 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		switch (action) {
 
 		case Executor.HANDLE_CHECK_IN:
+			AppCAP.getCounter().checkInTrigger(venue);
 			setResult(AppCAP.ACT_QUIT);
 			AppCAP.setUserCheckedIn(true);
 			ActivityCheckIn.this.finish();
 			break;
 
-			/*
-		case Executor.HANDLE_GET_CHECHED_USERS_IN_FOURSQUARE:
-			if (result.getObject() != null) {
-				if (result.getObject() instanceof ArrayList<?>) {
-					checkedInUsers = (ArrayList<UserShort>) result.getObject();
-					populateUsersIfExist();
-				}
-			}
-			break;
-			*/
 		}
 	}
 
