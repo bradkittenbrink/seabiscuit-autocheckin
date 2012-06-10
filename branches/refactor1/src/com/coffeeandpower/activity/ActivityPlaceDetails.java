@@ -52,7 +52,7 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 
 	//private Executor exe;
 
-	private ArrayList<UserSmart> arrayUsers;
+	//private ArrayList<UserSmart> arrayUsers;
 	private ArrayList<VenueSmart> arrayVenues;
 	private ArrayList<CheckinData> arrayUsersInVenue;
 	private ArrayList<UserSmart> arrayUsersHereNow;
@@ -86,9 +86,10 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 		@Override
 		public void handleMessage(Message msg) {
 			
-		arrayUsers = msg.getData().getParcelableArrayList("users");
+		ArrayList<UserSmart> arrayUsers = msg.getData().getParcelableArrayList("users");
+		ArrayList<VenueSmart> arrayVenues = msg.getData().getParcelableArrayList("venues");
 		// Fill venue and users data
-		fillData();
+		fillData(arrayUsers, arrayVenues);
 		super.handleMessage(msg);
 		}
 	};
@@ -165,7 +166,7 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
 	}
 
-	private void fillData() {
+	private void fillData(ArrayList<UserSmart> arrayUsers, ArrayList<VenueSmart> arrayVenues) {
 		if (selectedVenue != null) {
 
 			((CustomFontView) findViewById(R.id.textview_phone_number)).setVisibility(!selectedVenue.getPhone().equals("") ? View.VISIBLE
@@ -180,6 +181,19 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 			// Try to load image
 			imageLoader.DisplayImage(selectedVenue.getPhotoURL(), (ImageView) findViewById(R.id.image_view),
 					R.drawable.picture_coming_soon_rectangle, 200);
+			//Find the selected venue in the venue array and use the data from the Counter
+			//If the venue is not in the list keep using the data from the intent
+			int selectedId = this.selectedVenue.getVenueId();
+			int testId = 0;
+			for(VenueSmart testVenue : arrayVenues)
+			{
+				testId = testVenue.getVenueId();
+				if(selectedId == testId)
+				{
+					this.selectedVenue = testVenue;
+					break;
+				}
+			}
 
 			arrayUsersInVenue = selectedVenue.getArrayCheckins();
 
@@ -190,11 +204,11 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 					// user is here now
 					if(cd.getCheckedIn()==1)
 					{
-						arrayUsersHereNow.add(getUserById(cd.getUserId()));
+						arrayUsersHereNow.add(getUserById(cd.getUserId(), arrayUsers));
 					}
 				} else {
 					// users were here
-					arrayUsersWereHere.add(getUserById(cd.getUserId()));
+					arrayUsersWereHere.add(getUserById(cd.getUserId(), arrayUsers));
 				}
 
 				// Check if I am checked in or not
@@ -210,7 +224,8 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 				listHereNow.setVisibility(View.GONE);
 				((CustomFontView) findViewById(R.id.textview_here)).setVisibility(View.GONE);
 			} else {
-				
+				listHereNow.setVisibility(View.VISIBLE);
+				((CustomFontView) findViewById(R.id.textview_here)).setVisibility(View.VISIBLE);
 				if(initialLoadNow)
 				{
 					this.listHereNowAdapter = new MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersHereNow);
@@ -227,8 +242,8 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 				}
 				else
 				{
-					//= MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersHereNow);
 					//Update the listview with the new data
+					this.listHereNowAdapter.setNewData(arrayUsersHereNow);
 					this.listHereNowAdapter.notifyDataSetChanged();
 				}
 			}
@@ -236,6 +251,9 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 				listWereHere.setVisibility(View.GONE);
 				((CustomFontView) findViewById(R.id.textview_worked)).setVisibility(View.GONE);
 			} else {
+				listHereNow.setVisibility(View.VISIBLE);
+				((CustomFontView) findViewById(R.id.textview_worked)).setVisibility(View.VISIBLE);
+
 				if(initialLoadWere)
 				{
         				this.listWereHereAdapter = new MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersWereHere);
@@ -252,6 +270,7 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 				else
 				{
 					//Update the listview with the new data
+					this.listWereHereAdapter.setNewData(arrayUsersWereHere);
 					this.listWereHereAdapter.notifyDataSetChanged();
 				}
 
@@ -299,7 +318,7 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 		builder.create().show();
 	}
 
-	private UserSmart getUserById(int userId) {
+	private UserSmart getUserById(int userId, ArrayList<UserSmart>  arrayUsers) {
 		for (UserSmart us : arrayUsers) {
 			if (us.getUserId() == userId) {
 				return us;
@@ -399,12 +418,16 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 						
 			Object[] obj = (Object[]) result.getObject();
 			@SuppressWarnings("unchecked")
+			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			@SuppressWarnings("unchecked")
 			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
 			
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putCharSequence("type", counterdata.type);
 			bundle.putParcelableArrayList("users", arrayUsers);
+			bundle.putParcelableArrayList("venues", arrayVenues);
+
 
 			message.setData(bundle);
 			
