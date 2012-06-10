@@ -4,6 +4,7 @@ import java.util.Observable;
 
 import android.util.Log;
 
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.cont.DataHolder;
 
 public class CachedNetworkData extends Observable{
@@ -24,12 +25,14 @@ public class CachedNetworkData extends Observable{
 	}
 	
 	public void activate() {
-		Log.d("CachedNetworkData",this.type + ": activate()");
+		if (Constants.debugLog)
+			Log.d("CachedNetworkData",this.type + ": activate()");
 		this.isActive = true;
 	}
 	
 	public void deactivate() {
-		Log.d("CachedNetworkData",this.type + ": deactivate()");
+		if (Constants.debugLog)
+			Log.d("CachedNetworkData",this.type + ": deactivate()");
 		this.isActive = false;
 	}
 	
@@ -43,21 +46,24 @@ public class CachedNetworkData extends Observable{
 		
 		
 		if (cachedData.getResponseMessage().equals("HTTP 200 OK")) {
-			Log.d("Timer","Sending notifyObservers with received data from API call: " + type + "...");
+			if (Constants.debugLog)
+				Log.d("Timer","Sending notifyObservers with received data from API call: " + type + "...");
 	                    
                         // Send notify for nearby venues
 			hasData = true;
                         setChanged();
                         notifyObservers(new CounterData(cachedData));
             	} else {
-                    Log.d("CachedNetworkData","Skipping notifyObservers for API call: " + type);
+            		if (Constants.debugLog)
+        			Log.d("CachedNetworkData","Skipping notifyObservers for API call: " + type);
                     	    
             	}
 	}
 	
 	public void sendCachedData() {
 		if (hasData) {
-			Log.d("CachedNetworkData","Sending cached data for API: " + this.type + "...");
+			if (Constants.debugLog)
+				Log.d("CachedNetworkData","Sending cached data for API: " + this.type + "...");
 			setChanged();   // Not sure if this is necessary
 			notifyObservers(new CounterData(cachedData));
 		}

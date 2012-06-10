@@ -13,6 +13,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 
@@ -56,7 +57,8 @@ public class ActivitySmarterer extends RootActivity {
 			public void onPageFinished(WebView view, String url) {
 				super.onPageFinished(view, url);
 				progress.dismiss();
-				Log.d("LOG", "URL: " + url);
+				if (Constants.debugLog)
+					Log.d("LOG", "URL: " + url);
 
 				if (haveCode && !haveToken) {
 					haveToken = true;
@@ -68,7 +70,8 @@ public class ActivitySmarterer extends RootActivity {
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
-				Log.d("LOG", "URL started: " + url);
+				if (Constants.debugLog)
+					Log.d("LOG", "URL started: " + url);
 				progress.show();
 
 				if (url.contains("code=") && !haveCode) {
@@ -82,14 +85,16 @@ public class ActivitySmarterer extends RootActivity {
 			@Override
 			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 				super.onReceivedError(view, errorCode, description, failingUrl);
-				Log.d("LOG", "onReceivedError: " + errorCode + ":" + description);
+				if (Constants.debugLog)
+					Log.d("LOG", "onReceivedError: " + errorCode + ":" + description);
 			}
 
 			@Override
 			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
 				super.onReceivedSslError(view, handler, error);
 				handler.proceed();
-				Log.d("LOG", "onReceivedSslError: " + error.getPrimaryError());
+				if (Constants.debugLog)
+					Log.d("LOG", "onReceivedSslError: " + error.getPrimaryError());
 			}
 
 			@Override
@@ -101,7 +106,8 @@ public class ActivitySmarterer extends RootActivity {
 		webView.setWebChromeClient(new WebChromeClient() {
 			@Override
 			public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-				Log.e("LOG", "JSAlert" + message);
+				if (Constants.debugLog)
+					Log.e("LOG", "JSAlert" + message);
 				return true;
 			}
 		});

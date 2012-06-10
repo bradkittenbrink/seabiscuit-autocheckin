@@ -27,14 +27,16 @@ public class RootActivity extends MapActivity {
 	@Override
 	protected void onCreate(Bundle instance) {
 		super.onCreate(instance);
-		Log.d("RootActivity","RootActivity.onCreate()");
+		if (Constants.debugLog)
+			Log.d("RootActivity","RootActivity.onCreate()");
 		
 	}
 	
 	@Override
 	protected void onDestroy() {
 		
-		Log.d("RootActivity","RootActivity.onDestroy()");
+		if (Constants.debugLog)
+			Log.d("RootActivity","RootActivity.onDestroy()");
 		
 		
 		
@@ -43,7 +45,8 @@ public class RootActivity extends MapActivity {
 	
 	@Override
 	protected void onPause() {
-		Log.d("RootActivity","RootActivity.onPause()");
+		if (Constants.debugLog)
+			Log.d("RootActivity","RootActivity.onPause()");
 		
 		
 		
@@ -52,7 +55,8 @@ public class RootActivity extends MapActivity {
 	
 	@Override
 	protected void onStop() {
-		Log.d("RootActivity","RootActivity.onStop()");
+		if (Constants.debugLog)
+			Log.d("RootActivity","RootActivity.onStop()");
 		
 		
 		
@@ -66,7 +70,8 @@ public class RootActivity extends MapActivity {
 	 * @param msg
 	 */
 	public static void log(String msg) {
-		Log.d(AppCAP.TAG, msg);
+		if (Constants.debugLog)
+			Log.d(AppCAP.TAG, msg);
 	}
 
 	/**

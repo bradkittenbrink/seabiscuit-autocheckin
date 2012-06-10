@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.UserSmart;
@@ -102,7 +103,8 @@ public class MyUsersAdapter extends BaseAdapter {
 
 		ViewHolder holder;
 		
-		Log.d("MyUsersAdapter","getView for " + AppCAP.cleanResponseString(mudArray.get(position).getNickName()) + ", image: " + mudArray.get(position).getFileName() );
+		if (Constants.debugLog)
+			Log.d("MyUsersAdapter","getView for " + AppCAP.cleanResponseString(mudArray.get(position).getNickName()) + ", image: " + mudArray.get(position).getFileName() );
 
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.item_list_about_person, null);

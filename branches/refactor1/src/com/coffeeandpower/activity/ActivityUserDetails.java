@@ -40,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyFavouritePlacesAdapter;
@@ -229,7 +230,8 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 	
 	@Override
 	protected void onStart() {
-		Log.d("UserDetails","ActivityUserDetails.onStart()");
+		if (Constants.debugLog)
+			Log.d("UserDetails","ActivityUserDetails.onStart()");
 		super.onStart();
 		//initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
@@ -239,7 +241,8 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 
 	@Override
 	public void onStop() {
-		Log.d("UserDetails","ActivityUserDetails.onStop()");
+		if (Constants.debugLog)
+			Log.d("UserDetails","ActivityUserDetails.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
 
@@ -671,13 +674,15 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 			bundle.putParcelableArrayList("venues", arrayVenues);
 			message.setData(bundle);
 			
-			Log.d("UserDetails","ActivityUserDetails.update: Sending handler message...");
+			if (Constants.debugLog)
+				Log.d("UserDetails","ActivityUserDetails.update: Sending handler message...");
 			taskHandler.sendMessage(message);
 			
 			
 		}
 		else
-			Log.d("UserDetails","Error: Received unexpected data type: " + data.getClass().toString());
+			if (Constants.debugLog)
+				Log.d("UserDetails","Error: Received unexpected data type: " + data.getClass().toString());
 	}
 
 }

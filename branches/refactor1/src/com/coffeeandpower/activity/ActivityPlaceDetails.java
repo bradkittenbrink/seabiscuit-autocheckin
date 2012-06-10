@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyUserSmartAdapter;
@@ -144,7 +145,8 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 	
 	@Override
 	protected void onStart() {
-		Log.d("PlaceDetail","ActivityPlaceDetail.onStart()");
+		if (Constants.debugLog)
+			Log.d("PlaceDetail","ActivityPlaceDetail.onStart()");
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
 		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
@@ -155,7 +157,8 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 
 	@Override
 	public void onStop() {
-		Log.d("PlaceDetail","ActivityPlaceDetail.onStop()");
+		if (Constants.debugLog)
+			Log.d("PlaceDetail","ActivityPlaceDetail.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
 
@@ -405,12 +408,14 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 
 			message.setData(bundle);
 			
-			Log.d("PlaceDetail","ActivityPlaceDetail.update: Sending handler message...");
+			if (Constants.debugLog)
+				Log.d("PlaceDetail","ActivityPlaceDetail.update: Sending handler message...");
 			taskHandler.sendMessage(message);
 			
 			
 		}
 		else
-			Log.d("PlaceDetail","Error: Received unexpected data type: " + data.getClass().toString());
+			if (Constants.debugLog)
+				Log.d("PlaceDetail","Error: Received unexpected data type: " + data.getClass().toString());
 	}
 }

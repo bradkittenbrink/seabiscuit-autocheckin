@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivitySettings;
@@ -116,7 +117,8 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 					AppCAP.setNotificationToggle(checkedInOnly.equals("1"));
 
 					if (toggle != null && btnFrom != null) {
-						Log.d("LOG", "text: " + pushDistance + ":" + checkedInOnly);
+						if (Constants.debugLog)
+							Log.d("LOG", "text: " + pushDistance + ":" + checkedInOnly);
 						toggle.setChecked(checkedInOnly.matches("1"));
 						btnFrom.setText(pushDistance.matches("venue") ? "in venue" : "in city");
 					}

@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.activity.ActivityCheckIn;
 import com.coffeeandpower.adapters.MyPlacesAdapter;
@@ -66,14 +67,16 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 			{
         			venueArray = (ArrayList<VenueSmart>)venueArrayReference.clone();
 				Collections.sort(venueArray);
-        			Log.d("CheckInList","Adding an add_place placeholder to list...");
+				if (Constants.debugLog)
+					Log.d("CheckInList","Adding an add_place placeholder to list...");
         			venueArray.add(VenueSmart.createVenuePlaceholder("add_place", "Add New Place..."));
         			
         			//updateVenuesAndCheckinsFromApiResult(venueArray);
         			checkinVenueArray = msg.getData().getParcelableArrayList("venuesWCheckins");
         			
         			if(initialLoad)	{
-        				Log.d("ActivityPeopleAndPlaces","Place List Initial Load");
+        				if (Constants.debugLog)
+        					Log.d("ActivityPeopleAndPlaces","Place List Initial Load");
         				adapter = new MyVenuesAdapter(ActivityCheckInList.this, venueArray);
         				setListAdapter(adapter);
         				Utils.animateListView(getListView());
@@ -181,7 +184,8 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 	
 	@Override
 	protected void onStart() {
-		Log.d("CheckIn","ActivityCheckInList.onStart()");
+		if (Constants.debugLog)
+			Log.d("CheckIn","ActivityCheckInList.onStart()");
 		super.onStart();
 		initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
@@ -191,7 +195,8 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 
 	@Override
 	public void onStop() {
-		Log.d("CheckIn","ActivityCheckInList.onStop()");
+		if (Constants.debugLog)
+			Log.d("CheckIn","ActivityCheckInList.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
 		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);	
@@ -244,11 +249,13 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		CounterData counterdata = (CounterData) data;
 		
 		if (cachedData.getType().equals("nearbyVenues")) {
-			Log.d("CheckInList","Received nearbyVenues data.");
+			if (Constants.debugLog)
+				Log.d("CheckInList","Received nearbyVenues data.");
 			this.nearbyVenuesHolderWORKERTHREAD = counterdata.getData();
 			
 		} else if (cachedData.getType().equals("venuesWithCheckins")) {
-			Log.d("CheckInList","Received venuesWithCheckins data.");
+			if (Constants.debugLog)
+				Log.d("CheckInList","Received venuesWithCheckins data.");
 			this.venuesWithCheckinsHolderWORKERTHREAD = counterdata.getData();
 			
 		}
@@ -256,7 +263,8 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		
 		if (this.nearbyVenuesHolderWORKERTHREAD != null && this.venuesWithCheckinsHolderWORKERTHREAD != null) {
 				
-			Log.d("CheckInList","We have data for both APIs...");
+			if (Constants.debugLog)
+				Log.d("CheckInList","We have data for both APIs...");
 			@SuppressWarnings("unchecked")
 			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) nearbyVenuesHolderWORKERTHREAD.getObject();
 			
@@ -272,9 +280,11 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 			bundle.putParcelableArrayList("venuesWCheckins", arrayVenuesWCheckins);
 			message.setData(bundle);
 			
-			Log.d("CheckInList","ActivityCheckInList.update: Sending handler message with " + arrayVenues.size() + " venues...");
+			if (Constants.debugLog)
+				Log.d("CheckInList","ActivityCheckInList.update: Sending handler message with " + arrayVenues.size() + " venues...");
 			for (VenueSmart tempVenue:arrayVenues) {
-				Log.d("CheckInList","Venue: " + tempVenue.getName());
+				if (Constants.debugLog)
+					Log.d("CheckInList","Venue: " + tempVenue.getName());
 			}
 			
 			this.nearbyVenuesHolderWORKERTHREAD = null;
@@ -283,14 +293,17 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 			taskHandler.sendMessage(message);			
 		}
 		
-		if (this.nearbyVenuesHolderWORKERTHREAD == null)
-			Log.d("CheckInList","nearbyVenuesHolderWORKERTHREAD is null.");
-		else
-			Log.d("CheckInList","nearbyVenuesHolderWORKERTHREAD has data.");
-		
-		if (this.venuesWithCheckinsHolderWORKERTHREAD == null)
-			Log.d("CheckInList","venuesWithCheckinsHolderWORKERTHREAD is null.");
-		else
-			Log.d("CheckInList","venuesWithCheckinsHolderWORKERTHREAD has data.");
+		if (Constants.debugLog)
+		{
+        		if (this.nearbyVenuesHolderWORKERTHREAD == null)
+        			Log.d("CheckInList","nearbyVenuesHolderWORKERTHREAD is null.");
+        		else
+        			Log.d("CheckInList","nearbyVenuesHolderWORKERTHREAD has data.");
+        		
+        		if (this.venuesWithCheckinsHolderWORKERTHREAD == null)
+        			Log.d("CheckInList","venuesWithCheckinsHolderWORKERTHREAD is null.");
+        		else
+        			Log.d("CheckInList","venuesWithCheckinsHolderWORKERTHREAD has data.");
+		}
 	}
 }

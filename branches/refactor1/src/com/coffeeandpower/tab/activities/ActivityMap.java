@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
@@ -124,7 +125,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		
 		super.onCreate(icicle);
 		
-		Log.d("Coffee","Creating ActivityMap...");
+		if (Constants.debugLog)
+			Log.d("Coffee","Creating ActivityMap...");
 		
 		setContentView(R.layout.tab_activity_map);
 		
@@ -345,7 +347,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			// int lng = (int) (location.getLongitude() * 1E6);
 			// GeoPoint point = new GeoPoint(lat, lng);
 
-			// Log.d("LOG", "ActivityMap locationChanged: " +
+			// if (Constants.debugLog)
+			//	Log.d("LOG", "ActivityMap locationChanged: " +
 			// location.getLatitude()+":"+location.getLongitude());
 		}
 
@@ -482,7 +485,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	protected void onDestroy() {
 		myLocationOverlay.disableMyLocation();
 
-		//Log.d("ActivityMap","onDestroy(): stopping counter...");
+		//if (Constants.debugLog)
+		//	Log.d("ActivityMap","onDestroy(): stopping counter...");
 		//AppCAP.getCounter().stop();
 		
 		if (AppCAP.shouldFinishActivities() && AppCAP.shouldStartLogIn()) {
@@ -545,7 +549,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 
 	@Override
 	protected void onStart() {
-		Log.d("ActivityMap","ActivityMap.onStart()");
+		if (Constants.debugLog)
+			Log.d("ActivityMap","ActivityMap.onStart()");
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
 		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
@@ -553,7 +558,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 
 	@Override
 	public void onStop() {
-		Log.d("ActivityMap","ActivityMap.onStop()");
+		if (Constants.debugLog)
+			Log.d("ActivityMap","ActivityMap.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
 		
@@ -584,7 +590,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		 * verify that the data is really of type CounterData, and log the
 		 * details
 		 */
-		Log.d("ActivityMap","update()");
+		if (Constants.debugLog)
+			Log.d("ActivityMap","update()");
 		
 		if (data instanceof CounterData) {
 			CounterData counterdata = (CounterData) data;
@@ -603,7 +610,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			bundle.putParcelableArrayList("users", arrayUsers);
 			message.setData(bundle);
 			
-			Log.d("Map","ActivityMap.update: Sending handler message...");
+			if (Constants.debugLog)
+				Log.d("Map","ActivityMap.update: Sending handler message...");
 			taskHandler.sendMessage(message);
 			
 			
@@ -613,7 +621,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	
 	private void updateVenuesAndCheckinsFromApiResult(ArrayList<VenueSmart> venueArray, ArrayList<UserSmart> arrayUsers) {
 		
-		Log.d("Map","updateVenuesAndCheckinsFromApiResult()");
+		if (Constants.debugLog)
+			Log.d("Map","updateVenuesAndCheckinsFromApiResult()");
 		itemizedoverlay.clear();
 		
 		for (VenueSmart venue : venueArray) {
@@ -651,7 +660,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 	    if (keyCode == KeyEvent.KEYCODE_BACK) {
-	        Log.d("Coffee","User exit detected.");
+		    if (Constants.debugLog)
+				Log.d("Coffee","User exit detected.");
 	        
 	        UAirship.land();
 	        AppCAP.getCounter().stop();

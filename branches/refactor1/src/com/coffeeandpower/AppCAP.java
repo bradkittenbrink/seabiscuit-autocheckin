@@ -107,7 +107,8 @@ public class AppCAP extends Application {
 	public void onCreate() {
 		
 		// You should not actually see any of the Log.d messages in onCreate() - don't know why
-		Log.d("Coffee","AppCAP.onCreate(): ");
+		if (Constants.debugLog)
+			Log.d("Coffee","AppCAP.onCreate(): ");
 		
 		
 		super.onCreate();
@@ -122,7 +123,8 @@ public class AppCAP extends Application {
 		
 		//Test counter creation
 		//this.counter.start();
-		Log.d("Coffee","Creating counter...");
+		if (Constants.debugLog)
+			Log.d("Coffee","Creating counter...");
 		instance.timingCounter = new Counter(10, 1);
 		//instance.timingCounter.start();
 
@@ -130,11 +132,13 @@ public class AppCAP extends Application {
 		PushManager.shared().setIntentReceiver(IntentReceiver.class);
 
 		PushPreferences prefs = PushManager.shared().getPreferences();
-		Log.d("LOG", "Found APID: " + prefs.getPushId());
+		if (Constants.debugLog)
+			Log.d("LOG", "Found APID: " + prefs.getPushId());
 
 		// Get country code for metrics/imperial units
 		TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-		Log.d("LOG", "Locale: " + tm.getSimCountryIso());
+		if (Constants.debugLog)
+			Log.d("LOG", "Locale: " + tm.getSimCountryIso());
 		if (tm.getSimCountryIso() != null && !tm.getSimCountryIso().equals("")) {
 			if (tm.getSimCountryIso().contains("US") || tm.getSimCountryIso().contains("us") || tm.getSimCountryIso().contains("usa")
 					|| tm.getSimCountryIso().contains("um")) {

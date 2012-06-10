@@ -25,6 +25,7 @@ import android.widget.ToggleButton;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityUserDetails;
@@ -230,7 +231,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 	
 	@Override
 	protected void onStart() {
-		Log.d("Contacts","ActivityContacts.onStart()");
+		if (Constants.debugLog)
+			Log.d("Contacts","ActivityContacts.onStart()");
 		super.onStart();
 		//If the user isn't logged in then we will displaying the login screen not the list of contacts.
 		if (AppCAP.isLoggedIn())
@@ -242,7 +244,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 
 	@Override
 	public void onStop() {
-		Log.d("Contacts","ActivityContacts.onStop()");
+		if (Constants.debugLog)
+			Log.d("Contacts","ActivityContacts.onStop()");
 		super.onStop();
 		if (AppCAP.isLoggedIn())
 		{
@@ -374,14 +377,16 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			//Object[] obj = (Object[]) contacts.getObject();
 			@SuppressWarnings("unchecked")
 			ArrayList<UserSmart> arrayContacts = (ArrayList<UserSmart>) contacts.getObject();				
-			Log.d("Contacts","Warning: API callback temporarily disabled...");
+			if (Constants.debugLog)
+				Log.d("Contacts","Warning: API callback temporarily disabled...");
 			
 			// Remove self from user array
 			UserSmart selfUser = null;
 			for (UserSmart aUser:arrayContacts) {
 				
 				if (AppCAP.getLoggedInUserId() == aUser.getUserId()) {
-					Log.d("Contacts"," - Removing self from users array: " + aUser.getNickName());
+					if (Constants.debugLog)
+						Log.d("Contacts"," - Removing self from users array: " + aUser.getNickName());
 					selfUser = aUser;
 				}
 			}
@@ -395,21 +400,24 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			bundle.putParcelableArrayList("contacts", arrayContacts);
 			message.setData(bundle);
 			
-			Log.d("Contacts","Contacts.update: Sending handler message with " + arrayContacts.size() + " contacts:");
+			if (Constants.debugLog)
+				Log.d("Contacts","Contacts.update: Sending handler message with " + arrayContacts.size() + " contacts:");
 			
 			
 			
 			taskHandler.sendMessage(message);			
 		}
 		else
-			Log.d("Contacts","Error: Received unexpected data type: " + data.getClass().toString());
+			if (Constants.debugLog)
+				Log.d("Contacts","Error: Received unexpected data type: " + data.getClass().toString());
 	}
 	
 	
 
 	
 	private void updateUsersAndCheckinsFromApiResult(ArrayList<UserSmart> newUsersArray) {
-		Log.d("Contacts","updateUsersAndCheckinsFromApiResult()");
+		if (Constants.debugLog)
+			Log.d("Contacts","updateUsersAndCheckinsFromApiResult()");
 				
 		// Sort users list
 		if (newUsersArray != null) {
@@ -438,7 +446,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 
 		if(initialLoad)
 		{
-			Log.d("ActivityContacts","Contacts List Initial Load");
+			if (Constants.debugLog)
+				Log.d("ActivityContacts","Contacts List Initial Load");
 			adapterUsers = new MyUsersAdapter(ActivityContacts.this, this.arrayUsers);
 			listView.setAdapter(adapterUsers);
 			Utils.animateListView(listView);
@@ -450,7 +459,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			adapterUsers.notifyDataSetChanged();
 		}
 		
-		Log.d("Contacts","Set local array with " + newUsersArray.size() + " contacts.");
+		if (Constants.debugLog)
+			Log.d("Contacts","Set local array with " + newUsersArray.size() + " contacts.");
 	}
 	
 	

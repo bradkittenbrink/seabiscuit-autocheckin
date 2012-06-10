@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.json.JSONObject;
 
+import com.coffeeandpower.Constants;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -57,7 +59,8 @@ public class UserSmart implements Parcelable {
 		else if (!objUser.optString("imageUrl").equals(""))
 			this.fileName = objUser.optString("imageUrl");
 		else
-			Log.d("UserSmart","Warning, could not parse user image URL with keys 'filename' or 'imageUrl'...");
+			if (Constants.debugLog)
+				Log.d("UserSmart","Warning, could not parse user image URL with keys 'filename' or 'imageUrl'...");
 		
 		this.lat = objUser.optDouble("lat");
 		this.lng = objUser.optDouble("lng");

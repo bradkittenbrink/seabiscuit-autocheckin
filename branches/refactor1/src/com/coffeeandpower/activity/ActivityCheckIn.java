@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
@@ -195,7 +196,8 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	
 	@Override
 	protected void onStart() {
-		Log.d("CheckIn","ActivityCheckIn.onStart()");
+		if (Constants.debugLog)
+			Log.d("CheckIn","ActivityCheckIn.onStart()");
 		super.onStart();
 
 		//UAirship.shared().getAnalytics().activityStarted(this);
@@ -204,7 +206,8 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 
 	@Override
 	public void onStop() {
-		Log.d("CheckIn","ActivityCheckIn.onStop()");
+		if (Constants.debugLog)
+			Log.d("CheckIn","ActivityCheckIn.onStop()");
 		super.onStop();
 
 		//UAirship.shared().getAnalytics().activityStopped(this);
@@ -358,10 +361,12 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 
 			message.setData(bundle);
 			
-			Log.d("CheckIn","ActivityCheckIn.update: Sending handler message...");
+			if (Constants.debugLog)
+				Log.d("CheckIn","ActivityCheckIn.update: Sending handler message...");
 			taskHandler.sendMessage(message);
 		}
 		else
-			Log.d("CheckIn","Error: Received unexpected data type: " + data.getClass().toString());
+			if (Constants.debugLog)
+				Log.d("CheckIn","Error: Received unexpected data type: " + data.getClass().toString());
 	}
 }

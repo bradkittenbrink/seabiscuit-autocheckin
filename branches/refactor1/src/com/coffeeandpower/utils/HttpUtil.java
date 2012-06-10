@@ -50,6 +50,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivityJobCategory;
@@ -1016,7 +1017,8 @@ public class HttpUtil {
 			// Execute HTTP Get Request
 			HttpResponse response = client.execute(get);
 			HttpEntity resEntity = response.getEntity();
-			Log.d("LOG", "URI: " + get.getURI());
+			if (Constants.debugLog)
+				Log.d("LOG", "URI: " + get.getURI());
 
 			String responseString = EntityUtils.toString(resEntity);
 			AppCAP.logInFile(responseString);
@@ -2765,7 +2767,8 @@ public class HttpUtil {
 				cookieString += cookie.getName() + "=" + cookie.getValue();// +"; domain="+cookie.getDomain();
 			}
 			AppCAP.setCookieString(cookieString);
-			Log.d("LOG", "Cookie: " + AppCAP.getCookieString());
+			if (Constants.debugLog)
+				Log.d("LOG", "Cookie: " + AppCAP.getCookieString());
 
 			if (responseString != null) {
 
