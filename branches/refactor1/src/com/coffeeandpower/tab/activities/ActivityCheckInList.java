@@ -8,6 +8,7 @@ import java.util.Observer;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -52,6 +53,8 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 	ArrayList<VenueSmart> venueArray;
 	ArrayList<VenueSmart> checkinVenueArray;
 	
+	private ProgressDialog progress;
+	
 	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
 	protected Handler taskHandler = new Handler() {
 
@@ -89,6 +92,7 @@ public class ActivityCheckInList extends ListActivity implements Observer {
         			}
 			}
 			
+			progress.dismiss();
 			super.handleMessage(msg);
 		}
 	};
@@ -111,16 +115,11 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 				actionFinished(action);
 			}
 		});
+		
+		progress = new ProgressDialog(this);
+		progress.setMessage("Loading...");
+		progress.show();
 
-		// Get data from Intent
-		/*Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			int lng = extras.getInt("lng");
-			int lat = extras.getInt("lat");
-
-			GeoPoint gp = new GeoPoint(lat, lng);
-			exe.getVenuesCloseToLocation(gp, 20);
-		}*/
 	}
 
 	@Override
@@ -184,6 +183,10 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 	
 	@Override
 	protected void onStart() {
+		
+		ProgressDialog progress = new ProgressDialog(this);
+		progress.setMessage("Loading...");
+		
 		if (Constants.debugLog)
 			Log.d("CheckIn","ActivityCheckInList.onStart()");
 		super.onStart();

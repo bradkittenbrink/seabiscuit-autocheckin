@@ -77,6 +77,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			// pass message data along to venue update method
 			ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("contacts");
 			updateUsersAndCheckinsFromApiResult(usersArray);
+			
+			progress.dismiss();
 
 			super.handleMessage(msg);
 		}
@@ -112,7 +114,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
-
+		progress.show();
 		
 
 

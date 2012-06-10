@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -82,6 +83,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	private MyLocationOverlay myLocationOverlay;
 	private MyItemizedOverlay itemizedoverlay;
 	private LocationManager locationManager;
+	
+	private ProgressDialog progress;
 
 	// Current user
 	private User loggedUser;
@@ -101,7 +104,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			ArrayList<UserSmart> userArray = msg.getData().getParcelableArrayList("users");
 			updateVenuesAndCheckinsFromApiResult(venueArray, userArray);
 
-			
+			progress.dismiss();
 			super.handleMessage(msg);
 		}
 	};
@@ -132,9 +135,12 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		
 		AppCAP.startCounter();
 		
+		
+		
 
-		//Log.d("Timer","Starting timer...");
-		//taskHandler.postDelayed(updateTimer, 5 * 1000);
+		progress = new ProgressDialog(this);
+		progress.setMessage("Loading...");
+		progress.show();
 
 		// Executor
 		exe = new Executor(ActivityMap.this);

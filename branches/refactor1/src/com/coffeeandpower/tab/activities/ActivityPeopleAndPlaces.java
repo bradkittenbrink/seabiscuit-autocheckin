@@ -114,6 +114,8 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 				setPlaceList();	
 			}
 
+			progress.dismiss();
+			
 			super.handleMessage(msg);
 		}
 	};
@@ -196,6 +198,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
+		progress.show();
 
 		listView = (ListView) findViewById(R.id.list);
 		listView.setOnItemClickListener(new OnItemClickListener() {
@@ -280,6 +283,10 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	
 	@Override
 	protected void onStart() {
+		
+		ProgressDialog progress = new ProgressDialog(this);
+		progress.setMessage("Loading...");
+		
 		if (Constants.debugLog)
 			Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStart()");
 		super.onStart();
