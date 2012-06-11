@@ -36,6 +36,7 @@ import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.imageutil.ImageLoader;
+import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
@@ -168,6 +169,8 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 
 	private void fillData(ArrayList<UserSmart> arrayUsers, ArrayList<VenueSmart> arrayVenues) {
 		if (selectedVenue != null) {
+			
+			Log.d("PlaceDetails","fillData()");
 
 			((CustomFontView) findViewById(R.id.textview_phone_number)).setVisibility(!selectedVenue.getPhone().equals("") ? View.VISIBLE
 					: View.GONE);
@@ -200,6 +203,7 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 			arrayUsersHereNow.clear();
 			arrayUsersWereHere.clear();
 			for (CheckinData cd : arrayUsersInVenue) {
+				Log.d("PlaceDetail","Filling data: " + cd.toString());
 				if (cd.getCheckedIn() == 1) {
 					// user is here now
 					if(cd.getCheckedIn()==1)
@@ -343,7 +347,14 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 				arrayUsersHereNow.clear();
 				arrayUsersWereHere.clear();
 				amICheckedIn = false;
-				//exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(data, true);
+				
+				// Restart the activity so user lists load correctly
+				Intent intent = getIntent();
+				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				finish();
+				overridePendingTransition(0,0);
+				startActivity(intent);
+				
 			}
 		});
 
