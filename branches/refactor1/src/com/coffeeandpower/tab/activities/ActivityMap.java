@@ -217,6 +217,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 
 		mapController = mapView.getController();
 		mapController.setZoom(12);
+		//Hardcoded to US until we get a fix
+		mapController.zoomToSpan(100448195, 94921874);
 
 		// User is logged in, get user data
 		if (AppCAP.isLoggedIn()) {
