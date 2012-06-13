@@ -18,6 +18,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 
@@ -70,7 +71,8 @@ public class ActivityAddFunds extends RootActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if (sessionCookie != null) {
-				Log.d("LOG", "addfunds: " + sessionCookie);
+				if (Constants.debugLog)
+					Log.d("LOG", "addfunds: " + sessionCookie);
 				cookieManager.setCookie("coffeeandpower.com", sessionCookie);
 				CookieSyncManager.getInstance().sync();
 			}
@@ -96,13 +98,15 @@ public class ActivityAddFunds extends RootActivity {
 				@Override
 				public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 					super.onReceivedError(view, errorCode, description, failingUrl);
-					Log.d("LOG", "onReceivedError: " + errorCode + ":" + description);
+					if (Constants.debugLog)
+						Log.d("LOG", "onReceivedError: " + errorCode + ":" + description);
 				}
 
 				@Override
 				public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
 					super.onReceivedSslError(view, handler, error);
-					Log.d("LOG", "onReceivedSslError: " + error.getPrimaryError());
+					if (Constants.debugLog)
+						Log.d("LOG", "onReceivedSslError: " + error.getPrimaryError());
 				}
 
 				@Override

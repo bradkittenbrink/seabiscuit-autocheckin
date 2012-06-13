@@ -1,5 +1,8 @@
 package com.coffeeandpower.cont;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Holder for http responses
  * 
@@ -51,5 +54,7 @@ public class DataHolder {
 	public void setObject(Object object) {
 		this.object = object;
 	}
+
+	
 
 }

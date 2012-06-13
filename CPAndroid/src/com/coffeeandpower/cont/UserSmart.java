@@ -2,8 +2,17 @@ package com.coffeeandpower.cont;
 
 import java.io.Serializable;
 
+import org.json.JSONObject;
+
+import com.coffeeandpower.Constants;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
 @SuppressWarnings("serial")
-public class UserSmart implements Serializable {
+public class UserSmart implements Parcelable {
+	//Eliminated Serializable
 
 	private int checkInId;
 	private int userId;
@@ -19,10 +28,12 @@ public class UserSmart implements Serializable {
 	private int checkedIn;
 	private String foursquareId;
 	private String venueName;
+	private int venueId;
 	private int checkInCount;
 	private String skills;
 	private boolean met;
 	private boolean isFirstInList;
+	private String sponsorNickname;
 
 	public boolean isFirstInList() {
 		return isFirstInList;
@@ -31,6 +42,45 @@ public class UserSmart implements Serializable {
 	public void setFirstInList(boolean isFirstInList) {
 		this.isFirstInList = isFirstInList;
 	}
+	
+	public UserSmart(JSONObject objUser)
+	{
+		super();		
+		this.checkInId = objUser.optInt("checkin_id");
+		this.userId = objUser.optInt("id");
+		this.nickName = objUser.optString("nickname");
+		this.statusText = objUser.optString("status_text");
+		this.photo = objUser.optString("photo");
+		this.majorJobCategory = objUser.optString("major_job_category");
+		this.minorJobCategory = objUser.optString("minor_job_category");
+		this.headLine = objUser.optString("headline");
+		
+		if (!objUser.optString("filename").equals(""))
+			this.fileName = objUser.optString("filename");
+		else if (!objUser.optString("imageUrl").equals(""))
+			this.fileName = objUser.optString("imageUrl");
+		else
+			if (Constants.debugLog)
+				Log.d("UserSmart","Warning, could not parse user image URL with keys 'filename' or 'imageUrl'...");
+		
+		this.lat = objUser.optDouble("lat");
+		this.lng = objUser.optDouble("lng");
+		this.checkedIn = objUser.optInt("checked_in");
+		this.foursquareId = objUser.optString("foursquare");
+		this.venueName = objUser.optString("venue_name");
+		this.venueId = objUser.optInt("venue_id");
+		this.checkInCount = objUser.optInt("checkin_count");
+		this.skills = objUser.optString("skills");
+		this.sponsorNickname = objUser.optString("sponsorNickname");
+		if(this.sponsorNickname.equalsIgnoreCase("")==false)
+		{
+			Log.d("UserSmart","Sponsor: %s" + this.sponsorNickname);
+			int test = 5;
+			int test2 = test;
+		}
+		this.met = objUser.optBoolean("met");
+	}
+	
 
 	public UserSmart(int checkInId, int userId, String nickName, String statusText, String photo, String majorJobCategory,
 			String minorJobCategory, String headLine, String fileName, double lat, double lng, int checkedIn, String foursquareId,
@@ -190,5 +240,62 @@ public class UserSmart implements Serializable {
 	public void setMet(boolean met) {
 		this.met = met;
 	}
+	
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		
+		out.writeInt(this.checkInId);
+		out.writeInt(this.userId);
+		out.writeString(this.nickName);
+		out.writeString(this.statusText);
+		out.writeString(this.photo);
+		out.writeString(this.majorJobCategory);
+		out.writeString(this.minorJobCategory);
+		out.writeString(this.headLine);
+		out.writeString(this.fileName);
+		out.writeDouble(this.lat);
+		out.writeDouble(this.lng);
+		out.writeInt(this.checkedIn);
+		out.writeString(this.skills);
+		out.writeInt(this.met ? 1 : 0);
+		out.writeInt(this.isFirstInList ? 1 : 0);
+		
+	}
+	
+	public static final Parcelable.Creator<UserSmart> CREATOR = new Parcelable.Creator<UserSmart>() {
+            public UserSmart createFromParcel(Parcel in) {
+                return new UserSmart(in);
+            }
+        
+            public UserSmart[] newArray(int size) {
+                return new UserSmart[size];
+            }
+	};
+
+        private UserSmart(Parcel in) {
+            this.checkInId = in.readInt();
+            this.userId = in.readInt();
+            this.nickName = in.readString();
+            this.statusText = in.readString();
+            this.photo = in.readString();
+            this.majorJobCategory = in.readString();
+            this.minorJobCategory = in.readString();
+            this.headLine = in.readString();
+            this.fileName = in.readString();
+            this.lat = in.readDouble();
+            this.lng = in.readDouble();
+            this.checkedIn = in.readInt();
+            this.skills = in.readString();
+            this.met = ( in.readInt() == 1 ? true : false );
+            this.isFirstInList = ( in.readInt() == 1 ? true : false );
+        		    
+        		    
+        }
 
 }

@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Observable;
+import java.util.Observer;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.telephony.PhoneNumberUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -19,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyUserSmartAdapter;
@@ -28,23 +34,26 @@ import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueChatEntry;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
+import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.imageutil.ImageLoader;
+import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomFontView;
+import com.urbanairship.UAirship;
 
-public class ActivityPlaceDetails extends RootActivity {
+public class ActivityPlaceDetails extends RootActivity implements Observer {
 
 	private String foursquareId;
 
 	private DataHolder result;
 
-	private Executor exe;
+	//private Executor exe;
 
-	private ArrayList<UserSmart> arrayUsers;
+	//private ArrayList<UserSmart> arrayUsers;
 	private ArrayList<VenueSmart> arrayVenues;
 	private ArrayList<CheckinData> arrayUsersInVenue;
 	private ArrayList<UserSmart> arrayUsersHereNow;
@@ -53,11 +62,16 @@ public class ActivityPlaceDetails extends RootActivity {
 	private VenueSmart selectedVenue;
 
 	private ListView listWereHere;
+	private MyUserSmartAdapter listWereHereAdapter;
+	
 	private ListView listHereNow;
+	private MyUserSmartAdapter listHereNowAdapter;
 
 	private ImageLoader imageLoader;
 
 	private boolean amICheckedIn;
+	private boolean initialLoadNow = true;
+	private boolean initialLoadWere = true;
 
 	private double data[];
 
@@ -66,25 +80,26 @@ public class ActivityPlaceDetails extends RootActivity {
 		arrayUsersWereHere = new ArrayList<UserSmart>();
 		amICheckedIn = false;
 	}
+	
+	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
+	protected Handler taskHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			
+		ArrayList<UserSmart> arrayUsers = msg.getData().getParcelableArrayList("users");
+		ArrayList<VenueSmart> arrayVenues = msg.getData().getParcelableArrayList("venues");
+		// Fill venue and users data
+		fillData(arrayUsers, arrayVenues);
+		super.handleMessage(msg);
+		}
+	};
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_places_details);
-
-		// Executor
-		exe = new Executor(ActivityPlaceDetails.this);
-		exe.setExecutorListener(new ExecutorInterface() {
-			@Override
-			public void onErrorReceived() {
-				errorReceived();
-			}
-
-			@Override
-			public void onActionFinished(int action) {
-				actionFinished(action);
-			}
-		});
 
 		imageLoader = new ImageLoader(this);
 
@@ -94,8 +109,9 @@ public class ActivityPlaceDetails extends RootActivity {
 		// Get foursquareId from Intent
 		Bundle bundle = getIntent().getExtras();
 		if (bundle != null) {
-			foursquareId = bundle.getString("foursquare_id");
-			data = bundle.getDoubleArray("coords");
+			selectedVenue = (VenueSmart) bundle.getParcelable("venueSmart");
+			//foursquareId = bundle.getString("foursquare_id");
+			//data = bundle.getDoubleArray("coords");
 		}
 
 		// On item list click
@@ -128,9 +144,33 @@ public class ActivityPlaceDetails extends RootActivity {
 		});
 
 	}
+	
+	@Override
+	protected void onStart() {
+		if (Constants.debugLog)
+			Log.d("PlaceDetail","ActivityPlaceDetail.onStart()");
+		super.onStart();
+		UAirship.shared().getAnalytics().activityStarted(this);
+		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
+		
+		initialLoadNow = true;
+		initialLoadWere = true;
+	}
 
-	private void fillData() {
+	@Override
+	public void onStop() {
+		if (Constants.debugLog)
+			Log.d("PlaceDetail","ActivityPlaceDetail.onStop()");
+		super.onStop();
+		UAirship.shared().getAnalytics().activityStopped(this);
+
+		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
+	}
+
+	private void fillData(ArrayList<UserSmart> arrayUsers, ArrayList<VenueSmart> arrayVenues) {
 		if (selectedVenue != null) {
+			
+			Log.d("PlaceDetails","fillData()");
 
 			((CustomFontView) findViewById(R.id.textview_phone_number)).setVisibility(!selectedVenue.getPhone().equals("") ? View.VISIBLE
 					: View.GONE);
@@ -144,16 +184,35 @@ public class ActivityPlaceDetails extends RootActivity {
 			// Try to load image
 			imageLoader.DisplayImage(selectedVenue.getPhotoURL(), (ImageView) findViewById(R.id.image_view),
 					R.drawable.picture_coming_soon_rectangle, 200);
+			//Find the selected venue in the venue array and use the data from the Counter
+			//If the venue is not in the list keep using the data from the intent
+			int selectedId = this.selectedVenue.getVenueId();
+			int testId = 0;
+			for(VenueSmart testVenue : arrayVenues)
+			{
+				testId = testVenue.getVenueId();
+				if(selectedId == testId)
+				{
+					this.selectedVenue = testVenue;
+					break;
+				}
+			}
 
 			arrayUsersInVenue = selectedVenue.getArrayCheckins();
 
+			arrayUsersHereNow.clear();
+			arrayUsersWereHere.clear();
 			for (CheckinData cd : arrayUsersInVenue) {
+				Log.d("PlaceDetail","Filling data: " + cd.toString());
 				if (cd.getCheckedIn() == 1) {
 					// user is here now
-					arrayUsersHereNow.add(getUserById(cd.getUserId()));
+					if(cd.getCheckedIn()==1)
+					{
+						arrayUsersHereNow.add(getUserById(cd.getUserId(), arrayUsers));
+					}
 				} else {
 					// users were here
-					arrayUsersWereHere.add(getUserById(cd.getUserId()));
+					arrayUsersWereHere.add(getUserById(cd.getUserId(), arrayUsers));
 				}
 
 				// Check if I am checked in or not
@@ -169,27 +228,56 @@ public class ActivityPlaceDetails extends RootActivity {
 				listHereNow.setVisibility(View.GONE);
 				((CustomFontView) findViewById(R.id.textview_here)).setVisibility(View.GONE);
 			} else {
-				listHereNow.setAdapter(new MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersHereNow));
-				listHereNow.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						Utils.setListViewHeightBasedOnChildren(listHereNow);
-					}
-				}, 400);
-				Utils.animateListView(listHereNow);
+				listHereNow.setVisibility(View.VISIBLE);
+				((CustomFontView) findViewById(R.id.textview_here)).setVisibility(View.VISIBLE);
+				if(initialLoadNow)
+				{
+					this.listHereNowAdapter = new MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersHereNow);
+					listHereNow.setAdapter(this.listHereNowAdapter);
+					
+        				listHereNow.postDelayed(new Runnable() {
+        					@Override
+        					public void run() {
+        						Utils.setListViewHeightBasedOnChildren(listHereNow);
+        					}
+        				}, 400);
+        				initialLoadNow = false;
+        				Utils.animateListView(listHereNow);
+				}
+				else
+				{
+					//Update the listview with the new data
+					this.listHereNowAdapter.setNewData(arrayUsersHereNow);
+					this.listHereNowAdapter.notifyDataSetChanged();
+				}
 			}
 			if (arrayUsersWereHere.isEmpty()) {
 				listWereHere.setVisibility(View.GONE);
 				((CustomFontView) findViewById(R.id.textview_worked)).setVisibility(View.GONE);
 			} else {
-				listWereHere.setAdapter(new MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersWereHere));
-				listWereHere.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						Utils.setListViewHeightBasedOnChildren(listWereHere);
-					}
-				}, 400);
-				Utils.animateListView(listWereHere);
+				listHereNow.setVisibility(View.VISIBLE);
+				((CustomFontView) findViewById(R.id.textview_worked)).setVisibility(View.VISIBLE);
+
+				if(initialLoadWere)
+				{
+        				this.listWereHereAdapter = new MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersWereHere);
+        				listWereHere.setAdapter(this.listWereHereAdapter);
+        				listWereHere.postDelayed(new Runnable() {
+        					@Override
+        					public void run() {
+        						Utils.setListViewHeightBasedOnChildren(listWereHere);
+        					}
+        				}, 400);
+        				initialLoadWere = false;
+        				Utils.animateListView(listWereHere);
+				}
+				else
+				{
+					//Update the listview with the new data
+					this.listWereHereAdapter.setNewData(arrayUsersWereHere);
+					this.listWereHereAdapter.notifyDataSetChanged();
+				}
+
 			}
 
 		}
@@ -234,7 +322,7 @@ public class ActivityPlaceDetails extends RootActivity {
 		builder.create().show();
 	}
 
-	private UserSmart getUserById(int userId) {
+	private UserSmart getUserById(int userId, ArrayList<UserSmart>  arrayUsers) {
 		for (UserSmart us : arrayUsers) {
 			if (us.getUserId() == userId) {
 				return us;
@@ -259,7 +347,14 @@ public class ActivityPlaceDetails extends RootActivity {
 				arrayUsersHereNow.clear();
 				arrayUsersWereHere.clear();
 				amICheckedIn = false;
-				exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(data, true);
+				
+				// Restart the activity so user lists load correctly
+				Intent intent = getIntent();
+				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				finish();
+				overridePendingTransition(0,0);
+				startActivity(intent);
+				
 			}
 		});
 
@@ -277,7 +372,8 @@ public class ActivityPlaceDetails extends RootActivity {
 				venue.setState(AppCAP.cleanResponseString(selectedVenue.getState()));
 
 				Intent intent = new Intent(ActivityPlaceDetails.this, ActivityCheckIn.class);
-				intent.putExtra("venue", venue);
+				//intent.putExtra("venue", venue);
+				intent.putExtra("venue", this.selectedVenue);
 				startActivity(intent);
 			}
 		} else {
@@ -288,10 +384,12 @@ public class ActivityPlaceDetails extends RootActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (foursquareId != null && foursquareId.length() > 0) {
+		if (arrayUsersHereNow.size() > 0) {
 			arrayUsersHereNow.clear();
+		}
+		if (arrayUsersWereHere.size() > 0)
+		{
 			arrayUsersWereHere.clear();
-			exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(data, true);
 		}
 	}
 
@@ -310,77 +408,48 @@ public class ActivityPlaceDetails extends RootActivity {
 		super.onDestroy();
 	}
 
-	private void errorReceived() {
-	}
-
-	private void actionFinished(int action) {
-		result = exe.getResult();
-
-		switch (action) {
-		case Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS:
-			if (result.getObject() != null && result.getObject() instanceof Object[]) {
-				Object[] obj = (Object[]) result.getObject();
-				arrayVenues = (ArrayList<VenueSmart>) obj[0];
-				arrayUsers = (ArrayList<UserSmart>) obj[1];
-				for (VenueSmart v : arrayVenues) {
-					if (v.getFoursquareId().equals(foursquareId)) {
-						selectedVenue = v;
-					}
-				}
-
-				// Sort users list
-				if (arrayUsers != null) {
-					Collections.sort(arrayUsers, new Comparator<UserSmart>() {
-						@Override
-						public int compare(UserSmart m1, UserSmart m2) {
-							if (m1.getCheckedIn() > m2.getCheckedIn()) {
-								return -1;
-							}
-							return 1;
-						}
-					});
-				}
-
-				// Fill veneu and users data
-				fillData();
-
-				// Get venue chat
-				if (selectedVenue != null)
-					exe.venueChat(selectedVenue.getVenueId(), "0", "", false);
-			}
-			break;
-
-		case Executor.HANDLE_VENUE_CHAT:
-			if (result != null && result.getObject() != null && (result.getObject() instanceof ArrayList<?>)) {
-				ArrayList<Object> tempArray = (ArrayList<Object>) result.getObject();
-
-				if (tempArray.size() == 4) {
-					if (tempArray.get(3) instanceof ArrayList<?>) {
-
-						// Calculate number of users
-						HashSet<String> usersIDs = new HashSet<String>();
-						String lastEntry = "";
-						for (VenueChatEntry entry : (ArrayList<VenueChatEntry>) tempArray.get(3)) {
-							if (entry.getSystemType() != null && !entry.getSystemType().equals("checkin")) {
-								usersIDs.add(entry.getUserId());
-								lastEntry = entry.getEntry().length() > 0 ? "\"" + entry.getEntry() + "\"" : "" ;
-							}
-						}
-						((CustomFontView) findViewById(R.id.textview_chat_places)).setText(usersIDs.size() == 0 ? ""
-								: usersIDs.size() + "");
-						((CustomFontView) findViewById(R.id.textview_chat_places_name))
-								.setText(usersIDs.size() == 0 ? "Tap here to chat." : lastEntry);
-					}
-				}
-			}
-			break;
-		}
-	}
+	
 
 	public void onClickChat(View v) {
 		Intent intent = new Intent(ActivityPlaceDetails.this, ActivityPlaceChat.class);
 		intent.putExtra("venue_id", selectedVenue.getVenueId());
 		intent.putExtra("venue_name", selectedVenue.getName());
 		startActivity(intent);
+	}
+	
+	@Override
+	public void update(Observable observable, Object data) {
+		/*
+		 * verify that the data is really of type CounterData, and log the
+		 * details
+		 */
+		if (data instanceof CounterData) {
+			CounterData counterdata = (CounterData) data;
+			DataHolder result = counterdata.getData();
+						
+			Object[] obj = (Object[]) result.getObject();
+			@SuppressWarnings("unchecked")
+			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			@SuppressWarnings("unchecked")
+			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+			
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putCharSequence("type", counterdata.type);
+			bundle.putParcelableArrayList("users", arrayUsers);
+			bundle.putParcelableArrayList("venues", arrayVenues);
+
+
+			message.setData(bundle);
+			
+			if (Constants.debugLog)
+				Log.d("PlaceDetail","ActivityPlaceDetail.update: Sending handler message...");
+			taskHandler.sendMessage(message);
+			
+			
+		}
+		else
+			if (Constants.debugLog)
+				Log.d("PlaceDetail","Error: Received unexpected data type: " + data.getClass().toString());
 	}
 }

@@ -2,14 +2,20 @@ package com.coffeeandpower.cont;
 
 import java.util.ArrayList;
 
-public class VenueSmart {
+import org.json.JSONObject;
 
-	private String venueId;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class VenueSmart implements Parcelable, Comparable{
+
+	private int venueId;
 	private String name;
 	private String address;
 	private String city;
 	private String state;
-	private String distance;
+	public String zip;
+	private double distance;
 	private String foursquareId;
 
 	private int checkins;
@@ -24,8 +30,8 @@ public class VenueSmart {
 	private double lng;
 
 	private ArrayList<CheckinData> arrayCheckins;
-
-	public static class CheckinData {
+	
+	public static class CheckinData implements Parcelable {
 		int userId;
 		int checkinCount;
 		int checkedIn;
@@ -47,9 +53,97 @@ public class VenueSmart {
 		public int getCheckedIn() {
 			return checkedIn;
 		}
-	}
+		
+		@Override
+		public int describeContents() {
+			return 0;
+		}
 
-	public VenueSmart(String venueId, String name, String address, String city, String state, String distance, String foursquareId, int checkins,
+		@Override
+		public void writeToParcel(Parcel out, int flags) {
+			out.writeInt(userId);
+			out.writeInt(checkinCount);
+			out.writeInt(checkedIn);
+		}
+		public static final Parcelable.Creator<CheckinData> CREATOR = new Parcelable.Creator<CheckinData>() {
+		            public CheckinData createFromParcel(Parcel in) {
+		                return new CheckinData(in);
+		            }
+		        
+		            public CheckinData[] newArray(int size) {
+		                return new CheckinData[size];
+		            }
+			};
+
+		        private CheckinData(Parcel in) {
+		        	this.userId = in.readInt();
+		        	this.checkinCount = in.readInt();
+		        	this.checkedIn = in.readInt();		    
+		        }
+
+			public static Creator<CheckinData> CREATOR() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+	}
+	public VenueSmart(JSONObject objVenue, ArrayList<CheckinData> arrayCheckins)
+	{
+		this.venueId = objVenue.optInt("venue_id");
+		this.name = objVenue.optString("name");
+		this.address = objVenue.optString("address");
+		this.city = objVenue.optString("city");
+		this.state = objVenue.optString("state");
+		this.zip = objVenue.optString("postalCode");
+		this.distance = objVenue.optDouble("distance");
+		this.foursquareId = objVenue.optString("foursquare_id");
+		this.checkins = objVenue.optInt("checkins");
+		this.checkinsForWeek = objVenue.optInt("checkins_for_week");
+		this.checkinsForInterval = objVenue.optInt("checkins_for_interval");
+		this.photoURL = objVenue.optString("photo_url");
+		this.phone = objVenue.optString("phone");
+		this.formattedPhone = objVenue.optString("formatted_phone");
+		this.lat = objVenue.optDouble("lat");
+		this.lng = objVenue.optDouble("lng");
+		this.arrayCheckins = arrayCheckins;
+	}
+	
+	public VenueSmart(String foursquareId, String name, JSONObject objVenue)
+	{
+		//this.venueId = venue_id;
+		this.foursquareId = foursquareId;
+		this.name = name;
+		//this.venueId = objVenue.optInt("venue_id");
+		//this.name = objVenue.optString("name");
+		this.address = objVenue.optString("address");
+		this.city = objVenue.optString("city");
+		this.state = objVenue.optString("state");
+		this.zip = objVenue.optString("postalCode");
+		this.distance = objVenue.optDouble("distance");
+		this.checkins = objVenue.optInt("checkins");
+		this.checkinsForWeek = objVenue.optInt("checkins_for_week");
+		this.checkinsForInterval = objVenue.optInt("checkins_for_interval");
+		this.photoURL = objVenue.optString("photo_url");
+		this.phone = objVenue.optString("phone");
+		this.formattedPhone = objVenue.optString("formatted_phone");
+		this.lat = objVenue.optDouble("lat");
+		this.lng = objVenue.optDouble("lng");
+	}
+	
+	
+	
+	public static VenueSmart createVenueFromJSON(JSONObject obj) {
+		return new VenueSmart(obj,null);
+	}
+	
+	/**
+	 * Create empty venue obj
+	 */
+	public VenueSmart() {
+		this(0, "", "", "", "", 0 , "", 0, 0, 0, "", "", "", 0, 0, new ArrayList<CheckinData>());
+	}
+	
+
+	public VenueSmart(int venueId, String name, String address, String city, String state, double distance, String foursquareId, int checkins,
 			int checkinsForWeek, int checkinsForInterval, String photoURL, String phone, String formattedPhone, double lat, double lng,
 			ArrayList<CheckinData> arrayCheckins) {
 		this.venueId = venueId;
@@ -69,12 +163,17 @@ public class VenueSmart {
 		this.lng = lng;
 		this.arrayCheckins = arrayCheckins;
 	}
+	
+	
+	public static VenueSmart createVenuePlaceholder(String fourSquareId,String name) {
+		return new VenueSmart(0,name,"","","",0,fourSquareId,0,0,0,"","","",0,0,null);		
+	}
 
-	public String getVenueId() {
+	public int getVenueId() {
 		return venueId;
 	}
 
-	public void setVenueId(String venueId) {
+	public void setVenueId(int venueId) {
 		this.venueId = venueId;
 	}
 
@@ -110,11 +209,15 @@ public class VenueSmart {
 		this.state = state;
 	}
 
-	public String getDistance() {
+	public Double getDistance() {
 		return distance;
 	}
+	
+	public float getDistanceFloat() {
+		return (float) distance;
+	}
 
-	public void setDistance(String distance) {
+	public void setDistance(double distance) {
 		this.distance = distance;
 	}
 
@@ -197,5 +300,94 @@ public class VenueSmart {
 	public void setArrayCheckins(ArrayList<CheckinData> arrayCheckins) {
 		this.arrayCheckins = arrayCheckins;
 	}
+	
+	
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		// TODO Auto-generated method stub
+		
+		
+		out.writeInt(this.venueId);
+		out.writeString(this.name);
+		out.writeString(this.address);
+		out.writeString(this.city);
+		out.writeString(this.state);
+		out.writeDouble(this.distance);
+		out.writeString(this.foursquareId);
+		
+		out.writeInt(this.checkins);
+		out.writeInt(this.checkinsForWeek);
+		out.writeInt(this.checkinsForInterval);
+		
+		out.writeString(this.photoURL);
+		out.writeString(this.phone);
+		out.writeString(this.formattedPhone);
+		
+		out.writeDouble(this.lat);
+		out.writeDouble(this.lng);
+		
+		//This should be a list of users, need to get that resolved at some point
+		out.writeTypedList(this.arrayCheckins);
+		
+	}
+	public static final Parcelable.Creator<VenueSmart> CREATOR = new Parcelable.Creator<VenueSmart>() {
+	            public VenueSmart createFromParcel(Parcel in) {
+	                return new VenueSmart(in);
+	            }
+	        
+	            public VenueSmart[] newArray(int size) {
+	                return new VenueSmart[size];
+	            }
+		};
+
+	        private VenueSmart(Parcel in) {
+	            this.venueId = in.readInt();
+	            this.name = in.readString();
+	            this.address = in.readString();
+	            this.city = in.readString();
+	            this.state = in.readString();
+	            this.distance = in.readDouble();
+	            this.foursquareId = in.readString();
+	            
+	            this.checkins = in.readInt();
+	            this.checkinsForWeek = in.readInt();
+	            this.checkinsForInterval = in.readInt();
+	            
+	            this.photoURL = in.readString();
+	            this.phone = in.readString();
+	            this.formattedPhone = in.readString();
+	            
+	            this.lat = in.readDouble();
+	            this.lng = in.readDouble();
+	            
+	            this.arrayCheckins =  new ArrayList<CheckinData>();
+	            in.readTypedList(this.arrayCheckins,CheckinData.CREATOR);
+	        }
+
+		@Override
+		public int compareTo(Object obj) {
+			
+			// Compare VenueSmarts based on distance from user
+			// This is used by the CheckInList view to sort the venues by distance
+			if (obj instanceof VenueSmart) {
+				VenueSmart otherVenue = (VenueSmart)obj;
+				
+				if (otherVenue.distance < this.distance)
+					return 1;
+				if (otherVenue.distance > this.distance)
+					return -1;
+				else
+					return 0;
+			}
+			
+			// Return less than if other obj is not a VenueSmart
+			return -1;
+		}
 
 }

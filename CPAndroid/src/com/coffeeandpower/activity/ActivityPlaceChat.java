@@ -27,11 +27,11 @@ public class ActivityPlaceChat extends RootActivity {
 
 	private Executor exe;
 
-	private String venueId;
+	private int venueId;
 	private String lastChatIDString;
 
 	{
-		venueId = "";
+		venueId = 0;
 		lastChatIDString = "0";
 	}
 
@@ -43,7 +43,7 @@ public class ActivityPlaceChat extends RootActivity {
 		// Get data from intent
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			venueId = extras.getString("venue_id");
+			venueId = extras.getInt("venue_id");
 
 			((CustomFontView) findViewById(R.id.textview_places_chat_name)).setText(extras.getString("venue_name"));
 		}

@@ -7,13 +7,18 @@
     <!-- Linked In -->
 
 
-    <!-- staging -->
+    <!-- staging  
     <string name="linkedInApiKey">4xkfzpnvuc72</string>
-    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
-    <!-- production 
+    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+    -->
+    
+    <!-- production -->
     <string name="linkedInApiKey">5tk2ex0mnjqk</string>
     <string name="linkedInApiSec">9JIH0rUiSbvJuHI2</string>
-    -->
+    
+    
+    
+ 
     
     <string name="back">Back</string>
     <string name="send">Send</string>
@@ -68,6 +73,7 @@
     <string name="activity_user_details_props">PROPS:</string>
     <string name="activity_user_details_often">Often works at...</string>
     <string name="activity_user_details_joined">Joined on</string>
+    <string name="activity_user_details_sponsored">Sponsored by</string>
     <string name="activity_wallet">Wallet</string>
     <string name="activity_wallet_your_balance">Your Balance</string>
     <string name="activity_wallet_transaction_history">Transaction History</string>
@@ -87,6 +93,7 @@
     <string name="user_menu_show">Show me new Check Ins</string>
     <string name="user_menu_in_city">in city</string>
     <string name="user_menu_only">Only when I am\nchecked in</string>
+    <string name="googleMapsApiKey">08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA</string>
     
 
 </resources>

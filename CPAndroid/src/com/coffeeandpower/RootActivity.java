@@ -7,17 +7,62 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.coffeeandpower.tab.activities.ActivityMap;
 import com.google.android.maps.MapActivity;
+import com.urbanairship.UAirship;
 
 public class RootActivity extends MapActivity {
 
 	public static final int DIALOG_MUST_BE_A_MEMBER = 30;
+	
 
 	private AlertDialog alert;
+	
+	
+	@Override
+	protected void onCreate(Bundle instance) {
+		super.onCreate(instance);
+		if (Constants.debugLog)
+			Log.d("RootActivity","RootActivity.onCreate()");
+		
+	}
+	
+	@Override
+	protected void onDestroy() {
+		
+		if (Constants.debugLog)
+			Log.d("RootActivity","RootActivity.onDestroy()");
+		
+		
+		
+		super.onDestroy();
+	}
+	
+	@Override
+	protected void onPause() {
+		if (Constants.debugLog)
+			Log.d("RootActivity","RootActivity.onPause()");
+		
+		
+		
+		super.onPause();
+	}
+	
+	@Override
+	protected void onStop() {
+		if (Constants.debugLog)
+			Log.d("RootActivity","RootActivity.onStop()");
+		
+		
+		
+		super.onStop();
+	}
+	
 
 	/**
 	 * Easy log
@@ -25,7 +70,8 @@ public class RootActivity extends MapActivity {
 	 * @param msg
 	 */
 	public static void log(String msg) {
-		Log.d(AppCAP.TAG, msg);
+		if (Constants.debugLog)
+			Log.d(AppCAP.TAG, msg);
 	}
 
 	/**
@@ -115,5 +161,9 @@ public class RootActivity extends MapActivity {
 	protected boolean isRouteDisplayed() {
 		return false;
 	}
+	
+	
+	
+	
 
 }

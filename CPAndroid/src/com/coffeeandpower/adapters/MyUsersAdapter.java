@@ -3,6 +3,7 @@ package com.coffeeandpower.adapters;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.imageutil.ImageLoader;
 
 public class MyUsersAdapter extends BaseAdapter {
@@ -22,8 +25,20 @@ public class MyUsersAdapter extends BaseAdapter {
 	private LayoutInflater inflater;
 	public ImageLoader imageLoader;
 
-	private double myLat;
-	private double myLng;
+	private double myLat = 0;
+	private double myLng = 0;
+	
+	public MyUsersAdapter(Activity context, ArrayList<UserSmart> mudArray) {
+
+		this.inflater = context.getLayoutInflater();
+		this.imageLoader = new ImageLoader(context.getApplicationContext());
+
+		if (mudArray != null) {
+			this.mudArray = mudArray;
+		} else {
+			this.mudArray = new ArrayList<UserSmart>();
+		}
+	}
 
 	public MyUsersAdapter(Activity context, ArrayList<UserSmart> mudArray, double myLat, double myLng) {
 
@@ -37,6 +52,10 @@ public class MyUsersAdapter extends BaseAdapter {
 		} else {
 			this.mudArray = new ArrayList<UserSmart>();
 		}
+	}
+	
+	public void setNewData(ArrayList<UserSmart>newUsers) {
+		this.mudArray = newUsers;
 	}
 
 	@Override
@@ -83,6 +102,9 @@ public class MyUsersAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		ViewHolder holder;
+		
+		if (Constants.debugLog)
+			Log.d("MyUsersAdapter","getView for " + AppCAP.cleanResponseString(mudArray.get(position).getNickName()) + ", image: " + mudArray.get(position).getFileName() );
 
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.item_list_about_person, null);
@@ -92,6 +114,7 @@ public class MyUsersAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
+		// Display image
 		if (AppCAP.isLoggedIn()) {
 			holder.textNickName.setText(AppCAP.cleanResponseString(mudArray.get(position).getNickName()));
 			imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage, R.drawable.default_avatar50, 70);
@@ -100,6 +123,7 @@ public class MyUsersAdapter extends BaseAdapter {
 			imageLoader.DisplayImage("", holder.profileImage, R.drawable.default_avatar50_login, 70);
 		}
 
+		// Display status text
 		if (mudArray.get(position).getStatusText() != null && mudArray.get(position).getStatusText().length() > 0) {
 			holder.textStatus.setText("\"" + AppCAP.cleanResponseString(mudArray.get(position).getStatusText()) + "\"");
 		} else {
@@ -107,6 +131,7 @@ public class MyUsersAdapter extends BaseAdapter {
 		}
 		holder.textVenueName.setText(AppCAP.cleanResponseString(mudArray.get(position).getVenueName()));
 
+		// Display major job category
 		String jobName = mudArray.get(position).getMajorJobCategory();
 		if (jobName != null && jobName.length() > 1)
 			jobName = jobName.substring(0, 1).toUpperCase() + jobName.substring(1);
@@ -114,9 +139,16 @@ public class MyUsersAdapter extends BaseAdapter {
 
 		// Deafult gray line state is gone
 		holder.textGrayLine.setVisibility(View.GONE);
-
-		holder.textDistance.setText(RootActivity.getDistanceBetween(myLat, myLng, mudArray.get(position).getLat(), mudArray.get(position)
+		//Not the best check since 0, 0 is a valid lat, long, but there is no coffee or power off the coast of Africa so we should be good
+		if(myLat == 0 || myLng == 0)
+		{
+			//If we have no position fill that space with something else
+		}
+		else
+		{
+			holder.textDistance.setText(RootActivity.getDistanceBetween(myLat, myLng, mudArray.get(position).getLat(), mudArray.get(position)
 				.getLng()));
+		}
 
 		// Check if we have hereNow user
 		if (mudArray.get(position).getCheckedIn() == 1 && mudArray.get(position).isFirstInList()) {

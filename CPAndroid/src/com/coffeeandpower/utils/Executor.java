@@ -4,12 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.Venue;
+import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.views.CustomDialog;
 import com.google.android.maps.GeoPoint;
 
@@ -50,6 +53,7 @@ public class Executor {
 	ExecutorInterface exeInter = new ExecutorInterface() {
 		@Override
 		public void onActionFinished(int action) {
+			Log.d("Executor","onActionFinished...");
 		}
 
 		@Override
@@ -71,6 +75,8 @@ public class Executor {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 
+			Log.d("Executor","handleMessage()");
+			
 			progress.dismiss();
 
 			if (msg.what == AppCAP.HTTP_ERROR) {
@@ -221,13 +227,17 @@ public class Executor {
 		}).start();
 	}
 
-	public synchronized void checkIn(final Venue venue, final int checkInTime, final int checkOutTime, final String statusText) {
+	public synchronized void checkIn(final VenueSmart venue, final int checkInTime, final int checkOutTime, final String statusText) {
 		progress.setMessage("Checking in...");
 		progress.show();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				result = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime, statusText);
+		
+				//FIXME
+				//This assumes that the checkin is going to be successful, it doesn't look like there
+				//is currently any code to verify that the checkin was successful
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		}).start();
@@ -303,7 +313,7 @@ public class Executor {
 	 * @param venueId
 	 * @param lastChatIDString
 	 */
-	public synchronized void venueChat(final String venueId, final String lastChatIDString, final String message, final boolean isSend) {
+	public synchronized void venueChat(final int venueId, final String lastChatIDString, final String message, final boolean isSend) {
 		progress.setMessage(isSend ? "Sending..." : "Loading...");
 		progress.show();
 		new Thread(new Runnable() {

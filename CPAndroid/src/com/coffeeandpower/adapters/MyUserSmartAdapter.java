@@ -32,6 +32,10 @@ public class MyUserSmartAdapter extends BaseAdapter {
 			this.mudArray = new ArrayList<UserSmart>();
 		}
 	}
+	
+	public void setNewData(ArrayList<UserSmart>newUsers) {
+		this.mudArray = newUsers;
+	}
 
 	@Override
 	public int getCount() {

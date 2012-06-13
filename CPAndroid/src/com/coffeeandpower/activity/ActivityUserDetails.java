@@ -2,6 +2,10 @@ package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.TimeZone;
 
 import android.app.AlertDialog;
@@ -10,6 +14,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyFavouritePlacesAdapter;
@@ -43,7 +51,10 @@ import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
+import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.Work;
+import com.coffeeandpower.cont.VenueSmart.CheckinData;
+import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
 import com.coffeeandpower.maps.PinBlackDrawable;
@@ -55,8 +66,9 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.urbanairship.UAirship;
 
-public class ActivityUserDetails extends RootActivity {
+public class ActivityUserDetails extends RootActivity implements Observer{
 
 	private static final int DIALOG_SEND_PROP = 0;
 	private static final int DIALOG_SEND_F2F_INVITE = 1;
@@ -80,6 +92,20 @@ public class ActivityUserDetails extends RootActivity {
 	private UserResume userResumeData;
 
 	private ArrayList<Venue> favoritePlaces;
+	private ArrayList<VenueSmart> arraySmartVenues;
+	
+	
+	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
+	protected Handler taskHandler = new Handler() {
+
+		// handleMessage - on the main thread
+		@Override
+		public void handleMessage(Message msg) {
+				// pass message data along to venue update method
+			arraySmartVenues = msg.getData().getParcelableArrayList("venues");
+			super.handleMessage(msg);
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle icicle) {
@@ -109,7 +135,30 @@ public class ActivityUserDetails extends RootActivity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
 				Intent intent = new Intent(ActivityUserDetails.this, ActivityPlaceDetails.class);
-				intent.putExtra("foursquare_id", favoritePlaces.get(position).getFoursquareId());
+				Venue currVenue = favoritePlaces.get(position);
+				//intent.putExtra("foursquare_id", currVenue);
+				//FIXME
+				//We need to eliminate the Venue class eventually
+				ArrayList<CheckinData> arrayCheckins = new ArrayList<VenueSmart.CheckinData>();
+				VenueSmart currSmartVenue = new VenueSmart(currVenue.getVenueId(), currVenue.getName(), currVenue.getAddress(), currVenue.getCity(), currVenue.getCity(), currVenue.getDistance(), currVenue.getFoursquareId(), currVenue.getCheckinsCount(),
+						0, 0, currVenue.getPhotoUrl(), currVenue.getPhone(), currVenue.getPhone(), currVenue.getLat(), currVenue.getLng(),
+						arrayCheckins);
+				intent.putExtra("venueSmart", currSmartVenue);
+				if(arraySmartVenues!=null)
+				{
+					boolean venueFound = false;
+					for(VenueSmart testSmartVenue:arraySmartVenues)
+					{
+						if(testSmartVenue.getVenueId() == currVenue.getVenueId())
+						{
+							intent.putExtra("venueSmart", testSmartVenue);
+							venueFound = true;
+							break;
+						}
+					}
+					//FIXME
+					//If we don't find the venue we need to pull it from http
+				}
 				intent.putExtra("coords", AppCAP.getUserCoordinates());
 				startActivity(intent);
 			}
@@ -122,13 +171,14 @@ public class ActivityUserDetails extends RootActivity {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 
+			//Not used so being removed
 			String foursquareId = extras.getString("mapuserdata");
 			String fromAct = extras.getString("from_act");
 
 			if (fromAct != null) {
 				if (fromAct.equals("list")) {
 					// From list
-					mud = (UserSmart) extras.getSerializable("mapuserobject");
+					mud = (UserSmart) extras.getParcelable("mapuserobject");
 				}
 			}
 		}
@@ -176,7 +226,29 @@ public class ActivityUserDetails extends RootActivity {
 			exe.getResumeForUserId(mud.getUserId());
 		}
 
+	}  //end onCreate()
+	
+	@Override
+	protected void onStart() {
+		if (Constants.debugLog)
+			Log.d("UserDetails","ActivityUserDetails.onStart()");
+		super.onStart();
+		//initialLoad = true;
+		UAirship.shared().getAnalytics().activityStarted(this);
+		
+		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);	
 	}
+
+	@Override
+	public void onStop() {
+		if (Constants.debugLog)
+			Log.d("UserDetails","ActivityUserDetails.onStop()");
+		super.onStop();
+		UAirship.shared().getAnalytics().activityStopped(this);
+
+		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
+	}
+	
 
 	private Drawable getPinDrawable(String text, GeoPoint gp) {
 		PinBlackDrawable icon = new PinBlackDrawable(this, text);
@@ -194,6 +266,8 @@ public class ActivityUserDetails extends RootActivity {
 
 			((TextView) findViewById(R.id.textview_user_job_title)).setText(AppCAP.cleanResponseString(userResumeData.getJobTitle()));
 			((TextView) findViewById(R.id.textview_date)).setText(userResumeData.getJoined());
+			((TextView) findViewById(R.id.textview_sponsor)).setText(userResumeData.getJoinSponsor());
+
 
 			// Was EARNED now it's HOURS
 			((TextView) findViewById(R.id.textview_earned)).setText(userResumeData.getTotalHours()+"");
@@ -580,6 +654,37 @@ public class ActivityUserDetails extends RootActivity {
 	}
 
 	public void errorReceived() {
+	}
+	
+	
+	@Override
+	public void update(Observable observable, Object data) {
+		/*
+		 * verify that the data is really of type CounterData, and log the
+		 * details
+		 */
+		if (data instanceof CounterData) {
+			CounterData counterdata = (CounterData) data;
+			DataHolder venuesWithCheckins = counterdata.getData();
+						
+			Object[] obj = (Object[]) venuesWithCheckins.getObject();
+			@SuppressWarnings("unchecked")
+			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putParcelableArrayList("venues", arrayVenues);
+			message.setData(bundle);
+			
+			if (Constants.debugLog)
+				Log.d("UserDetails","ActivityUserDetails.update: Sending handler message...");
+			taskHandler.sendMessage(message);
+			
+			
+		}
+		else
+			if (Constants.debugLog)
+				Log.d("UserDetails","Error: Received unexpected data type: " + data.getClass().toString());
 	}
 
 }

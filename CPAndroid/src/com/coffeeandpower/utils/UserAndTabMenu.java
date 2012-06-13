@@ -13,11 +13,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivitySettings;
@@ -101,7 +104,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 				break;
 
 			case HANDLE_CHECK_OUT:
-				AppCAP.setUserCheckedIn(false);
+				AppCAP.getCounter().checkOutTrigger();
 				userState.onCheckOut();
 				break;
 
@@ -116,7 +119,8 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 					AppCAP.setNotificationToggle(checkedInOnly.equals("1"));
 
 					if (toggle != null && btnFrom != null) {
-						Log.d("LOG", "text: " + pushDistance + ":" + checkedInOnly);
+						if (Constants.debugLog)
+							Log.d("LOG", "text: " + pushDistance + ":" + checkedInOnly);
 						toggle.setChecked(checkedInOnly.matches("1"));
 						btnFrom.setText(pushDistance.matches("venue") ? "in venue" : "in city");
 					}
@@ -162,6 +166,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 						public void onClick(DialogInterface dialog, int id) {
 							progress.setMessage("Checking out...");
 							progress.show();
+							AppCAP.setUserCheckedIn(false);
 							new Thread(new Runnable() {
 								@Override
 								public void run() {

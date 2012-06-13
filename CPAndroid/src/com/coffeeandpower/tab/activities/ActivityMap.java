@@ -2,7 +2,10 @@ package com.coffeeandpower.tab.activities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,6 +14,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -24,6 +31,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
@@ -32,6 +40,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.maps.BalloonItemizedOverlay;
@@ -54,7 +63,7 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.urbanairship.UAirship;
 
-public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
+public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Observer {
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_MAP = 1;
 
@@ -74,6 +83,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	private MyLocationOverlay myLocationOverlay;
 	private MyItemizedOverlay itemizedoverlay;
 	private LocationManager locationManager;
+	
+	private ProgressDialog progress;
 
 	// Current user
 	private User loggedUser;
@@ -81,6 +92,22 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	private DataHolder result;
 
 	private Executor exe;
+	
+	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
+	protected Handler taskHandler = new Handler() {
+		
+		@Override
+		public void handleMessage(Message msg) {
+			
+			// pass message data along to venue update method
+			ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
+			ArrayList<UserSmart> userArray = msg.getData().getParcelableArrayList("users");
+			updateVenuesAndCheckinsFromApiResult(venueArray, userArray);
+
+			progress.dismiss();
+			super.handleMessage(msg);
+		}
+	};
 
 	/**
 	 * Check if user is checked in or not
@@ -98,11 +125,26 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 
 	@Override
 	protected void onCreate(Bundle icicle) {
+		
 		super.onCreate(icicle);
+		
+		if (Constants.debugLog)
+			Log.d("Coffee","Creating ActivityMap...");
+		
 		setContentView(R.layout.tab_activity_map);
+		
+		AppCAP.startCounter();
+		
+		
+		
+
+		progress = new ProgressDialog(this);
+		progress.setMessage("Loading...");
+		progress.show();
 
 		// Executor
 		exe = new Executor(ActivityMap.this);
+		//We need this to get the user Id
 		exe.setExecutorListener(new ExecutorInterface() {
 			@Override
 			public void onErrorReceived() {
@@ -114,6 +156,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 				actionFinished(action);
 			}
 		});
+		
 
 		// Views
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
@@ -174,6 +217,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 
 		mapController = mapView.getController();
 		mapController.setZoom(12);
+		//Hardcoded to US until we get a fix
+		mapController.zoomToSpan(100448195, 94921874);
 
 		// User is logged in, get user data
 		if (AppCAP.isLoggedIn()) {
@@ -223,10 +268,18 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		if (Constants.debugLog)
+			Log.d("ActivityMap","ActivityMap.onStart(): " + AppCAP.isUserCheckedIn());
+		
+		checkUserState();
+		
+		
 
-		if (AppCAP.isFirstStart()) {
+
+		if (AppCAP.isFirstStart() && AppCAP.getEnteredInviteCode()==false) {
 			startActivity(new Intent(ActivityMap.this, ActivityEnterInviteCode.class));
-		} else if (AppCAP.shouldShowInfoDialog()) {
+		} else if (AppCAP.shouldShowInfoDialog() && AppCAP.getEnteredInviteCode()==false) {
 			CustomDialog cd = new CustomDialog(ActivityMap.this,
 					"Coffee & Power requires an invite for full membership but you have 30 days of full access to try us out.",
 					"If you get an invite from another C&P user you can enter it anytime by going to the Account page/Enter invite code tab.");
@@ -249,7 +302,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 				// Refresh Data
 				refreshMapDataSet();
 			}
-		}
+		}		
 	}
 
 	/**
@@ -261,8 +314,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	 * @param venueName
 	 * @param isList
 	 */
-	private void createMarker(GeoPoint point, String foursquareIdKey, int checkinsSum, String venueName, boolean isPin) {
-		if (foursquareIdKey != null) {
+	private void createMarker(GeoPoint point, VenueSmart currVenueSmart, int checkinsSum, String venueName, boolean isPin) {
+		if (currVenueSmart != null) {
 			String checkStr = "";
 			if (!isPin) {
 				checkStr = checkinsSum == 1 ? " checkin in the last week" : " checkins in the last week";
@@ -272,7 +325,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 			venueName = AppCAP.cleanResponseString(venueName);
 
 			MyOverlayItem overlayitem = new MyOverlayItem(point, venueName, checkinsSum + checkStr);
-			overlayitem.setMapUserData(foursquareIdKey);
+			//overlayitem.setMapUserData(foursquareIdKey);
+			overlayitem.setVenueSmartData(currVenueSmart);
 
 			if (myLocationOverlay.getMyLocation() != null) {
 				overlayitem.setMyLocationCoords(myLocationOverlay.getMyLocation().getLatitudeE6(), myLocationOverlay.getMyLocation()
@@ -309,7 +363,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 			// int lng = (int) (location.getLongitude() * 1E6);
 			// GeoPoint point = new GeoPoint(lat, lng);
 
-			// Log.d("LOG", "ActivityMap locationChanged: " +
+			// if (Constants.debugLog)
+			//	Log.d("LOG", "ActivityMap locationChanged: " +
 			// location.getLatitude()+":"+location.getLongitude());
 		}
 
@@ -361,6 +416,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	}
 
 	private void refreshMapDataSet() {
+		checkUserState();
+		
 		int iconSize = Utils.getScreenDependentItemSize(Utils.REFRESH_ICON_SIZE);
 
 		Animation anim = new RotateAnimation(360.0f, 0.0f, iconSize / 2, iconSize / 2);
@@ -372,7 +429,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 
 		hideBaloons();
 
-		exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(getSWAndNECoordinatesBounds(mapView), false);
+		//exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(getSWAndNECoordinatesBounds(mapView), false);
+		//AppCAP.getCounter().manualTrigger();
 
 		// For every refresh save Map coordinates
 		AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
@@ -384,9 +442,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		// Check and Set Notification settings
 		menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in), (Button) findViewById(R.id.btn_from),
 				true);
-
-		// TEst
-		// AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(AppCAP.getUserCoordinates());
 
 	}
 
@@ -448,6 +503,10 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	protected void onDestroy() {
 		myLocationOverlay.disableMyLocation();
 
+		//if (Constants.debugLog)
+		//	Log.d("ActivityMap","onDestroy(): stopping counter...");
+		//AppCAP.getCounter().stop();
+		
 		if (AppCAP.shouldFinishActivities() && AppCAP.shouldStartLogIn()) {
 			startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
 			AppCAP.setShouldStartLogIn(false);
@@ -508,14 +567,22 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 
 	@Override
 	protected void onStart() {
+		if (Constants.debugLog)
+			Log.d("ActivityMap","ActivityMap.onStart()");
 		super.onStart();
+		checkUserState();
 		UAirship.shared().getAnalytics().activityStarted(this);
+		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
 	}
 
 	@Override
 	public void onStop() {
+		if (Constants.debugLog)
+			Log.d("ActivityMap","ActivityMap.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
+		
+		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
 	}
 
 	private void errorReceived() {
@@ -533,54 +600,96 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 					useUserData();
 				}
 			}
-			break;
+		}
 
-		case Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS:
-			if (result.getObject() != null) {
-				if (result.getObject() instanceof Object[]) {
-
-					// Remove all markers from MapView
-					itemizedoverlay.clear();
-
-					for (int i = mapView.getOverlays().size(); i > 1; i--) {
-						mapView.getOverlays().remove(i - 1);
-					}
-
-					Object[] obj = (Object[]) result.getObject();
-
-					ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-					ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
-
-					for (VenueSmart venue : arrayVenues) {
-						GeoPoint gp = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
-
-						if (venue.getCheckins() > 0) {
-							createMarker(gp, venue.getFoursquareId(), venue.getCheckins(), venue.getName(), true);
-						} else if (venue.getCheckinsForWeek() > 0) {
-							createMarker(gp, venue.getFoursquareId(), venue.getCheckinsForWeek(), venue.getName(), false); // !!!
-																		       // getCheckinsForWeek
-						}
-					}
-
-					for (UserSmart user : arrayUsers) {
-						if (user.getUserId() == AppCAP.getLoggedInUserId()) {
-							if (user.getCheckedIn() == 1) {
-								AppCAP.setUserCheckedIn(true);
-							} else {
-								AppCAP.setUserCheckedIn(false);
-							}
-						}
-					}
-
-					if (itemizedoverlay.size() > 0) {
-						mapView.getOverlays().add(itemizedoverlay);
-					}
-					checkUserState();
-					mapView.invalidate();
-				}
-			}
-			break;
-
+	}
+	@Override
+	public void update(Observable observable, Object data) {
+		/*
+		 * verify that the data is really of type CounterData, and log the
+		 * details
+		 */
+		if (Constants.debugLog)
+			Log.d("ActivityMap","update()");
+		
+		if (data instanceof CounterData) {
+			CounterData counterdata = (CounterData) data;
+			DataHolder venuesWithCheckins = counterdata.getData();
+						
+			Object[] obj = (Object[]) venuesWithCheckins.getObject();
+			@SuppressWarnings("unchecked")
+			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			@SuppressWarnings("unchecked")
+			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+			
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putCharSequence("type", counterdata.type);
+			bundle.putParcelableArrayList("venues", arrayVenues);
+			bundle.putParcelableArrayList("users", arrayUsers);
+			message.setData(bundle);
+			
+			if (Constants.debugLog)
+				Log.d("Map","ActivityMap.update: Sending handler message...");
+			taskHandler.sendMessage(message);
+			
+			
 		}
 	}
+	
+	
+	private void updateVenuesAndCheckinsFromApiResult(ArrayList<VenueSmart> venueArray, ArrayList<UserSmart> arrayUsers) {
+		
+		if (Constants.debugLog)
+			Log.d("Map","updateVenuesAndCheckinsFromApiResult()");
+		itemizedoverlay.clear();
+		
+		for (VenueSmart venue : venueArray) {
+			GeoPoint gp = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
+
+			if (venue.getCheckins() > 0) {
+				createMarker(gp, venue, venue.getCheckins(), venue.getName(), true);
+			} else if (venue.getCheckinsForWeek() > 0) {
+				createMarker(gp, venue, venue.getCheckinsForWeek(), venue.getName(), false); // !!!
+															       // getCheckinsForWeek
+			}
+		}
+		
+		for (UserSmart user : arrayUsers) {
+			if (user.getUserId() == AppCAP.getLoggedInUserId()) {
+				if (user.getCheckedIn() == 1) {
+					AppCAP.setUserCheckedIn(true);
+				} else {
+					AppCAP.setUserCheckedIn(false);
+				}
+			}
+		}
+		
+		if (itemizedoverlay.size() > 0) {
+			mapView.getOverlays().add(itemizedoverlay);
+		}
+		checkUserState();
+		mapView.invalidate();
+		
+	}
+	
+	
+	// Capture the user pressing the back button in the map view and exit the app
+	// Move this to a separate function
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+		    if (Constants.debugLog)
+				Log.d("Coffee","User exit detected.");
+	        
+	        UAirship.land();
+	        AppCAP.getCounter().stop();
+	        
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
+
+	
+	
+	
 }
