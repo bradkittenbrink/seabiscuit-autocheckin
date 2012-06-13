@@ -42,6 +42,7 @@ public class AppCAP extends Application {
 
 	private static final String TAG_USER_EMAIL = "tag_user_email";
 	private static final String TAG_USER_EMAIL_PASSWORD = "tag_user_email_password";
+	private static final String TAG_USER_ENTERED_INVITE_CODE = "entered_invite_code";
 	private static final String TAG_USER_LAST_VENUE_CHECKIN_ID = "tag_user_last_venue_checkin_id";
 	private static final String TAG_USER_LINKEDIN_TOKEN = "tag_user_linkedin_token";
 	private static final String TAG_USER_LINKEDIN_TOKEN_SECRET = "tag_user_linkedin_token_secret";
@@ -200,7 +201,24 @@ public class AppCAP extends Application {
 	public static void setNotFirstStart() {
 		getSharedPreferences().edit().putBoolean(TAG_FIRST_START, false).commit();
 	}
-
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static boolean getEnteredInviteCode() {
+		return getSharedPreferences().getBoolean(TAG_USER_ENTERED_INVITE_CODE, false);
+	}
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setEnteredInviteCode() {
+		getSharedPreferences().edit().putBoolean(TAG_USER_ENTERED_INVITE_CODE, true).commit();
+	}
+	/**
+	 * 
+	 * @category localUserData
+	 */
 	public static boolean shouldShowInfoDialog() {
 		return getSharedPreferences().getBoolean(TAG_INFO_DIALOG, true);
 	}

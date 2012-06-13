@@ -276,9 +276,10 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		
 		
 
-		if (AppCAP.isFirstStart()) {
+
+		if (AppCAP.isFirstStart() && AppCAP.getEnteredInviteCode()==false) {
 			startActivity(new Intent(ActivityMap.this, ActivityEnterInviteCode.class));
-		} else if (AppCAP.shouldShowInfoDialog()) {
+		} else if (AppCAP.shouldShowInfoDialog() && AppCAP.getEnteredInviteCode()==false) {
 			CustomDialog cd = new CustomDialog(ActivityMap.this,
 					"Coffee & Power requires an invite for full membership but you have 30 days of full access to try us out.",
 					"If you get an invite from another C&P user you can enter it anytime by going to the Account page/Enter invite code tab.");
@@ -301,8 +302,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 				// Refresh Data
 				refreshMapDataSet();
 			}
-		}
-		
+		}		
 	}
 
 	/**

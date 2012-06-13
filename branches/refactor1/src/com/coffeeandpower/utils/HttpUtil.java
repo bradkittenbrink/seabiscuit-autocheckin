@@ -3142,18 +3142,24 @@ public class HttpUtil {
 		// HttpClient client = getThreadSafeClient();
 		client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
-		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_LOGIN);
+		HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 		String serviceName = service.getServiceNameLogin();
 		String serviceSignUp = service.getServiceNameSignUp();
-		params.add(new BasicNameValuePair("action", "login" + serviceName));
+		params.add(new BasicNameValuePair("signupNickname", service.getUserNickName()));
+		params.add(new BasicNameValuePair("linkedin_id", service.getUserId()));
+		params.add(new BasicNameValuePair("linkedin_connect", "1"));
+		params.add(new BasicNameValuePair("signupUsername", service.getUserName()));
 		params.add(new BasicNameValuePair("oauth_token", service.getAccessToken()));
 		params.add(new BasicNameValuePair("oauth_secret", service.getAccessTokenSecret()));
-		params.add(new BasicNameValuePair("login_" + serviceSignUp + "_connect", "1"));
-		params.add(new BasicNameValuePair("login_" + serviceSignUp + "_id", service.getUserId()));
-		params.add(new BasicNameValuePair("type", "json"));
+		params.add(new BasicNameValuePair("signupPassword", service.getUserPassword()));
+		params.add(new BasicNameValuePair("signupConfirm", service.getUserPassword()));
+		params.add(new BasicNameValuePair("action", "mobileSignup"));
+		
+		//params.add(new BasicNameValuePair("type", "json"));
 
 		try {
 
@@ -3175,22 +3181,21 @@ public class HttpUtil {
 				result.setResponseMessage(mess);
 
 				if (succeeded) {
-					/*
-					 * JSONObject paramsObj =
-					 * json.optJSONObject("params"); if
-					 * (paramsObj!=null){
-					 * 
-					 * JSONObject userObj =
-					 * paramsObj.optJSONObject("user"); if
-					 * (userObj!=null){
-					 * 
-					 * int userId = userObj.optInt("id");
-					 * String nickName =
-					 * userObj.optString("nickname");
-					 * 
-					 * result.setObject(new User(userId,
-					 * nickName)); } }
-					 */
+					 JSONObject paramsObj =json.optJSONObject("params"); 
+					 if(paramsObj!=null){
+						 JSONObject paramsObj2 =paramsObj.optJSONObject("params"); 
+						 if(paramsObj2!=null){
+							 String enteredInviteCode = paramsObj2.optString("entered_invite_code");
+							 if(enteredInviteCode!=null)
+							 {
+								 if(enteredInviteCode.equalsIgnoreCase("Y"))
+								 {
+									 AppCAP.setEnteredInviteCode();
+								 }
+							 }
+						 }
+	
+					 }
 					result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
 					return result;
 
