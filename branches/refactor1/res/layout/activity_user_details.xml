@@ -454,6 +454,28 @@
                         android:layout_toRightOf="@+id/dummy_joined"
                         android:textColor="#338585"
                         android:textSize="18dip" />
+                    
+                    <com.coffeeandpower.views.CustomFontView
+                        android:id="@+id/dummy_sponsored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/dummy_view_78"
+                        android:layout_marginLeft="10dip"
+                        android:layout_toRightOf="@+id/textview_date"
+                        android:text="@string/activity_user_details_sponsored"
+                        android:textColor="#444444"
+                        android:textSize="18dip"
+                        android:textStyle="bold" />
+                    
+                    <com.coffeeandpower.views.CustomFontView
+                        android:id="@+id/textview_sponsor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/dummy_view_78"
+                        android:layout_marginLeft="10dip"
+                        android:layout_toRightOf="@+id/dummy_sponsored"
+                        android:textColor="#338585"
+                        android:textSize="18dip" />
 
                     <View
                         android:id="@+id/dummy_view_1"

@@ -33,6 +33,7 @@ public class UserSmart implements Parcelable {
 	private String skills;
 	private boolean met;
 	private boolean isFirstInList;
+	private String sponsorNickname;
 
 	public boolean isFirstInList() {
 		return isFirstInList;
@@ -70,6 +71,13 @@ public class UserSmart implements Parcelable {
 		this.venueId = objUser.optInt("venue_id");
 		this.checkInCount = objUser.optInt("checkin_count");
 		this.skills = objUser.optString("skills");
+		this.sponsorNickname = objUser.optString("sponsorNickname");
+		if(this.sponsorNickname.equalsIgnoreCase("")==false)
+		{
+			Log.d("UserSmart","Sponsor: %s" + this.sponsorNickname);
+			int test = 5;
+			int test2 = test;
+		}
 		this.met = objUser.optBoolean("met");
 	}
 	

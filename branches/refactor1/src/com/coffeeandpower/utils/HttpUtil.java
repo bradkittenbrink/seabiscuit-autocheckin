@@ -136,7 +136,7 @@ public class HttpUtil {
 						userResume.setMajorJob(payload.optString("major_job_category"));
 						userResume.setMinorJob(payload.optString("minor_job_category"));
 						userResume.setStatusText(payload.optString("status_text"));
-						String testSponsor = payload.optString("sponsorNickname");
+						userResume.setJoinSponsor(payload.optString("sponsorNickname"));
 
 						// Location
 						JSONObject objLocation = payload.optJSONObject("location");

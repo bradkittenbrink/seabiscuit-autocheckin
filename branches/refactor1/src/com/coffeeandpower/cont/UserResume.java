@@ -18,6 +18,7 @@ public class UserResume {
 	private String joined;
 	private String joinedBrief;
 	private String joinDate;
+	private String joinSponsor;
 	private String enteredInviteCode;
 	private String bio;
 
@@ -313,6 +314,14 @@ public class UserResume {
 
 	public void setJoinDate(String joinDate) {
 		this.joinDate = joinDate;
+	}
+	
+	public String getJoinSponsor() {
+		return joinSponsor;
+	}
+	
+	public void setJoinSponsor(String joinSponsor) {
+		this.joinSponsor = joinSponsor;
 	}
 
 	public String getEnteredInviteCode() {

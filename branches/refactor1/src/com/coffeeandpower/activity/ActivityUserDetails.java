@@ -266,6 +266,8 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 
 			((TextView) findViewById(R.id.textview_user_job_title)).setText(AppCAP.cleanResponseString(userResumeData.getJobTitle()));
 			((TextView) findViewById(R.id.textview_date)).setText(userResumeData.getJoined());
+			((TextView) findViewById(R.id.textview_sponsor)).setText(userResumeData.getJoinSponsor());
+
 
 			// Was EARNED now it's HOURS
 			((TextView) findViewById(R.id.textview_earned)).setText(userResumeData.getTotalHours()+"");
