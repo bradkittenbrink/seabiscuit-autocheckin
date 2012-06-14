@@ -88,7 +88,6 @@
     <string name="tab_log_in">Log In</string>
     <string name="tab_contacts">Contacts</string>
     <string name="tab_check_in">Check In</string>
-    <string name="user_menu_enter">Enter invite code</string>
     <string name="user_menu_logout">Logout</string>
     <string name="user_menu_show">Show me new Check Ins</string>
     <string name="user_menu_in_city">in city</string>

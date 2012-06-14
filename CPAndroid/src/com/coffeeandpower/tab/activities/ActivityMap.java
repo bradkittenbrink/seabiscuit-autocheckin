@@ -385,6 +385,19 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	}
 
 	public void onClickMenu(View v) {
+		CustomFontView textInvite = (CustomFontView) findViewById(R.id.text_invite_codes);
+		//Detect whether we already have an C&P invite or not
+		if(AppCAP.getEnteredInviteCode())
+		{
+			//We need to set to invite
+			textInvite.setText("Invite");
+		}
+		else
+		{
+			//We need to set to enter invite code
+			textInvite.setText("Enter invite code");
+			
+		}
 		if (pager.getCurrentScreen() == SCREEN_MAP) {
 			pager.setCurrentScreen(SCREEN_SETTINGS, true);
 		} else {

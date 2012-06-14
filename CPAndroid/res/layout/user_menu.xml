@@ -33,13 +33,13 @@
             android:background="#494949" />
 
         <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/text_invite_codes"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_gray"
             android:clickable="true"
             android:onClick="onClickEnterInviteCode"
             android:padding="10dp"
-            android:text="@string/user_menu_enter"
             android:textColor="#dddddd"
             android:textSize="20sp" />
 
