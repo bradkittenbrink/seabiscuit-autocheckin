@@ -460,8 +460,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/dummy_view_78"
-                        android:layout_marginLeft="10dip"
-                        android:layout_toRightOf="@+id/textview_date"
+                        android:layout_marginRight="5dip"
+                        android:layout_toLeftOf="@+id/textview_sponsor"
                         android:text="@string/activity_user_details_sponsored"
                         android:textColor="#444444"
                         android:textSize="18dip"
@@ -472,8 +472,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/dummy_view_78"
-                        android:layout_marginLeft="10dip"
-                        android:layout_toRightOf="@+id/dummy_sponsored"
+                        android:layout_marginRight="10dip"
+                        android:layout_alignParentRight="true"
                         android:textColor="#338585"
                         android:textSize="18dip" />
 
