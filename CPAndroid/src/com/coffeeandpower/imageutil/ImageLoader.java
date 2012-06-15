@@ -1,9 +1,11 @@
 package com.coffeeandpower.imageutil;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -18,6 +20,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class ImageLoader {
@@ -31,10 +35,18 @@ public class ImageLoader {
 
 	private int defaultImage;
 	private int IMAGE_SIZE = 70;
+	
+	private boolean mExternalStorageAvailable = false;
+	private boolean mExternalStorageWriteable = false;
 
 	public ImageLoader(Context context) {
 		fileCache = new CacheFile(context);
 		executorService = Executors.newFixedThreadPool(5);
+		
+		checkMediaState();
+                
+                
+
 	}
 
 	public void DisplayImage(String url, ImageView imageView, int defaultImageRes, int size) {
@@ -44,11 +56,26 @@ public class ImageLoader {
 		Bitmap bitmap = memoryCache.get(url);
 
 		if (bitmap != null) {
+			//Log.d("ImageLoader","Got image from cache: " + url);
 			imageView.setImageBitmap(bitmap);
 		} else {
+			//Log.d("ImageLoader","Queueing image: " + url);
 			queuePhoto(url, imageView);
 			imageView.setImageResource(defaultImageRes);
 		}
+	}
+	
+	private void checkMediaState() {
+		String state = Environment.getExternalStorageState();
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    mExternalStorageAvailable = mExternalStorageWriteable = true;
+                } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+                    mExternalStorageAvailable = true;
+                    mExternalStorageWriteable = false;
+                } else {
+                    mExternalStorageAvailable = mExternalStorageWriteable = false;
+                }
+                //Log.d("ImageLoader","Media State: avail - " + mExternalStorageAvailable + ", writeable - " + mExternalStorageWriteable + ", canwrite: " + Environment.getExternalStorageDirectory().canWrite());
 	}
 
 	private void queuePhoto(String url, ImageView imageView) {
@@ -60,6 +87,9 @@ public class ImageLoader {
 	private Bitmap getBitmap(String url) {
 
 		File f = fileCache.getFile(url);
+		
+		//Log.d("ImageLoader","getBitmap: File: " + f.exists() + " " + f.canWrite() + " - " + f.getPath());
+		
 
 		// from SD cache
 		Bitmap b = decodeFile(f);
@@ -67,22 +97,50 @@ public class ImageLoader {
 			return b;
 
 		// from http
+		Bitmap imgBitmap = null;
+		ByteArrayOutputStream buffer = null;
+		
 		try {
-			Bitmap bitmap = null;
+			//Bitmap bitmap = null;
+			//Log.d("ImageLoader","Loading URL: " + url.hashCode());
 			URL imageUrl = new URL(url);
 			HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();
 			conn.setConnectTimeout(30000);
 			conn.setReadTimeout(30000);
 			conn.setInstanceFollowRedirects(true);
 			InputStream is = conn.getInputStream();
+			
+			// Need to read inputstream into memory, not directly into file
+			// in case file is not writeable
+			buffer = new ByteArrayOutputStream();
+			int nRead;
+			byte[] tmpData = new byte[16384];
+			while ((nRead = is.read(tmpData, 0, tmpData.length)) != -1) {
+			  buffer.write(tmpData, 0, nRead);
+			}
+			buffer.flush();
+		}
+		catch (Exception e) {
+			Log.e("ImageLoader","Exception in img download: " + e);
+		}
+		try {
+
+			byte[] imgBytes = buffer.toByteArray();
+			imgBitmap = BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
+			
+			//Log.d("ImageLoader","Read image into memory: " + imgBytes.length);
 			OutputStream os = new FileOutputStream(f);
-			copyStream(is, os);
+			os.write(imgBytes);
 			os.close();
-			bitmap = decodeFile(f);
-			return bitmap;
+			
+			return imgBitmap;
 		} catch (Exception e) {
-			// e.printStackTrace();
-			return null;
+			Log.e("ImageLoader","Could not save image: " + e);
+			 //e.printStackTrace();
+			if (imgBitmap != null)
+				return imgBitmap;
+			else
+				return null;
 		}
 	}
 
