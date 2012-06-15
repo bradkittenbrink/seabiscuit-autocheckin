@@ -31,12 +31,13 @@ public class Executor {
 	public static final int HANDLE_CHECK_IN = 1610;
 	public static final int HANDLE_GET_CHECHED_USERS_IN_FOURSQUARE = 1611;
 	public static final int HANDLE_ENTER_INVITATION_CODE = 1612;
-	public static final int HANDLE_SAVE_USER_JOB_CATEGORY = 1613;
-	public static final int HANDLE_SET_USER_PROFILE_DATA = 1614;
-	public static final int HANDLE_UPLOAD_USER_PROFILE_PHOTO = 1615;
-	public static final int HANDLE_GET_USER_TRANSACTION_DATA = 1616;
-	public static final int HANDLE_VENUE_CHAT = 1617;
-	public static final int HANDLE_SEND_VENUE_CHAT = 1618;
+	public static final int HANDLE_GET_INVITATION_CODE = 1613;
+	public static final int HANDLE_SAVE_USER_JOB_CATEGORY = 1614;
+	public static final int HANDLE_SET_USER_PROFILE_DATA = 1615;
+	public static final int HANDLE_UPLOAD_USER_PROFILE_PHOTO = 1616;
+	public static final int HANDLE_GET_USER_TRANSACTION_DATA = 1617;
+	public static final int HANDLE_VENUE_CHAT = 1618;
+	public static final int HANDLE_SEND_VENUE_CHAT = 1619;
 
 	private DataHolder result;
 
@@ -253,6 +254,20 @@ public class Executor {
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		}).start();
+	}
+	
+	public synchronized void getInvitationCode(final double[] latLong)
+	{
+		progress.setMessage("Generating Code...");
+		progress.show();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				result = AppCAP.getConnection().getInvitationCodeForLocation(latLong[0], latLong[1]);
+				handler.sendEmptyMessage(result.getHandlerCode());
+			}
+		}).start();		
+		
 	}
 
 	public synchronized void saveUserJobCategory(final String selectedMajorJob, final String selectedMinorJob) {

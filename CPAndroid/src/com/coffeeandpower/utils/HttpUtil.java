@@ -1817,6 +1817,16 @@ public class HttpUtil {
 
 					result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
 											      // this
+					JSONObject payload = json.optJSONObject("payload");
+					if(payload != null)
+					{
+						String code = payload.optString("code");
+						if(code != null)
+						{
+							result.setObject(code);
+							result.setHandlerCode(Executor.HANDLE_GET_INVITATION_CODE);
+						}
+					}
 					return result;
 				}
 			}
@@ -1880,6 +1890,8 @@ public class HttpUtil {
 						result.setHandlerCode(AppCAP.HTTP_ERROR);
 						result.setResponseMessage(json.optString("payload"));
 					} else {
+						//Parsing through JSON and finding entered_invite_code field might also make sense
+						AppCAP.setEnteredInviteCode();
 						result.setHandlerCode(Executor.HANDLE_ENTER_INVITATION_CODE);
 					}
 					return result;
