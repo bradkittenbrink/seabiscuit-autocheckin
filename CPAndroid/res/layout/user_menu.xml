@@ -39,6 +39,7 @@
             android:background="@drawable/btn_gray"
             android:clickable="true"
             android:onClick="onClickEnterInviteCode"
+            android:text="@string/activity_settings_invite"
             android:padding="10dp"
             android:textColor="#dddddd"
             android:textSize="20sp" />

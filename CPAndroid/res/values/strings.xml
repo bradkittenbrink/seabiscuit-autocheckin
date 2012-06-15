@@ -62,6 +62,7 @@
     <string name="activity_main_login_connect">Connect with LinkedIn \n to start using C&amp;P</string>
     <string name="activity_places_details_here">Here now...</string>
     <string name="activity_places_details_have">Have worked here...</string>
+    <string name="activity_settings_invite">Invite</string>
     <string name="activity_settings_profile_photo">Profile Photo</string>
     <string name="activity_settings_job_category">Job Category</string>
     <string name="activity_settings_smarterer">Smarterer Badges</string>
