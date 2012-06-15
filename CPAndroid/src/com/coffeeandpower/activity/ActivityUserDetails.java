@@ -272,8 +272,6 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 			// Was EARNED now it's HOURS
 			((TextView) findViewById(R.id.textview_earned)).setText(userResumeData.getTotalHours()+"");
 			((TextView) findViewById(R.id.textview_love)).setText(userResumeData.getReviewsLoveReceived());
-			((TextView) findViewById(R.id.textview_rate)).setText(userResumeData.getHourlyBillingRate().matches("null") ? "N/A"
-					: userResumeData.getHourlyBillingRate());
 
 			((TextView) findViewById(R.id.textview_place)).setText(AppCAP.cleanResponseString(userResumeData.getCheckInData_Name()));
 			((TextView) findViewById(R.id.textview_street)).setText(AppCAP.cleanResponseString(userResumeData.getCheckInData_Address()));
