@@ -2,8 +2,6 @@ package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.TimeZone;
@@ -19,6 +17,8 @@ import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -52,8 +52,8 @@ import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.cont.Work;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
+import com.coffeeandpower.cont.Work;
 import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
@@ -582,14 +582,19 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		switch (id) {
 
 		case DIALOG_SEND_PROP:
-			dialog.setContentView(R.layout.diloag_send_love);
+			dialog.setContentView(R.layout.dialog_send_love);
+			dialog.setTitle(R.string.activity_user_details_sendlove);
+			
+			dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 			((Button) dialog.findViewById(R.id.btn_send)).setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					if (((EditText) dialog.findViewById(R.id.edit_review)).getText().toString().length() > 0) {
 						dialog.dismiss();
-						exe.sendReview(userResumeData, ((EditText) dialog.findViewById(R.id.edit_review)).getText()
-								.toString());
+						exe.sendReview(userResumeData, ((EditText) dialog.findViewById(R.id.edit_review)).getText().toString());
+						
+						Toast.makeText(ActivityUserDetails.this, "You recognized " + userResumeData.getNickName(), Toast.LENGTH_SHORT).show();
+						onClickPlus(findViewById(R.id.imagebutton_plus));
 					} else {
 						dialog.dismiss();
 						Toast.makeText(ActivityUserDetails.this, "Review can't be empty!", Toast.LENGTH_SHORT).show();

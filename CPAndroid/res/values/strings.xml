@@ -7,7 +7,7 @@
     <!-- Linked In -->
 
 
-    <!-- staging  
+    <!-- staging
     <string name="linkedInApiKey">4xkfzpnvuc72</string>
     <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
     -->
@@ -70,7 +70,8 @@
     <string name="activity_user_details_available">AVAILABLE FOR:</string>
     <string name="activity_user_details_rate">RATE:</string>
     <string name="activity_user_details_earned">EARNED:</string>
-    <string name="activity_user_details_props">PROPS:</string>
+    <string name="activity_user_details_props">LOVE:</string>
+    <string name="activity_user_details_sendlove">Recognice user</string>
     <string name="activity_user_details_often">Often works at...</string>
     <string name="activity_user_details_joined">Joined on</string>
     <string name="activity_user_details_sponsored">Sponsored by</string>
@@ -79,7 +80,7 @@
     <string name="activity_wallet_transaction_history">Transaction History</string>
     <string name="custom_dialog_title">Title</string>
     <string name="custom_dialog_message">Message</string>
-    <string name="dialog_send_love_type">Type your reason here. Each prop costs $1</string>
+    <string name="dialog_send_love_type">Type your recognition text here.</string>
     <string name="tab_activity_contacts_contact">Contact list</string>
     <string name="tab_activity_login_connect">Connect with LinkedIn \n to start using C&amp;P</string>
     <string name="tab_map">Map</string>
@@ -92,7 +93,7 @@
     <string name="user_menu_show">Show me new Check Ins</string>
     <string name="user_menu_in_city">in city</string>
     <string name="user_menu_only">Only when I am\nchecked in</string>
-    <string name="googleMapsApiKey">08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA</string>
+    <string name="googleMapsApiKey">0N2B-_20GlM_H0LiHavOsRcF1VIqEQmyxijXZ3w</string>
     
 
 </resources>

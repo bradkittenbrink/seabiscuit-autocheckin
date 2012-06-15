@@ -37,6 +37,8 @@ public class AppCAP extends Application {
 	//   0PV0Dp_6Dj6M_WBuUrThj9-fW3btGy9kxl83wgQ
 	// Map key for andrewa debug:
 	//   08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA
+	// Google maps key for debug Andres:
+	//  0N2B-_20GlM_H0LiHavOsRcF1VIqEQmyxijXZ3w
 
 	public static final String TAG = "CoffeeAndPower";
 

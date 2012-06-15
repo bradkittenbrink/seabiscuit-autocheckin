@@ -737,7 +737,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imagebutton_chat"
-            android:background="@drawable/btn_black_thumb"
+            android:background="@drawable/btn_black_love_overlay"
             android:onClick="onClickSendProp" />
 
         <ImageButton
