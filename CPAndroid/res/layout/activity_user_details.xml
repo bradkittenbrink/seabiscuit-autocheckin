@@ -607,7 +607,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dip"
-                            android:text="@string/reviews"
+                            android:text="@string/recognition"
                             android:textColor="#338585"
                             android:textSize="26sp"
                             android:textStyle="bold" />
