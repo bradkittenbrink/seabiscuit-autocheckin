@@ -5,13 +5,14 @@
 	<string name="URL_WEB_SERVICE">https://www.candp.me/</string>
 	<string name="LINKED_IN_API_KEY">5tk2ex0mnjqk</string>
 	<string name="LINKED_IN_API_SEC">9JIH0rUiSbvJuHI2</string>
-	<string name="GOOGLE_MAPS_API_KEY">0N2B-_20GlM_H0LiHavOsRcF1VIqEQmyxijXZ3w</string>
+    <string name="GOOGLE_MAPS_API_KEY">0KQmu8VvEvgZTPvCwwEkFueESO0V6fKvIxticMA</string>
+		
 	
-	<!-- Staging
-	public static final String URL_WEB_SERVICE = "https://staging.candp.me/";
-	public static final String LINKED_IN_API_KEY = "4xkfzpnvuc72";
-	public static final String LINKED_IN_API_SEC = "mxgFhH1i1PbPlWjq";
+	<!-- Staging 
+	<string name="URL_WEB_SERVICE">https://staging.candp.me/</string>
+	<string name="LINKED_IN_API_KEY">4xkfzpnvuc72</string>
+	<string name="LINKED_IN_API_SEC">mxgFhH1i1PbPlWjq</string>
+	<string name="GOOGLE_MAPS_API_KEY">0KQmu8VvEvgZTPvCwwEkFueESO0V6fKvIxticMA</string>
 	-->
-    
 
 </resources>

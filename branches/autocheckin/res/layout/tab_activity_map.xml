@@ -69,7 +69,7 @@
                     android:id="@+id/mapview"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:apiKey="@+serverStrings/GOOGLE_MAPS_API_KEY"
+                    android:apiKey="@string/GOOGLE_MAPS_API_KEY"
                     android:clickable="true" />
                 
                 <!-- 08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA -->
