@@ -196,10 +196,18 @@ public class AppCAP extends Application {
 	 * 
 	 * @category localUserData
 	 */
-	public static void didCheckIntoVenue(int venueId) {
-		int[] currentVenues = venuesWithUserCheckins();
+	public static boolean didCheckIntoVenue(int venueId) {
+		int[] currentVenues = getVenuesWithUserCheckins();
 		
 		int venueIdx = 0;
+		
+		while (venueIdx < currentVenues.length) {
+			if (currentVenues[venueIdx] == venueId)
+				return false;
+			venueIdx += 1;
+		}
+		
+		venueIdx = 0;
 		String newPrefValue = "";
 		
 		while (venueIdx < currentVenues.length) {
@@ -209,10 +217,11 @@ public class AppCAP extends Application {
 		
 		newPrefValue += String.valueOf(venueId);
 		getSharedPreferences().edit().putString(TAG_VENUES_WITH_USER_CHECKINS, newPrefValue).commit();
+		return true;
 		
 	}
 	
-	public static int[] venuesWithUserCheckins() {
+	public static int[] getVenuesWithUserCheckins() {
 		//return getSharedPreferences().getStringSet("venuesWithUserCheckins",null);
 		String venueStrings = getSharedPreferences().getString(TAG_VENUES_WITH_USER_CHECKINS,null);
 		
@@ -229,7 +238,7 @@ public class AppCAP extends Application {
 			return returnArray;
 		}
 		
-		return null;
+		return new int[0];
 	}
 	/**
 	 * 

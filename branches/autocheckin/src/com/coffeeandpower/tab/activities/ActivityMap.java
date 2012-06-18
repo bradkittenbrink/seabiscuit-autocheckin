@@ -74,8 +74,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	private static final int ACTIVITY_ACCOUNT_SETTINGS = 1888;
 	public static final int ACCOUNT_CHANGED = 1900;
 
-	private static final float PROX_ALERT_RADIUS = 20;
-	private static final long PROX_ALERT_EXPIRY = 2880000; // 2 days in ms
+	
 	
 	private UserAndTabMenu menu;
 
@@ -268,17 +267,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			}
 		});
 		
-		// Set proximity alert (TEST)
-		Intent intent = new Intent("testIntent");
-		PendingIntent proxIntent = PendingIntent.getBroadcast(this,0,intent,0);
-		
-		double proxLat = 37.782297;
-		double proxLon = -122.475967;
-		
-		locationManager.addProximityAlert(proxLat, proxLon, PROX_ALERT_RADIUS, PROX_ALERT_EXPIRY, proxIntent);
-		
-		IntentFilter filter = new IntentFilter("testIntent");  
-		registerReceiver(new ProximityReceiver(), filter);
+		ProximityManager.onStart(this);
 	}
 
 	float firstX = 0;
