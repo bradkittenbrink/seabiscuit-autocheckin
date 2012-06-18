@@ -47,7 +47,7 @@
                 android:id="@+id/mapview_user_details"
                 android:layout_width="fill_parent"
                 android:layout_height="300dip"
-                android:apiKey="@string/googleMapsApiKey" />
+                android:apiKey="@+serverStrings/GOOGLE_MAPS_API_KEY" />
 
             <LinearLayout
                 android:layout_width="fill_parent"

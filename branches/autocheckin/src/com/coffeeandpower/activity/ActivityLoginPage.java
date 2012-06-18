@@ -73,8 +73,8 @@ public class ActivityLoginPage extends RootActivity {
 	 */
 	private void connectLinkedIn() {
 		lastAuthorize = new LinkedIn();
-		lastAuthorize.initialize((String) getResources().getText(R.string.linkedInApiKey),
-				(String) getResources().getText(R.string.linkedInApiSec));
+		lastAuthorize.initialize((String) getResources().getText(R.string.LINKED_IN_API_KEY),
+				(String) getResources().getText(R.string.LINKED_IN_API_SEC));
 		if (AppCAP.getUserLinkedInID().equals("")) {
 			new Thread(new OAuthAuthorizeAction(lastAuthorize, new ActivityUtils.JoinProgressHandler(this), null)).start();
 		} else {
