@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff000000"
+        android:paddingBottom="10dip" >
+
+        <Button
+            android:id="@+id/dummy_button_left"
+            android:layout_width="80dip"
+            android:layout_height="40dip"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="5dip"
+            android:background="@drawable/btn_dark_all"
+            android:onClick="onClickCancel"
+            android:text="@string/cancel"
+            android:textColor="#FFFFFF"
+            android:typeface="serif" />
+
+        <Button
+            android:id="@+id/dummy_button_right"
+            android:layout_width="80dip"
+            android:layout_height="40dip"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dip"
+            android:background="@drawable/btn_dark_all"
+            android:onClick="onClickDone"
+            android:text="@string/done"
+            android:textColor="#FFFFFF"
+            android:typeface="serif" />
+
+        <TextView
+            android:id="@+id/timepicker_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/dummy_button_right"
+            android:layout_toRightOf="@+id/dummy_button_left"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:typeface="serif" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/dark_all"
+        android:orientation="horizontal"
+        android:paddingLeft="17dp"
+        android:paddingTop="12dp"
+        android:paddingRight="17dp" >
+
+        <kankan.wheel.widget.WheelView
+            android:id="@+id/wheel_jobs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+</LinearLayout>

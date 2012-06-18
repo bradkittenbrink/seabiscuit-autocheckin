@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- Setting Layout View -->
+
+    <LinearLayout
+        android:id="@+id/dummy_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/text_nick_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#2d2d2d"
+            android:padding="10dp"
+            android:text=""
+            android:textColor="#dddddd"
+            android:textSize="25sp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#2d2d2d" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#494949" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/text_invite_codes"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_gray"
+            android:clickable="true"
+            android:onClick="onClickEnterInviteCode"
+            android:text="@string/activity_settings_invite"
+            android:padding="10dp"
+            android:textColor="#dddddd"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#2d2d2d" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#494949" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_gray"
+            android:clickable="true"
+            android:onClick="onClickWallet"
+            android:padding="10dp"
+            android:text="@string/activity_wallet"
+            android:textColor="#dddddd"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#2d2d2d" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#494949" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_gray"
+            android:clickable="true"
+            android:onClick="onClickSettings"
+            android:padding="10dp"
+            android:text="@string/settings"
+            android:textColor="#dddddd"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#2d2d2d" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#494949" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_gray"
+            android:clickable="true"
+            android:onClick="onClickLogout"
+            android:padding="10dp"
+            android:text="@string/user_menu_logout"
+            android:textColor="#dddddd"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#2d2d2d" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="#494949" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="5dip"
+        android:paddingLeft="5dip"
+        android:paddingRight="90dip"
+        android:paddingTop="5dip" >
+
+        <TextView
+            android:id="@+id/dummy_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_menu_show"
+            android:textColor="#009590" />
+
+        <LinearLayout
+            android:id="@+id/dummy_layout_1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dummy_text"
+            android:layout_marginTop="10dip"
+            android:layout_toLeftOf="@+id/dummy_vertical_line"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/from"
+                android:textColor="#e6e6e6" />
+
+            <Button
+                android:id="@+id/btn_from"
+                android:layout_width="180dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="5dip"
+                android:background="@drawable/btn_drop_down"
+                android:gravity="left|center_vertical"
+                android:paddingLeft="10dip"
+                android:text="@string/user_menu_in_city"
+                android:textColor="#000000" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/dummy_view"
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_below="@+id/dummy_layout_1"
+            android:layout_marginTop="10dip"
+            android:background="#555555" />
+
+        <TextView 
+            android:id="@+id/dummy_text_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dummy_view"
+            android:layout_marginLeft="5dip"
+            android:layout_marginTop="5dip"
+            android:text="@string/user_menu_only"
+            android:textColor="#e6e6e6" />
+
+        <ToggleButton android:id="@+id/toggle_checked_in"
+            android:layout_width="95dip"
+            android:layout_height="28dip"
+            android:layout_below="@+id/dummy_view"
+            android:layout_marginLeft="5dip"
+            android:layout_marginTop="5dip"
+            android:layout_toRightOf="@+id/dummy_text_1"
+            android:background="@drawable/btn_on_off"
+            android:textOff=""
+            android:textOn="" />
+    </RelativeLayout>
+</RelativeLayout>

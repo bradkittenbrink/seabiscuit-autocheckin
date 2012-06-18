@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, ActivityMain!</string>
+    <string name="app_name">C&amp;P</string>
+
+    <!-- Linked In -->
+
+
+    <!-- staging
+    <string name="linkedInApiKey">4xkfzpnvuc72</string>
+    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+    -->
+    
+    <!-- production -->
+    <string name="linkedInApiKey">5tk2ex0mnjqk</string>
+    <string name="linkedInApiSec">9JIH0rUiSbvJuHI2</string>
+    
+    
+    
+ 
+    
+    <string name="back">Back</string>
+    <string name="send">Send</string>
+    <string name="cancel">Cancel</string>
+    <string name="later">Later</string>
+    <string name="settings">Settings</string>
+    <string name="other">other</string>
+    <string name="password">Password</string>
+    <string name="nickname">Nickname</string>
+    <string name="re_password">Re-type Password</string>
+    <string name="coffeeandpower.com">coffeeandpower.com</string>
+    <string name="email">Email</string>
+    <string name="loading">Loading ...</string>
+    <string name="resume">Resume</string>
+    <string name="linkedin">LinkedIn</string>
+    <string name="facebook">Facebook</string>
+    <string name="recognition">Recognition</string>
+    <string name="education">Education</string>
+    <string name="ok">Ok</string>
+    <string name="done">Done</string>
+    <string name="from">From</string>
+    <string name="activity_add_funds">Add Funds</string>
+    <string name="activity_chat_name">Chat Name</string>
+    <string name="activity_chat_type">Type to chat</string>
+    <string name="activity_check_in_list_check">Check In</string>
+    <string name="activity_check_in_check_in_at">CHECK IN AT...</string>
+    <string name="activity_check_in_who">Who\'s here now?</string>
+    <string name="activity_check_in_what">What can you do, or what do you need?</string>
+    <string name="activity_check_in_optional">optional</string>
+    <string name="activity_check_in_for_how_long">FOR HOW LONG?</string>
+    <string name="activity_enter_invite_code_enter">Enter invite code from \nnearby C&amp;P user</string>
+    <string name="activity_job_category_job">Job Categories</string>
+    <string name="activity_job_caregory_major">Major Job Category</string>
+    <string name="activity_job_caregory_minor">Minor Job Category</string>
+    <string name="activity_join_join">Join</string>
+    <string name="activity_join_co_working">Join the co-working revolution!</string>
+    <string name="activity_join_email_address">Email Address</string>
+    <string name="activity_join_did_not">You did not enter a valid email address.</string>
+    <string name="activity_join_nickname_must_be">Nickname must be at least 3 characters long.</string>
+    <string name="activity_list_places_details_place_name">Place Name</string>
+    <string name="activity_main_login_connect">Connect with LinkedIn \n to start using C&amp;P</string>
+    <string name="activity_places_details_here">Here now...</string>
+    <string name="activity_places_details_have">Have worked here...</string>
+    <string name="activity_settings_invite">Invite</string>
+    <string name="activity_settings_profile_photo">Profile Photo</string>
+    <string name="activity_settings_job_category">Job Category</string>
+    <string name="activity_settings_smarterer">Smarterer Badges</string>
+    <string name="activity_sign_in">Sign In</string>
+    <string name="activity_sign_in_join">Join Coffee &amp; Power</string>
+    <string name="activity_user_details_available">AVAILABLE FOR:</string>
+    <string name="activity_user_details_rate">RATE:</string>
+    <string name="activity_user_details_earned">EARNED:</string>
+    <string name="activity_user_details_props">LOVE:</string>
+    <string name="activity_user_details_sendlove">Recognice user</string>
+    <string name="activity_user_details_often">Often works at...</string>
+    <string name="activity_user_details_joined">Joined on</string>
+    <string name="activity_user_details_sponsored">Sponsored by</string>
+    <string name="activity_wallet">Wallet</string>
+    <string name="activity_wallet_your_balance">Your Balance</string>
+    <string name="activity_wallet_transaction_history">Transaction History</string>
+    <string name="custom_dialog_title">Title</string>
+    <string name="custom_dialog_message">Message</string>
+    <string name="dialog_send_love_type">Type your recognition text here.</string>
+    <string name="tab_activity_contacts_contact">Contact list</string>
+    <string name="tab_activity_login_connect">Connect with LinkedIn \n to start using C&amp;P</string>
+    <string name="tab_map">Map</string>
+    <string name="tab_places">Places</string>
+    <string name="tab_people">People</string>
+    <string name="tab_log_in">Log In</string>
+    <string name="tab_contacts">Contacts</string>
+    <string name="tab_check_in">Check In</string>
+    <string name="user_menu_logout">Logout</string>
+    <string name="user_menu_show">Show me new Check Ins</string>
+    <string name="user_menu_in_city">in city</string>
+    <string name="user_menu_only">Only when I am\nchecked in</string>
+    <string name="googleMapsApiKey">0N2B-_20GlM_H0LiHavOsRcF1VIqEQmyxijXZ3w</string>
+    
+
+</resources>
