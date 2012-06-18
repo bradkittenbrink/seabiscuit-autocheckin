@@ -13,6 +13,7 @@ import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.datatiming.CounterData;
+import com.coffeeandpower.maps.ProximityManager;
 import com.coffeeandpower.views.CustomDialog;
 import com.google.android.maps.GeoPoint;
 
@@ -235,6 +236,8 @@ public class Executor {
 			@Override
 			public void run() {
 				result = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime, statusText);
+				//Create list of venueId's that the user has checkedinto for auto checkins
+				ProximityManager.venueCheckin(venue);
 		
 				//FIXME
 				//This assumes that the checkin is going to be successful, it doesn't look like there

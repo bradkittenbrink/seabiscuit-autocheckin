@@ -196,7 +196,7 @@ public class AppCAP extends Application {
 	 * 
 	 * @category localUserData
 	 */
-	public static void didCheckIntoVenue(String venueId) {
+	public static void didCheckIntoVenue(int venueId) {
 		int[] currentVenues = venuesWithUserCheckins();
 		
 		int venueIdx = 0;
