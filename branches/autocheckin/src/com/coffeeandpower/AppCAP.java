@@ -66,6 +66,7 @@ public class AppCAP extends Application {
 	private static final String TAG_SCREEN_WIDTH = "tag_screen_width";
 	private static final String TAG_FIRST_START = "tag_first_start";
 	private static final String TAG_INFO_DIALOG = "tag_info_dialog";
+	private static final String TAG_VENUES_WITH_USER_CHECKINS = "venuesWithUserCheckins";
 
 	// Notification settings
 	private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
@@ -196,17 +197,37 @@ public class AppCAP extends Application {
 	 * @category localUserData
 	 */
 	public static void didCheckIntoVenue(String venueId) {
-		Set<String> currentVenues = venuesWithUserCheckins();
-		if (currentVenues.add(venueId)) {
-			// Venue added
-		} else {
-			// Venue already in Set
+		int[] currentVenues = venuesWithUserCheckins();
+		
+		int venueIdx = 0;
+		String newPrefValue = "";
+		
+		while (venueIdx < currentVenues.length) {
+			newPrefValue += String.valueOf(currentVenues[venueIdx]) + ",";
+			venueIdx += 1;
 		}
+		
+		newPrefValue += String.valueOf(venueId);
+		getSharedPreferences().edit().putString(TAG_VENUES_WITH_USER_CHECKINS, newPrefValue).commit();
 		
 	}
 	
-	public static Set<String> venuesWithUserCheckins() {
+	public static int[] venuesWithUserCheckins() {
 		//return getSharedPreferences().getStringSet("venuesWithUserCheckins",null);
+		String venueStrings = getSharedPreferences().getString(TAG_VENUES_WITH_USER_CHECKINS,null);
+		
+		if (venueStrings != null) {
+			String[] stringArray = venueStrings.split(",");
+			int[] returnArray = new int[stringArray.length];
+			
+			int tokenIdx = 0;
+			while (tokenIdx < returnArray.length) {
+				returnArray[tokenIdx] = Integer.getInteger(stringArray[tokenIdx]);
+				tokenIdx += 1;
+			}
+			
+			return returnArray;
+		}
 		
 		return null;
 	}
