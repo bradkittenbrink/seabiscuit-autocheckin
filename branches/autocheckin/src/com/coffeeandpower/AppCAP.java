@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Set;
 
 import android.app.Application;
 import android.content.Context;
@@ -188,6 +189,26 @@ public class AppCAP extends Application {
 	 */
 	private static SharedPreferences getSharedPreferences() {
 		return instance.getSharedPreferences(AppCAP.TAG, MODE_PRIVATE);
+	}
+	
+	/*
+	 * 
+	 * @category localUserData
+	 */
+	public static void didCheckIntoVenue(String venueId) {
+		Set<String> currentVenues = venuesWithUserCheckins();
+		if (currentVenues.add(venueId)) {
+			// Venue added
+		} else {
+			// Venue already in Set
+		}
+		
+	}
+	
+	public static Set<String> venuesWithUserCheckins() {
+		//return getSharedPreferences().getStringSet("venuesWithUserCheckins",null);
+		
+		return null;
 	}
 	/**
 	 * 

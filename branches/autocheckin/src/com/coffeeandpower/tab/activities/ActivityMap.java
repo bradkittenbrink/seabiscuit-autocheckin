@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -47,6 +49,7 @@ import com.coffeeandpower.maps.BalloonItemizedOverlay;
 import com.coffeeandpower.maps.MyItemizedOverlay;
 import com.coffeeandpower.maps.MyOverlayItem;
 import com.coffeeandpower.maps.PinDrawable;
+import com.coffeeandpower.maps.ProximityManager;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
@@ -70,6 +73,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	private static final int ACTIVITY_ACCOUNT_SETTINGS = 1888;
 	public static final int ACCOUNT_CHANGED = 1900;
 
+	private static final float PROX_ALERT_RADIUS = 20;
+	private static final long PROX_ALERT_EXPIRY = 2880000; // 2 days in ms
+	
 	private UserAndTabMenu menu;
 
 	// Views
@@ -260,6 +266,18 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 				return false;
 			}
 		});
+		
+		// Set proximity alert (TEST)
+		Intent intent = new Intent("testIntent");
+		PendingIntent proxIntent = PendingIntent.getBroadcast(this,0,intent,0);
+		
+		double proxLat = 37.782297;
+		double proxLon = -122.475967;
+		
+		locationManager.addProximityAlert(proxLat, proxLon, PROX_ALERT_RADIUS, PROX_ALERT_EXPIRY, proxIntent);
+		
+		IntentFilter filter = new IntentFilter("testIntent");  
+		registerReceiver(new ProximityManager(), filter);
 	}
 
 	float firstX = 0;
