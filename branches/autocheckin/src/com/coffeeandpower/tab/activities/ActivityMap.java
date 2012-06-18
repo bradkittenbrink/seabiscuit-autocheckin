@@ -50,6 +50,7 @@ import com.coffeeandpower.maps.MyItemizedOverlay;
 import com.coffeeandpower.maps.MyOverlayItem;
 import com.coffeeandpower.maps.PinDrawable;
 import com.coffeeandpower.maps.ProximityManager;
+import com.coffeeandpower.maps.ProximityReceiver;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
@@ -277,7 +278,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		locationManager.addProximityAlert(proxLat, proxLon, PROX_ALERT_RADIUS, PROX_ALERT_EXPIRY, proxIntent);
 		
 		IntentFilter filter = new IntentFilter("testIntent");  
-		registerReceiver(new ProximityManager(), filter);
+		registerReceiver(new ProximityReceiver(), filter);
 	}
 
 	float firstX = 0;
