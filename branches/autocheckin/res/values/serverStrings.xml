@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<!-- Production -->
+	<!-- Production 
 	<string name="URL_WEB_SERVICE">https://www.candp.me/</string>
 	<string name="LINKED_IN_API_KEY">5tk2ex0mnjqk</string>
 	<string name="LINKED_IN_API_SEC">9JIH0rUiSbvJuHI2</string>
     <string name="GOOGLE_MAPS_API_KEY">0KQmu8VvEvgZTPvCwwEkFueESO0V6fKvIxticMA</string>
-		
+	-->	
 	
-	<!-- Staging 
+	<!-- Staging -->
 	<string name="URL_WEB_SERVICE">https://staging.candp.me/</string>
 	<string name="LINKED_IN_API_KEY">4xkfzpnvuc72</string>
 	<string name="LINKED_IN_API_SEC">mxgFhH1i1PbPlWjq</string>
 	<string name="GOOGLE_MAPS_API_KEY">0KQmu8VvEvgZTPvCwwEkFueESO0V6fKvIxticMA</string>
-	-->
+	
 
 </resources>

@@ -72,9 +72,9 @@ public class AppCAP extends Application {
 	private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
 	private static final String TAG_NOTIFICATION_TOGGLE = "tag_notification_toggle";
 
-	public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
+	//public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
 	// production
-	//public static final String URL_WEB_SERVICE = "https://staging.candp.me/"; // staging
+	public static final String URL_WEB_SERVICE = "https://staging.candp.me/"; // staging
 	public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
 	public static final String FOURSQUARE_OAUTH = "BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4";
 	public static final String URL_FUNDS = "http://www.coffeeandpower.com/m/?ios#addFundsiPhone";
@@ -127,19 +127,19 @@ public class AppCAP extends Application {
 
 		UAirship.takeOff(this);
 		
+		PushManager.enablePush();
+		PushPreferences prefs = PushManager.shared().getPreferences();
+		prefs.setSoundEnabled(true);
+		prefs.setVibrateEnabled(true);
+		PushManager.shared().setIntentReceiver(IntentReceiver.class);
+
+		
 		//Test counter creation
 		//this.counter.start();
 		if (Constants.debugLog)
 			Log.d("Coffee","Creating counter...");
 		instance.timingCounter = new Counter(10, 1);
 		//instance.timingCounter.start();
-
-		PushManager.enablePush();
-		PushManager.shared().setIntentReceiver(IntentReceiver.class);
-
-		PushPreferences prefs = PushManager.shared().getPreferences();
-		if (Constants.debugLog)
-			Log.d("LOG", "Found APID: " + prefs.getPushId());
 
 		// Get country code for metrics/imperial units
 		TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
