@@ -27,14 +27,6 @@ public class ActivityLoginPage extends RootActivity {
 
 		AppCAP.setShouldFinishActivities(false);
 
-		// Continue session...
-		if (!AppCAP.getUserLinkedInID().equals("")) {
-			((TextView) findViewById(R.id.text_connect)).setVisibility(View.GONE);
-			((ImageButton) findViewById(R.id.btn_linked_in)).setVisibility(View.GONE);
-			((Button) findViewById(R.id.btn_later)).setVisibility(View.GONE);
-			connectLinkedIn();
-		}
-
 		// Start loging in process from Contacts Activity
 		if (AppCAP.isStartingLoginPageFromContacts()) {
 			AppCAP.setStartLoginPageFromContacts(false);
@@ -74,7 +66,7 @@ public class ActivityLoginPage extends RootActivity {
 	private void connectLinkedIn() {
 		lastAuthorize = new LinkedIn();
 		lastAuthorize.initialize((String) getResources().getText(R.string.linkedInApiKey),
-				(String) getResources().getText(R.string.linkedInApiSec));
+			(String) getResources().getText(R.string.linkedInApiSec));
 		if (AppCAP.getUserLinkedInID().equals("")) {
 			new Thread(new OAuthAuthorizeAction(lastAuthorize, new ActivityUtils.JoinProgressHandler(this), null)).start();
 		} else {
