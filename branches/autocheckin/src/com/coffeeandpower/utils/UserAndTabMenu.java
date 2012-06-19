@@ -23,6 +23,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
+import com.coffeeandpower.activity.ActivityNotifications;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.activity.ActivityWallet;
 import com.coffeeandpower.cont.DataHolder;
@@ -231,6 +232,12 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 	@Override
 	public void onClickWallet(View v) {
 		Intent intent = new Intent(context, ActivityWallet.class);
+		context.startActivity(intent);
+	}
+	
+	@Override
+	public void onClickNotifications(View v) {
+		Intent intent = new Intent(context, ActivityNotifications.class);
 		context.startActivity(intent);
 	}
 

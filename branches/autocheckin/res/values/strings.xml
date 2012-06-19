@@ -78,6 +78,7 @@
     <string name="user_menu_show">Show me new Check Ins</string>
     <string name="user_menu_in_city">in city</string>
     <string name="user_menu_only">Only when I am\nchecked in</string>
+    <string name="notifications_label">Notifications</string>
     
 
 </resources>

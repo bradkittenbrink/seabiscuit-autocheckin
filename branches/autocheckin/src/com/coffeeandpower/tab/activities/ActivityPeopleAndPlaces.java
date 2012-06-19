@@ -125,60 +125,9 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		// default view is People List
 		isPeopleList = true;
 	}
-
-	/**
-	 * Check if user is checked in or not
-	 */
-	private void checkUserState() {
-		if (AppCAP.isUserCheckedIn()) {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityPeopleAndPlaces.this,
-					R.anim.rotate_indefinitely));
-		} else {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
-		}
-	}
-
-	private void setPeopleList() {
-		
-		if(initialLoad)
-		{
-			if (Constants.debugLog)
-				Log.d("ActivityPeopleAndPlaces","People List Initial Load");
-			adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
-			listView.setAdapter(adapterUsers);
-			Utils.animateListView(listView);
-			initialLoad = false;
-		}
-		else
-		{
-			adapterUsers.setNewData(arrayUsers);
-			adapterUsers.notifyDataSetChanged();
-		}
-
-	}
-
-	private void setPlaceList() {
-		isPeopleList = false;
-		((CustomFontView) findViewById(R.id.textview_location_name)).setText(PLACES_SCREEN_TITLE);
-		
-		if(initialLoad)
-		{
-			if (Constants.debugLog)
-				Log.d("ActivityPeopleAndPlaces","Place List Initial Load");
-			adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
-			listView.setAdapter(adapterPlaces);
-			Utils.animateListView(listView);
-			initialLoad = false;
-		}
-		else
-		{
-			adapterPlaces.setNewData(arrayVenues);
-			adapterPlaces.notifyDataSetChanged();
-		}
-	}
-
+	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -283,11 +232,67 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		
 	}   // end onCreate()
 	
+	
+
+	/**
+	 * Check if user is checked in or not
+	 */
+	private void checkUserState() {
+		if (AppCAP.isUserCheckedIn()) {
+			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
+			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityPeopleAndPlaces.this,
+					R.anim.rotate_indefinitely));
+		} else {
+			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
+			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
+		}
+	}
+
+	private void setPeopleList() {
+		
+		if(initialLoad)
+		{
+			if (Constants.debugLog)
+				Log.d("ActivityPeopleAndPlaces","People List Initial Load");
+			adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
+			listView.setAdapter(adapterUsers);
+			Utils.animateListView(listView);
+			initialLoad = false;
+		}
+		else
+		{
+			adapterUsers.setNewData(arrayUsers);
+			adapterUsers.notifyDataSetChanged();
+		}
+
+	}
+
+	private void setPlaceList() {
+		isPeopleList = false;
+		((CustomFontView) findViewById(R.id.textview_location_name)).setText(PLACES_SCREEN_TITLE);
+		
+		if(initialLoad)
+		{
+			if (Constants.debugLog)
+				Log.d("ActivityPeopleAndPlaces","Place List Initial Load");
+			adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
+			listView.setAdapter(adapterPlaces);
+			Utils.animateListView(listView);
+			initialLoad = false;
+		}
+		else
+		{
+			adapterPlaces.setNewData(arrayVenues);
+			adapterPlaces.notifyDataSetChanged();
+		}
+	}
+
+	
+	
 	@Override
 	protected void onStart() {
 		
-		ProgressDialog progress = new ProgressDialog(this);
-		progress.setMessage("Loading...");
+		
 		
 		if (Constants.debugLog)
 			Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStart()");
@@ -351,6 +356,12 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	@Override
 	public void onClickEnterInviteCode(View v) {
 		menu.onClickEnterInviteCode(v);
+	}
+	
+	@Override
+	public void onClickNotifications(View v) {
+		menu.onClickNotifications(v);
+		
 	}
 
 	@Override

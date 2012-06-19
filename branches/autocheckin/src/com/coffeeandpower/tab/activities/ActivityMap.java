@@ -578,10 +578,18 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		}
 	}
 
+	@Override
 	public void onClickWallet(View v) {
 		menu.onClickWallet(v);
 	}
+	
+	@Override
+	public void onClickNotifications(View v) {
+		menu.onClickNotifications(v);
+		
+	}
 
+	@Override
 	public void onClickLogout(View v) {
 		menu.onClickLogout(v);
 	}
@@ -709,6 +717,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	    }
 	    return super.onKeyDown(keyCode, event);
 	}
+
+	
 
 	
 	

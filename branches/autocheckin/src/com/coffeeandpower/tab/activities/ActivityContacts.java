@@ -337,6 +337,12 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		menu.onClickMap(v);
 		finish();
 	}
+	
+	@Override
+	public void onClickNotifications(View v) {
+		menu.onClickNotifications(v);
+		
+	}
 
 	@Override
 	public void onClickPlaces(View v) {
