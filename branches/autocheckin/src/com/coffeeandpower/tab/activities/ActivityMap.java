@@ -201,13 +201,17 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		mapView.getOverlays().add(myLocationOverlay);
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		try {
-			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new GeoUpdateHandler());
+			//locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new GeoUpdateHandler());
+			//locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new GeoUpdateHandler());
+			locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, new GeoUpdateHandler());
+
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			new CustomDialog(ActivityMap.this, "Info", "Location Manager error").show();
 		}
 		myLocationOverlay.runOnFirstFix(new Runnable() {
 			public void run() {
+				RootActivity.log("ActivityMap First Fix Hit");
 				mapView.getController().animateTo(myLocationOverlay.getMyLocation());
 				AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
 				runOnUiThread(new Runnable() {
@@ -373,6 +377,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			// if (Constants.debugLog)
 			//	Log.d("LOG", "ActivityMap locationChanged: " +
 			// location.getLatitude()+":"+location.getLongitude());
+			RootActivity.log("ActivityMap Passive location hit");
+
 		}
 
 		@Override
@@ -610,7 +616,12 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
 		
+		
 		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
+		//Lets turn off the GPS when we exit the map screen
+		if (Constants.debugLog)
+			Log.d("ActivityMap","Disabling location updates");
+		myLocationOverlay.disableMyLocation();
 	}
 
 	private void errorReceived() {
