@@ -229,15 +229,17 @@ public class Executor {
 		}).start();
 	}
 
-	public synchronized void checkIn(final VenueSmart venue, final int checkInTime, final int checkOutTime, final String statusText) {
+	public synchronized void checkIn(final VenueSmart venue, final int checkInTime, final int checkOutTime, final String statusText, final boolean autoCheckin) {
 		progress.setMessage("Checking in...");
 		progress.show();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				result = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime, statusText);
-				//Create list of venueId's that the user has checkedinto for auto checkins
-				ProximityManager.venueCheckin(venue);
+				//If user selected auto checkin, save that to preferences
+				if (autoCheckin) {
+					ProximityManager.addVenueToAutoCheckinList(venue);
+				}
 		
 				//FIXME
 				//This assumes that the checkin is going to be successful, it doesn't look like there

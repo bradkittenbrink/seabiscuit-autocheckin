@@ -66,7 +66,8 @@ public class AppCAP extends Application {
 	private static final String TAG_SCREEN_WIDTH = "tag_screen_width";
 	private static final String TAG_FIRST_START = "tag_first_start";
 	private static final String TAG_INFO_DIALOG = "tag_info_dialog";
-	private static final String TAG_VENUES_WITH_USER_CHECKINS = "venuesWithUserCheckins";
+	//private static final String TAG_VENUES_WITH_USER_CHECKINS = "venuesWithUserCheckins";
+	private static final String TAG_VENUES_WITH_AUTO_CHECKINS = "venuesWithAutoCheckins";
 
 	// Notification settings
 	private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
@@ -193,14 +194,15 @@ public class AppCAP extends Application {
 	}
 	
 	/*
-	 * 
+	 * Add a Venue to the Auto Checkin List
 	 * @category localUserData
 	 */
-	public static boolean didCheckIntoVenue(int venueId) {
-		int[] currentVenues = getVenuesWithUserCheckins();
+	public static boolean addVenueToAutoCheckinList(int venueId) {
 		
+		int[] currentVenues = getVenuesWithAutoCheckins();
 		int venueIdx = 0;
 		
+		// If the venue is already present, return false
 		while (venueIdx < currentVenues.length) {
 			if (currentVenues[venueIdx] == venueId)
 				return false;
@@ -210,20 +212,25 @@ public class AppCAP extends Application {
 		venueIdx = 0;
 		String newPrefValue = "";
 		
+		// Concat all venues together
 		while (venueIdx < currentVenues.length) {
 			newPrefValue += String.valueOf(currentVenues[venueIdx]) + ",";
 			venueIdx += 1;
 		}
 		
+		// Save comma-separated string to preferences
 		newPrefValue += String.valueOf(venueId);
-		getSharedPreferences().edit().putString(TAG_VENUES_WITH_USER_CHECKINS, newPrefValue).commit();
+		getSharedPreferences().edit().putString(TAG_VENUES_WITH_AUTO_CHECKINS, newPrefValue).commit();
 		return true;
 		
 	}
 	
-	public static int[] getVenuesWithUserCheckins() {
+	/*
+	 * Return list of venue IDs for which the user has selected Auto Checkin
+	 */
+	public static int[] getVenuesWithAutoCheckins() {
 		//return getSharedPreferences().getStringSet("venuesWithUserCheckins",null);
-		String venueStrings = getSharedPreferences().getString(TAG_VENUES_WITH_USER_CHECKINS,null);
+		String venueStrings = getSharedPreferences().getString(TAG_VENUES_WITH_AUTO_CHECKINS,null);
 		
 		if (venueStrings != null) {
 			String[] stringArray = venueStrings.split(",");
@@ -240,6 +247,9 @@ public class AppCAP extends Application {
 		
 		return new int[0];
 	}
+	
+	
+	
 	/**
 	 * 
 	 * @category localUserData

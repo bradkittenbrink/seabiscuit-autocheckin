@@ -8,6 +8,8 @@ import java.util.Observer;
 
 import org.apache.http.NameValuePair;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -248,8 +250,51 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		//((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
 		//((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityCheckIn.this,
 		//		R.anim.rotate_indefinitely));
-		exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString());
+		
+		// If user has not already selected this venue for auto checkin, 
+		// Create Dialog to ask whether user wants to check in automatically at this venue
+		int[] venueList = AppCAP.getVenuesWithAutoCheckins();
+		boolean venueMatched = false;
+		for (int venueId:venueList) {
+			if (venue.getVenueId() == venueId) {
+				venueMatched = true;
+				break;
+			}
+		}
+		
+		if (!venueMatched) {
+                		
+        		AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
+        		myAlertDialog.setTitle("Automatic Checkin");
+        		myAlertDialog.setMessage("Do you want to check in to " + venue.getName() + " automatically?");
+        		myAlertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        			
+        			 public void onClick(DialogInterface arg0, int arg1) {
+        				 Log.d("CheckIn","User clicked OK");
+        				 exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),true);
+        		 	 }
+        		});
+        		myAlertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        		       
+                		  public void onClick(DialogInterface arg0, int arg1) {
+                			  Log.d("CheckIn","User clicked Cancel");
+                			  exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false);
+                		  }
+        		});
+        		myAlertDialog.show();
+		} else {
+			// If user already selected autocheckin, just check them in silently
+			exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false);
+		}
+		
+		
+		
 	}
+	
+	
+	
+	
+	
 	
 	private ArrayList<UserShort> convertUserSmart2UserShort(ArrayList<UserSmart> userList) {
 		ArrayList<UserShort> shortUsers = new ArrayList<UserShort>();

@@ -31,10 +31,10 @@ public class ProximityManager implements Observer {
 	private static ArrayList<Integer> venuesWithProxAlertsAdded = new ArrayList<Integer>();
 	
 	
-        public static void venueCheckin(VenueSmart checkinVenue)
+        public static void addVenueToAutoCheckinList(VenueSmart checkinVenue)
         {
         	// Create a prox alert if this is a new venue for this user
-        	if (AppCAP.didCheckIntoVenue(checkinVenue.getVenueId())) {
+        	if (AppCAP.addVenueToAutoCheckinList(checkinVenue.getVenueId())) {
         		createProxAlert(checkinVenue);
         	}
         	
@@ -85,7 +85,7 @@ public class ProximityManager implements Observer {
 		Log.d("ProxMgr","update()");
 		
 		// Get list of venues with user checkins
-        	int[] venueList = AppCAP.getVenuesWithUserCheckins();
+        	int[] venueList = AppCAP.getVenuesWithAutoCheckins();
         	
         	CounterData counterdata = (CounterData) data;
 		DataHolder venuesWithCheckins = counterdata.getData();
