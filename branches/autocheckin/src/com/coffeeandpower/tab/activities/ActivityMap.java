@@ -13,8 +13,6 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -87,7 +85,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	private MapController mapController;
 	private MyLocationOverlay myLocationOverlay;
 	private MyItemizedOverlay itemizedoverlay;
-	private LocationManager locationManager;
 	
 	private ProgressDialog progress;
 
@@ -199,16 +196,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 
 		// Set others
 		mapView.getOverlays().add(myLocationOverlay);
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		try {
-			//locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new GeoUpdateHandler());
-			//locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new GeoUpdateHandler());
-			locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, new GeoUpdateHandler());
-
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			new CustomDialog(ActivityMap.this, "Info", "Location Manager error").show();
-		}
 		myLocationOverlay.runOnFirstFix(new Runnable() {
 			public void run() {
 				RootActivity.log("ActivityMap First Fix Hit");
@@ -365,36 +352,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		AppCAP.setLoggedInUserId(loggedUser.getUserId());
 		AppCAP.setLoggedInUserNickname(loggedUser.getNickName());
 		textNickName.setText(loggedUser.getNickName());
-	}
-
-	public class GeoUpdateHandler implements LocationListener {
-		@Override
-		public void onLocationChanged(Location location) {
-			// int lat = (int) (location.getLatitude() * 1E6);
-			// int lng = (int) (location.getLongitude() * 1E6);
-			// GeoPoint point = new GeoPoint(lat, lng);
-
-			// if (Constants.debugLog)
-			//	Log.d("LOG", "ActivityMap locationChanged: " +
-			// location.getLatitude()+":"+location.getLongitude());
-			RootActivity.log("ActivityMap Passive location hit");
-
-		}
-
-		@Override
-		public void onProviderDisabled(String provider) {
-			RootActivity.log("ActivityMap provider: " + provider);
-		}
-
-		@Override
-		public void onProviderEnabled(String provider) {
-			RootActivity.log("ActivityMap providerEnabled");
-		}
-
-		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-			RootActivity.log("ActivityMap statusChanged");
-		}
 	}
 
 	public void onClickMenu(View v) {
