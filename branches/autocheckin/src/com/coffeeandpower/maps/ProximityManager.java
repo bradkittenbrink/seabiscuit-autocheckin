@@ -23,7 +23,7 @@ public class ProximityManager implements Observer {
 
 	private static LocationManager locationManager;
 	
-	private static final float PROX_ALERT_RADIUS = 20;
+	private static final float PROX_ALERT_RADIUS = 100;
 	private static final long PROX_ALERT_EXPIRY = 2880000; // 2 days in ms
 
 	private static ProximityManager instance;
@@ -93,8 +93,13 @@ public class ProximityManager implements Observer {
 		Object[] obj = (Object[]) venuesWithCheckins.getObject();
 		@SuppressWarnings("unchecked")
 		ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-        	
-        	
+		
+		//If have created a prox for all the venues, we can stop listening to the observable
+		if(venuesWithProxAlertsAdded.size() == venueList.length)
+		{
+			Log.d("ProxMgr","Shutting down observer, all venues accounted for");
+			AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins", getInstance());
+		}
         	
 		for (VenueSmart receivedVenue: arrayVenues) {
 			
