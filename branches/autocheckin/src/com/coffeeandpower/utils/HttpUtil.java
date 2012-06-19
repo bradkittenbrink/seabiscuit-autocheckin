@@ -63,7 +63,6 @@ import com.coffeeandpower.cont.Education;
 import com.coffeeandpower.cont.Listing;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.Transaction;
-import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserShort;
 import com.coffeeandpower.cont.UserSmart;
@@ -792,7 +791,7 @@ public class HttpUtil {
 	 * @param user
 	 * @return
 	 */
-	public DataHolder setUserProfileData(User user, boolean isEmailChanged) {
+	public DataHolder setUserProfileData(UserSmart user, boolean isEmailChanged) {
 
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
@@ -806,7 +805,7 @@ public class HttpUtil {
 			params.add(new BasicNameValuePair("action", "setUserProfileData"));
 			params.add(new BasicNameValuePair("nickname", user.getNickName() + ""));
 			if (isEmailChanged) {
-				params.add(new BasicNameValuePair("email", URLEncoder.encode(user.getUserName() + "", "utf-8")));
+				params.add(new BasicNameValuePair("email", URLEncoder.encode(user.getNickName() + "", "utf-8")));
 			}
 			post.setEntity(new UrlEncodedFormEntity(params));
 
@@ -2787,29 +2786,7 @@ public class HttpUtil {
 
 				JSONObject json = new JSONObject(responseString);
 				if (json != null) {
-
-					int userId = json.optInt("userid");
-					String nickName = json.optString("nickname");
-					String userName = json.optString("username");
-					String statusText = json.optString("status_text");
-					String status = json.optString("status");
-					String active = json.optString("active");
-					String photo = json.optString("photo");
-					String photoLarge = json.optString("photo_large");
-					double lat = json.optDouble("lat");
-					double lng = json.optDouble("lng");
-					int favoriteEnabled = json.optInt("favorite_enabled");
-					int favoriteCount = json.optInt("favorite_count");
-					int myFavoriteCount = json.optInt("my_favorite_count");
-					int moneyReceived = json.optInt("money_received");
-					int offersPaid = json.optInt("offers_paid");
-					int balance = json.getInt("balance");
-
-					AppCAP.setLocalUserPhotoLargeURL(photoLarge);
-					AppCAP.setLocalUserPhotoURL(photo);
-
-					result.setObject(new User(userId, favoriteEnabled, favoriteCount, myFavoriteCount, moneyReceived, offersPaid,
-							balance, nickName, userName, statusText, status, active, photo, photoLarge, lat, lng));
+					result.setObject(new UserSmart(json));
 					result.setHandlerCode(Executor.HANDLE_GET_USER_DATA);
 					return result;
 				}

@@ -27,7 +27,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.cont.User;
+import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.utils.Executor;
@@ -41,7 +41,7 @@ public class ActivitySettings extends RootActivity {
 
 	private final static int PROFILE_PIC_REQUEST = 1455;
 
-	private User loggedUser;
+	private UserSmart loggedUser;
 
 	private EditText textNickName;
 	private EditText textEmail;
@@ -80,7 +80,7 @@ public class ActivitySettings extends RootActivity {
 
 		case Executor.HANDLE_GET_USER_DATA:
 			if (result.getObject() != null) {
-				loggedUser = (User) result.getObject();
+				loggedUser = (UserSmart) result.getObject();
 				useUserData();
 			}
 			break;
@@ -185,7 +185,7 @@ public class ActivitySettings extends RootActivity {
 					textEmail.setVisibility(View.GONE);
 
 					if (loggedUser != null) {
-						loggedUser.setUserName(textEmail.getText().toString());
+						loggedUser.setNickName(textEmail.getText().toString());
 						exe.setUserProfileData(loggedUser, true);
 					}
 					break;
@@ -205,7 +205,7 @@ public class ActivitySettings extends RootActivity {
 		// Set views
 		if (loggedUser != null) {
 			textNickName.setText(loggedUser.getNickName());
-			textEmail.setText(loggedUser.getUserName());
+			textEmail.setText(loggedUser.getNickName());
 		}
 	}
 

@@ -39,7 +39,6 @@ import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.datatiming.CounterData;
@@ -93,7 +92,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	private ProgressDialog progress;
 
 	// Current user
-	private User loggedUser;
+	private UserSmart loggedUser;
 
 	private DataHolder result;
 
@@ -624,8 +623,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		switch (action) {
 		case Executor.HANDLE_GET_USER_DATA:
 			if (result.getObject() != null) {
-				if (result.getObject() instanceof User) {
-					loggedUser = (User) result.getObject();
+				if (result.getObject() instanceof UserSmart) {
+					loggedUser = (UserSmart) result.getObject();
 					useUserData();
 				}
 			}

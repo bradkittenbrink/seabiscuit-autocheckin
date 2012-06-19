@@ -8,8 +8,8 @@ import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.cont.User;
 import com.coffeeandpower.cont.UserResume;
+import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.datatiming.CounterData;
@@ -287,7 +287,7 @@ public class Executor {
 		}).start();
 	}
 
-	public synchronized void setUserProfileData(final User user, final boolean isEmailChanged) {
+	public synchronized void setUserProfileData(final UserSmart user, final boolean isEmailChanged) {
 		progress.setMessage("Uploading...");
 		progress.show();
 		new Thread(new Runnable() {
