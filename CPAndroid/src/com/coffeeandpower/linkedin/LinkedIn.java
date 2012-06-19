@@ -80,11 +80,16 @@ public class LinkedIn implements OAuthService {
 		// accessToken.getToken());
 		if (client != null)
 			currUser = client.getProfileForCurrentUser(EnumSet.of(
-				com.google.code.linkedinapi.client.enumeration.ProfileField.ID, com.google.code.linkedinapi.client.enumeration.ProfileField.FIRST_NAME,
-				com.google.code.linkedinapi.client.enumeration.ProfileField.LAST_NAME, com.google.code.linkedinapi.client.enumeration.ProfileField.HEADLINE,
-				com.google.code.linkedinapi.client.enumeration.ProfileField.INDUSTRY, com.google.code.linkedinapi.client.enumeration.ProfileField.PICTURE_URL,
-				com.google.code.linkedinapi.client.enumeration.ProfileField.DATE_OF_BIRTH, com.google.code.linkedinapi.client.enumeration.ProfileField.LOCATION_NAME,
-				com.google.code.linkedinapi.client.enumeration.ProfileField.MAIN_ADDRESS, com.google.code.linkedinapi.client.enumeration.ProfileField.LOCATION_COUNTRY)
+				com.google.code.linkedinapi.client.enumeration.ProfileField.ID, 
+				com.google.code.linkedinapi.client.enumeration.ProfileField.FIRST_NAME,
+				com.google.code.linkedinapi.client.enumeration.ProfileField.LAST_NAME, 
+				com.google.code.linkedinapi.client.enumeration.ProfileField.HEADLINE,
+				com.google.code.linkedinapi.client.enumeration.ProfileField.INDUSTRY, 
+				com.google.code.linkedinapi.client.enumeration.ProfileField.PICTURE_URL,
+				com.google.code.linkedinapi.client.enumeration.ProfileField.DATE_OF_BIRTH, 
+				com.google.code.linkedinapi.client.enumeration.ProfileField.LOCATION_NAME,
+				com.google.code.linkedinapi.client.enumeration.ProfileField.MAIN_ADDRESS, 
+				com.google.code.linkedinapi.client.enumeration.ProfileField.LOCATION_COUNTRY)
 				);
 
 		return client != null && accessToken.getToken() != null;
@@ -95,14 +100,17 @@ public class LinkedIn implements OAuthService {
 			accessToken = new LinkedInAccessToken(token, tokenSecret);
 			client = factory.createLinkedInApiClient(accessToken);
 			if (client != null)
-//				currUser = client.getProfileForCurrentUser(EnumSet
-//						.allOf(com.google.code.linkedinapi.client.enumeration.ProfileField.class));
 				currUser = client.getProfileForCurrentUser(EnumSet.of(
-					com.google.code.linkedinapi.client.enumeration.ProfileField.ID, com.google.code.linkedinapi.client.enumeration.ProfileField.FIRST_NAME,
-					com.google.code.linkedinapi.client.enumeration.ProfileField.LAST_NAME, com.google.code.linkedinapi.client.enumeration.ProfileField.HEADLINE,
-					com.google.code.linkedinapi.client.enumeration.ProfileField.INDUSTRY, com.google.code.linkedinapi.client.enumeration.ProfileField.PICTURE_URL,
-					com.google.code.linkedinapi.client.enumeration.ProfileField.DATE_OF_BIRTH, com.google.code.linkedinapi.client.enumeration.ProfileField.LOCATION_NAME,
-					com.google.code.linkedinapi.client.enumeration.ProfileField.MAIN_ADDRESS, com.google.code.linkedinapi.client.enumeration.ProfileField.LOCATION_COUNTRY)
+					com.google.code.linkedinapi.client.enumeration.ProfileField.ID, 
+					com.google.code.linkedinapi.client.enumeration.ProfileField.FIRST_NAME,
+					com.google.code.linkedinapi.client.enumeration.ProfileField.LAST_NAME, 
+					com.google.code.linkedinapi.client.enumeration.ProfileField.HEADLINE,
+					com.google.code.linkedinapi.client.enumeration.ProfileField.INDUSTRY, 
+					com.google.code.linkedinapi.client.enumeration.ProfileField.PICTURE_URL,
+					com.google.code.linkedinapi.client.enumeration.ProfileField.DATE_OF_BIRTH, 
+					com.google.code.linkedinapi.client.enumeration.ProfileField.LOCATION_NAME,
+					com.google.code.linkedinapi.client.enumeration.ProfileField.MAIN_ADDRESS, 
+					com.google.code.linkedinapi.client.enumeration.ProfileField.LOCATION_COUNTRY)
 					);
 		} catch (Exception e) {
 
