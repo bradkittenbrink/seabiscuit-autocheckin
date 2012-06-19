@@ -35,7 +35,7 @@ public class ProximityManager implements Observer {
         {
         	// Create a prox alert if this is a new venue for this user
         	if (AppCAP.didCheckIntoVenue(checkinVenue.getVenueId())) {
-        		createProxAlert(checkinVenue.getVenueId(),checkinVenue.getLat(),checkinVenue.getLng());
+        		createProxAlert(checkinVenue);
         	}
         	
         }
@@ -62,12 +62,16 @@ public class ProximityManager implements Observer {
         }
         
         
-        private static void createProxAlert(int venueId, double venueLat, double venueLon) {
-        	String intentString = "proxIntent_" + venueId;
+        private static void createProxAlert(VenueSmart currVenue) {
+        	//Record that this venue has a prox alert
+        	venuesWithProxAlertsAdded.add(currVenue.getVenueId());
+        	
+        	String intentString = "proxIntent_" + currVenue.getVenueId();
 		Intent intent = new Intent(intentString);
+		intent.putExtra("venue", currVenue);
 		PendingIntent proxIntent = PendingIntent.getBroadcast(myContext,0,intent,0);
 		
-		locationManager.addProximityAlert(venueLat, venueLon, PROX_ALERT_RADIUS, PROX_ALERT_EXPIRY, proxIntent);
+		locationManager.addProximityAlert(currVenue.getLat(), currVenue.getLng(), PROX_ALERT_RADIUS, PROX_ALERT_EXPIRY, proxIntent);
 		
 		IntentFilter filter = new IntentFilter(intentString);  
 		myContext.registerReceiver(new ProximityReceiver(), filter);
@@ -100,7 +104,7 @@ public class ProximityManager implements Observer {
 						
 						Log.d("ProxMgr","Creating prox alert for venue: " + myVenueId);
 						// Create prox alert
-						createProxAlert(myVenueId,receivedVenue.getLat(),receivedVenue.getLng());
+						createProxAlert(receivedVenue);
 					}
 				}
 			}

@@ -231,7 +231,7 @@ public class AppCAP extends Application {
 			
 			int tokenIdx = 0;
 			while (tokenIdx < returnArray.length) {
-				returnArray[tokenIdx] = Integer.getInteger(stringArray[tokenIdx]);
+				returnArray[tokenIdx] = Integer.parseInt(stringArray[tokenIdx]);						
 				tokenIdx += 1;
 			}
 			
