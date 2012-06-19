@@ -46,7 +46,7 @@
             <com.google.android.maps.MapView
                 android:id="@+id/mapview_user_details"
                 android:layout_width="fill_parent"
-                android:layout_height="300dip"
+                android:layout_height="fill_parent"
                 android:apiKey="@string/googleMapsApiKey" />
 
             <LinearLayout
