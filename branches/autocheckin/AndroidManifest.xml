@@ -130,6 +130,11 @@
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
+            android:name=".activity.ActivityAutoCheckinList"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
             android:name=".activity.ActivityCheckIn"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >

@@ -1,77 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+<LinearLayout android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#333333" >
+    android:background="#333333" 
+	android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
+	
+
+	    <com.coffeeandpower.views.CustomFontView
+	        android:id="@+id/textview_location_name"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="5dp"
+	        android:paddingLeft="5dp"
+	        android:text=""
+	        android:textColor="#ffffff"
+	        android:textSize="25dip" />
+	    
+	    
+	    <TextView
+            android:text="Show me new Check Ins"
+            android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="5dp"
+	        android:paddingTop="5dp"
+	        android:paddingBottom="10dp"
+            android:textColor="#009590"
+            android:textSize="20dip"    />
+	    
+	    
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:background="#333333" >
+        
+	        <TextView
+	            android:text=" From"
+	            android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+	            android:textColor="#ffffff"
+	            android:textSize="15dip"
+	            android:layout_weight="1"
+	            android:layout_gravity="center"
+	            android:gravity="left"    />
+
+	        <Spinner
+	            android:id="@+id/spinnerNotifyCheckinsFrom"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="2" />
+        
+    	</LinearLayout>
+    	
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:background="#333333" >
+        
+	        <TextView
+	            android:text=" Only when I am checked in"
+	            android:layout_width="0dip"
+		        android:layout_height="wrap_content"
+	            android:textColor="#ffffff"
+	            android:textSize="15dip"
+	            android:layout_weight="1"
+	            android:layout_gravity="center"
+	            android:gravity="left"    />
+
+	        <ToggleButton
+	            android:id="@+id/toggleButtonOnlyWhenCheckedIn"
+	            android:layout_width="80dp"
+	            android:layout_height="wrap_content"/>
+        
+    	</LinearLayout>
+    	
+	    
+	    
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:background="#333333" >
+        
+	        <TextView
+	            android:text=" Quiet time"
+	            android:layout_width="0dip"
+		        android:layout_height="wrap_content"
+	            android:textColor="#ffffff"
+	            android:textSize="15dip"
+	            android:layout_weight="1"
+	            android:layout_gravity="center"
+	            android:gravity="left"    />
+
+	        <ToggleButton
+	            android:id="@+id/toggleButtonQuietTime"
+	            android:layout_width="80dp"
+	            android:layout_height="wrap_content"/>
+        
+    	</LinearLayout>
+    	
+	    
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:background="#333333" >
+        
+	        <TextView
+	            android:text=" Allow anyone to send 1:1 chat"
+	            android:layout_width="0dip"
+		        android:layout_height="wrap_content"
+	            android:textColor="#ffffff"
+	            android:textSize="15dip"
+	            android:layout_weight="1"
+	            android:layout_gravity="center"
+	            android:gravity="left"    />
+
+	        <ToggleButton
+	            android:id="@+id/toggleButtonOneToOneChat"
+	            android:layout_width="80dp"
+	            android:layout_height="wrap_content" />
+        
+    	</LinearLayout>
+           
 
 
-    <!-- Horizontal Pager View -->
-
-    <com.coffeeandpower.views.HorizontalPagerModified
-        android:id="@+id/pager"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
-
-        <!-- FIRST VIEW 
-
-        <RelativeLayout
-            android:id="@+id/dummy_vertical_line"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-            <View
-                android:layout_width="15dip"
-                android:layout_height="fill_parent"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/map_shadow" />
-        </RelativeLayout>-->
-
-        <!-- SECOND VIEW -->
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:background="#333333" >
-
-            <RelativeLayout
-                android:id="@+id/dummy_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="45dip"
-                android:background="@drawable/header" >
-
-                <!-- <Button android:id="@+id/btn_menu"
-                    android:layout_width="41dip"
-                    android:layout_height="28dip"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dip"
-                    android:background="@drawable/btn_settings"
-                    android:onClick="onClickMenu" /> -->
-
-                <com.coffeeandpower.views.CustomFontView
-                    android:id="@+id/textview_location_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:paddingLeft="5dp"
-                    android:text=""
-                    android:textColor="#ffffff"
-                    android:textSize="25dip" />
-            </RelativeLayout>
-
-
-            <ListView
-				android:id="@+id/notification_list"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-                android:layout_below="@+id/dummy_layout"
-                android:cacheColorHint="#00000000"
-				android:dividerHeight="1dip"
-                android:divider="#4a4a4a" >
+	    <ListView
+			android:id="@+id/notification_list"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+	        android:cacheColorHint="#00000000"
+			android:dividerHeight="1dip"
+	        android:divider="#4a4a4a" >
 		</ListView>
-        </RelativeLayout>
-    </com.coffeeandpower.views.HorizontalPagerModified>
 
-</RelativeLayout>
+</LinearLayout>

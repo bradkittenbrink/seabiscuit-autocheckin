@@ -24,6 +24,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.adapters.MyNotificationsListAdapter;
 import com.coffeeandpower.adapters.MyPlacesAdapter;
 import com.coffeeandpower.adapters.MyVenueNotificationAdapter;
 import com.coffeeandpower.cont.DataHolder;
@@ -35,37 +36,19 @@ import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomFontView;
 import com.urbanairship.UAirship;
 
-public class ActivityNotifications extends RootActivity implements Observer {
+public class ActivityNotifications extends RootActivity {
 	
 	private String NOTIFICATIONS_SCREEN_TITLE = "Notifications";
 	
 	private ListView notificationList = null;
-	private MyVenueNotificationAdapter myVenueNotificationAdapter = null;
+	private MyNotificationsListAdapter myNotificationsListAdapter = null;
 	
 	private ArrayList<VenueSmart> arrayVenues;
 	
 	private ProgressDialog progress;
 	
-	private boolean initialLoad = true;
+	private ArrayList<String> listItems = new ArrayList<String>();
 	
-	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
-	protected Handler taskHandler = new Handler() {
-
-		// handleMessage - on the main thread
-		@Override
-		public void handleMessage(Message msg) {
-
-			arrayVenues = msg.getData().getParcelableArrayList("venues");
-			
-			Log.d("Notifications","arrayVenues: " + arrayVenues);
-
-			setListData();
-			
-			progress.dismiss();
-			
-			super.handleMessage(msg);
-		}
-	};
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,28 +61,39 @@ public class ActivityNotifications extends RootActivity implements Observer {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 				
-				//Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
-				//intent.putExtra("venueSmart", (VenueSmart) adapterPlaces.getItem(position));
-				//We are sending the whole place object so we won't need the 4sqId separately
-				//intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
-				//I don't know what data is, but I don't think we will need
-				//intent.putExtra("coords", data);
-				//startActivity(intent);
+				
 				Log.d("Notifications","User clicked on row.");
 				
+				String selection = listItems.get(position);
 				
+				if (selection.equalsIgnoreCase("Auto Checkin")) {
+					Intent intent = new Intent(ActivityNotifications.this, ActivityAutoCheckinList.class);
+					startActivity(intent);
+				}
 				
 
 			}
 		});
+		
+		
+		// Create list of strings for list items in sub menu
+		this.listItems.add("Auto Checkin");
+		
+		myNotificationsListAdapter = new MyNotificationsListAdapter(ActivityNotifications.this,listItems);
+		
+		Log.d("Notification","this.notificationList: " + this.notificationList.toString());
+		Log.d("Notification","myVenueNotificationAdapter: " + myNotificationsListAdapter.toString());
+		
+		this.notificationList.setAdapter(myNotificationsListAdapter);
+		
+		
+		
 
 		
 		// prevent keyboard popup
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); 
 		
-		progress = new ProgressDialog(this);
-		progress.setMessage("Loading...");
-		progress.show();
+		
 		
 		// Views
 		
@@ -112,11 +106,6 @@ public class ActivityNotifications extends RootActivity implements Observer {
 			Log.d("Notifications","ActivityNotifications.onStart()");
 		super.onStart();
 		
-		//If the user isn't logged in then we will displaying the login screen not the list of contacts.
-		if (AppCAP.isLoggedIn())
-		{
-			AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
-		}
 	}
 
 	@Override
@@ -126,81 +115,12 @@ public class ActivityNotifications extends RootActivity implements Observer {
 		if (AppCAP.isLoggedIn())
 		{
 			UAirship.shared().getAnalytics().activityStopped(this);
-			AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
 		}
 		super.onStop();
 	}
 	
 	
-	private void setListData() {
-		if(initialLoad)
-		{
-			if (Constants.debugLog)
-				Log.d("ActivityNotifications","Place List Initial Load");
-			
-			
-			myVenueNotificationAdapter = new MyVenueNotificationAdapter(ActivityNotifications.this, arrayVenues);
-			
-			Log.d("Notification","this.notificationList: " + this.notificationList.toString());
-			Log.d("Notification","myVenueNotificationAdapter: " + myVenueNotificationAdapter.toString());
-			
-			this.notificationList.setAdapter(myVenueNotificationAdapter);
-			Utils.animateListView(this.notificationList);
-			initialLoad = false;
-		}
-		else
-		{
-			myVenueNotificationAdapter.setNewData(arrayVenues);
-			myVenueNotificationAdapter.notifyDataSetChanged();
-		}
-	}
 	
-	@Override
-	public void update(Observable observable, Object data) {
-		// Get list of venues with user checkins
-        	int[] venueList = AppCAP.getVenuesWithAutoCheckins();
-        	
-        	CounterData counterdata = (CounterData) data;
-		DataHolder venuesWithCheckins = counterdata.getData();
-					
-		Object[] obj = (Object[]) venuesWithCheckins.getObject();
-		@SuppressWarnings("unchecked")
-		ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-        	
-		//List of Venues we are going to send to list adapter
-		ArrayList<VenueSmart> deliveredVenues = new ArrayList<VenueSmart>();
-
-		//Grab the Venue data from the cache and see if it matches all the venues in the
-		//previously checkedin list
-		for (VenueSmart receivedVenue: arrayVenues) {
-			for (int myVenueId:venueList) {
-				if (myVenueId == receivedVenue.getVenueId()) {
-					deliveredVenues.add(receivedVenue);
-				}
-			}
-		}
-		if(venueList.length == deliveredVenues.size())
-		{
-			//We have all the venues so we can stop listening
-			if (Constants.debugLog)
-				Log.d("Notifications","Shutting down observer, all venues accounted for");
-			AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins", this);
-		}
-		else
-		{
-			//FIXME
-			//We need to go get all the venues and update the adapter when we get them
-		}
-		
-		Message message = new Message();
-		Bundle bundle = new Bundle();
-		bundle.putCharSequence("type", counterdata.type);
-		bundle.putParcelableArrayList("venues", deliveredVenues);
-		message.setData(bundle);
-		
-		if (Constants.debugLog)
-			Log.d("Notifications","ActivityNotifications.update: Sending handler message...");
-		taskHandler.sendMessage(message);
-	}
+	
 
 }
