@@ -740,14 +740,6 @@
             android:background="@drawable/btn_black_love_overlay"
             android:onClick="onClickSendProp" />
 
-        <ImageButton
-            android:id="@+id/imagebutton_paid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imagebutton_thumb"
-            android:layout_marginBottom="100dp"
-            android:background="@drawable/btn_black_paid"
-            android:onClick="onClickPaid" />
     </RelativeLayout>
 
     <!--
