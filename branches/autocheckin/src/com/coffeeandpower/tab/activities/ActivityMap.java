@@ -348,11 +348,11 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	}
 
 	// We have user data from logged user, use it now...
-	public void useUserData() {
+	/*public void useUserData() {
 		AppCAP.setLoggedInUserId(loggedUser.getUserId());
 		AppCAP.setLoggedInUserNickname(loggedUser.getNickName());
 		textNickName.setText(loggedUser.getNickName());
-	}
+	}*/
 
 	public void onClickMenu(View v) {
 		CustomFontView textInvite = (CustomFontView) findViewById(R.id.text_invite_codes);
@@ -593,7 +593,10 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			if (result.getObject() != null) {
 				if (result.getObject() instanceof UserSmart) {
 					loggedUser = (UserSmart) result.getObject();
-					useUserData();
+					
+					AppCAP.setLoggedInUserId(loggedUser.getUserId());
+					AppCAP.setLoggedInUserNickname(loggedUser.getNickName());
+					textNickName.setText(loggedUser.getNickName());
 				}
 			}
 		}

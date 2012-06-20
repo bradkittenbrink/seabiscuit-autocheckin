@@ -124,9 +124,15 @@ public class AppCAP extends Application {
 
 		this.http = new HttpUtil();
 		
-
+		// Set up Urban Airship and push preferences
 		UAirship.takeOff(this);
+		PushPreferences prefs = PushManager.shared().getPreferences();
+		prefs.setSoundEnabled(true);
+		prefs.setVibrateEnabled(true);
 		
+		
+		
+		// Create app timing Counter
 		if (Constants.debugLog)
 			Log.d("Coffee","Creating counter...");
 		instance.timingCounter = new Counter(10, 1);
@@ -438,16 +444,20 @@ public class AppCAP extends Application {
 	 */
 	public static void setLoggedInUserId(int userId) {
 
-		PushPreferences prefs = PushManager.shared().getPreferences();
+		// code will send user ID of zero on logout
+		// if nonzero (login), update the Urban Airship alias and enable push
+		// TODO: add user preferences to control whether to enable push
+		if (userId != 0) {
+        		// Register userID as UAirship alias for server-side pushes
+        		PushPreferences prefs = PushManager.shared().getPreferences();
+        		prefs.setAlias(String.valueOf(userId));
+        		        		
+        		PushManager.shared().setIntentReceiver(IntentReceiver.class);
+        		PushManager.enablePush();
+		}
 		
-		prefs.setAlias(String.valueOf(userId));
-		prefs.setSoundEnabled(true);
-		prefs.setVibrateEnabled(true);
-		
+		// Save logged in user ID
 		getSharedPreferences().edit().putInt(TAG_LOGGED_IN_USER_ID, userId).commit();
-		
-		PushManager.shared().setIntentReceiver(IntentReceiver.class);
-		PushManager.enablePush();
 	}
 	/**
 	 * 
