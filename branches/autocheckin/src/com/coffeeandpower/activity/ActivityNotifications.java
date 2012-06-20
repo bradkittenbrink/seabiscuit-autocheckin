@@ -33,6 +33,7 @@ import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomFontView;
+import com.urbanairship.UAirship;
 
 public class ActivityNotifications extends RootActivity implements Observer {
 	
@@ -103,11 +104,31 @@ public class ActivityNotifications extends RootActivity implements Observer {
 		// Views
 		
 		((CustomFontView) findViewById(R.id.textview_location_name)).setText(NOTIFICATIONS_SCREEN_TITLE);
+	}
+	
+	@Override
+	protected void onStart() {
+		if (Constants.debugLog)
+			Log.d("Notifications","ActivityNotifications.onStart()");
+		super.onStart();
 		
-		Log.d("Notifications","Getting venue data for notification list...");
-		
-		// Register for venue data from Counter
-		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);	
+		//If the user isn't logged in then we will displaying the login screen not the list of contacts.
+		if (AppCAP.isLoggedIn())
+		{
+			AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
+		}
+	}
+
+	@Override
+	public void onStop() {
+		if (Constants.debugLog)
+			Log.d("Notifications","ActivityNotifications.onStop()");
+		if (AppCAP.isLoggedIn())
+		{
+			UAirship.shared().getAnalytics().activityStopped(this);
+			AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
+		}
+		super.onStop();
 	}
 	
 	
@@ -134,36 +155,52 @@ public class ActivityNotifications extends RootActivity implements Observer {
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-
 	@Override
 	public void update(Observable observable, Object data) {
-		// TODO Auto-generated method stub
-		if (data instanceof CounterData) {
-			CounterData counterdata = (CounterData) data;
-			DataHolder venuesWithCheckins = counterdata.getData();
-						
-			Object[] obj = (Object[]) venuesWithCheckins.getObject();
-			@SuppressWarnings("unchecked")
-			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-			
-			Message message = new Message();
-			Bundle bundle = new Bundle();
-			bundle.putCharSequence("type", counterdata.type);
-			bundle.putParcelableArrayList("venues", arrayVenues);
-			message.setData(bundle);
-			
-			if (Constants.debugLog)
-				Log.d("PeoplePlaces","ActivityNotifications.update: Sending handler message...");
-			taskHandler.sendMessage(message);
-			
-			
+		// Get list of venues with user checkins
+        	int[] venueList = AppCAP.getVenuesWithAutoCheckins();
+        	
+        	CounterData counterdata = (CounterData) data;
+		DataHolder venuesWithCheckins = counterdata.getData();
+					
+		Object[] obj = (Object[]) venuesWithCheckins.getObject();
+		@SuppressWarnings("unchecked")
+		ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+        	
+		//List of Venues we are going to send to list adapter
+		ArrayList<VenueSmart> deliveredVenues = new ArrayList<VenueSmart>();
+
+		//Grab the Venue data from the cache and see if it matches all the venues in the
+		//previously checkedin list
+		for (VenueSmart receivedVenue: arrayVenues) {
+			for (int myVenueId:venueList) {
+				if (myVenueId == receivedVenue.getVenueId()) {
+					deliveredVenues.add(receivedVenue);
+				}
+			}
 		}
+		if(venueList.length == deliveredVenues.size())
+		{
+			//We have all the venues so we can stop listening
+			if (Constants.debugLog)
+				Log.d("Notifications","Shutting down observer, all venues accounted for");
+			AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins", this);
+		}
+		else
+		{
+			//FIXME
+			//We need to go get all the venues and update the adapter when we get them
+		}
+		
+		Message message = new Message();
+		Bundle bundle = new Bundle();
+		bundle.putCharSequence("type", counterdata.type);
+		bundle.putParcelableArrayList("venues", deliveredVenues);
+		message.setData(bundle);
+		
+		if (Constants.debugLog)
+			Log.d("Notifications","ActivityNotifications.update: Sending handler message...");
+		taskHandler.sendMessage(message);
 	}
 
 }
