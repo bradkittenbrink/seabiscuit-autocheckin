@@ -18,6 +18,7 @@ import android.util.Log;
 import com.coffeeandpower.datatiming.Counter;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
+import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.PushManager;
 import com.urbanairship.push.PushPreferences;
@@ -75,7 +76,8 @@ public class AppCAP extends Application {
 
 	//public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
 	// production
-	public static final String URL_WEB_SERVICE = "https://staging.candp.me/"; // staging
+	//public static final String URL_WEB_SERVICE = "https://staging.candp.me/"; // staging
+	public static final String URL_WEB_SERVICE = "http://dev.worklist.net/~andrewa/candpweb2/web/"; // staging
 	public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
 	public static final String FOURSQUARE_OAUTH = "BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4";
 	public static final String URL_FUNDS = "http://www.coffeeandpower.com/m/?ios#addFundsiPhone";
@@ -122,25 +124,13 @@ public class AppCAP extends Application {
 
 		this.http = new HttpUtil();
 		
-		//this.newDataObserver = Observable();
-		//this.intentService = new Intent(this, TimerService.class);
-	        //startService();
 
 		UAirship.takeOff(this);
 		
-		PushManager.enablePush();
-		PushPreferences prefs = PushManager.shared().getPreferences();
-		prefs.setSoundEnabled(true);
-		prefs.setVibrateEnabled(true);
-		PushManager.shared().setIntentReceiver(IntentReceiver.class);
-
-		
-		//Test counter creation
-		//this.counter.start();
 		if (Constants.debugLog)
 			Log.d("Coffee","Creating counter...");
 		instance.timingCounter = new Counter(10, 1);
-		//instance.timingCounter.start();
+		
 
 		// Get country code for metrics/imperial units
 		TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -447,7 +437,17 @@ public class AppCAP extends Application {
 	 * @category localUserData
 	 */
 	public static void setLoggedInUserId(int userId) {
+
+		PushPreferences prefs = PushManager.shared().getPreferences();
+		
+		prefs.setAlias(String.valueOf(userId));
+		prefs.setSoundEnabled(true);
+		prefs.setVibrateEnabled(true);
+		
 		getSharedPreferences().edit().putInt(TAG_LOGGED_IN_USER_ID, userId).commit();
+		
+		PushManager.shared().setIntentReceiver(IntentReceiver.class);
+		PushManager.enablePush();
 	}
 	/**
 	 * 
