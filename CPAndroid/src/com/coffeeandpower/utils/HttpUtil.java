@@ -2610,7 +2610,7 @@ public class HttpUtil {
 
 							for (int x = 0; x < arrayUsers.length(); x++) {
 								JSONObject objUser = arrayUsers.optJSONObject(x);
-								if (objUser != null) {
+								if (objUser != null && objUser.optInt("id") != 0) {
 
 									UserSmart singleUserMap = new UserSmart(objUser);
 

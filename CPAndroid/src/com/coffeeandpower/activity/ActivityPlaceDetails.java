@@ -255,7 +255,7 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 				listWereHere.setVisibility(View.GONE);
 				((CustomFontView) findViewById(R.id.textview_worked)).setVisibility(View.GONE);
 			} else {
-				listHereNow.setVisibility(View.VISIBLE);
+				listWereHere.setVisibility(View.VISIBLE);
 				((CustomFontView) findViewById(R.id.textview_worked)).setVisibility(View.VISIBLE);
 
 				if(initialLoadWere)

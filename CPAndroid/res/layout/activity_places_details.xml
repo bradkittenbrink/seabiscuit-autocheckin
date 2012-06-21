@@ -180,14 +180,23 @@
 
                 <!-- item list worked -->
 
+                <RelativeLayout
+                    android:id="@+id/shadow_view2"
+					android:layout_below="@+id/chat_places"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/bg_silver"
+                    android:cacheColorHint="#00000000"
+                    >
+
                 <com.coffeeandpower.views.CustomFontView
                     android:id="@+id/textview_here"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/chat_places"
                     android:layout_marginLeft="15dip"
-                    android:layout_marginRight="15dip"
-                    android:layout_marginTop="15dip"
+                    android:layout_marginTop="5dip"
+                    android:layout_marginBottom="5dip"
                     android:text="@string/activity_places_details_here"
                     android:textColor="#108086"
                     android:textSize="20sp"
@@ -198,37 +207,50 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/textview_here"
-                    android:layout_margin="15dp"
                     android:background="@drawable/bg_silver"
-                    android:cacheColorHint="#00000000"
-                    android:divider="#ffdddddd" />
+                    android:headerDividersEnabled="false"
+                    android:footerDividersEnabled="false"
+                    android:cacheColorHint="#00000000" />
+				
+				</RelativeLayout>
 
-                <com.coffeeandpower.views.CustomFontView
-                    android:id="@+id/textview_worked"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/list_here_now"
-                    android:layout_marginLeft="15dip"
-                    android:layout_marginTop="5dip"
-                    android:text="@string/activity_places_details_have"
-                    android:textColor="#108086"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <ListView
-                    android:id="@+id/list_were_here"
+                <RelativeLayout
+                    android:id="@+id/shadow_view3"
+					android:layout_below="@+id/shadow_view2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/textview_worked"
                     android:layout_margin="15dp"
                     android:background="@drawable/bg_silver"
                     android:cacheColorHint="#00000000"
-                    android:divider="#ffdddddd" />
-
+                    >
+	                <com.coffeeandpower.views.CustomFontView
+	                    android:id="@+id/textview_worked"
+	                    android:layout_width="fill_parent"
+	                    android:layout_height="wrap_content"
+	                    android:layout_below="@+id/list_here_now"
+                    	android:layout_marginLeft="15dip"
+	                    android:layout_marginTop="5dip"
+	                    android:layout_marginBottom="5dip"
+	                    android:text="@string/activity_places_details_have"
+	                    android:textColor="#108086"
+	                    android:textSize="20sp"
+	                    android:textStyle="bold" />
+	
+	                <ListView
+	                    android:id="@+id/list_were_here"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_below="@+id/textview_worked"
+	                    android:background="@drawable/bg_silver"
+	                    android:headerDividersEnabled="false"
+	                    android:footerDividersEnabled="false"
+	                    android:cacheColorHint="#00000000" />
+				</RelativeLayout>
+	                
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/list_were_here"
+                    android:layout_below="@+id/shadow_view3"
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
                     android:orientation="vertical" >
