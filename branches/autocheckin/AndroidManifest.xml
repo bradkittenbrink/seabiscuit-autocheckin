@@ -21,6 +21,7 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.coffeeandpower.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:name=".AppCAP"

@@ -12,7 +12,6 @@ import android.util.Log;
 public class WifiBroadcastReceiver extends BroadcastReceiver{
 	
 	private static WifiManager wifiManager;
-	private static BroadcastReceiver broadcastReceiver;
 
 	public WifiBroadcastReceiver(){
 		
@@ -22,8 +21,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
         public void registerForConnectionState(Context currContext)
         {
         	IntentFilter intentFilter = new IntentFilter();
-        	//android.net.wifi.WIFI_STATE_CHANGED
-        	//android.net.wifi.supplicant.CONNECTION_CHANGE SUPPLICANT_CONNECTION_CHANGE_ACTION
+        	//WIFI_STATE_CHANGED_ACTION never triggers, and it isnt' clear why
         	//intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         	intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         	intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
