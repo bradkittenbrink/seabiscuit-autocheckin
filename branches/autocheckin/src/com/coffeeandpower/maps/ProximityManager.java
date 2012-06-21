@@ -10,10 +10,12 @@ import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.datatiming.CounterData;
 
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.LocationManager;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,6 +32,8 @@ public class ProximityManager implements Observer {
 	
 	private static ArrayList<Integer> venuesWithProxAlertsAdded = new ArrayList<Integer>();
 	
+	private static WifiBroadcastReceiver wifiBroadcastReceiver;
+	
 	
         public static void addVenueToAutoCheckinList(VenueSmart checkinVenue)
         {
@@ -37,7 +41,6 @@ public class ProximityManager implements Observer {
         	if (AppCAP.addVenueToAutoCheckinList(checkinVenue.getVenueId())) {
         		createProxAlert(checkinVenue);
         	}
-        	
         }
         
         
@@ -49,11 +52,13 @@ public class ProximityManager implements Observer {
         public static void onStart(Context context) {
 
         	instance = new ProximityManager();
+        	wifiBroadcastReceiver = new WifiBroadcastReceiver();
         	
         	myContext = context;
         	AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins", getInstance());
         	locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        	
+        	//We want to register for wifi connection broadcasts
+        	wifiBroadcastReceiver.registerForConnectionState(myContext);        	
         }
         
         
