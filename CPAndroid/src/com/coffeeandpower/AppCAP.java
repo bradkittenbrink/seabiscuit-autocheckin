@@ -17,6 +17,7 @@ import android.util.Log;
 import com.coffeeandpower.datatiming.Counter;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
+import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.PushManager;
 import com.urbanairship.push.PushPreferences;
@@ -120,18 +121,19 @@ public class AppCAP extends Application {
 
 		this.http = new HttpUtil();
 		
-		//this.newDataObserver = Observable();
-		//this.intentService = new Intent(this, TimerService.class);
-	        //startService();
-
+		// Set up Urban Airship and push preferences
 		UAirship.takeOff(this);
+		PushPreferences prefs = PushManager.shared().getPreferences();
+		prefs.setSoundEnabled(true);
+		prefs.setVibrateEnabled(true);
 		
-		//Test counter creation
-		//this.counter.start();
+		
+		
+		// Create app timing Counter
 		if (Constants.debugLog)
 			Log.d("Coffee","Creating counter...");
 		instance.timingCounter = new Counter(10, 1);
-		//instance.timingCounter.start();
+		
 
 		PushManager.enablePush();
 		PushManager.shared().setIntentReceiver(IntentReceiver.class);
@@ -387,6 +389,20 @@ public class AppCAP extends Application {
 	 * @category localUserData
 	 */
 	public static void setLoggedInUserId(int userId) {
+
+		// code will send user ID of zero on logout
+		// if nonzero (login), update the Urban Airship alias and enable push
+		// TODO: add user preferences to control whether to enable push
+		if (userId != 0) {
+        		// Register userID as UAirship alias for server-side pushes
+        		PushPreferences prefs = PushManager.shared().getPreferences();
+        		prefs.setAlias(String.valueOf(userId));
+        		        		
+        		PushManager.shared().setIntentReceiver(IntentReceiver.class);
+        		PushManager.enablePush();
+		}
+		
+		// Save logged in user ID
 		getSharedPreferences().edit().putInt(TAG_LOGGED_IN_USER_ID, userId).commit();
 	}
 	/**

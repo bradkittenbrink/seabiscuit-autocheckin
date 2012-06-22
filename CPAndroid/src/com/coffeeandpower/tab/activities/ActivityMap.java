@@ -350,11 +350,11 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	}
 
 	// We have user data from logged user, use it now...
-	public void useUserData() {
+	/*public void useUserData() {
 		AppCAP.setLoggedInUserId(loggedUser.getUserId());
 		AppCAP.setLoggedInUserNickname(loggedUser.getNickName());
 		textNickName.setText(loggedUser.getNickName());
-	}
+	}*/
 
 	public class GeoUpdateHandler implements LocationListener {
 		@Override
@@ -615,7 +615,10 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			if (result.getObject() != null) {
 				if (result.getObject() instanceof User) {
 					loggedUser = (User) result.getObject();
-					useUserData();
+					
+					AppCAP.setLoggedInUserId(loggedUser.getUserId());
+					AppCAP.setLoggedInUserNickname(loggedUser.getNickName());
+					textNickName.setText(loggedUser.getNickName());
 				}
 			}
 		}
