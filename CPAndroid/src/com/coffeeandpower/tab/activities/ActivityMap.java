@@ -447,7 +447,12 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 
 		// For every refresh save Map coordinates
 		AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
-
+		MapView map = (MapView) findViewById(R.id.mapview);
+		GeoPoint pointCenterMap = map.getMapCenter();
+		int lngSpan = pointCenterMap.getLongitudeE6();
+		int latSpan = pointCenterMap.getLatitudeE6();
+		AppCAP.setMapCenterCoordinates(lngSpan,latSpan);
+		
 		// Get Notification settings from shared prefs
 		((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP.getNotificationToggle());
 		((Button) findViewById(R.id.btn_from)).setText(AppCAP.getNotificationFrom());

@@ -8,11 +8,13 @@ import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
+import com.coffeeandpower.R;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapView;
 
 public class Counter {
 	
@@ -210,20 +212,21 @@ public class Counter {
         		    public void run() {
         			    
         			    //isFirstRun = true;
-        			    
-        			    if (AppCAP.getUserLatLon()[0] == 0 && AppCAP.getUserLatLon()[1] == 0) {
-        				    if (Constants.debugLog)
+        			    if (AppCAP.getMapCenterLatLon()[0] == 0 && AppCAP.getMapCenterLatLon()[1] == 0) {
+        				    if (AppCAP.getUserLatLon()[0] == 0 && AppCAP.getUserLatLon()[1] == 0) {
+        					    if (Constants.debugLog)
         						Log.d("Counter","User position is currently 0-0, using default position for API calls.");
-        				    //skipAPICallsThisRun = true;
-        				    latForAPI = defaultLat;
-        				    lonForAPI = defaultLon;
+                				    //skipAPICallsThisRun = true;
+                				    latForAPI = defaultLat;
+                				    lonForAPI = defaultLon;
+                			    } else {               				    
+                				    latForAPI = AppCAP.getUserLatLon()[0];
+                				    lonForAPI = AppCAP.getUserLatLon()[1];
+                			    }
         			    } else {
-        				    
-        				    
-        				    latForAPI = AppCAP.getUserLatLon()[0];
-        				    lonForAPI = AppCAP.getUserLatLon()[1];
+        				    latForAPI = AppCAP.getMapCenterLatLon()[0];
+        				    lonForAPI = AppCAP.getMapCenterLatLon()[1];
         			    }
-        			    
         			    llArray[0] = latForAPI;
 				    llArray[1] = lonForAPI;
         			    

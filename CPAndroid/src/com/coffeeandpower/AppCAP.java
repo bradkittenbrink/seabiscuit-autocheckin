@@ -94,7 +94,8 @@ public class AppCAP extends Application {
 	
 
 	private static AppCAP instance;
-	
+	private static int mapCenterLng;
+	private static int mapCenterLat;	
 
 	private HttpUtil http;
 	
@@ -606,6 +607,17 @@ public class AppCAP extends Application {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	public static void setMapCenterCoordinates(int lngSpan, int latSpan) {
+		mapCenterLng = lngSpan;
+		mapCenterLat = latSpan;
+	}
+
+	public static double[] getMapCenterLatLon() {
+		double[] data = new double[2];
+		data[0] = (double) mapCenterLat / 1000000;
+		data[1] = (double) mapCenterLng / 1000000;
+		return data;
 	}
 
 }
