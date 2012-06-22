@@ -76,11 +76,11 @@ public class MyFavouritePlacesAdapter extends BaseAdapter {
 		}
 
 		holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(position).getName()));
-
-		if (venues.get(position).getCheckinsCount() > 1) {
-			holder.textCheckinsCount.setText(venues.get(position).getCheckinsCount() + " Checkins");
+		
+		if (venues.get(position).getCheckinTime() > 1) {
+			holder.textCheckinsCount.setText(venues.get(position).getCheckinTime() + " hrs");
 		} else {
-			holder.textCheckinsCount.setText(venues.get(position).getCheckinsCount() + " Checkin");
+			holder.textCheckinsCount.setText(venues.get(position).getCheckinTime() + " hr");
 		}
 
 		// Try to load image

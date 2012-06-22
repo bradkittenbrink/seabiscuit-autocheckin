@@ -287,7 +287,7 @@ public class HttpUtil {
 										venue.setPhone(objFromArray.optString("phone"));
 										venue.setIcon(objFromArray.optString("icon"));
 										venue.setPhotoUrl(objFromArray.optString("photo_url"));
-										venue.setCheckinTime(objFromArray.optString("checkin_time"));
+										venue.setCheckinTime(objFromArray.optInt("checkin_time"));
 										checkinhistoryArray.add(venue);
 									}
 								}
@@ -317,7 +317,7 @@ public class HttpUtil {
 									venue.setPhone(objFromArray.optString("phone"));
 									venue.setIcon(objFromArray.optString("icon"));
 									venue.setPhotoUrl(objFromArray.optString("photo_url"));
-									venue.setCheckinTime(objFromArray.optString("checkin_time"));
+									venue.setCheckinTime(objFromArray.optInt("checkin_time"));
 									favoritePlacesArray.add(venue);
 								}
 							}
@@ -1503,7 +1503,7 @@ public class HttpUtil {
 														.optString("state"), locationObj
 														.optString("country"), "", "", "",
 												checkinsCount, usersCount, tipCount, hereNowCount,
-												"", "", "", ""));
+												"", "", "", 0));
 
 									}
 								}

@@ -374,6 +374,7 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 
 						((TextView) v.findViewById(R.id.textview_review_love)).setText("from " + review.getAuthor() + ": \""
 								+ AppCAP.cleanResponseString(review.getReview()) + "\"");
+						((ImageView) v.findViewById(R.id.image_thumbs_up)).setVisibility(View.GONE);
 						((LinearLayout) findViewById(R.id.love_inflate)).addView(v);
 					}
 				}
@@ -386,6 +387,7 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 
 						((TextView) v.findViewById(R.id.textview_review_love)).setText(AppCAP.cleanResponseString(review
 								.getReview()) + (review.getSkill().contains("null") ? "" : "\n" + review.getSkill()));
+						((ImageView) v.findViewById(R.id.image_send_love)).setVisibility(View.GONE);
 						((LinearLayout) findViewById(R.id.love_inflate)).addView(v);
 					}
 				}

@@ -30,7 +30,7 @@ public class Venue implements Serializable {
 	private String phone;
 	private String icon;
 	private String photoUrl;
-	private String checkinTime;
+	private int checkinTime;
 
 	private int checkinsCount;
 	private int usersCount;
@@ -41,7 +41,7 @@ public class Venue implements Serializable {
 	 * Create empty venue obj
 	 */
 	public Venue() {
-		this("", 0, "", "", "", 0, 0, 0, "", "", "", "", "", "", "", 0, 0, 0, 0, "", "", "", "");
+		this("", 0, "", "", "", 0, 0, 0, "", "", "", "", "", "", "", 0, 0, 0, 0, "", "", "", 0);
 	}
 	
 	public Venue(JSONObject venue)
@@ -110,7 +110,7 @@ public class Venue implements Serializable {
 	public Venue(String foursquareId, int venueId, String name, String address, String crossStreet, double lat, double lng, int distance,
 			String postalCode, String city, String state, String country, String categoryName, String categoryPluralName,
 			String categoryShortName, int checkinsCount, int usersCount, int tipCount, int hereNowCount, String phone, String icon,
-			String photoUrl, String checkinTime) {
+			String photoUrl, int checkinTime) {
 
 		this.foursquareId = foursquareId;
 		this.venueId = venueId;
@@ -145,12 +145,12 @@ public class Venue implements Serializable {
 		this.icon = icon;
 	}
 
-	public String getCheckinTime() {
+	public int getCheckinTime() {
 		return checkinTime;
 	}
 
-	public void setCheckinTime(String checkinTime) {
-		this.checkinTime = checkinTime;
+	public void setCheckinTime(int checkinTime) {
+		this.checkinTime = checkinTime / 3600;
 	}
 
 	public int getVenueId() {
