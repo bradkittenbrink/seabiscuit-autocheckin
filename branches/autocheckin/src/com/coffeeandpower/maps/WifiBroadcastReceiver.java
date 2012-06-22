@@ -1,10 +1,18 @@
 package com.coffeeandpower.maps;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import com.coffeeandpower.location.WifiScanBroadcastReceiver;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.NetworkInfo;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -12,6 +20,7 @@ import android.util.Log;
 public class WifiBroadcastReceiver extends BroadcastReceiver{
 	
 	private static WifiManager wifiManager;
+	private static WifiScanBroadcastReceiver scanReceiver;
 
 	public WifiBroadcastReceiver(){
 		
@@ -49,9 +58,18 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
       	    WifiInfo wifiInfo = wifiManager.getConnectionInfo();
       	    String ssid = wifiInfo.getSSID();
   	    Log.d("WifiBroadcast","Wifi connected ssid:" + ssid);
+  	    
+  	    //TODO
+  	    //Check connected Wifi and see if it is one we recognize
+  	    
+  	    //We are connected to wifi we recognize, verify wifi signature
+  	    scanReceiver = new WifiScanBroadcastReceiver(context);
+  	    scanReceiver.registerForWifiScans(context);
 
           }
         }
     }
+
+    
 }
 
