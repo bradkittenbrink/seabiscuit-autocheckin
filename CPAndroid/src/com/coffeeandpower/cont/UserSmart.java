@@ -48,6 +48,16 @@ public class UserSmart implements Parcelable {
 		super();		
 		this.checkInId = objUser.optInt("checkin_id");
 		this.userId = objUser.optInt("userid");
+		if(this.userId == 0)
+		{
+			this.userId = objUser.optInt("Id");
+			if(this.userId == 0)
+				this.userId = objUser.optInt("id");
+		}
+		if(this.userId == 0)
+		{
+			Log.d("UserSmart", "User id is still 0, this is bad");
+		}
 		this.nickName = objUser.optString("nickname");
 		this.statusText = objUser.optString("status_text");
 		this.photo = objUser.optString("photo");
