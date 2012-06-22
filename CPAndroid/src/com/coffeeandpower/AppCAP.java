@@ -138,7 +138,6 @@ public class AppCAP extends Application {
 		PushManager.enablePush();
 		PushManager.shared().setIntentReceiver(IntentReceiver.class);
 
-		PushPreferences prefs = PushManager.shared().getPreferences();
 		if (Constants.debugLog)
 			Log.d("LOG", "Found APID: " + prefs.getPushId());
 
