@@ -2,15 +2,19 @@ package com.coffeeandpower.datatiming;
 
 import java.util.Observable;
 
+import android.location.Location;
 import android.util.Log;
 
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.cont.DataHolder;
+import com.google.android.maps.GeoPoint;
 
 public class CachedNetworkData extends Observable{
 
 	private boolean isActive;
 	private boolean hasData;
+	
+	private Location userLocationWhenDataCollected = new Location("userDataLocation");
 	
 	private String type;
 	
@@ -40,14 +44,17 @@ public class CachedNetworkData extends Observable{
 		return isActive;
 	}
 	
-	
-	public void setNewData(DataHolder newData) {
+	public void setNewData(DataHolder newData, double[] userLocation) {
+		
 		cachedData = newData;
 		
+		Log.d("CachedNetworkData","Setting user location to: " + userLocation[0] + ", " + userLocation[1]);
+		userLocationWhenDataCollected.setLatitude(userLocation[0]);
+		userLocationWhenDataCollected.setLongitude(userLocation[1]);
 		
 		if (cachedData.getResponseMessage().equals("HTTP 200 OK")) {
 			if (Constants.debugLog)
-				Log.d("Timer","Sending notifyObservers with received data from API call: " + type + "...");
+				Log.d("CachedNetworkData","Sending notifyObservers with received data from API call: " + type + "...");
 	                    
                         // Send notify for nearby venues
 			hasData = true;
@@ -58,6 +65,20 @@ public class CachedNetworkData extends Observable{
         			Log.d("CachedNetworkData","Skipping notifyObservers for API call: " + type);
                     	    
             	}
+	}
+	
+	/*
+	 * returns distance in meters from a given lat/lon
+	 */
+	public double dataDistanceFrom(double[] llArray) {
+		
+		
+		Location testLoc = new Location("testLoc");
+		testLoc.setLatitude(llArray[0]);
+		testLoc.setLongitude(llArray[1]);
+		
+		return userLocationWhenDataCollected.distanceTo(testLoc);
+		
 	}
 	
 	public void sendCachedData() {

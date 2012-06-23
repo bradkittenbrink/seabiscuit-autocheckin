@@ -16,6 +16,8 @@ import com.google.android.maps.GeoPoint;
 
 public class Counter {
 	
+	private final double DATA_DISTANCE_REFRESH_THRESHOLD = 1000;			// meters
+	
 	private Integer tick = 0;
 	
 	private final double defaultLat = 37.7717121657157;
@@ -29,7 +31,6 @@ public class Counter {
 	
 	private boolean allowCachedDataThisRun = false;
 	private boolean refreshAllDataThisRun = false;
-	private boolean skipAPICallsThisRun = false;
 	
 	private double latForAPI;
 	private double lonForAPI;
@@ -214,119 +215,130 @@ public class Counter {
         			    if (AppCAP.getUserLatLon()[0] == 0 && AppCAP.getUserLatLon()[1] == 0) {
         				    if (Constants.debugLog)
         						Log.d("Counter","User position is currently 0-0, using default position for API calls.");
-        				    //skipAPICallsThisRun = true;
+
         				    latForAPI = defaultLat;
         				    lonForAPI = defaultLon;
         			    } else {
-        				    
-        				    
         				    latForAPI = AppCAP.getUserLatLon()[0];
         				    lonForAPI = AppCAP.getUserLatLon()[1];
         			    }
         			    
         			    llArray[0] = latForAPI;
 				    llArray[1] = lonForAPI;
-        			    
-        			    if (!skipAPICallsThisRun) {                                            
-                                	    
-        				    if (Constants.debugLog)
-        						Log.d("Counter","API calls: Using coordinates: " + latForAPI + ", " + lonForAPI);
-        				    if (Constants.debugLog)
-        						Log.d("Counter","Cache Status: venuesWithCheckins: " + venuesWithCheckinsCache.hasData() +
-                        				    " nearbyVenues: " + nearbyVenuesCache.hasData() + 
-                        				    " contactsList: " + contactsListCache.hasData());
-        				    if (Constants.debugLog)
-        						Log.d("Counter"," APIs Active: venuesWithCheckins: " + venuesWithCheckinsCache.isActive() +
-                        				    " nearbyVenues: " + nearbyVenuesCache.isActive() + 
-                        				    " contactsList: " + contactsListCache.isActive());
-                        		    
-                        		    
-                        		    apisCalledThisUpdate = false;
-                        		    cachedDataSentThisUpdate = false;
-                        		    
-                        		    // Determine if venuesWithCheckins should run
-                        		    if (venuesWithCheckinsCache.isActive() || 
-                        				    !venuesWithCheckinsCache.hasData() ||
-                        				    refreshAllDataThisRun) {
-                        			    
-                        			    if (allowCachedDataThisRun && venuesWithCheckinsCache.hasData() && !refreshAllDataThisRun) {
-                        				    if (Constants.debugLog)
-                        						Log.d("Counter","Sending cached data for venuesWithCheckins");
-                        				    venuesWithCheckinsCache.sendCachedData();
-                        				    cachedDataSentThisUpdate = true;
-                        			    } else {
-                        				    if (Constants.debugLog)
-                        						Log.d("Counter","Refreshing venuesWithCheckinsCache...");
-                                			    venuesWithCheckinsCache.setNewData(AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(llArray));
-                                			    if (Constants.debugLog)
-                                					Log.d("Counter","Called VenuesWithCheckins, Received: " + venuesWithCheckinsCache.getData().getResponseMessage());
-                                			    apisCalledThisUpdate = true;
-                        			    } 
-                        		    }
-                        		    
-                        		    // Determine if venuesWithCheckins should run
-                        		    if (nearbyVenuesCache.isActive() || 
-                        				    !nearbyVenuesCache.hasData() ||
-                        				    refreshAllDataThisRun) {
-                        			    
-                        			    if (allowCachedDataThisRun && nearbyVenuesCache.hasData() && !refreshAllDataThisRun) {
-                        				    if (Constants.debugLog)
-                        						Log.d("Counter","Sending cached data for nearbyVenues");
-                        				    nearbyVenuesCache.sendCachedData();
-                        				    cachedDataSentThisUpdate = true;
-                        			    } else {
-                        				    if (Constants.debugLog)
-                        						Log.d("Counter","Refreshing nearbyVenuesCache...");
-                                        		    final GeoPoint gp = new GeoPoint((int)(latForAPI*1E6), (int)(lonForAPI*1E6));
-                                        		    nearbyVenuesCache.setNewData(AppCAP.getConnection().getVenuesCloseToLocation(gp,20));
-                                        		    if (Constants.debugLog)
-                                        				Log.d("Counter","Called VenuesWithCheckins, Received: " + nearbyVenuesCache.getData().getResponseMessage());
-                                        		    apisCalledThisUpdate = true;
-                        			    }
-                        		    }
-                        		    
-                        		 // Determine if contactsList should run
-                        		    if (contactsListCache.isActive() || 
-                        				    !contactsListCache.hasData() ||
-                        				    refreshAllDataThisRun) {
-                        			    
-                        			    if (allowCachedDataThisRun && contactsListCache.hasData() && !refreshAllDataThisRun) {
-                        				    if (Constants.debugLog)
-                        						Log.d("Counter","Sending cached data for contactsList");
-                        				    contactsListCache.sendCachedData();
-                        				    cachedDataSentThisUpdate = true;
-                        			    } else {
-                        				    if (Constants.debugLog)
-                        						Log.d("Counter","Refreshing contactsListCache...");
-                                			    contactsListCache.setNewData(AppCAP.getConnection().getContactsList());
-                                			    if (Constants.debugLog)
-                                					Log.d("Counter","Called getContactsList, Received: " + contactsListCache.getData().getResponseMessage());
-                                        		    apisCalledThisUpdate = true;
-                        			    }
-                        		    }
-                        		    
-                        		    if (cachedDataSentThisUpdate) {
+                                	   
+				    // Debug instrumentation
+				    if (Constants.debugLog)
+						Log.d("Counter","API calls: Using coordinates: " + latForAPI + ", " + lonForAPI);
+				    if (Constants.debugLog)
+						Log.d("Counter","Cache Status: venuesWithCheckins: " + venuesWithCheckinsCache.hasData() +
+                				    " nearbyVenues: " + nearbyVenuesCache.hasData() + 
+                				    " contactsList: " + contactsListCache.hasData());
+				    if (Constants.debugLog)
+						Log.d("Counter"," APIs Active: venuesWithCheckins: " + venuesWithCheckinsCache.isActive() +
+                				    " nearbyVenues: " + nearbyVenuesCache.isActive() + 
+                				    " contactsList: " + contactsListCache.isActive());
+                		    
+				    // Do API calls for active caches
+				    //
+				    // the data for each cache is sent to observers if:
+				    // - the cache is set as active ||
+				    // - the cache does not have data ||
+				    // - the flag refreshAllDataThisRun was set
+				    //
+				    // the criteria for sending cached data instead of refreshing is:
+				    // - allowCachedDataThisRun hasn't been set to false &&
+				    // - the cache has data &&
+				    // - refreshAllDataThisRun hasn't been set &&
+				    // - the current distance from the cached data is within the threshold
+				    
+                		    apisCalledThisUpdate = false;
+                		    cachedDataSentThisUpdate = false;
+                		    
+                		    // Determine if venuesWithCheckins should run
+                		    if (venuesWithCheckinsCache.isActive() || 
+                				    !venuesWithCheckinsCache.hasData() ||
+                				    refreshAllDataThisRun) {
+                			    
+                			    // Determine if cached data should be sent or data needs to be refreshed
+                			    if (allowCachedDataThisRun && 
+                					    venuesWithCheckinsCache.hasData() && 
+                					    !refreshAllDataThisRun &&
+                					    venuesWithCheckinsCache.dataDistanceFrom(llArray) < DATA_DISTANCE_REFRESH_THRESHOLD) {
+                				    if (Constants.debugLog)
+                						Log.d("Counter","Sending cached data for venuesWithCheckins");
+                				    venuesWithCheckinsCache.sendCachedData();
+                				    cachedDataSentThisUpdate = true;
+                			    } else {
+                				    if (Constants.debugLog)
+                						Log.d("Counter","Refreshing venuesWithCheckinsCache...");
+                        			    venuesWithCheckinsCache.setNewData(AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(llArray),llArray);
                         			    if (Constants.debugLog)
-                        					Log.d("Counter","Cached Data sent this update.");
-                        		    }
-                        		    if (apisCalledThisUpdate) {
+                        					Log.d("Counter","Called VenuesWithCheckins, Received: " + venuesWithCheckinsCache.getData().getResponseMessage());
+                        			    apisCalledThisUpdate = true;
+                			    } 
+                		    }
+                		    
+                		    // Determine if venuesWithCheckins should run
+                		    if (nearbyVenuesCache.isActive() || 
+                				    !nearbyVenuesCache.hasData() ||
+                				    refreshAllDataThisRun) {
+                			    
+                			    if (allowCachedDataThisRun && 
+                					    nearbyVenuesCache.hasData() && 
+                					    !refreshAllDataThisRun &&
+                        				    nearbyVenuesCache.dataDistanceFrom(llArray) < DATA_DISTANCE_REFRESH_THRESHOLD) {
+                				    if (Constants.debugLog)
+                						Log.d("Counter","Sending cached data for nearbyVenues");
+                				    nearbyVenuesCache.sendCachedData();
+                				    cachedDataSentThisUpdate = true;
+                			    } else {
+                				    if (Constants.debugLog)
+                						Log.d("Counter","Refreshing nearbyVenuesCache...");
+                                		    final GeoPoint gp = new GeoPoint((int)(latForAPI*1E6), (int)(lonForAPI*1E6));
+                                		    nearbyVenuesCache.setNewData(AppCAP.getConnection().getVenuesCloseToLocation(gp,20),new double[]{latForAPI,lonForAPI});
+                                		    if (Constants.debugLog)
+                                				Log.d("Counter","Called VenuesWithCheckins, Received: " + nearbyVenuesCache.getData().getResponseMessage());
+                                		    apisCalledThisUpdate = true;
+                			    }
+                		    }
+                		    
+                		 // Determine if contactsList should run
+                		    if (contactsListCache.isActive() || 
+                				    !contactsListCache.hasData() ||
+                				    refreshAllDataThisRun) {
+                			    
+                			    if (allowCachedDataThisRun && 
+                					    contactsListCache.hasData() && 
+                					    !refreshAllDataThisRun &&
+                        				    contactsListCache.dataDistanceFrom(llArray) > DATA_DISTANCE_REFRESH_THRESHOLD) {
+                				    if (Constants.debugLog)
+                						Log.d("Counter","Sending cached data for contactsList");
+                				    contactsListCache.sendCachedData();
+                				    cachedDataSentThisUpdate = true;
+                			    } else {
+                				    if (Constants.debugLog)
+                						Log.d("Counter","Refreshing contactsListCache...");
+                        			    contactsListCache.setNewData(AppCAP.getConnection().getContactsList(),new double[]{latForAPI,lonForAPI});
                         			    if (Constants.debugLog)
-                        					Log.d("Counter","New API calls this made this update.");
-                        		    }
-                        		    if (!cachedDataSentThisUpdate && !apisCalledThisUpdate)
-                        			    if (Constants.debugLog)
-                        					Log.d("Counter","No data consumers active.");
-                                	    
-                        		    
-                        		    // Clear any flags that control behavior for a single update
-                			    allowCachedDataThisRun = false;
-                			    refreshAllDataThisRun = false;
-                			    skipAPICallsThisRun = false;
-                                	    
-                        	    }  
+                        					Log.d("Counter","Called getContactsList, Received: " + contactsListCache.getData().getResponseMessage());
+                                		    apisCalledThisUpdate = true;
+                			    }
+                		    }
+                		    
+                		    if (cachedDataSentThisUpdate && Constants.debugLog) 
+                			    Log.d("Counter","Cached Data sent this update.");
+                		    if (apisCalledThisUpdate && Constants.debugLog)
+                			    Log.d("Counter","New API calls this made this update.");
+                		    if (!cachedDataSentThisUpdate && !apisCalledThisUpdate && Constants.debugLog)
+                			    Log.d("Counter","No data consumers active.");
+                        	    
+                		    // Clear any flags that control behavior for a single update
+        			    allowCachedDataThisRun = false;
+        			    refreshAllDataThisRun = false;
                         	    
         			    //We are going stop the timer if the user hasn't moved views in a while
         			    numberOfCalls++;
+        			    
         			    //Currently 10 second interval with 20 calls so 3.3bar minutes
         			    if(numberOfCalls < 20)
         			    {
