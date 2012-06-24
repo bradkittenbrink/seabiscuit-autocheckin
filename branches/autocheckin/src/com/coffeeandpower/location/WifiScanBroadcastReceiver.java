@@ -19,9 +19,12 @@ import android.util.Log;
 
 public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	private static final int checkThreshold =  2;
+	private static final int posMatchThreshold = 4;
+
 	
 	private WifiManager wifiManager;
 	private int numberOfSignatureChecks = 0;
+	private boolean registeredForScans = false;
 	
 	public WifiScanBroadcastReceiver(Context context){
 	  	wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -34,8 +37,17 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	  	    //Forcing the scan requires a permission and I don't think we need it because the scan happens
 	  	    //frequently enough
 	  	    //boolean scanStarted = wifiManager.startScan();
-	  	    context.registerReceiver(this, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-	  	    numberOfSignatureChecks = 0;
+		    if(registeredForScans)
+		    {
+			    //Particularly on disconnect we can get multiple calls
+			    Log.d("WifiScanBroadcast","Already registered for scan broadcast");
+		    }
+		    else
+		    {
+			    context.registerReceiver(this, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+			    registeredForScans = true;
+			    numberOfSignatureChecks = 0;
+		    }
 	}
 
 	@Override
@@ -45,16 +57,18 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 		{			
 			//FIXME
 			//This is a fake test list for C&P
-			List<String> cp_bssids = Arrays.asList("98:fc:11:8f:8f:b0", "00:1c:b3:ff:8d:53", "f4:6d:04:6d:33:2e", "e0:91:f5:87:71:2b", "74:91:1a:50:eb:98","c4:3d:c7:8d:6b:f8");
+			List<String> testBssids = Arrays.asList("98:fc:11:8f:8f:b0", "00:1c:b3:ff:8d:53", "f4:6d:04:6d:33:2e", "e0:91:f5:87:71:2b", "74:91:1a:50:eb:98","c4:3d:c7:8d:6b:f8");
+			//This is a fake test list for Andrew's
+			//List<String> testBssids = Arrays.asList("00:24:36:a4:f5:2d", "e4:83:99:07:c8:e0", "20:4e:7f:44:cd:dc", "1c:14:48:09:30:40", "c8:60:00:94:33:12", "30:46:9a:1c:63:5c");
 			ArrayList<MyScanResult> venueWifiNetworks = new ArrayList<MyScanResult>();
-			for(String currBssid:cp_bssids)
+			for(String currBssid:testBssids)
 			{
 				venueWifiNetworks.add(new MyScanResult(currBssid));
 			}
 			
 			//Grab results from fresh scan of wifi networks
 			List<ScanResult> visibleWifiNetworks = wifiManager.getScanResults();
-			this.collectWifiSignature(8, visibleWifiNetworks);
+			List<MyScanResult> venueWifiSig = this.collectWifiSignature(8, visibleWifiNetworks);
 			
 			//TODO
 			//Compare list of visible wifi networks, and see how that 
@@ -62,16 +76,30 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 			boolean match = this.checkForMatch(visibleWifiNetworks, venueWifiNetworks);
 			if(match)
 			{
-				Log.d("WifiBroadcast","Positive WiFi signature match, we are at: C&P");
-				context.unregisterReceiver(this);
+				Log.d("WifiScanBroadcast","Positive WiFi signature match, we are at: C&P");
+				if(registeredForScans)
+				{
+					context.unregisterReceiver(this);
+					registeredForScans = false;
+				}
+
 			}
 			else
 			{
 				numberOfSignatureChecks++;
-				if(numberOfSignatureChecks > checkThreshold)
+				if(numberOfSignatureChecks >= checkThreshold)
 				{
-					Log.d("WifiBroadcast","No match, we are not at C&P " + String.valueOf(numberOfSignatureChecks) + " checks failed");
-					context.unregisterReceiver(this);
+					Log.d("WifiScanBroadcast","No match, we are not at C&P " + String.valueOf(numberOfSignatureChecks) + " checks failed");
+					if(registeredForScans)
+					{
+						context.unregisterReceiver(this);
+						registeredForScans = false;
+					}
+
+				}
+				else
+				{
+					Log.d("WifiScanBroadcast","No match, check #:" + String.valueOf(numberOfSignatureChecks));
 				}
 			}
 
@@ -117,7 +145,6 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	    
 	    private boolean checkForMatch(List<ScanResult> visibleWifiNetworks, List<MyScanResult> venueWifiNetworks) {
 		    //This is the match threshold, once hit we know we have a match
-		    int threshold = 4;
 		    int matches = 0;
 	                for(ScanResult currNet:visibleWifiNetworks)
 	                {
@@ -130,7 +157,7 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	                		if(testArg1.equalsIgnoreCase(TestArg2))
 	                		{
 	                			matches++;
-	                			if(matches>threshold)
+	                			if(matches>=posMatchThreshold)
 	                				return true;
 	                		}
 	                	}
