@@ -61,10 +61,21 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
   	    
   	    //TODO
   	    //Check connected Wifi and see if it is one we recognize
+  	    boolean checkSignature = false;
+  	    if(ssid.equalsIgnoreCase("coffeeandpower"))
+  	    {
+  		    Log.d("WifiBroadcast","Connected to C&P, double check wifiSignature"); 
+  		    checkSignature = true;
+  	    }
+  	    //DEBUG
+  	    checkSignature =  true;
   	    
-  	    //We are connected to wifi we recognize, verify wifi signature
-  	    scanReceiver = new WifiScanBroadcastReceiver(context);
-  	    scanReceiver.registerForWifiScans(context);
+  	    if(checkSignature)
+  	    {
+          	    //We are connected to wifi we recognize, verify wifi signature
+          	    scanReceiver = new WifiScanBroadcastReceiver(context);
+          	    scanReceiver.registerForWifiScans(context);
+  	    }
 
           }
         }

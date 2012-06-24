@@ -18,7 +18,10 @@ import android.net.wifi.WifiManager;
 import android.util.Log;
 
 public class WifiScanBroadcastReceiver extends BroadcastReceiver{
+	private static final int checkThreshold =  2;
+	
 	private WifiManager wifiManager;
+	private int numberOfSignatureChecks = 0;
 	
 	public WifiScanBroadcastReceiver(Context context){
 	  	wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -32,6 +35,7 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	  	    //frequently enough
 	  	    //boolean scanStarted = wifiManager.startScan();
 	  	    context.registerReceiver(this, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+	  	    numberOfSignatureChecks = 0;
 	}
 
 	@Override
@@ -59,11 +63,16 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 			if(match)
 			{
 				Log.d("WifiBroadcast","Positive WiFi signature match, we are at: C&P");
-				//context.unregisterReceiver(this);
+				context.unregisterReceiver(this);
 			}
 			else
 			{
-				Log.d("WifiBroadcast","No match, we are not at C&P");
+				numberOfSignatureChecks++;
+				if(numberOfSignatureChecks > checkThreshold)
+				{
+					Log.d("WifiBroadcast","No match, we are not at C&P " + String.valueOf(numberOfSignatureChecks) + " checks failed");
+					context.unregisterReceiver(this);
+				}
 			}
 
 
