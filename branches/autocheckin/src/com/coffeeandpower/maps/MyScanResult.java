@@ -20,6 +20,14 @@ public class MyScanResult {
 		this.BSSID = BSSID;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+	        if (obj instanceof MyScanResult)
+	            return BSSID.equalsIgnoreCase(((MyScanResult) obj).BSSID); 
+	        else
+	            return false;
+	    }
+	
 	
 	//TODO Will need to make this parceable I suspect
 
