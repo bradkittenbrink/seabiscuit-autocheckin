@@ -59,7 +59,7 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 			if(match)
 			{
 				Log.d("WifiBroadcast","Positive WiFi signature match, we are at: C&P");
-				context.unregisterReceiver(this);
+				//context.unregisterReceiver(this);
 			}
 			else
 			{
@@ -89,6 +89,7 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 		{
                 	//Need to find if wifiSignature 
                 	MyScanResult myCurrNet = new MyScanResult(currNet);
+                	boolean tmpBool = wifiSignature.contains(myCurrNet);
                 	if(wifiSignature.contains(myCurrNet)==false)
                 	{
                 		wifiSignature.add(myCurrNet);
@@ -99,7 +100,6 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
                 			return wifiSignature;
                 		}
                 	}
-                	return wifiSignature;
 		}		
 		return wifiSignature;
 		
@@ -114,7 +114,11 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	                {
 	                	for(MyScanResult currVenueNet:venueWifiNetworks)
 	                	{
-	                		if(currNet.BSSID.equalsIgnoreCase(currVenueNet.BSSID));
+	                		String testArg1 = currNet.BSSID;
+	                		String TestArg2 = currVenueNet.BSSID;
+	                		//The below was returning false positives, why is not clear
+	                		//if(currNet.BSSID.equalsIgnoreCase(currVenueNet.BSSID));
+	                		if(testArg1.equalsIgnoreCase(TestArg2))
 	                		{
 	                			matches++;
 	                			if(matches>threshold)
