@@ -12,8 +12,6 @@ import android.util.Log;
 
 @SuppressWarnings("serial")
 public class UserSmart implements Parcelable {
-	//Eliminated Serializable
-
 	private int checkInId;
 	private int userId;
 	private String nickName;
@@ -43,7 +41,7 @@ public class UserSmart implements Parcelable {
 		this.isFirstInList = isFirstInList;
 	}
 	
-	public UserSmart(JSONObject objUser)
+	public UserSmart(JSONObject objUser) throws Exception
 	{
 		super();		
 		this.checkInId = objUser.optInt("checkin_id");
@@ -56,7 +54,9 @@ public class UserSmart implements Parcelable {
 		}
 		if(this.userId == 0)
 		{
-			Log.d("UserSmart", "User id is still 0, this is bad");
+			Log.d("UserSmart", "User id is still 0, user is invalid");
+			throw new Exception("Invalid User!");
+
 		}
 		
 		this.nickName = objUser.optString("nickname");

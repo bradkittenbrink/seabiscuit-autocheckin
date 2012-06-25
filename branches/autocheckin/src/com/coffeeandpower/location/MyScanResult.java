@@ -1,8 +1,10 @@
 package com.coffeeandpower.location;
 
 import android.net.wifi.ScanResult;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class MyScanResult {
+public class MyScanResult implements Parcelable{
 	public String BSSID;
 	public String SSID;
 	public int frequency;
@@ -29,7 +31,37 @@ public class MyScanResult {
 	    }
 	
 	
-	//TODO Will need to make this parceable I suspect
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeString(this.BSSID);
+		out.writeString(this.SSID);
+		out.writeInt(this.frequency);
+		out.writeInt(this.level);
+		
+	}
+	
+	public static final Parcelable.Creator<MyScanResult> CREATOR = new Parcelable.Creator<MyScanResult>() {
+            public MyScanResult createFromParcel(Parcel in) {
+                return new MyScanResult(in);
+            }
+        
+            public MyScanResult[] newArray(int size) {
+                return new MyScanResult[size];
+            }
+	};
+
+        private MyScanResult(Parcel in) {
+            this.BSSID = in.readString();
+            this.SSID = in.readString();
+            this.frequency = in.readInt();
+            this.level = in.readInt();
+        		    
+        }
 
 }

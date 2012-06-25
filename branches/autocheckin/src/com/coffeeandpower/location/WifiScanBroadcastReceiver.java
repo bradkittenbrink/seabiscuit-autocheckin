@@ -41,6 +41,7 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 		    }
 		    else
 		    {
+			    Log.d("WifiScanBroadcast","Registering for scan broadcast");
 			    context.registerReceiver(this, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 			    registeredForScans = true;
 			    numberOfSignatureChecks = 0;

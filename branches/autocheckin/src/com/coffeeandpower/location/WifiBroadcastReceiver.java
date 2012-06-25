@@ -1,5 +1,7 @@
 package com.coffeeandpower.location;
 
+import java.util.ArrayList;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -75,13 +77,22 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
   	    //TODO
   	    //Check connected Wifi and see if it is one we recognize
   	    boolean checkSignature = false;
-  	    //Test wifis
-  	    //String testWifiSSID = "coffeeandpower";
-  	    String testWifiSSID = "veronica";
-  	    if(ssid.equalsIgnoreCase(testWifiSSID))
+  	    ArrayList<String> knownSSIDs = new ArrayList<String>();
+  	    //Test SSIDs
+  	    knownSSIDs.add("veronica");
+  	    knownSSIDs.add("coffeeandpower");
+  	    for(String testWifiSSID:knownSSIDs)
   	    {
-  		    Log.d("WifiBroadcast","Connected to C&P, double check wifiSignature"); 
-  		    checkSignature = true;
+          	    if(ssid.equalsIgnoreCase(testWifiSSID))
+          	    {
+          		    Log.d("WifiBroadcast","Connected to" + testWifiSSID +", double check wifiSignature"); 
+          		    checkSignature = true;
+          		    break;
+          	    }
+  	    }
+  	    if(checkSignature == false)
+  	    {
+  		    Log.d("WifiBroadcast","Wifi SSID is unrecognized");    
   	    }
   	    //DEBUG
   	    //checkSignature =  true;

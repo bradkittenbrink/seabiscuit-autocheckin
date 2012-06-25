@@ -1748,8 +1748,13 @@ public class HttpUtil {
 
 						JSONObject currContact = contacts.optJSONObject(m);
 						if (currContact != null) {
-							contactsArray.add(new UserSmart(currContact));				
-	
+							try{
+								contactsArray.add(new UserSmart(currContact));
+							}
+							catch (Exception e)
+							{
+								Log.d("HttpUtil","Received exception " + e.getLocalizedMessage() + " from getContactList API");
+							}
 						}
 					}
 					result.setObject(contactsArray);
@@ -2610,21 +2615,26 @@ public class HttpUtil {
 							for (int x = 0; x < arrayUsers.length(); x++) {
 								JSONObject objUser = arrayUsers.optJSONObject(x);
 								if (objUser != null) {
+									try{
+										UserSmart singleUserMap = new UserSmart(objUser);
 
-									UserSmart singleUserMap = new UserSmart(objUser);
-
-									if (singleUserMap.getCheckedIn() == 1) {
-										if (!isFirstInList1) {
-											singleUserMap.setFirstInList(true);
-											isFirstInList1 = !isFirstInList1;
-										}
-									} else {
-										if (!isFirstInList0) {
-											singleUserMap.setFirstInList(true);
-											isFirstInList0 = !isFirstInList0;
-										}
-									}
-									users.add(singleUserMap);
+        									if (singleUserMap.getCheckedIn() == 1) {
+        										if (!isFirstInList1) {
+        											singleUserMap.setFirstInList(true);
+        											isFirstInList1 = !isFirstInList1;
+        										}
+        									} else {
+        										if (!isFirstInList0) {
+        											singleUserMap.setFirstInList(true);
+        											isFirstInList0 = !isFirstInList0;
+        										}
+        									}
+        									users.add(singleUserMap);
+        								}
+        								catch (Exception e)
+        								{
+        									Log.d("HttpUtil","Received exception " + e.getLocalizedMessage() + " from getNearestVenuesAndUsersWithCheckinsDuringInterval API");
+        								}
 								}
 							}
 						}
@@ -2786,9 +2796,15 @@ public class HttpUtil {
 
 				JSONObject json = new JSONObject(responseString);
 				if (json != null) {
-					result.setObject(new UserSmart(json));
-					result.setHandlerCode(Executor.HANDLE_GET_USER_DATA);
-					return result;
+					try{
+        					result.setObject(new UserSmart(json));
+        					result.setHandlerCode(Executor.HANDLE_GET_USER_DATA);
+        					return result;
+        				}
+        				catch (Exception e)
+        				{
+        					Log.d("HttpUtil","Received exception " + e.getLocalizedMessage() + " from getUserData");
+        				}
 				}
 			}
 
@@ -3139,6 +3155,9 @@ public class HttpUtil {
 
 		String serviceName = service.getServiceNameLogin();
 		String serviceSignUp = service.getServiceNameSignUp();
+		//FIXME
+		//This will always crash if we don't have an internet connection or we don't have cached
+		//data for whatever reason
 		params.add(new BasicNameValuePair("signupNickname", service.getUserNickName()));
 		params.add(new BasicNameValuePair("linkedin_id", service.getUserId()));
 		params.add(new BasicNameValuePair("linkedin_connect", "1"));
