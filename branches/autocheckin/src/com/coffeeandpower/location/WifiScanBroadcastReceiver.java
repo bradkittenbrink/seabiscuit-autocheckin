@@ -6,9 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.coffeeandpower.cont.UserSmart;
-import com.coffeeandpower.maps.MyScanResult;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -66,7 +63,7 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		final String action = intent.getAction();
-		if(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction()))
+		if(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(action))
 		{			
 			//FIXME
 			//This is a fake test list for C&P
