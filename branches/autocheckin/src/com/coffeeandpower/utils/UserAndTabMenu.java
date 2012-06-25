@@ -27,6 +27,7 @@ import com.coffeeandpower.activity.ActivityNotifications;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.activity.ActivityWallet;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.datatiming.CacheMgrService;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.tab.activities.ActivityCheckInList;
@@ -105,7 +106,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 				break;
 
 			case HANDLE_CHECK_OUT:
-				AppCAP.getCounter().checkOutTrigger();
+				CacheMgrService.checkOutTrigger();
 				userState.onCheckOut();
 				break;
 

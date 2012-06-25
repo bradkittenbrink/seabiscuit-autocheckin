@@ -35,7 +35,8 @@ import com.coffeeandpower.adapters.MyUsersAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.datatiming.CounterData;
+import com.coffeeandpower.datatiming.CacheMgrService;
+import com.coffeeandpower.datatiming.CachedDataContainer;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.utils.Executor;
@@ -300,7 +301,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		
 		//initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);	
+		CacheMgrService.startObservingAPICall("venuesWithCheckins",this);	
 	}
 
 	@Override
@@ -309,7 +310,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
-		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
+		CacheMgrService.stopObservingAPICall("venuesWithCheckins",this);
 	}
 
 	@Override
@@ -419,8 +420,8 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		 * verify that the data is really of type CounterData, and log the
 		 * details
 		 */
-		if (data instanceof CounterData) {
-			CounterData counterdata = (CounterData) data;
+		if (data instanceof CachedDataContainer) {
+			CachedDataContainer counterdata = (CachedDataContainer) data;
 			DataHolder venuesWithCheckins = counterdata.getData();
 						
 			Object[] obj = (Object[]) venuesWithCheckins.getObject();

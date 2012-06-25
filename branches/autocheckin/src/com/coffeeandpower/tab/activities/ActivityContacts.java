@@ -32,7 +32,8 @@ import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.adapters.MyUsersAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
-import com.coffeeandpower.datatiming.CounterData;
+import com.coffeeandpower.datatiming.CacheMgrService;
+import com.coffeeandpower.datatiming.CachedDataContainer;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.utils.Utils;
@@ -241,7 +242,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		if (AppCAP.isLoggedIn())
 		{
 			UAirship.shared().getAnalytics().activityStarted(this);
-			AppCAP.getCounter().getCachedDataForAPICall("contactsList",this);
+			CacheMgrService.startObservingAPICall("contactsList",this);
 		}
 	}
 
@@ -253,7 +254,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		if (AppCAP.isLoggedIn())
 		{
 			UAirship.shared().getAnalytics().activityStopped(this);
-			AppCAP.getCounter().stoppedObservingAPICall("contactsList",this);
+			CacheMgrService.stopObservingAPICall("contactsList",this);
 		}
 	}
 
@@ -379,8 +380,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		 * verify that the data is really of type CounterData, and log the
 		 * details
 		 */
-		if (data instanceof CounterData) {
-			CounterData counterdata = (CounterData) data;
+		if (data instanceof CachedDataContainer) {
+			CachedDataContainer counterdata = (CachedDataContainer) data;
 			
 			DataHolder contacts = counterdata.getData();
 			//Object[] obj = (Object[]) contacts.getObject();

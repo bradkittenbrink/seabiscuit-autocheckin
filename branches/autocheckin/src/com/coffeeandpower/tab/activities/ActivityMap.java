@@ -5,14 +5,10 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,7 +35,8 @@ import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.datatiming.CounterData;
+import com.coffeeandpower.datatiming.CacheMgrService;
+import com.coffeeandpower.datatiming.CachedDataContainer;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.maps.BalloonItemizedOverlay;
@@ -47,7 +44,6 @@ import com.coffeeandpower.maps.MyItemizedOverlay;
 import com.coffeeandpower.maps.MyOverlayItem;
 import com.coffeeandpower.maps.PinDrawable;
 import com.coffeeandpower.maps.ProximityManager;
-import com.coffeeandpower.maps.ProximityReceiver;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
@@ -131,13 +127,11 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		super.onCreate(icicle);
 		
 		if (Constants.debugLog)
-			Log.d("Coffee","Creating ActivityMap...");
+			Log.d("ActivityMap","Creating ActivityMap...");
 		
 		setContentView(R.layout.tab_activity_map);
 		
-		AppCAP.startCounter();
-		
-		
+		startService(new Intent(this, CacheMgrService.class));
 		
 
 		progress = new ProgressDialog(this);
@@ -486,9 +480,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	protected void onDestroy() {
 		myLocationOverlay.disableMyLocation();
 
-		//if (Constants.debugLog)
-		//	Log.d("ActivityMap","onDestroy(): stopping counter...");
-		//AppCAP.getCounter().stop();
+		CacheMgrService.stop();
 		
 		if (AppCAP.shouldFinishActivities() && AppCAP.shouldStartLogIn()) {
 			startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
@@ -563,7 +555,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		super.onStart();
 		checkUserState();
 		UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
+		CacheMgrService.startObservingAPICall("venuesWithCheckins",this);
 	}
 
 	@Override
@@ -574,7 +566,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		UAirship.shared().getAnalytics().activityStopped(this);
 		
 		
-		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
+		CacheMgrService.stopObservingAPICall("venuesWithCheckins",this);
 		//Lets turn off the GPS when we exit the map screen
 		if (Constants.debugLog)
 			Log.d("ActivityMap","Disabling location updates");
@@ -611,8 +603,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		if (Constants.debugLog)
 			Log.d("ActivityMap","update()");
 		
-		if (data instanceof CounterData) {
-			CounterData counterdata = (CounterData) data;
+		if (data instanceof CachedDataContainer) {
+			CachedDataContainer counterdata = (CachedDataContainer) data;
 			DataHolder venuesWithCheckins = counterdata.getData();
 						
 			Object[] obj = (Object[]) venuesWithCheckins.getObject();
@@ -682,7 +674,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 				Log.d("Coffee","User exit detected.");
 	        
 	        UAirship.land();
-	        AppCAP.getCounter().stop();
+	        CacheMgrService.stop();
+	        stopService(new Intent(this,CacheMgrService.class));
 	        
 	    }
 	    return super.onKeyDown(keyCode, event);

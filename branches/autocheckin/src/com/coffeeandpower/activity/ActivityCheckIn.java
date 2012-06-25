@@ -34,7 +34,8 @@ import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
-import com.coffeeandpower.datatiming.CounterData;
+import com.coffeeandpower.datatiming.CacheMgrService;
+import com.coffeeandpower.datatiming.CachedDataContainer;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
 import com.coffeeandpower.tab.activities.ActivityContacts;
@@ -98,7 +99,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 			
 			// Deregister since we only want to get a single data update in the checkin view
 			// multiple data updates will result in the checked in users getting replicated
-			AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",ActivityCheckIn.this);
+			CacheMgrService.stopObservingAPICall("venuesWithCheckins",ActivityCheckIn.this);
 			
 			super.handleMessage(msg);
 		}
@@ -209,7 +210,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		super.onStart();
 
 		//UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
+		CacheMgrService.startObservingAPICall("venuesWithCheckins",this);
 	}
 
 	@Override
@@ -219,7 +220,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		super.onStop();
 
 		//UAirship.shared().getAnalytics().activityStopped(this);
-		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
+		CacheMgrService.stopObservingAPICall("venuesWithCheckins",this);
 	}
 
 	private void createMarker(GeoPoint point) {
@@ -368,7 +369,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		switch (action) {
 
 		case Executor.HANDLE_CHECK_IN:
-			AppCAP.getCounter().checkInTrigger(venue);
+			CacheMgrService.checkInTrigger(venue);
 			setResult(AppCAP.ACT_QUIT);
 			AppCAP.setUserCheckedIn(true);
 			ActivityCheckIn.this.finish();
@@ -392,8 +393,8 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		 * verify that the data is really of type CounterData, and log the
 		 * details
 		 */
-		if (data instanceof CounterData) {
-			CounterData counterdata = (CounterData) data;
+		if (data instanceof CachedDataContainer) {
+			CachedDataContainer counterdata = (CachedDataContainer) data;
 			DataHolder result = counterdata.getData();
 						
 			Object[] obj = (Object[]) result.getObject();

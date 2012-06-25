@@ -29,14 +29,10 @@ public class CachedNetworkData extends Observable{
 	}
 	
 	public void activate() {
-		if (Constants.debugLog)
-			Log.d("CachedNetworkData",this.type + ": activate()");
 		this.isActive = true;
 	}
 	
 	public void deactivate() {
-		if (Constants.debugLog)
-			Log.d("CachedNetworkData",this.type + ": deactivate()");
 		this.isActive = false;
 	}
 	
@@ -59,7 +55,7 @@ public class CachedNetworkData extends Observable{
                         // Send notify for nearby venues
 			hasData = true;
                         setChanged();
-                        notifyObservers(new CounterData(cachedData));
+                        notifyObservers(new CachedDataContainer(cachedData));
             	} else {
             		if (Constants.debugLog)
         			Log.d("CachedNetworkData","Skipping notifyObservers for API call: " + type);
@@ -86,7 +82,7 @@ public class CachedNetworkData extends Observable{
 			if (Constants.debugLog)
 				Log.d("CachedNetworkData","Sending cached data for API: " + this.type + "...");
 			setChanged();   // Not sure if this is necessary
-			notifyObservers(new CounterData(cachedData));
+			notifyObservers(new CachedDataContainer(cachedData));
 		}
 	}
 	

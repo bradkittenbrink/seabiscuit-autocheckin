@@ -30,8 +30,9 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.datatiming.CacheMgrService;
 import com.coffeeandpower.datatiming.CachedNetworkData;
-import com.coffeeandpower.datatiming.CounterData;
+import com.coffeeandpower.datatiming.CachedDataContainer;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.Utils;
@@ -193,7 +194,7 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		//initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
 
-		AppCAP.getCounter().getCachedDataForAPICalls("venuesWithCheckins","nearbyVenues",this);	
+		CacheMgrService.startObservingAPICalls("venuesWithCheckins","nearbyVenues",this);	
 	}
 
 	@Override
@@ -202,8 +203,8 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 			Log.d("CheckIn","ActivityCheckInList.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
-		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);	
-		AppCAP.getCounter().stoppedObservingAPICall("nearbyVenues",this);
+		CacheMgrService.stopObservingAPICall("venuesWithCheckins",this);	// is this required?
+		CacheMgrService.stopObservingAPICall("nearbyVenues",this);
 	}
 
 	@Override
@@ -249,7 +250,7 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 		 */
 		
 		CachedNetworkData cachedData = (CachedNetworkData)observable;
-		CounterData counterdata = (CounterData) data;
+		CachedDataContainer counterdata = (CachedDataContainer) data;
 		
 		if (cachedData.getType().equals("nearbyVenues")) {
 			if (Constants.debugLog)

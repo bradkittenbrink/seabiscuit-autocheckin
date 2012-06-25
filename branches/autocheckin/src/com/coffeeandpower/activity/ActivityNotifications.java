@@ -30,7 +30,7 @@ import com.coffeeandpower.adapters.MyVenueNotificationAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.datatiming.CounterData;
+import com.coffeeandpower.datatiming.CachedDataContainer;
 import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomFontView;

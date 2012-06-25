@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Set;
 
 import android.app.Application;
 import android.content.Context;
@@ -15,10 +14,8 @@ import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
 
-import com.coffeeandpower.datatiming.Counter;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
-import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.PushManager;
 import com.urbanairship.push.PushPreferences;
@@ -103,7 +100,7 @@ public class AppCAP extends Application {
 
 	private HttpUtil http;
 	
-	private Counter timingCounter;
+	//private Counter timingCounter;
 
 	public AppCAP() {
 		instance = this;
@@ -133,9 +130,12 @@ public class AppCAP extends Application {
 		
 		
 		// Create app timing Counter
-		if (Constants.debugLog)
-			Log.d("Coffee","Creating counter...");
-		instance.timingCounter = new Counter(10, 1);
+		//if (Constants.debugLog)
+		//	Log.d("Coffee","Creating counter...");
+		//instance.timingCounter = new Counter(10, 1);
+		
+		
+		
 		
 
 		// Get country code for metrics/imperial units
@@ -165,21 +165,28 @@ public class AppCAP extends Application {
 	public static HttpUtil getConnection() {
 		return instance.http;
 	}
+	
+	
 	/**
 	 * 
 	 * @category sharedResource
 	 */
-	public static Counter getCounter () {
+	/*public static Counter getCounter () {
 		return instance.timingCounter;
-	}
+	}*/
 	/**
 	 * 
 	 * @category counter
 	 */
-	public static void startCounter() {
+	/*public static void startCounter(Context context) {
+		
+		Log.d("AppCAP","startCounter()");
+		
 		instance.timingCounter.start();
 			
-	}
+		// Start passive location listener service
+		//context.startService(new Intent(context, LocationUpdateService.class));
+	}*/
 	
 	/**
 	 * 

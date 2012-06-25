@@ -34,7 +34,8 @@ import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueChatEntry;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
-import com.coffeeandpower.datatiming.CounterData;
+import com.coffeeandpower.datatiming.CacheMgrService;
+import com.coffeeandpower.datatiming.CachedDataContainer;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.utils.Executor;
@@ -151,7 +152,7 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 			Log.d("PlaceDetail","ActivityPlaceDetail.onStart()");
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
+		CacheMgrService.startObservingAPICall("venuesWithCheckins",this);
 		
 		initialLoadNow = true;
 		initialLoadWere = true;
@@ -164,7 +165,7 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
 
-		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
+		CacheMgrService.stopObservingAPICall("venuesWithCheckins",this);
 	}
 
 	private void fillData(ArrayList<UserSmart> arrayUsers, ArrayList<VenueSmart> arrayVenues) {
@@ -423,8 +424,8 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 		 * verify that the data is really of type CounterData, and log the
 		 * details
 		 */
-		if (data instanceof CounterData) {
-			CounterData counterdata = (CounterData) data;
+		if (data instanceof CachedDataContainer) {
+			CachedDataContainer counterdata = (CachedDataContainer) data;
 			DataHolder result = counterdata.getData();
 						
 			Object[] obj = (Object[]) result.getObject();

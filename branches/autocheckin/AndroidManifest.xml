@@ -66,6 +66,12 @@
         <service
             android:name="com.urbanairship.push.PushService"
             android:process=":com.urbanairship.push.process" />
+        
+        <service
+            android:name=".datatiming.CacheMgrService" />
+        
+        <receiver android:name=".datatiming.PassiveLocationUpdateReceiver"
+            android:enabled="true" />
 
         <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
         <receiver android:name=".urbanairship.IntentReceiver" />
@@ -196,6 +202,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+        
     </application>
 
 </manifest>

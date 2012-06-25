@@ -11,7 +11,8 @@ import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyVenueNotificationAdapter;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.datatiming.CounterData;
+import com.coffeeandpower.datatiming.CacheMgrService;
+import com.coffeeandpower.datatiming.CachedDataContainer;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomFontView;
 import com.urbanairship.UAirship;
@@ -108,7 +109,7 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 		//If the user isn't logged in then we will displaying the login screen not the list of contacts.
 		if (AppCAP.isLoggedIn())
 		{
-			AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);
+			CacheMgrService.startObservingAPICall("venuesWithCheckins",this);
 		}
 	}
 
@@ -119,7 +120,7 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 		if (AppCAP.isLoggedIn())
 		{
 			UAirship.shared().getAnalytics().activityStopped(this);
-			AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
+			CacheMgrService.stopObservingAPICall("venuesWithCheckins",this);
 		}
 		super.onStop();
 	}
@@ -153,7 +154,7 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 		// Get list of venues with user checkins
         	int[] venueList = AppCAP.getVenuesWithAutoCheckins();
         	
-        	CounterData counterdata = (CounterData) data;
+        	CachedDataContainer counterdata = (CachedDataContainer) data;
 		DataHolder venuesWithCheckins = counterdata.getData();
 					
 		Object[] obj = (Object[]) venuesWithCheckins.getObject();
@@ -177,7 +178,7 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 			//We have all the venues so we can stop listening
 			if (Constants.debugLog)
 				Log.d("Notifications","Shutting down observer, all venues accounted for");
-			AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins", this);
+			CacheMgrService.stopObservingAPICall("venuesWithCheckins", this);
 		}
 		else
 		{

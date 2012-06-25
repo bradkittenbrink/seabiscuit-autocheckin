@@ -7,7 +7,8 @@ import java.util.Observer;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.datatiming.CounterData;
+import com.coffeeandpower.datatiming.CacheMgrService;
+import com.coffeeandpower.datatiming.CachedDataContainer;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -55,7 +56,7 @@ public class ProximityManager implements Observer {
         	wifiBroadcastReceiver = new WifiBroadcastReceiver();
         	
         	myContext = context;
-        	AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins", getInstance());
+        	CacheMgrService.startObservingAPICall("venuesWithCheckins", getInstance());
         	locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         	//We want to register for wifi connection broadcasts
         	wifiBroadcastReceiver.registerForConnectionState(myContext);        	
@@ -92,7 +93,7 @@ public class ProximityManager implements Observer {
 		// Get list of venues with user checkins
         	int[] venueList = AppCAP.getVenuesWithAutoCheckins();
         	
-        	CounterData counterdata = (CounterData) data;
+        	CachedDataContainer counterdata = (CachedDataContainer) data;
 		DataHolder venuesWithCheckins = counterdata.getData();
 					
 		Object[] obj = (Object[]) venuesWithCheckins.getObject();
@@ -103,7 +104,7 @@ public class ProximityManager implements Observer {
 		if(venuesWithProxAlertsAdded.size() == venueList.length)
 		{
 			Log.d("ProxMgr","Shutting down observer, all venues accounted for");
-			AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins", getInstance());
+			CacheMgrService.stopObservingAPICall("venuesWithCheckins", getInstance());
 		}
         	
 		for (VenueSmart receivedVenue: arrayVenues) {
