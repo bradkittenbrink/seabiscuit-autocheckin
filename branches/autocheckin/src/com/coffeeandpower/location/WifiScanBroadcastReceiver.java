@@ -49,6 +49,19 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 			    numberOfSignatureChecks = 0;
 		    }
 	}
+	
+	public void unregisterForWifiScans(Context context) {
+		if(registeredForScans)
+		{
+			context.unregisterReceiver(this);
+			registeredForScans = false;
+		}
+		else
+		{
+			Log.d("WifiScanBroadcast","Not registered for Wifi scans, skipping unregister...");
+			
+		}
+	}
 
 	@Override
 	public void onReceive(Context context, Intent intent) {

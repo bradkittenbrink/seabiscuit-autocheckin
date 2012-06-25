@@ -1,4 +1,4 @@
-package com.coffeeandpower.maps;
+package com.coffeeandpower.location;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -60,6 +60,10 @@ public class ProximityManager implements Observer {
         	locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         	//We want to register for wifi connection broadcasts
         	wifiBroadcastReceiver.registerForConnectionState(myContext);        	
+        }
+        
+        public static void onStop(Context context) {
+        	wifiBroadcastReceiver.unregisterForConnectionState(context);
         }
         
         

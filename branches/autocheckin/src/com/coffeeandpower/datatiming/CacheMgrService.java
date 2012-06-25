@@ -25,7 +25,6 @@ public class CacheMgrService extends Service {
 
 	protected static String TAG = "CacheMgrService";
 	private LocationManager locationManager;
-	//private PassiveLocationUpdateReceiver passiveLocationReceiver = new PassiveLocationUpdateReceiver();
 	
 	private static PendingIntent pendingPassiveReceiverIntent;
 	private static final long MAX_TIME = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
@@ -91,7 +90,7 @@ public class CacheMgrService extends Service {
 		
 		// Create pending intent for passive location listener
 		Intent receiverIntent = new Intent(this,PassiveLocationUpdateReceiver.class);
-		pendingPassiveReceiverIntent = PendingIntent.getActivity(this,
+		pendingPassiveReceiverIntent = PendingIntent.getBroadcast(this,
 				0,
 				receiverIntent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
@@ -147,8 +146,8 @@ public class CacheMgrService extends Service {
 		allowCachedDataThisRun = true;
 		if (Constants.debugLog)
 			Log.d(TAG,"getCachedDataForAPICall is calling stop/start");
-		stop();
-		start();
+		stopPeriodicTimer();
+		startPeriodicTimer();
 		
 	}
 	
@@ -182,8 +181,8 @@ public class CacheMgrService extends Service {
 		allowCachedDataThisRun = true;
 		if (Constants.debugLog)
 			Log.d(TAG,"getCachedDataForAPICall is calling stop/start");
-		stop();
-		start();
+		stopPeriodicTimer();
+		startPeriodicTimer();
 		
 	}
 	
@@ -230,7 +229,7 @@ public class CacheMgrService extends Service {
 	// Periodic timer management
 	//=====================================================	
 
-	public static void stop() {
+	public static void stopPeriodicTimer() {
 		
 		if (isRunning == true) {
 			if (Constants.debugLog)
@@ -245,7 +244,7 @@ public class CacheMgrService extends Service {
 		}
 	}
 
-	public static void start() {
+	public static void startPeriodicTimer() {
 		
 		if (isRunning == false) {
 			if (Constants.debugLog)
@@ -265,16 +264,16 @@ public class CacheMgrService extends Service {
 	public static void manualTrigger() {
 		if (Constants.debugLog)
 			Log.d(TAG,"manualTrigger()");
-		stop();
-		start();
+		stopPeriodicTimer();
+		startPeriodicTimer();
 	}
 	
 	public static void refreshAllData() {
 		if (Constants.debugLog)
 			Log.d(TAG,"refreshAllData()");
 		refreshAllDataThisRun = true;
-		stop();
-		start();
+		stopPeriodicTimer();
+		startPeriodicTimer();
 	}
 
 	private static Runnable runTimer = new Runnable()
@@ -452,7 +451,7 @@ public class CacheMgrService extends Service {
         
 	public static void checkInTrigger(VenueSmart checkedInVenue) {
 
-		stop();
+		stopPeriodicTimer();
 		//Stow the venue Id for the checkout later
 		//FIXME
 		//Test uninitialized case first
@@ -513,7 +512,7 @@ public class CacheMgrService extends Service {
 	
 	public static void checkOutTrigger(){
 		
-		stop();
+		stopPeriodicTimer();
 		boolean waitForServerData = false;
 		//Stow the venue Id for the checkout later
 		int lastVenueId = AppCAP.getUserLastCheckinVenueId();

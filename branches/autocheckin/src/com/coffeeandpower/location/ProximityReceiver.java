@@ -1,4 +1,4 @@
-package com.coffeeandpower.maps;
+package com.coffeeandpower.location;
 
 import com.coffeeandpower.cont.VenueSmart;
 

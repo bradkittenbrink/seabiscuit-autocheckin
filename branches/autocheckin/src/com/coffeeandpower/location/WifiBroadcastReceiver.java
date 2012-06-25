@@ -1,11 +1,10 @@
-package com.coffeeandpower.maps;
+package com.coffeeandpower.location;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.coffeeandpower.location.WifiScanBroadcastReceiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,22 +20,32 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
 	
 	private static WifiManager wifiManager;
 	private static WifiScanBroadcastReceiver scanReceiver;
+	
+	private static IntentFilter intentFilter = new IntentFilter();
 
 	public WifiBroadcastReceiver(){
-		
+		intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        	intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
 	}
 	
 	
         public void registerForConnectionState(Context context)
         {
-        	IntentFilter intentFilter = new IntentFilter();
+        	
         	//WIFI_STATE_CHANGED_ACTION never triggers, and it isnt' clear why
         	//intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        	intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        	intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        	
         	context.registerReceiver(this, intentFilter);
       	    	scanReceiver = new WifiScanBroadcastReceiver(context);
 
+        	
+        }
+        
+        public void unregisterForConnectionState(Context currContext) {
+        	currContext.unregisterReceiver(this);
+        	
+        	// Also send message to scan receiver to unregister
+        	scanReceiver.unregisterForWifiScans(currContext);
         }
 	
     @Override

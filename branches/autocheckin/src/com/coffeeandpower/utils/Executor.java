@@ -13,7 +13,7 @@ import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.datatiming.CachedDataContainer;
-import com.coffeeandpower.maps.ProximityManager;
+import com.coffeeandpower.location.ProximityManager;
 import com.coffeeandpower.views.CustomDialog;
 import com.google.android.maps.GeoPoint;
 

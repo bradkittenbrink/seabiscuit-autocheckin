@@ -39,11 +39,11 @@ import com.coffeeandpower.datatiming.CacheMgrService;
 import com.coffeeandpower.datatiming.CachedDataContainer;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
+import com.coffeeandpower.location.ProximityManager;
 import com.coffeeandpower.maps.BalloonItemizedOverlay;
 import com.coffeeandpower.maps.MyItemizedOverlay;
 import com.coffeeandpower.maps.MyOverlayItem;
 import com.coffeeandpower.maps.PinDrawable;
-import com.coffeeandpower.maps.ProximityManager;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
@@ -480,7 +480,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	protected void onDestroy() {
 		myLocationOverlay.disableMyLocation();
 
-		CacheMgrService.stop();
+		CacheMgrService.stopPeriodicTimer();
 		
 		if (AppCAP.shouldFinishActivities() && AppCAP.shouldStartLogIn()) {
 			startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
@@ -673,8 +673,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		    if (Constants.debugLog)
 				Log.d("Coffee","User exit detected.");
 	        
-	        UAirship.land();
-	        CacheMgrService.stop();
+	        UAirship.land(); 
+	        CacheMgrService.stopPeriodicTimer();
+	        ProximityManager.onStop(this);
 	        stopService(new Intent(this,CacheMgrService.class));
 	        
 	    }
