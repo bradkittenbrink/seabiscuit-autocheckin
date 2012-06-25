@@ -1,4 +1,4 @@
-package com.coffeeandpower.datatiming;
+package com.coffeeandpower.location;
 
 
 import android.content.BroadcastReceiver;

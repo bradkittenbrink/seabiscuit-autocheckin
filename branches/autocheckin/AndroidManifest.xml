@@ -68,9 +68,9 @@
             android:process=":com.urbanairship.push.process" />
         
         <service
-            android:name=".datatiming.CacheMgrService" />
+            android:name=".cache.CacheMgrService" />
         
-        <receiver android:name=".datatiming.PassiveLocationUpdateReceiver"
+        <receiver android:name=".location.PassiveLocationUpdateReceiver"
             android:enabled="true" />
 
         <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->

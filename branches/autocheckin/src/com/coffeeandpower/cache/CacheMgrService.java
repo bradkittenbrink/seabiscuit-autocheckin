@@ -1,4 +1,4 @@
-package com.coffeeandpower.datatiming;
+package com.coffeeandpower.cache;
 
 import java.util.ArrayList;
 import java.util.Observer;
@@ -9,6 +9,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
+import com.coffeeandpower.location.PassiveLocationUpdateReceiver;
 import com.google.android.maps.GeoPoint;
 
 import android.app.AlarmManager;

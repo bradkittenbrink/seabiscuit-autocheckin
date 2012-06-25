@@ -5,10 +5,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.cache.CacheMgrService;
+import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.datatiming.CacheMgrService;
-import com.coffeeandpower.datatiming.CachedDataContainer;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;

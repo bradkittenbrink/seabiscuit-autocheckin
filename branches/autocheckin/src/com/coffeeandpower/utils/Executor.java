@@ -7,12 +7,12 @@ import android.os.Message;
 import android.util.Log;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.datatiming.CachedDataContainer;
 import com.coffeeandpower.location.ProximityManager;
 import com.coffeeandpower.views.CustomDialog;
 import com.google.android.maps.GeoPoint;
