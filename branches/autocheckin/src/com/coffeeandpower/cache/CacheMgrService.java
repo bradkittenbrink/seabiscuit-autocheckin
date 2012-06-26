@@ -25,11 +25,10 @@ import android.util.Log;
 public class CacheMgrService extends Service {
 
 	protected static String TAG = "CacheMgrService";
-	private LocationManager locationManager;
 	
-	private static PendingIntent pendingPassiveReceiverIntent;
-	private static final long MAX_TIME = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
-	private static final int MAX_DISTANCE = 0;
+	
+	
+	
 	
 	private static final double DATA_DISTANCE_REFRESH_THRESHOLD = 1000;			// meters
 	
@@ -65,7 +64,7 @@ public class CacheMgrService extends Service {
 	public void onCreate() {
 		Log.d(TAG,"onCreate()");
 		
-		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		
 		
 		tick = 10;
 		
@@ -75,7 +74,7 @@ public class CacheMgrService extends Service {
 	public void onDestroy() {
 		Log.d(TAG,"onDestroy()");
 		//locationManager.removeUpdates(passiveLocationReceiver);
-		locationManager.removeUpdates(pendingPassiveReceiverIntent);
+		
 	}
 	
 	@Override
@@ -89,18 +88,7 @@ public class CacheMgrService extends Service {
 		
 		Log.d(TAG,"onStartCommand()");
 		
-		// Create pending intent for passive location listener
-		Intent receiverIntent = new Intent(this,PassiveLocationUpdateReceiver.class);
-		pendingPassiveReceiverIntent = PendingIntent.getBroadcast(this,
-				0,
-				receiverIntent,
-				PendingIntent.FLAG_UPDATE_CURRENT);
-
-		// Register the passive listener for updates
-		locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 
-				MAX_TIME, 
-				MAX_DISTANCE, 
-				pendingPassiveReceiverIntent);
+		
 		
 		
 		// Start the periodic timer

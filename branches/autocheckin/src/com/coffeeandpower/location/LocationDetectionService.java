@@ -15,8 +15,8 @@ public class LocationDetectionService extends Service {
 
 	protected static String TAG = "LocationDetectionService";
 	
+	//private static LocationDetectionStateMachine sm = new LocationDetectionStateMachine(this);
 	
-	private static WifiStateBroadcastReceiver wifiStateBroadcastReceiver;
 	
 	//=====================================================
 	// Service Lifecycle
@@ -32,7 +32,7 @@ public class LocationDetectionService extends Service {
 	public void onCreate() {
 		Log.d(TAG,"onCreate()");
 		
-		wifiStateBroadcastReceiver = new WifiStateBroadcastReceiver();
+		LocationDetectionStateMachine.init(this);
 		
 	}
 	
@@ -41,7 +41,7 @@ public class LocationDetectionService extends Service {
 		
 		Log.d(TAG,"onDestroy()");
 		
-		wifiStateBroadcastReceiver.unregisterForConnectionState(this);
+		LocationDetectionStateMachine.stop();
 		
 	}
 	
@@ -50,7 +50,9 @@ public class LocationDetectionService extends Service {
 		
 		Log.d(TAG,"onStartCommand()");
 		
-		wifiStateBroadcastReceiver.registerForConnectionState(this);   
+		  
+		
+		LocationDetectionStateMachine.start();
 		
 		return START_STICKY;
 		
@@ -71,5 +73,9 @@ public class LocationDetectionService extends Service {
         		//createProxAlert(checkinVenue);
         	}
         }
+	
+	
+	
+	
 
 }
