@@ -22,6 +22,8 @@ import android.widget.Toast;
 
 public class ProximityManager implements Observer {
 
+	/*
+	
 	private static Context myContext;
 
 	private static LocationManager locationManager;
@@ -33,7 +35,7 @@ public class ProximityManager implements Observer {
 	
 	private static ArrayList<Integer> venuesWithProxAlertsAdded = new ArrayList<Integer>();
 	
-	private static WifiBroadcastReceiver wifiBroadcastReceiver;
+	
 	
 	
         public static void addVenueToAutoCheckinList(VenueSmart checkinVenue)
@@ -53,17 +55,17 @@ public class ProximityManager implements Observer {
         public static void onStart(Context context) {
 
         	instance = new ProximityManager();
-        	wifiBroadcastReceiver = new WifiBroadcastReceiver();
+        	
         	
         	myContext = context;
         	CacheMgrService.startObservingAPICall("venuesWithCheckins", getInstance());
         	locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         	//We want to register for wifi connection broadcasts
-        	wifiBroadcastReceiver.registerForConnectionState(myContext);        	
+        	     	
         }
         
         public static void onStop(Context context) {
-        	wifiBroadcastReceiver.unregisterForConnectionState(context);
+        	
         }
         
         
@@ -125,6 +127,13 @@ public class ProximityManager implements Observer {
 			}
 		}
 		
+	}
+	
+	*/
+	
+	@Override
+	public void update(Observable observable, Object data) {
+	
 	}
 
 }

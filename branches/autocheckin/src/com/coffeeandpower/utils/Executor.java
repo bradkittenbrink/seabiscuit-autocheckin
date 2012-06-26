@@ -13,7 +13,7 @@ import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.location.ProximityManager;
+import com.coffeeandpower.location.LocationDetectionService;
 import com.coffeeandpower.views.CustomDialog;
 import com.google.android.maps.GeoPoint;
 
@@ -238,7 +238,7 @@ public class Executor {
 				result = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime, statusText);
 				//If user selected auto checkin, save that to preferences
 				if (autoCheckin) {
-					ProximityManager.addVenueToAutoCheckinList(venue);
+					LocationDetectionService.addVenueToAutoCheckinList(venue);
 				}
 		
 				//FIXME

@@ -11,14 +11,14 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-public class WifiBroadcastReceiver extends BroadcastReceiver{
+public class WifiStateBroadcastReceiver extends BroadcastReceiver{
 	
 	private static WifiManager wifiManager;
 	private static WifiScanBroadcastReceiver scanReceiver;
 	
 	private static IntentFilter intentFilter = new IntentFilter();
 
-	public WifiBroadcastReceiver(){
+	public WifiStateBroadcastReceiver(){
 		intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         	intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
 	}

@@ -40,7 +40,6 @@ import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.location.LocationDetectionService;
-import com.coffeeandpower.location.ProximityManager;
 import com.coffeeandpower.maps.BalloonItemizedOverlay;
 import com.coffeeandpower.maps.MyItemizedOverlay;
 import com.coffeeandpower.maps.MyOverlayItem;
@@ -252,7 +251,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			}
 		});
 		
-		ProximityManager.onStart(this);
+		//ProximityManager.onStart(this);
 	}
 
 	float firstX = 0;
@@ -676,7 +675,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	        
 	        UAirship.land(); 
 	        CacheMgrService.stopPeriodicTimer();
-	        ProximityManager.onStop(this);
+	        //ProximityManager.onStop(this);
 	        stopService(new Intent(this,CacheMgrService.class));
 	        stopService(new Intent(this,LocationDetectionService.class));
 	        
