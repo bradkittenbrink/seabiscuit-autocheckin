@@ -39,6 +39,7 @@ import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
+import com.coffeeandpower.location.LocationDetectionService;
 import com.coffeeandpower.location.ProximityManager;
 import com.coffeeandpower.maps.BalloonItemizedOverlay;
 import com.coffeeandpower.maps.MyItemizedOverlay;
@@ -132,7 +133,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		setContentView(R.layout.tab_activity_map);
 		
 		startService(new Intent(this, CacheMgrService.class));
-		
+		startService(new Intent(this, LocationDetectionService.class));
 
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
@@ -677,6 +678,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	        CacheMgrService.stopPeriodicTimer();
 	        ProximityManager.onStop(this);
 	        stopService(new Intent(this,CacheMgrService.class));
+	        stopService(new Intent(this,LocationDetectionService.class));
 	        
 	    }
 	    return super.onKeyDown(keyCode, event);

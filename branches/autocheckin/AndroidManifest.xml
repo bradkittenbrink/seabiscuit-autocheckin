@@ -70,6 +70,8 @@
         
         <service
             android:name=".cache.CacheMgrService" />
+        <service
+            android:name=".location.LocationDetectionService" />
         
         <receiver android:name=".location.PassiveLocationUpdateReceiver"
             android:enabled="true" />
