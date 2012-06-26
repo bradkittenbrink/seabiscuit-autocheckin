@@ -23,17 +23,28 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
         	intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
 	}
 	
+	//Let external entities grab the current ssid
+	public String returnCurrentSSID(Context context)
+	{
+		return this.grabCurrentSSID(context);
+	}
+	
+	//Internal helper function to grab ssid string
+	private String grabCurrentSSID(Context context)
+	{
+	  	    wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+	      	    WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+	      	    String ssid = wifiInfo.getSSID();
+	      	    return ssid;
+	}
+	
 	
         public void registerForConnectionState(Context context)
         {
-        	
         	//WIFI_STATE_CHANGED_ACTION never triggers, and it isnt' clear why
         	//intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        	
         	context.registerReceiver(this, intentFilter);
-      	    	scanReceiver = new WifiScanBroadcastReceiver(context);
-
-        	
+      	    	scanReceiver = new WifiScanBroadcastReceiver(context);        	
         }
         
         public void unregisterForConnectionState(Context currContext) {
@@ -69,9 +80,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
           if (networkInfo.getState().equals(NetworkInfo.State.CONNECTED))
           {
       	    Log.d("WifiBroadcast","Wifi connected to:" + intent.getStringExtra(WifiManager.EXTRA_BSSID));
-  	    wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-      	    WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-      	    String ssid = wifiInfo.getSSID();
+      	    String ssid = this.grabCurrentSSID(context);
   	    Log.d("WifiBroadcast","Wifi connected ssid:" + ssid);
   	    
   	    //TODO

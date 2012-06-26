@@ -33,7 +33,7 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	public void registerForWifiScans(Context context){
 	  	    //Forcing the scan requires a permission and I don't think we need it because the scan happens
 	  	    //frequently enough
-	  	    //boolean scanStarted = wifiManager.startScan();
+	  	    boolean scanStarted = wifiManager.startScan();
 		    if(registeredForScans)
 		    {
 			    //Particularly on disconnect we can get multiple calls
@@ -141,7 +141,9 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
                 	if(wifiSignature.contains(myCurrNet)==false)
                 	{
                 		wifiSignature.add(myCurrNet);
-                        	Log.d("WifiScanBroadcast","SSID: " + myCurrNet.SSID + " PowerLevel " + myCurrNet.level);
+                		//DEBUG
+                		//This is useful, but very verbose
+                        	//Log.d("WifiScanBroadcast","SSID: " + myCurrNet.SSID + " PowerLevel " + myCurrNet.level);
                 		if(wifiSignature.size()>=maxBssidsSig)
                 		{
                                 	Log.d("WifiScanBroadcast","MaxBssid reached. " + String.valueOf(maxBssidsSig) + " Bssid's in signature");

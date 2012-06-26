@@ -1,7 +1,5 @@
 package com.coffeeandpower.cont;
 
-import java.io.Serializable;
-
 import org.json.JSONObject;
 
 import com.coffeeandpower.Constants;
@@ -10,7 +8,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-@SuppressWarnings("serial")
 public class UserSmart implements Parcelable {
 	private int checkInId;
 	private int userId;
