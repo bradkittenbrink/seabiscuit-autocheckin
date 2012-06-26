@@ -30,6 +30,14 @@ public class venueWifiSignature {
 			this.wifiSignature.add(network);
 		}
 	}
+	public void addWifiNetworkToSignature(ArrayList<MyScanResult> networks)
+	{
+		for(MyScanResult currMyScanResult: networks)
+		{
+			this.addWifiNetworkToSignature(currMyScanResult);
+		}
+	}
+
 	public void addWifiNetworkToSignature(ScanResult scanResult)
 	{
 		this.addWifiNetworkToSignature(new MyScanResult(scanResult));

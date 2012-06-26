@@ -1,7 +1,11 @@
 package com.coffeeandpower.location;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+
+import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.cont.VenueSmart;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -21,6 +25,7 @@ public class LocationDetectionStateMachine {
 	
 	private static PendingIntent pendingPassiveReceiverIntent;
 	private static WifiStateBroadcastReceiver wifiStateBroadcastReceiver;
+	private static WifiScanBroadcastReceiver wifiScanBroadcastReceiver;
 	
 	// This function must be called before the state machine will work
 	public static void init(Context context) {
@@ -30,7 +35,26 @@ public class LocationDetectionStateMachine {
 		activeLocationListener = new ActiveLocationListener();
 		locationManager = (LocationManager) myContext.getSystemService(Context.LOCATION_SERVICE);
 		wifiStateBroadcastReceiver = new WifiStateBroadcastReceiver();
+	}
+	
+	//=============================================================
+	// STATES
+	//=============================================================
+	
+	private static void passiveListeningSTATE(){
+		startPassiveListeners();
 		
+	}
+	private static void locationBasedVerificationSTATE(){
+		stopPassiveListeners();
+		commandGPS(triggeringVenues);
+	}
+	private static void wifiBasedVerificationSTATE(){
+		stopPassiveListeners();
+		checkWifiSignature(triggeringVenues);
+	}
+	private static void venueStateTransitionSTATE(){
+		transitionVenueCheckin();
 	}
 	
 	
@@ -40,45 +64,79 @@ public class LocationDetectionStateMachine {
 	//=============================================================	
 	
 	public static void start() {
-		startListenersForCheckedInState();
+		startPassiveListeners();
 		
 	}
 	
 	public static void stop() {
-		
-		stopListenersForCheckedInState();
+		//We really need to stop all listeners here
+		stopPassiveListeners();
 		
 	}
 	
-	public static void checkedInListenerDidTrigger(boolean isHighConfidence) {
+	public static void passiveListenerDidTrigger(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
 		
 		if (isHighConfidence) {
-			checkWifiSignature();
+			wifiBasedVerificationSTATE();
 		}
 		else {
-			commandGPS();
+			locationBasedVerificationSTATE();
 		}
 	}
 	
-	public static void activeLocationListenerTrigger() {
-		
+	public static void activeLocationListenerTrigger(ArrayList<VenueSmart> triggeringVenues) {
+		wifiBasedVerificationSTATE();		
 	}
 	
-	
-	
-	
+	private static void wifiSignatureResults(VenueSmart currVenue)
+	{
+		if(AppCAP.isUserCheckedIn())
+		{
+			//If we get a null the venue did not match
+			//When we are checked in that means we have left the venue
+			if(currVenue == null)
+			{
+				venueStateTransitionSTATE();
+			}
+			else
+			{
+				//If we did get a match we are still at the venue
+				//Therefore we want to go back to our passive listeners
+				passiveListeningSTATE();
+			}
+		}
+		else
+		{
+			//If we get a match then we are at the venue
+			//and we want to checkin
+			if(currVenue != null)
+			{
+				venueStateTransitionSTATE();
+			}
+			else
+			{
+				//If we didn't get a match we aren't at the venue
+				//so lets turn the passive listeners back on 
+				passiveListeningSTATE();
+			}
+		}
+		
+		
+	}
+
 	
 	//=============================================================
-	// CHECKED IN STATES
+	// Private actions
 	//=============================================================
 	
-	private static void startListenersForCheckedInState() {
+	
+	private static void startPassiveListeners() {
 		
 		startPassiveLocationListener();
 		startWifiStateListener();
 	}
 	
-	private static void stopListenersForCheckedInState() {
+	private static void stopPassiveListeners() {
 		
 		stopPassiveLocationListener();
 		stopWifiStateListener();
@@ -118,24 +176,30 @@ public class LocationDetectionStateMachine {
 		
 	}
 	
-	private static void checkWifiSignature() {
-		
+	private static void checkWifiSignature(ArrayList<VenueSmart> triggeringVenues) {
+		wifiScanBroadcastReceiver.checkVenueSignature(myContext, triggeringVenues);
+
 	}
 	
-	private static void commandGPS() {
+	
+	private static void commandGPS(ArrayList<VenueSmart> triggeringVenues) {
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
 				MAX_TIME, 
 				MAX_DISTANCE, 
 				activeLocationListener);
 	}
-
-
-
 	
-	
-	
-	//=============================================================
-	// CHECKED OUT STATES
-	//=============================================================
+	//private static void venueStateTransition(VenueSmart currentVenue)
+	private static void transitionVenueCheckin()
+	{
+		if(AppCAP.isUserCheckedIn())
+		{
+			//Checkout the user
+		}
+		else
+		{
+			//Checkin the user
+		}
+	}
 
 }

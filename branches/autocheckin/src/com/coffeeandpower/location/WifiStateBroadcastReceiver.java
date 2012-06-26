@@ -2,6 +2,8 @@ package com.coffeeandpower.location;
 
 import java.util.ArrayList;
 
+import com.coffeeandpower.AppCAP;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -83,11 +85,12 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver{
       	    String ssid = this.grabCurrentSSID(context);
   	    Log.d("WifiBroadcast","Wifi connected ssid:" + ssid);
   	    
-  	    //TODO
   	    //Check connected Wifi and see if it is one we recognize
-  	    boolean checkSignature = false;
+  	    boolean knownSSID = false;
   	    ArrayList<String> knownSSIDs = new ArrayList<String>();
+  	    //FIXME
   	    //Test SSIDs
+  	    //This needs to come from AppCAP or some other global store
   	    knownSSIDs.add("veronica");
   	    knownSSIDs.add("coffeeandpower");
   	    for(String testWifiSSID:knownSSIDs)
@@ -95,30 +98,31 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver{
           	    if(ssid.equalsIgnoreCase(testWifiSSID))
           	    {
           		    Log.d("WifiBroadcast","Connected to" + testWifiSSID +", double check wifiSignature"); 
-          		    checkSignature = true;
+          		  knownSSID = true;
           		    break;
           	    }
   	    }
-  	    if(checkSignature == false)
+  	    if(knownSSID == false)
   	    {
-  		    Log.d("WifiBroadcast","Wifi SSID is unrecognized");    
+  		    Log.d("WifiBroadcast","Wifi SSID is unrecognized"); 
   	    }
-  	    //DEBUG
-  	    //checkSignature =  true;
-  	    
-  	    if(checkSignature)
+  	    if(knownSSID)
   	    {
-          	    //We are connected to wifi we recognize, verify wifi signature
-          	    scanReceiver.registerForWifiScans(context);
+  		    //We don't have the venues here, and probably never will
+  		    LocationDetectionStateMachine.checkedInListenerDidTrigger(true, triggeringVenues);
   	    }
+
 
           }
           else if(networkInfo.getState().equals(NetworkInfo.State.DISCONNECTED))
           {
+        	  if(AppCAP.isUserCheckedIn())
+        	  {
 		    Log.d("WifiBroadcast","Wifi Disconnected, verifying that wifi signature no longer matches");
+		    
+  		    LocationDetectionStateMachine.checkedInListenerDidTrigger(true, triggeringVenues);
+        	  }
 
-          	    //We are connected to wifi we recognize, verify wifi signature
-          	    scanReceiver.registerForWifiScans(context);
           }
           else if(networkInfo.getState().equals(NetworkInfo.State.DISCONNECTING))
           {
