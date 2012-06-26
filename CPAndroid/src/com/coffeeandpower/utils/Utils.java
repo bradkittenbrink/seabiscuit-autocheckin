@@ -2,8 +2,9 @@ package com.coffeeandpower.utils;
 
 import java.util.Date;
 
-import com.coffeeandpower.AppCAP;
-
+import android.os.Build;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -13,6 +14,8 @@ import android.view.animation.LayoutAnimationController;
 import android.view.animation.TranslateAnimation;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import com.coffeeandpower.AppCAP;
 
 public class Utils {
 
@@ -89,7 +92,7 @@ public class Utils {
 		LayoutAnimationController controller = new LayoutAnimationController(set, 0.5f);
 		lv.setLayoutAnimation(controller);
 	}
-
+	
 	/**
 	 * Get sizes for drawing elements
 	 * 
@@ -156,5 +159,18 @@ public class Utils {
 			}
 		}
 		return 0;
+	}
+	
+	// Converts measure units to their screen independent size
+	public static float pixelToDp(float px, DisplayMetrics metrics) {
+		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, metrics);
+	}
+	
+	public static boolean isAboveHoneycomb() {
+		if (Build.VERSION.SDK_INT < 11) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
