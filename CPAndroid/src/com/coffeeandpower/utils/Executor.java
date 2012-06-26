@@ -328,9 +328,11 @@ public class Executor {
 	 * @param venueId
 	 * @param lastChatIDString
 	 */
-	public synchronized void venueChat(final int venueId, final String lastChatIDString, final String message, final boolean isSend) {
-		progress.setMessage(isSend ? "Sending..." : "Loading...");
-		progress.show();
+	public synchronized void venueChat(final int venueId, final String lastChatIDString, final String message, final boolean isSend, boolean withProgress) {
+		if (withProgress) {
+			progress.setMessage(isSend ? "Sending..." : "Loading...");
+			progress.show();
+		}
 		new Thread(new Runnable() {
 			@Override
 			public void run() {

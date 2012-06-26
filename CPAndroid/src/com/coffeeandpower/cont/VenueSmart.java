@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
+import com.coffeeandpower.utils.Executor;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -25,6 +27,7 @@ public class VenueSmart implements Parcelable, Comparable{
 	private String photoURL;
 	private String phone;
 	private String formattedPhone;
+	private String lastChatEntry;
 
 	private double lat;
 	private double lng;
@@ -102,6 +105,7 @@ public class VenueSmart implements Parcelable, Comparable{
 		this.photoURL = objVenue.optString("photo_url");
 		this.phone = objVenue.optString("phone");
 		this.formattedPhone = objVenue.optString("formatted_phone");
+		this.lastChatEntry = objVenue.optString("lastChatEntry");		
 		this.lat = objVenue.optDouble("lat");
 		this.lng = objVenue.optDouble("lng");
 		this.arrayCheckins = arrayCheckins;
@@ -125,6 +129,7 @@ public class VenueSmart implements Parcelable, Comparable{
 		this.photoURL = objVenue.optString("photo_url");
 		this.phone = objVenue.optString("phone");
 		this.formattedPhone = objVenue.optString("formatted_phone");
+		this.lastChatEntry = objVenue.optString("lastChatEntry");
 		this.lat = objVenue.optDouble("lat");
 		this.lng = objVenue.optDouble("lng");
 	}
@@ -139,12 +144,13 @@ public class VenueSmart implements Parcelable, Comparable{
 	 * Create empty venue obj
 	 */
 	public VenueSmart() {
-		this(0, "", "", "", "", 0 , "", 0, 0, 0, "", "", "", 0, 0, new ArrayList<CheckinData>());
+		this(0, "", "", "", "", 0 , "", 0, 0, 0, "", "", "", "", 0, 0, new ArrayList<CheckinData>());
 	}
 	
 
 	public VenueSmart(int venueId, String name, String address, String city, String state, double distance, String foursquareId, int checkins,
-			int checkinsForWeek, int checkinsForInterval, String photoURL, String phone, String formattedPhone, double lat, double lng,
+			int checkinsForWeek, int checkinsForInterval, String photoURL, String phone, String formattedPhone, String lastChatEntry,
+			double lat, double lng,
 			ArrayList<CheckinData> arrayCheckins) {
 		this.venueId = venueId;
 		this.name = name;
@@ -159,6 +165,7 @@ public class VenueSmart implements Parcelable, Comparable{
 		this.photoURL = photoURL;
 		this.phone = phone;
 		this.formattedPhone = formattedPhone;
+		this.lastChatEntry = lastChatEntry;
 		this.lat = lat;
 		this.lng = lng;
 		this.arrayCheckins = arrayCheckins;
@@ -166,7 +173,7 @@ public class VenueSmart implements Parcelable, Comparable{
 	
 	
 	public static VenueSmart createVenuePlaceholder(String fourSquareId,String name) {
-		return new VenueSmart(0,name,"","","",0,fourSquareId,0,0,0,"","","",0,0,null);		
+		return new VenueSmart(0, name, "", "", "", 0, fourSquareId, 0, 0, 0, "", "", "", "", 0, 0, null);		
 	}
 
 	public int getVenueId() {
@@ -275,6 +282,14 @@ public class VenueSmart implements Parcelable, Comparable{
 
 	public void setFormattedPhone(String formattedPhone) {
 		this.formattedPhone = formattedPhone;
+	}
+
+	public String getLastChatEntry() {
+		return lastChatEntry;
+	}
+
+	public void setLastChatEntry(String lastChatEntry) {
+		this.lastChatEntry = lastChatEntry;
 	}
 
 	public double getLat() {

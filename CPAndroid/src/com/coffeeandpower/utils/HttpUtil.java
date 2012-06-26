@@ -1078,8 +1078,9 @@ public class HttpUtil {
 													.optInt("checkins_for_interval"), objVenue
 													.optString("photo_url"), objVenue
 													.optString("phone"), objVenue
-													.optString("formatted_phone"), objVenue
-													.optDouble("lat"), objVenue.optDouble("lng"),
+													.optString("formatted_phone"),"", objVenue
+													.optDouble("lat"), objVenue
+													.optDouble("lng"),
 											arrayCheckins));
 								}
 							}
@@ -1945,7 +1946,7 @@ public class HttpUtil {
 			String responseString = EntityUtils.toString(resEntity);
 			RootActivity.log("HttpUtil_VenueChatForVenueWithID: " + responseString);
 
-			if (responseString != null) {
+			if (responseString != null && responseString.trim().length() > 0) {
 				JSONObject json = new JSONObject(responseString);
 				if (json != null) {
 

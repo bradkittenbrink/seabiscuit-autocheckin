@@ -141,7 +141,7 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 				//We need to eliminate the Venue class eventually
 				ArrayList<CheckinData> arrayCheckins = new ArrayList<VenueSmart.CheckinData>();
 				VenueSmart currSmartVenue = new VenueSmart(currVenue.getVenueId(), currVenue.getName(), currVenue.getAddress(), currVenue.getCity(), currVenue.getCity(), currVenue.getDistance(), currVenue.getFoursquareId(), currVenue.getCheckinsCount(),
-						0, 0, currVenue.getPhotoUrl(), currVenue.getPhone(), currVenue.getPhone(), currVenue.getLat(), currVenue.getLng(),
+						0, 0, currVenue.getPhotoUrl(), currVenue.getPhone(), currVenue.getPhone(), "", currVenue.getLat(), currVenue.getLng(),
 						arrayCheckins);
 				intent.putExtra("venueSmart", currSmartVenue);
 				if(arraySmartVenues!=null)

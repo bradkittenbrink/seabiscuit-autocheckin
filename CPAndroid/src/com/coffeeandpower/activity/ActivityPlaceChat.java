@@ -108,7 +108,7 @@ public class ActivityPlaceChat extends RootActivity {
 		String input = editText.getText().toString();
 
 		if (input != null && input.length() > 0) {
-			exe.venueChat(venueId, "0", input, true); // "0" ???
+			exe.venueChat(venueId, "0", input, true, true); 
 		}
 	}
 
@@ -117,7 +117,7 @@ public class ActivityPlaceChat extends RootActivity {
 		super.onResume();
 
 		// Get venue chat
-		exe.venueChat(venueId, lastChatIDString, "", false);
+		exe.venueChat(venueId, lastChatIDString, "", false, true);
 	}
 
 	public void onClickBack(View v) {
