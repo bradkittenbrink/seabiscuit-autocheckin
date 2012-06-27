@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -51,7 +50,6 @@ import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
-import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomDialog.ClickListener;
 import com.coffeeandpower.views.CustomFontView;
@@ -431,13 +429,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	private void refreshMapDataSet() {
 		checkUserState();
 		
-		int iconSize = Utils.getScreenDependentItemSize(Utils.REFRESH_ICON_SIZE);
-
-		Animation anim = new RotateAnimation(360.0f, 0.0f, iconSize / 2, iconSize / 2);
-		anim.setDuration(1000);
-		anim.setRepeatCount(0);
-		anim.setRepeatMode(Animation.REVERSE);
-		anim.setFillAfter(true);
+		Animation anim = AnimationUtils.loadAnimation(this, R.anim.refresh_anim);
 		imageRefresh.setAnimation(anim);
 
 		hideBaloons();

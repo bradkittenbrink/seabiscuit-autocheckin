@@ -2,6 +2,8 @@ package com.coffeeandpower.utils;
 
 import java.util.Date;
 
+import com.coffeeandpower.AppCAP;
+
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -15,14 +17,11 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.coffeeandpower.AppCAP;
-
 public class Utils {
 
 	public static final int TEXT_TYPE_MAP_BLACK_PIN = 1200;
 	public static final int MAP_HOR_OFFSET_FROM_CENTER = 1201;
 	public static final int MAP_VER_OFFSET_FROM_CENTER = 1202;
-	public static final int REFRESH_ICON_SIZE = 1203;
 	public static final int TEXT_TYPE_MAP_RED_PIN = 1204;
 
 	/**
@@ -145,17 +144,6 @@ public class Utils {
 				return 500;
 			} else if (screenWidth > 485) {
 				return 800;
-			}
-
-		case REFRESH_ICON_SIZE:
-			if (screenWidth <= 245) {
-				return 25;
-			} else if (screenWidth <= 325) {
-				return 25;
-			} else if (screenWidth <= 485) {
-				return 36;
-			} else if (screenWidth > 485) {
-				return 36;
 			}
 		}
 		return 0;

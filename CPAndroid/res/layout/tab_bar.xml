@@ -199,6 +199,8 @@
             android:id="@+id/imageview_check_in_clock_hand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="1.5dip"
+            android:layout_marginLeft="1dip"
             android:background="@drawable/check_in_clock_hand" />
     </RelativeLayout>
 
