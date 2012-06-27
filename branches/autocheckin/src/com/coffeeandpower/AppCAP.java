@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import android.app.Application;
 import android.content.Context;
@@ -14,6 +17,8 @@ import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
 
+import com.coffeeandpower.location.MyScanResult;
+import com.coffeeandpower.location.venueWifiSignature;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
 import com.urbanairship.UAirship;
@@ -75,6 +80,8 @@ public class AppCAP extends Application {
 	// production
 	//public static final String URL_WEB_SERVICE = "https://staging.candp.me/"; // staging
 	public static final String URL_WEB_SERVICE = "http://dev.worklist.net/~andrewa/candpweb2/web/"; // staging
+	//public static final String URL_WEB_SERVICE = "http://dev.candp.me/~birarda/candpweb_7000/web/"; // staging
+	
 	public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
 	public static final String FOURSQUARE_OAUTH = "BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4";
 	public static final String URL_FUNDS = "http://www.coffeeandpower.com/m/?ios#addFundsiPhone";
@@ -685,5 +692,41 @@ public class AppCAP extends Application {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 
+	 * @category tempTestData
+	 */
+	    public static ArrayList<venueWifiSignature> getAutoCheckinWifiSignatures()
+	    {
+			ArrayList<venueWifiSignature> arrayOfVenuesSigs = new ArrayList<venueWifiSignature>();
+			//Data for C&P
+			List<String> testBssids = Arrays.asList("98:fc:11:8f:8f:b0", "00:1c:b3:ff:8d:53", "f4:6d:04:6d:33:2e", "e0:91:f5:87:71:2b", "74:91:1a:50:eb:98","c4:3d:c7:8d:6b:f8");
+			ArrayList<MyScanResult> venueWifiNetworks = new ArrayList<MyScanResult>();
+			for(String currBssid:testBssids)
+			{
+				venueWifiNetworks.add(new MyScanResult(currBssid));
+			}
+			
+			venueWifiSignature testSignature = new venueWifiSignature();
+			testSignature.addConnectedSSID("coffeeandpower");
+			testSignature.addWifiNetworkToSignature(venueWifiNetworks);
+			arrayOfVenuesSigs.add(testSignature);
+			
+			//This is a fake test list for Andrew's
+			testBssids = Arrays.asList("00:24:36:a4:f5:2d", "e4:83:99:07:c8:e0", "20:4e:7f:44:cd:dc", "1c:14:48:09:30:40", "c8:60:00:94:33:12", "30:46:9a:1c:63:5c");
+			ArrayList<MyScanResult> andrewWifiNetworks = new ArrayList<MyScanResult>();
+			for(String currBssid:testBssids)
+			{
+				andrewWifiNetworks.add(new MyScanResult(currBssid));
+			}
+			
+			venueWifiSignature andrewTestSignature = new venueWifiSignature();
+			andrewTestSignature.addConnectedSSID("veronica");
+			andrewTestSignature.addWifiNetworkToSignature(andrewWifiNetworks);
+			
+			arrayOfVenuesSigs.add(andrewTestSignature);
+			return arrayOfVenuesSigs;
+	    }
 
 }

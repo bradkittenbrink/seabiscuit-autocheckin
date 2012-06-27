@@ -36,7 +36,7 @@ public class ActiveLocationListener implements LocationListener{
 		//Location myLoc = new Location();
 		
 		// send location to state machine
-		LocationDetectionStateMachine.activeLocationListenerTrigger();
+		LocationDetectionStateMachine.commandGPSCOMPLETE();
 		
 	}
 

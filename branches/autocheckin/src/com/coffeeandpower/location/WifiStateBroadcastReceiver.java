@@ -1,8 +1,15 @@
 package com.coffeeandpower.location;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
+import com.coffeeandpower.cache.CacheMgrService;
+import com.coffeeandpower.cache.CachedDataContainer;
+import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.VenueSmart;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,12 +20,14 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-public class WifiStateBroadcastReceiver extends BroadcastReceiver{
+public class WifiStateBroadcastReceiver extends BroadcastReceiver implements Observer{
 	
 	private static WifiManager wifiManager;
 	private static WifiScanBroadcastReceiver scanReceiver;
 	
 	private static IntentFilter intentFilter = new IntentFilter();
+	
+	private static int triggeredVenueId = 0;
 
 	public WifiStateBroadcastReceiver(){
 		intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
@@ -68,13 +77,6 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver{
 	              	    Log.d("WifiBroadcast","Wifi disconnected");
 	            }
 	}
-	/*
-	if(action.equals(android.net.wifi.NETWORK_STATE_CHANGED_ACTION))
-	{
-		Log.d("WifiBroadcast","Wifi State Changed:" + String.valueOf(intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0)));
-
-	}
-	*/
 	if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction()))
         {
           Log.d("WifiBroadcast","Network state change");
@@ -87,31 +89,26 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver{
   	    
   	    //Check connected Wifi and see if it is one we recognize
   	    boolean knownSSID = false;
-  	    ArrayList<String> knownSSIDs = new ArrayList<String>();
-  	    //FIXME
-  	    //Test SSIDs
-  	    //This needs to come from AppCAP or some other global store
-  	    knownSSIDs.add("veronica");
-  	    knownSSIDs.add("coffeeandpower");
-  	    for(String testWifiSSID:knownSSIDs)
+  	    //Grab list of Venues with autocheckins from AppCAP
+  	    ArrayList<venueWifiSignature> testVenuesBeingVerified = AppCAP.getAutoCheckinWifiSignatures();
+  	    for(venueWifiSignature venueUnderTest:testVenuesBeingVerified)
   	    {
-          	    if(ssid.equalsIgnoreCase(testWifiSSID))
-          	    {
-          		    Log.d("WifiBroadcast","Connected to" + testWifiSSID +", double check wifiSignature"); 
-          		  knownSSID = true;
-          		    break;
-          	    }
+  		    for(String currSSID : venueUnderTest.connectedWifiSSIDs)
+  		    {
+                  	    if(ssid.equalsIgnoreCase(currSSID))
+                  	    {
+                  		    Log.d("WifiBroadcast","Connected to" + currSSID +", double check wifiSignature");
+                		    triggeredVenueId = venueUnderTest.venueId;
+                  		    knownSSID = true;
+                		    CacheMgrService.startObservingAPICall("venuesWithCheckins", this);
+                  		    break;
+                  	    }
+  		    }
   	    }
   	    if(knownSSID == false)
   	    {
   		    Log.d("WifiBroadcast","Wifi SSID is unrecognized"); 
   	    }
-  	    if(knownSSID)
-  	    {
-  		    //We don't have the venues here, and probably never will
-  		    LocationDetectionStateMachine.checkedInListenerDidTrigger(true, triggeringVenues);
-  	    }
-
 
           }
           else if(networkInfo.getState().equals(NetworkInfo.State.DISCONNECTED))
@@ -119,8 +116,8 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver{
         	  if(AppCAP.isUserCheckedIn())
         	  {
 		    Log.d("WifiBroadcast","Wifi Disconnected, verifying that wifi signature no longer matches");
-		    
-  		    LocationDetectionStateMachine.checkedInListenerDidTrigger(true, triggeringVenues);
+		    triggeredVenueId = AppCAP.getUserLastCheckinVenueId();
+		    CacheMgrService.startObservingAPICall("venuesWithCheckins",this);
         	  }
 
           }
@@ -130,6 +127,40 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver{
           }
 
         }
+    }
+    @Override
+    public void update(Observable observable, Object data) {
+		CacheMgrService.stopObservingAPICall("venuesWithCheckins", this);        		
+		/*
+		 * verify that the data is really of type CounterData, and log the
+		 * details
+		 */
+		if (data instanceof CachedDataContainer) {
+			CachedDataContainer counterdata = (CachedDataContainer) data;
+			DataHolder venuesWithCheckins = counterdata.getData();
+						
+			Object[] obj = (Object[]) venuesWithCheckins.getObject();
+			@SuppressWarnings("unchecked")
+			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			
+			ArrayList<VenueSmart> venuesWithAutoCheckins = new ArrayList<VenueSmart>();
+			//FIXME
+			//This has the same cache miss issue we have elsewhere, if their autocheckin venues
+			//aren't all covered by the venue list from nearbyvenueswithcheckins
+
+    			for(VenueSmart currentVenue:arrayVenues)
+    			{
+    				if(currentVenue.getVenueId() == triggeredVenueId)
+    				{
+    					venuesWithAutoCheckins.add(currentVenue);
+    					LocationDetectionStateMachine.passiveListenersCOMPLETE(true, venuesWithAutoCheckins);
+    					break;
+    				}
+    			}
+		}
+		else
+			if (Constants.debugLog)
+				Log.d("WifiStateBroadcastReceiver","Error: Received unexpected data type: " + data.getClass().toString());
     }
 
     

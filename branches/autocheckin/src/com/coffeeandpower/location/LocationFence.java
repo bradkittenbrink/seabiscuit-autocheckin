@@ -28,59 +28,42 @@ public class LocationFence {
 	
 	private static Location pendingLocation;
 	private static int[] autoCheckinArray;
+	private static boolean highAssurance = false;
+	
+	//Constants for threshold calculation
+	private static final float initialCheckinFenceDist = 40;
+	private static final float initialCheckoutFenceDist = 60;
+	
+	private static final float highAssuranceThreshold = 30;
+
+	
 	
 	public static void init(Context context) {
 		
 		 myContext = context;
 	}
-	
-	
-	
+		
 	public static boolean isLocationWithinFence(Location location) {
 		
 		pendingLocation = location;
+		if(pendingLocation.hasAccuracy())
+		{
+			if(pendingLocation.getAccuracy() < highAssuranceThreshold)
+			{
+				highAssurance = true;
+			}
+			else
+			{
+				highAssurance = false;
+			}
+		}
+		else
+			highAssurance = false;
 		
 		CacheMgrService.startObservingAPICall("venuesWithCheckins", instance.myVenuesObserver);
 		
 		return false;
 		
-	}
-	
-	private static ArrayList<VenueSmart> checkFence(ArrayList<VenueSmart> venuesWithAutoCheckins) {
-		
-		ArrayList<VenueSmart> venuesWithFenceBreaks = new ArrayList<VenueSmart>();
-		//FIXME
-		//This number the below calculation needs some more thought put into it
-		float initialCheckinFenceDist = 40;
-		//Add in the accuracy (assumed to be 2 sigma measurement)
-		float fenceCheckinRadiusMeters = initialCheckinFenceDist + pendingLocation.getAccuracy();
-		float initialCheckoutFenceDist = 60;
-		float fenceCheckoutRadiusMeters = initialCheckoutFenceDist + pendingLocation.getAccuracy();
-		// iterate through list of venues with autocheckin set
-		for(VenueSmart currVenue:venuesWithAutoCheckins)
-		{
-			Location tmpLocation = new Location("");
-			tmpLocation.setLatitude(currVenue.getLat());
-			tmpLocation.setLongitude(currVenue.getLng());
-			//Calculate the distance between the venue and the pendingLocation
-			float distance = pendingLocation.distanceTo(tmpLocation);
-			//Check that status the checkin
-			if(AppCAP.isUserCheckedIn())
-			{
-        			if(distance < fenceCheckinRadiusMeters)
-        			{
-        				venuesWithFenceBreaks.add(currVenue);
-        			}
-			}
-			else
-			{
-        			if(distance > fenceCheckoutRadiusMeters)
-        			{
-        				venuesWithFenceBreaks.add(currVenue);
-        			}
-			}
-		}
-		return venuesWithFenceBreaks;
 	}
 	
 	private class MyVenuesObserver implements Observer {
@@ -122,16 +105,53 @@ public class LocationFence {
         				
         			}
         			//We have the venue positions now lets check for fence breaks
-        			ArrayList<VenueSmart> venuesWithFenceBreaks =  instance.checkfence(venuesWithAutoCheckins);
-        			
-        			
-        			
+        			ArrayList<VenueSmart> venuesWithFenceBreaks =  this.checkFence(venuesWithAutoCheckins);
+        			//FIXME
+        			//This is a helper class and should not return straight back to LocationDetectionStateMachine
+        			//It needs to go back to whatever location provider is doing the test
+				LocationDetectionStateMachine.passiveListenersCOMPLETE(highAssurance, venuesWithAutoCheckins);
         		}
         		else
         			if (Constants.debugLog)
-        				Log.d("PeoplePlaces","Error: Received unexpected data type: " + data.getClass().toString());
+        				Log.d("LocationFence","Error: Received unexpected data type: " + data.getClass().toString());
         		
         		
+        	}
+        	
+        	
+        	private ArrayList<VenueSmart> checkFence(ArrayList<VenueSmart> venuesWithAutoCheckins) {
+        		
+        		ArrayList<VenueSmart> venuesWithFenceBreaks = new ArrayList<VenueSmart>();
+        		//FIXME
+        		//This number the below calculation needs some more thought put into it
+        		//Add in the accuracy (assumed to be 2 sigma measurement)
+        		float fenceCheckinRadiusMeters = initialCheckinFenceDist + pendingLocation.getAccuracy();
+        		float fenceCheckoutRadiusMeters = initialCheckoutFenceDist + pendingLocation.getAccuracy();
+        		// iterate through list of venues with autocheckin set
+        		for(VenueSmart currVenue:venuesWithAutoCheckins)
+        		{
+        			Location tmpLocation = new Location("");
+        			tmpLocation.setLatitude(currVenue.getLat());
+        			tmpLocation.setLongitude(currVenue.getLng());
+        			//Calculate the distance between the venue and the pendingLocation
+        			float distance = pendingLocation.distanceTo(tmpLocation);
+        			//Check that status the checkin
+        			if(AppCAP.isUserCheckedIn())
+        			{
+                			if(distance < fenceCheckinRadiusMeters)
+                			{
+                				venuesWithFenceBreaks.add(currVenue);
+                			}
+        			}
+        			else
+        			{
+                			if(distance > fenceCheckoutRadiusMeters)
+                			{
+                				venuesWithFenceBreaks.add(currVenue);
+                			}
+        			}
+        		}
+        		return venuesWithFenceBreaks;
         	}
         	
 	}

@@ -27,6 +27,11 @@ public class LocationDetectionStateMachine {
 	private static WifiStateBroadcastReceiver wifiStateBroadcastReceiver;
 	private static WifiScanBroadcastReceiver wifiScanBroadcastReceiver;
 	
+	//Data caches for data passing between states
+	private static ArrayList<VenueSmart> triggeringVenuesCACHE;
+	private static VenueSmart currVenueCACHE;
+	
+	
 	// This function must be called before the state machine will work
 	public static void init(Context context) {
 		
@@ -40,42 +45,76 @@ public class LocationDetectionStateMachine {
 	//=============================================================
 	// STATES
 	//=============================================================
-	
+	//All state transitions are dataless, all data flows through
+	//member variables
 	private static void passiveListeningSTATE(){
-		startPassiveListeners();
-		
+		startPassiveListenersINIT();
 	}
 	private static void locationBasedVerificationSTATE(){
-		stopPassiveListeners();
-		commandGPS(triggeringVenues);
+		commandGPSINIT();
 	}
 	private static void wifiBasedVerificationSTATE(){
-		stopPassiveListeners();
-		checkWifiSignature(triggeringVenues);
+		checkWifiSignatureINIT();
 	}
 	private static void venueStateTransitionSTATE(){
-		transitionVenueCheckin();
+		transitionVenueCheckinINIT();
 	}
-	
-	
 	
 	//=============================================================
-	// PUBLIC METHODS
-	//=============================================================	
+	// INIT: Private State transition initiators
+	//=============================================================
+	//All calls should be to either private helper functions
+	//or external classes and methods.  None should end in STATE()
 	
+	private static void startPassiveListenersINIT() {
+		startPassiveLocationListener();
+		startWifiStateListener();
+	}
+	
+	private static void commandGPSINIT() {
+		//FIXME
+		//This needs to get fed in here
+		//triggeringVenuesCACHE
+		//FIXME
+		//This belongs in a helper function
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
+				MAX_TIME, 
+				MAX_DISTANCE, 
+				activeLocationListener);
+	}
+	
+	private static void checkWifiSignatureINIT() {
+		wifiScanBroadcastReceiver.checkVenueSignature(myContext, triggeringVenuesCACHE);
+	}
+	
+	//private static void venueStateTransition(VenueSmart currentVenue)
+	private static void transitionVenueCheckinINIT()
+	{
+		if(AppCAP.isUserCheckedIn())
+		{
+			//Checkout the user
+			//currVenueCACHE
+
+		}
+		else
+		{
+			//Checkin the user
+			//currVenueCACHE
+		}
+	}
+	
+	//=============================================================
+	// COMPLETE: PUBLIC State transition completers
+	//=============================================================
+	//All calls should end in STATE(), transitioning the state to
+	//something new
 	public static void start() {
-		startPassiveListeners();
-		
+		passiveListeningSTATE();	
 	}
-	
-	public static void stop() {
-		//We really need to stop all listeners here
+	//Closer for startPassiveListeners()
+	public static void passiveListenersCOMPLETE(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
 		stopPassiveListeners();
-		
-	}
-	
-	public static void passiveListenerDidTrigger(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
-		
+		triggeringVenuesCACHE = triggeringVenues;
 		if (isHighConfidence) {
 			wifiBasedVerificationSTATE();
 		}
@@ -83,12 +122,13 @@ public class LocationDetectionStateMachine {
 			locationBasedVerificationSTATE();
 		}
 	}
-	
-	public static void activeLocationListenerTrigger(ArrayList<VenueSmart> triggeringVenues) {
+	//Closer for commandGPS
+	public static void commandGPSCOMPLETE(ArrayList<VenueSmart> triggeringVenues) {
+		triggeringVenuesCACHE = triggeringVenues;
 		wifiBasedVerificationSTATE();		
 	}
 	
-	private static void wifiSignatureResults(VenueSmart currVenue)
+	public static void checkWifiSignatureCOMPLETE(VenueSmart currVenue)
 	{
 		if(AppCAP.isUserCheckedIn())
 		{
@@ -100,8 +140,11 @@ public class LocationDetectionStateMachine {
 			}
 			else
 			{
+				currVenueCACHE = currVenue;
 				//If we did get a match we are still at the venue
 				//Therefore we want to go back to our passive listeners
+				//TODO we need to change the trigger threshold here
+				//to avoid it looping back too quickly
 				passiveListeningSTATE();
 			}
 		}
@@ -111,6 +154,7 @@ public class LocationDetectionStateMachine {
 			//and we want to checkin
 			if(currVenue != null)
 			{
+				currVenueCACHE = currVenue;
 				venueStateTransitionSTATE();
 			}
 			else
@@ -120,28 +164,16 @@ public class LocationDetectionStateMachine {
 				passiveListeningSTATE();
 			}
 		}
-		
-		
 	}
-
 	
 	//=============================================================
-	// Private actions
+	// Private Helper functions
 	//=============================================================
-	
-	
-	private static void startPassiveListeners() {
-		
-		startPassiveLocationListener();
-		startWifiStateListener();
-	}
 	
 	private static void stopPassiveListeners() {
-		
 		stopPassiveLocationListener();
 		stopWifiStateListener();
 	}
-	
 	
 	private static void startPassiveLocationListener() {
 		// Create pending intent for passive location listener
@@ -176,30 +208,18 @@ public class LocationDetectionStateMachine {
 		
 	}
 	
-	private static void checkWifiSignature(ArrayList<VenueSmart> triggeringVenues) {
-		wifiScanBroadcastReceiver.checkVenueSignature(myContext, triggeringVenues);
+	//=============================================================
+	// PUBLIC METHODS
+	//=============================================================	
+	
+	public static void stop() {
+		//FIXME
+		//We really need to stop all listeners here
+		stopPassiveListeners();
+		
+	}
 
-	}
 	
-	
-	private static void commandGPS(ArrayList<VenueSmart> triggeringVenues) {
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
-				MAX_TIME, 
-				MAX_DISTANCE, 
-				activeLocationListener);
-	}
-	
-	//private static void venueStateTransition(VenueSmart currentVenue)
-	private static void transitionVenueCheckin()
-	{
-		if(AppCAP.isUserCheckedIn())
-		{
-			//Checkout the user
-		}
-		else
-		{
-			//Checkin the user
-		}
-	}
+
 
 }

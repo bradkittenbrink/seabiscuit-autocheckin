@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.cont.VenueSmart;
 
 import android.content.BroadcastReceiver;
@@ -117,7 +118,7 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	private venueWifiSignature signatureVerification(Context context, List<ScanResult> visibleWifiNetworks){
 		//FIXME
 		//This is a fake test list for C&P and andrews
-		ArrayList<venueWifiSignature> testVenuesBeingVerified = this.createTestData();
+		ArrayList<venueWifiSignature> testVenuesBeingVerified = AppCAP.getAutoCheckinWifiSignatures();
 		//TODO
 		//Compare list of visible wifi networks, and see how that 
 		//compares to our list of key networks at that venue
@@ -149,37 +150,5 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	                }
 		    }
 		    return null;
-	    }
-	    
-	    private ArrayList<venueWifiSignature> createTestData()
-	    {
-			ArrayList<venueWifiSignature> arrayOfVenuesSigs = new ArrayList<venueWifiSignature>();
-			//Data for C&P
-			List<String> testBssids = Arrays.asList("98:fc:11:8f:8f:b0", "00:1c:b3:ff:8d:53", "f4:6d:04:6d:33:2e", "e0:91:f5:87:71:2b", "74:91:1a:50:eb:98","c4:3d:c7:8d:6b:f8");
-			ArrayList<MyScanResult> venueWifiNetworks = new ArrayList<MyScanResult>();
-			for(String currBssid:testBssids)
-			{
-				venueWifiNetworks.add(new MyScanResult(currBssid));
-			}
-			
-			venueWifiSignature testSignature = new venueWifiSignature();
-			testSignature.addConnectedSSID("coffeeandpower");
-			testSignature.addWifiNetworkToSignature(venueWifiNetworks);
-			arrayOfVenuesSigs.add(testSignature);
-			
-			//This is a fake test list for Andrew's
-			testBssids = Arrays.asList("00:24:36:a4:f5:2d", "e4:83:99:07:c8:e0", "20:4e:7f:44:cd:dc", "1c:14:48:09:30:40", "c8:60:00:94:33:12", "30:46:9a:1c:63:5c");
-			ArrayList<MyScanResult> andrewWifiNetworks = new ArrayList<MyScanResult>();
-			for(String currBssid:testBssids)
-			{
-				andrewWifiNetworks.add(new MyScanResult(currBssid));
-			}
-			
-			venueWifiSignature andrewTestSignature = new venueWifiSignature();
-			andrewTestSignature.addConnectedSSID("veronica");
-			andrewTestSignature.addWifiNetworkToSignature(andrewWifiNetworks);
-			
-			arrayOfVenuesSigs.add(andrewTestSignature);
-			return arrayOfVenuesSigs;
 	    }
 }
