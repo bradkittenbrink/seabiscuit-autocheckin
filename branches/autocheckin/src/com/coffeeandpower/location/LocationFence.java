@@ -43,7 +43,7 @@ public class LocationFence {
 		 myContext = context;
 	}
 		
-	public static boolean isLocationWithinFence(Location location) {
+	public static boolean isLocationHighAssurance(Location location) {
 		
 		pendingLocation = location;
 		if(pendingLocation.hasAccuracy())
@@ -59,10 +59,13 @@ public class LocationFence {
 		}
 		else
 			highAssurance = false;
-		
-		CacheMgrService.startObservingAPICall("venuesWithCheckins", instance.myVenuesObserver);
-		
 		return highAssurance;
+	}
+	
+	public static void isLocationWithinFence(Location location)
+	{
+		isLocationHighAssurance(location);
+		CacheMgrService.startObservingAPICall("venuesWithCheckins", instance.myVenuesObserver);	
 		
 	}
 	
@@ -109,11 +112,13 @@ public class LocationFence {
         			//FIXME
         			//This is a helper class and should not return straight back to LocationDetectionStateMachine
         			//It needs to go back to whatever location provider is doing the test
-				LocationDetectionStateMachine.passiveListenersCOMPLETE(highAssurance, venuesWithAutoCheckins);
+				LocationDetectionStateMachine.positionListenersCOMPLETE(highAssurance, venuesWithAutoCheckins);
         		}
         		else
         			if (Constants.debugLog)
         				Log.d("LocationFence","Error: Received unexpected data type: " + data.getClass().toString());
+        		//FIXME
+        		//Need to add an exception case callback to the state machine
         		
         		
         	}
