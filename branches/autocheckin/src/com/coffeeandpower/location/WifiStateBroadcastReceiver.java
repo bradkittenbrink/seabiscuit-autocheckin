@@ -153,7 +153,7 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver implements Obs
     				if(currentVenue.getVenueId() == triggeredVenueId)
     				{
     					venuesWithAutoCheckins.add(currentVenue);
-    					LocationDetectionStateMachine.passiveListenersCOMPLETE(true, venuesWithAutoCheckins);
+    					LocationDetectionStateMachine.positionListenersCOMPLETE(true, venuesWithAutoCheckins);
     					break;
     				}
     			}

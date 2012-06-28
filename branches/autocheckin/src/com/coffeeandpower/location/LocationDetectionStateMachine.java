@@ -15,6 +15,8 @@ import android.location.LocationManager;
 
 public class LocationDetectionStateMachine {
 	
+	private static int currentState = 0;
+	
 	private static final long MAX_TIME = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 	private static final int MAX_DISTANCE = 0;
 	
@@ -48,15 +50,19 @@ public class LocationDetectionStateMachine {
 	//All state transitions are dataless, all data flows through
 	//member variables
 	private static void passiveListeningSTATE(){
+		currentState = 0;
 		startPassiveListenersINIT();
 	}
 	private static void locationBasedVerificationSTATE(){
+		currentState = 1;
 		commandGPSINIT();
 	}
 	private static void wifiBasedVerificationSTATE(){
+		currentState = 2;
 		checkWifiSignatureINIT();
 	}
 	private static void venueStateTransitionSTATE(){
+		currentState = 3;
 		transitionVenueCheckinINIT();
 	}
 	
@@ -77,6 +83,7 @@ public class LocationDetectionStateMachine {
 		//triggeringVenuesCACHE
 		//FIXME
 		//This belongs in a helper function
+		activeLocationListener.init();
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
 				MAX_TIME, 
 				MAX_DISTANCE, 
@@ -111,21 +118,40 @@ public class LocationDetectionStateMachine {
 	public static void start() {
 		passiveListeningSTATE();	
 	}
-	//Closer for startPassiveListeners()
-	public static void passiveListenersCOMPLETE(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
-		stopPassiveListeners();
+	//Closer for startPassiveListeners(), commandGPSINIT()
+	public static void positionListenersCOMPLETE(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
 		triggeringVenuesCACHE = triggeringVenues;
-		if (isHighConfidence) {
-			wifiBasedVerificationSTATE();
+		//If we have a fence break respond
+		if(triggeringVenues != null)
+		{
+        		//PassiveListenersINIT returning
+        		if(currentState == 0)
+        		{
+        			stopPassiveListeners();
+                		if (isHighConfidence) {
+                			wifiBasedVerificationSTATE();
+                		}
+                		else {
+                			locationBasedVerificationSTATE();
+                		}
+        		}
+        		else{
+        			//commandGPSINIT
+                		if (isHighConfidence) {
+                			wifiBasedVerificationSTATE();
+                		}
+                		else {
+                			//If we can't get a high assurance position
+                			//Return to passive listening
+                			passiveListeningSTATE();
+                		}			
+        		}
 		}
-		else {
-			locationBasedVerificationSTATE();
+		else
+		{
+			//No fence breaks return to passive listening
+			passiveListeningSTATE();
 		}
-	}
-	//Closer for commandGPS
-	public static void commandGPSCOMPLETE(ArrayList<VenueSmart> triggeringVenues) {
-		triggeringVenuesCACHE = triggeringVenues;
-		wifiBasedVerificationSTATE();		
 	}
 	
 	public static void checkWifiSignatureCOMPLETE(VenueSmart currVenue)
