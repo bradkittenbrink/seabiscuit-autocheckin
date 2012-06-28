@@ -32,6 +32,8 @@ public class PassiveLocationUpdateReceiver  extends BroadcastReceiver {
         		location = (Location)intent.getExtras().get(key);
         	        Log.d(TAG,"Received Updated Location: " + location.getLatitude() + ", " + location.getLongitude());
         	        
+        	        
+        	        
         	        LocationFence.isLocationWithinFence(location);
         	}
         	else {

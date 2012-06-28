@@ -6,16 +6,30 @@ import android.os.Bundle;
 
 public class ActiveLocationListener implements LocationListener{
 
+	private boolean hasReceivedHighAssuranceLocation;
+	
 	public ActiveLocationListener() {
-		// TODO Auto-generated constructor stub
+		hasReceivedHighAssuranceLocation = false;
+	}
+	
+	// only want to send a single high assurance position
+	// state machine will call init when re-registering the active listener
+	public void init() {
+		hasReceivedHighAssuranceLocation = false;
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
 		
-        	
-        	// send location to state machine
-		LocationFence.isLocationWithinFence(location);
+        	if (!hasReceivedHighAssuranceLocation) {
+                	// send location to LocationFence for fence check if assurance is high enough
+        		if (LocationFence.isLocationHighAssurance(location)) {
+        			hasReceivedHighAssuranceLocation = true;
+        			LocationFence.isLocationWithinFence(location);
+        	        }
+        		// else just wait for the next location to be received
+        	}
+		
 		
 	}
 
