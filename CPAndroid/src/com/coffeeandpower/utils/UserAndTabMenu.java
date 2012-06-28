@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
@@ -24,7 +22,6 @@ import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivitySettings;
-import com.coffeeandpower.activity.ActivityWallet;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
@@ -225,12 +222,6 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 	@Override
 	public void onClickEnterInviteCode(View v) {
 		Intent intent = new Intent(context, ActivityEnterInviteCode.class);
-		context.startActivity(intent);
-	}
-
-	@Override
-	public void onClickWallet(View v) {
-		Intent intent = new Intent(context, ActivityWallet.class);
 		context.startActivity(intent);
 	}
 

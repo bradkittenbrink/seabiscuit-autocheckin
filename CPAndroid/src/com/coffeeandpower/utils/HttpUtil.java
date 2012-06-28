@@ -52,11 +52,8 @@ import android.util.Log;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.activity.ActivityEnterInviteCode;
-import com.coffeeandpower.activity.ActivityJobCategory;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.activity.ActivityUserDetails;
-import com.coffeeandpower.activity.ActivityWallet;
 import com.coffeeandpower.cont.ChatMessage;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
@@ -2722,7 +2719,7 @@ public class HttpUtil {
 										.optDouble("lat"), objPayload.optDouble("lng"), objPayload
 										.optInt("favorite_enabled"), objPayload.optInt("favorite_count"),
 								objPayload.optInt("my_favorite_count"), objPayload.optInt("money_received"),
-								objPayload.optInt("offers_paid"), objPayload.optInt("balance"), transactions));
+								objPayload.optInt("offers_paid"), transactions));
 
 						return result;
 					}
@@ -2804,13 +2801,12 @@ public class HttpUtil {
 					int myFavoriteCount = json.optInt("my_favorite_count");
 					int moneyReceived = json.optInt("money_received");
 					int offersPaid = json.optInt("offers_paid");
-					int balance = json.getInt("balance");
 
 					AppCAP.setLocalUserPhotoLargeURL(photoLarge);
 					AppCAP.setLocalUserPhotoURL(photo);
 
 					result.setObject(new User(userId, favoriteEnabled, favoriteCount, myFavoriteCount, moneyReceived, offersPaid,
-							balance, nickName, userName, statusText, status, active, photo, photoLarge, lat, lng));
+							nickName, userName, statusText, status, active, photo, photoLarge, lat, lng));
 					result.setHandlerCode(Executor.HANDLE_GET_USER_DATA);
 					return result;
 				}

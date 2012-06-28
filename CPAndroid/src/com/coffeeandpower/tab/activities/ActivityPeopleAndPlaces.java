@@ -38,7 +38,6 @@ import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
-import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
@@ -351,12 +350,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	@Override
 	public void onClickEnterInviteCode(View v) {
 		menu.onClickEnterInviteCode(v);
-	}
-
-	@Override
-	public void onClickWallet(View v) {
-		menu.onClickWallet(v);
-
 	}
 
 	@Override

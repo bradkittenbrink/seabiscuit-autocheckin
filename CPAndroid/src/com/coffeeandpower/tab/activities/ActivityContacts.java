@@ -16,13 +16,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
@@ -35,9 +35,9 @@ import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
-import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
+import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.urbanairship.UAirship;
@@ -314,11 +314,6 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 	@Override
 	public void onClickEnterInviteCode(View v) {
 		menu.onClickEnterInviteCode(v);
-	}
-
-	@Override
-	public void onClickWallet(View v) {
-		menu.onClickWallet(v);
 	}
 
 	@Override

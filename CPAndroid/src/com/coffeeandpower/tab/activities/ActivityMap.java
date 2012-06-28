@@ -567,10 +567,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		}
 	}
 
-	public void onClickWallet(View v) {
-		menu.onClickWallet(v);
-	}
-
 	public void onClickLogout(View v) {
 		menu.onClickLogout(v);
 	}

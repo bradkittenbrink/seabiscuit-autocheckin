@@ -11,7 +11,6 @@ public class User implements Serializable {
 	private int myFavoriteCount;
 	private int moneyReceived;
 	private int offersPaid;
-	private int balance;
 
 	private String nickName;
 	private String userName;
@@ -24,7 +23,7 @@ public class User implements Serializable {
 	private double lat;
 	private double lng;
 
-	public User(int userId, int favoriteEnabled, int favoriteCount, int myFavoriteCount, int moneyReceived, int offersPaid, int balance,
+	public User(int userId, int favoriteEnabled, int favoriteCount, int myFavoriteCount, int moneyReceived, int offersPaid, 
 			String nickName, String userName, String statusText, String status, String active, String photo, String photoLarge,
 			double lat, double lng) {
 		super();
@@ -34,7 +33,6 @@ public class User implements Serializable {
 		this.myFavoriteCount = myFavoriteCount;
 		this.moneyReceived = moneyReceived;
 		this.offersPaid = offersPaid;
-		this.balance = balance;
 		this.nickName = nickName;
 		this.userName = userName;
 		this.statusText = statusText;
@@ -92,14 +90,6 @@ public class User implements Serializable {
 
 	public void setOffersPaid(int offersPaid) {
 		this.offersPaid = offersPaid;
-	}
-
-	public int getBalance() {
-		return balance;
-	}
-
-	public void setBalance(int balance) {
-		this.balance = balance;
 	}
 
 	public String getNickName() {

@@ -21,13 +21,12 @@ public class UserTransaction {
 	private int myFavoriteCount;
 	private int moneyReceived;
 	private int offersPaid;
-	private int balance;
 
 	private ArrayList<Transaction> transactions;
 
 	public UserTransaction(int userId, String nickName, String userName, String statusText, String userStatus, String active, String photo,
 			String photoLarge, double lat, double lng, int favoriteEnabled, int favoriteCount, int myFavoriteCount, int moneyReceived,
-			int offersPaid, int balance, ArrayList<Transaction> transactions) {
+			int offersPaid, ArrayList<Transaction> transactions) {
 
 		this.userId = userId;
 		this.nickName = nickName;
@@ -44,7 +43,6 @@ public class UserTransaction {
 		this.myFavoriteCount = myFavoriteCount;
 		this.moneyReceived = moneyReceived;
 		this.offersPaid = offersPaid;
-		this.balance = balance;
 		this.transactions = transactions;
 	}
 
@@ -166,14 +164,6 @@ public class UserTransaction {
 
 	public void setOffersPaid(int offersPaid) {
 		this.offersPaid = offersPaid;
-	}
-
-	public int getBalance() {
-		return balance;
-	}
-
-	public void setBalance(int balance) {
-		this.balance = balance;
 	}
 
 	public ArrayList<Transaction> getTransactions() {
