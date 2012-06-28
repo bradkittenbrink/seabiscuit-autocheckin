@@ -74,9 +74,23 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 			if(modeVerification)
 			{
 				venueWifiSignature matchingVenue = signatureVerification(context, visibleWifiNetworks);
+				this.reportMatch(matchingVenue);
 			}
 		}
 	    }
+	
+	private void reportMatch(venueWifiSignature matchingVenue)
+	{
+		for(VenueSmart currVenue: this.venuesBeingVerified)
+		{
+			if(matchingVenue.venueId == currVenue.getVenueId())
+			{
+				LocationDetectionStateMachine.checkWifiSignatureCOMPLETE(currVenue);
+				break;
+			}
+		}
+		
+	}
 	
 	private List<MyScanResult> collectWifiSignature(int maxBssidsSig, List<ScanResult> visibleWifiNetworks){
         	Log.d("WifiScanBroadcast","Forming wifi signature");
@@ -126,29 +140,29 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 		return matchingVenue;
 	}
 	    
-	    private venueWifiSignature checkForMatch(List<ScanResult> visibleWifiNetworks, ArrayList<venueWifiSignature> venuesBeingVerified) {
-		    //This is the match threshold, once hit we know we have a match
-		    for(venueWifiSignature currVenueSig : venuesBeingVerified)
-		    {
-		    	int matches = 0;
-	                for(ScanResult currNet:visibleWifiNetworks)
-	                {
-	                	for(MyScanResult currVenueNet:currVenueSig.wifiSignature)
-	                	{
-	                		String testArg1 = currNet.BSSID;
-	                		String TestArg2 = currVenueNet.BSSID;
-	                		//The below was returning false positives, why is not clear
-	                		//if(currNet.BSSID.equalsIgnoreCase(currVenueNet.BSSID));
-	                		if(testArg1.equalsIgnoreCase(TestArg2))
-	                		{
-	                			matches++;
-	                			if(matches>=posMatchThreshold)
-	                				return currVenueSig;
-	                		}
-	                	}
-	                	//Log.d("WifiBroadcast","SSID: " + currNet.SSID + " BSSID: " + currNet.BSSID);
-	                }
-		    }
-		    return null;
+    private venueWifiSignature checkForMatch(List<ScanResult> visibleWifiNetworks, ArrayList<venueWifiSignature> venuesBeingVerified) {
+	    //This is the match threshold, once hit we know we have a match
+    for(venueWifiSignature currVenueSig : venuesBeingVerified)
+    {
+    	int matches = 0;
+        for(ScanResult currNet:visibleWifiNetworks)
+        {
+        	for(MyScanResult currVenueNet:currVenueSig.wifiSignature)
+        	{
+        		String testArg1 = currNet.BSSID;
+        		String TestArg2 = currVenueNet.BSSID;
+        		//The below was returning false positives, why is not clear
+        		//if(currNet.BSSID.equalsIgnoreCase(currVenueNet.BSSID));
+        		if(testArg1.equalsIgnoreCase(TestArg2))
+        		{
+        			matches++;
+        			if(matches>=posMatchThreshold)
+        				return currVenueSig;
+        		}
+        	}
+        	//Log.d("WifiBroadcast","SSID: " + currNet.SSID + " BSSID: " + currNet.BSSID);
+                }
 	    }
+	    return null;
+    }
 }

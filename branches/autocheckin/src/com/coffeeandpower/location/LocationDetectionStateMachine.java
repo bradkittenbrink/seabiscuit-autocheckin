@@ -143,8 +143,9 @@ public class LocationDetectionStateMachine {
 				currVenueCACHE = currVenue;
 				//If we did get a match we are still at the venue
 				//Therefore we want to go back to our passive listeners
-				//TODO we need to change the trigger threshold here
+				//TODO we need to increase the trigger threshold here
 				//to avoid it looping back too quickly
+				//Currently the threshold is hardcoded in LocationFence
 				passiveListeningSTATE();
 			}
 		}
