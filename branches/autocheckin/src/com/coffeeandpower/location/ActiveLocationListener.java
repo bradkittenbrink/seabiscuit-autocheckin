@@ -11,8 +11,11 @@ public class ActiveLocationListener implements LocationListener{
 	}
 
 	@Override
-	public void onLocationChanged(Location arg0) {
-		// TODO Auto-generated method stub
+	public void onLocationChanged(Location location) {
+		
+        	
+        	// send location to state machine
+		LocationFence.isLocationWithinFence(location);
 		
 	}
 
@@ -32,11 +35,7 @@ public class ActiveLocationListener implements LocationListener{
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
 		// TODO Auto-generated method stub
 		
-		// extract location from Bundle
-		//Location myLoc = new Location();
 		
-		// send location to state machine
-		//LocationDetectionStateMachine.commandGPSCOMPLETE();
 		
 	}
 
