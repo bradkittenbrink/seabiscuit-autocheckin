@@ -62,7 +62,7 @@ public class LocationFence {
 		
 		CacheMgrService.startObservingAPICall("venuesWithCheckins", instance.myVenuesObserver);
 		
-		return false;
+		return highAssurance;
 		
 	}
 	
@@ -123,6 +123,9 @@ public class LocationFence {
         		
         		ArrayList<VenueSmart> venuesWithFenceBreaks = new ArrayList<VenueSmart>();
         		//FIXME
+        		//Add a max signma at which you don't do anything
+        		
+        		//FIXME
         		//This number the below calculation needs some more thought put into it
         		//Add in the accuracy (assumed to be 2 sigma measurement)
         		float fenceCheckinRadiusMeters = initialCheckinFenceDist + pendingLocation.getAccuracy();
@@ -138,14 +141,14 @@ public class LocationFence {
         			//Check that status the checkin
         			if(AppCAP.isUserCheckedIn())
         			{
-                			if(distance < fenceCheckinRadiusMeters)
+                			if(distance > fenceCheckoutRadiusMeters)
                 			{
                 				venuesWithFenceBreaks.add(currVenue);
                 			}
         			}
         			else
         			{
-                			if(distance > fenceCheckoutRadiusMeters)
+                			if(distance < fenceCheckinRadiusMeters)
                 			{
                 				venuesWithFenceBreaks.add(currVenue);
                 			}
