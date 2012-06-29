@@ -2278,7 +2278,7 @@ public class HttpUtil {
 			params.add(new BasicNameValuePair("lng", Double.toString(venue.getLng())));
 			params.add(new BasicNameValuePair("venue_name", venue.getName() + ""));
 			params.add(new BasicNameValuePair("checkin", checkInTime + ""));
-			params.add(new BasicNameValuePair("checkout", checkOutTime + ""));
+			params.add(new BasicNameValuePair("hours_here", checkOutTime + ""));
 			params.add(new BasicNameValuePair("foursquare", URLEncoder.encode(venue.getFoursquareId() + "", "utf-8")));
 			params.add(new BasicNameValuePair("address", venue.getAddress() + ""));
 			params.add(new BasicNameValuePair("city", venue.getCity() + ""));

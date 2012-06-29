@@ -104,9 +104,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	};
 	
 	{
-		checkInDuration = 1; // default 1 hour checkin duration, slider
-				     // sets
-				     // other values
+		checkInDuration = 1; // default 1 hour checkin duration, slider sets other values
 	}
 
 	@Override
@@ -241,7 +239,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	 */
 	public void onClickCheckIn(View v) {
 		final int checkInTime = (int) (System.currentTimeMillis() / 1000);
-		final int checkOutTime = checkInTime + checkInDuration * 3600;
+		final int checkOutTime = checkInDuration;
 		
 		//FIXME
 		//The Venue and VenueSmart classes still need to be unified, this is designed for Venue,
