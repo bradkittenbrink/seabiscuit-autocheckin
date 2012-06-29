@@ -1,6 +1,7 @@
 package com.coffeeandpower.location;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -144,7 +145,7 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver implements Obs
 						
 			Object[] obj = (Object[]) venuesWithCheckins.getObject();
 			@SuppressWarnings("unchecked")
-			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
 			
 			ArrayList<VenueSmart> venuesWithAutoCheckins = new ArrayList<VenueSmart>();
 			//FIXME

@@ -3,6 +3,7 @@ package com.coffeeandpower.tab.activities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -270,18 +271,18 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 			if (Constants.debugLog)
 				Log.d("CheckInList","We have data for both APIs...");
 			@SuppressWarnings("unchecked")
-			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) nearbyVenuesHolderWORKERTHREAD.getObject();
+			List<VenueSmart> arrayVenues = (List<VenueSmart>) nearbyVenuesHolderWORKERTHREAD.getObject();
 			
 			
 			Object[] obj = (Object[]) venuesWithCheckinsHolderWORKERTHREAD.getObject();
 			@SuppressWarnings("unchecked")
-			ArrayList<VenueSmart> arrayVenuesWCheckins = (ArrayList<VenueSmart>) obj[0];
+			List<VenueSmart> arrayVenuesWCheckins = (List<VenueSmart>) obj[0];
 						
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putCharSequence("type", counterdata.type);
-			bundle.putParcelableArrayList("venues", arrayVenues);
-			bundle.putParcelableArrayList("venuesWCheckins", arrayVenuesWCheckins);
+			bundle.putParcelableArrayList("venues", new ArrayList<VenueSmart>(arrayVenues));
+			bundle.putParcelableArrayList("venuesWCheckins", new ArrayList<VenueSmart>(arrayVenuesWCheckins));
 			message.setData(bundle);
 			
 			if (Constants.debugLog)

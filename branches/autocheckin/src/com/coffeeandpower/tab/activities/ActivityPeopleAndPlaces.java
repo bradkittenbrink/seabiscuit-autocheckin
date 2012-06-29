@@ -3,6 +3,7 @@ package com.coffeeandpower.tab.activities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -426,17 +427,17 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 						
 			Object[] obj = (Object[]) venuesWithCheckins.getObject();
 			@SuppressWarnings("unchecked")
-			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
 			@SuppressWarnings("unchecked")
-			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+			List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
 			
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putCharSequence("type", counterdata.type);
 			if (type.equals("people")) {
-				bundle.putParcelableArrayList("users", arrayUsers);
+				bundle.putParcelableArrayList("users", new ArrayList<UserSmart>(arrayUsers));
 			} else {
-				bundle.putParcelableArrayList("venues", arrayVenues);
+				bundle.putParcelableArrayList("venues", new ArrayList<VenueSmart>(arrayVenues));
 			}
 			message.setData(bundle);
 			

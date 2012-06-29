@@ -1,13 +1,8 @@
 package com.coffeeandpower.location;
 
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
-
 import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.Constants;
 import com.coffeeandpower.cont.VenueSmart;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -249,8 +244,13 @@ public class LocationDetectionStateMachine {
 		{
 			if(triggeringVenues.size() == 0)
 			{
-				passiveListeningSTATE();
-			}
+        			try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        			passiveListeningSTATE();			}
 			else
 			{
                 		//PassiveListenersINIT returning
@@ -272,6 +272,12 @@ public class LocationDetectionStateMachine {
                         		else {
                         			//If we can't get a high assurance position
                         			//Return to passive listening
+                        			try {
+							Thread.sleep(2000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
                         			passiveListeningSTATE();
                         		}			
                 		}
@@ -280,8 +286,13 @@ public class LocationDetectionStateMachine {
 		else
 		{
 			//No fence breaks return to passive listening
-			passiveListeningSTATE();
-		}
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			passiveListeningSTATE();		}
 	}
 	
 	public static void checkWifiSignatureCOMPLETE(VenueSmart currVenue) {

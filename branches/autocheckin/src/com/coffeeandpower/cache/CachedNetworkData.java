@@ -19,9 +19,7 @@ public class CachedNetworkData extends Observable{
 	private String type;
 	
 	private DataHolder cachedData;
-	
-	
-	
+		
 	public CachedNetworkData(String myType) {
 		isActive = false;
 		hasData = false;
@@ -44,7 +42,8 @@ public class CachedNetworkData extends Observable{
 		
 		cachedData = newData;
 		
-		Log.d("CachedNetworkData","Setting user location to: " + userLocation[0] + ", " + userLocation[1]);
+		//This gets called so often it makes a mess
+		//Log.d("CachedNetworkData","Setting user location to: " + userLocation[0] + ", " + userLocation[1]);
 		userLocationWhenDataCollected.setLatitude(userLocation[0]);
 		userLocationWhenDataCollected.setLongitude(userLocation[1]);
 		
@@ -82,7 +81,7 @@ public class CachedNetworkData extends Observable{
 			if (Constants.debugLog)
 				Log.d("CachedNetworkData","Sending cached data for API: " + this.type + "...");
 			setChanged();   // Not sure if this is necessary
-			notifyObservers(new CachedDataContainer(cachedData.copy()));
+			notifyObservers(new CachedDataContainer(cachedData));
 		}
 	}
 	

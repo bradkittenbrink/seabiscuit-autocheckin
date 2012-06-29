@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -1757,7 +1758,7 @@ public class HttpUtil {
 							}
 						}
 					}
-					result.setObject(contactsArray);
+					result.setObject(Collections.unmodifiableList(contactsArray));
 					result.setResponseMessage("HTTP 200 OK");
 					return result;
 				}
@@ -2493,7 +2494,7 @@ public class HttpUtil {
 								}
 
 								result.setHandlerCode(Executor.HANDLE_VENUES_CLOSE_TO_LOCATION);
-								result.setObject(venuesArray);
+								result.setObject(Collections.unmodifiableList(venuesArray));
 								result.setResponseMessage("HTTP 200 OK");
 								return result;
 							}
@@ -2657,7 +2658,9 @@ public class HttpUtil {
 								}
 							}
 						}
-						result.setObject(new Object[] { venues, users, contacts });
+						result.setObject(new Object[] { Collections.unmodifiableList(venues), 
+								Collections.unmodifiableList(users), 
+								Collections.unmodifiableList(contacts) });
 					}
 					result.setHandlerCode(Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS);
 					result.setResponseMessage("HTTP 200 OK");

@@ -607,15 +607,15 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 						
 			Object[] obj = (Object[]) venuesWithCheckins.getObject();
 			@SuppressWarnings("unchecked")
-			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
 			@SuppressWarnings("unchecked")
-			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+			List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
 			
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putCharSequence("type", counterdata.type);
-			bundle.putParcelableArrayList("venues", arrayVenues);
-			bundle.putParcelableArrayList("users", arrayUsers);
+			bundle.putParcelableArrayList("venues", new ArrayList<VenueSmart>(arrayVenues));
+			bundle.putParcelableArrayList("users", new ArrayList<UserSmart>(arrayUsers));
 			message.setData(bundle);
 			
 			if (Constants.debugLog)

@@ -3,6 +3,7 @@ package com.coffeeandpower.tab.activities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -386,13 +387,15 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 			DataHolder contacts = counterdata.getData();
 			//Object[] obj = (Object[]) contacts.getObject();
 			@SuppressWarnings("unchecked")
-			ArrayList<UserSmart> arrayContacts = (ArrayList<UserSmart>) contacts.getObject();				
+			List<UserSmart> arrayContacts = (List<UserSmart>) contacts.getObject();
+			
 			if (Constants.debugLog)
 				Log.d("Contacts","Warning: API callback temporarily disabled...");
 			
 			// Remove self from user array
 			UserSmart selfUser = null;
-			for (UserSmart aUser:arrayContacts) {
+			ArrayList<UserSmart> mutableArrayContacts = new ArrayList<UserSmart>(arrayContacts);
+			for (UserSmart aUser:mutableArrayContacts) {
 				
 				if (AppCAP.getLoggedInUserId() == aUser.getUserId()) {
 					if (Constants.debugLog)
@@ -401,17 +404,17 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 				}
 			}
 			if (selfUser != null) {
-				arrayContacts.remove(selfUser);
+				mutableArrayContacts.remove(selfUser);
 			}
 				
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putCharSequence("type", counterdata.type);
-			bundle.putParcelableArrayList("contacts", arrayContacts);
+			bundle.putParcelableArrayList("contacts", mutableArrayContacts);
 			message.setData(bundle);
 			
 			if (Constants.debugLog)
-				Log.d("Contacts","Contacts.update: Sending handler message with " + arrayContacts.size() + " contacts:");
+				Log.d("Contacts","Contacts.update: Sending handler message with " + mutableArrayContacts.size() + " contacts:");
 			
 			
 			
