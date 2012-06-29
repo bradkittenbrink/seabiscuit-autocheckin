@@ -44,7 +44,7 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 		if(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(action))
 		{
 			//We have scan results so we can stop listening for additional scan results
-			this.unregisterForWifiScans(context);
+			LocationDetectionStateMachine.wifiScanListenerDidReceiveScan();
 			//Grab results from fresh scan of wifi networks
 			List<ScanResult> visibleWifiNetworks = wifiManager.getScanResults();
 			boolean modeCollection = false;

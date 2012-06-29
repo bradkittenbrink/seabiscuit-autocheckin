@@ -83,6 +83,13 @@ public class LocationDetectionStateMachine {
 				else if (messageType.equalsIgnoreCase("passiveListenerDidReceiveLocation")) {
 					passiveListenerDidReceiveLocationCallback();
 				}
+				else if (messageType.equalsIgnoreCase("wifiScanListenerDidReceiveScan")) {
+					wifiScanListenerDidReceiveScanCallback();
+				}
+				else
+				{
+					Log.d(TAG, "TaskHandler message is unhandled!!!");
+				}
 				
 				super.handleMessage(msg);
 			}
@@ -190,7 +197,7 @@ public class LocationDetectionStateMachine {
         		message.setData(bundle);
         		
         		Log.d(TAG,"Sending message...");
-        		locationThreadTaskHandler.sendMessage(message);
+        		locationThreadTaskHandler.dispatchMessage(message);
         		
 		} else {
 			Log.d(TAG,"Warning: Tried to start state machine while already active...");
@@ -213,7 +220,7 @@ public class LocationDetectionStateMachine {
         		bundle.putCharSequence("type", "stop");
         		message.setData(bundle);
         		
-        		locationThreadTaskHandler.sendMessage(message);
+        		locationThreadTaskHandler.dispatchMessage(message);
 		}
 	}
 	private static void stopCallback() {
@@ -235,75 +242,86 @@ public class LocationDetectionStateMachine {
 		bundle.putParcelableArrayList("triggeringVenues", triggeringVenues);
 		message.setData(bundle);
 		
-		locationThreadTaskHandler.sendMessage(message);
+		locationThreadTaskHandler.dispatchMessage(message);
 	}
 	private static void positionListenersCallback(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
-		triggeringVenuesCACHE = triggeringVenues;
-		//If we have a fence break respond
-		if(triggeringVenues != null )
+		if(currentState == 0 || (currentState <= 1 && isHighConfidence))
 		{
-			if(triggeringVenues.size() == 0)
-			{
+        		triggeringVenuesCACHE = triggeringVenues;
+        		//If we have a fence break respond
+        		if(triggeringVenues != null )
+        		{
+        			if(triggeringVenues.size() == 0)
+        			{
+                			try {
+        					Thread.sleep(2000);
+        				} catch (InterruptedException e) {
+        					// TODO Auto-generated catch block
+        					e.printStackTrace();
+        				}
+                			passiveListeningSTATE();			}
+        			else
+        			{
+                        		//PassiveListenersINIT returning
+                        		if(currentState == 0)
+                        		{
+                        			stopPassiveListeners();
+                                		if (isHighConfidence) {
+                                			wifiBasedVerificationSTATE();
+                                		}
+                                		else {
+                                			//FIXME
+                                			//Skipping active GPS right now
+                                			wifiBasedVerificationSTATE();
+                                			//locationBasedVerificationSTATE();
+                                		}
+                        		}
+                        		else{
+                        			//commandGPSINIT
+                                		if (isHighConfidence) {
+                                			wifiBasedVerificationSTATE();
+                                		}
+                                		else {
+                                			//If we can't get a high assurance position
+                                			//Return to passive listening
+                                			try {
+        							Thread.sleep(2000);
+        						} catch (InterruptedException e) {
+        							// TODO Auto-generated catch block
+        							e.printStackTrace();
+        						}
+                                			passiveListeningSTATE();
+                                		}			
+                        		}
+        			}
+        		}
+        		else
+        		{
+        			//No fence breaks return to passive listening
         			try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        			passiveListeningSTATE();			}
-			else
-			{
-                		//PassiveListenersINIT returning
-                		if(currentState == 0)
-                		{
-                			stopPassiveListeners();
-                        		if (isHighConfidence) {
-                        			wifiBasedVerificationSTATE();
-                        		}
-                        		else {
-                        			locationBasedVerificationSTATE();
-                        		}
-                		}
-                		else{
-                			//commandGPSINIT
-                        		if (isHighConfidence) {
-                        			wifiBasedVerificationSTATE();
-                        		}
-                        		else {
-                        			//If we can't get a high assurance position
-                        			//Return to passive listening
-                        			try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-                        			passiveListeningSTATE();
-                        		}			
-                		}
-			}
+        				Thread.sleep(2000);
+        			} catch (InterruptedException e) {
+        				// TODO Auto-generated catch block
+        				e.printStackTrace();
+        			}
+        			passiveListeningSTATE();		
+        		}
 		}
-		else
-		{
-			//No fence breaks return to passive listening
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			passiveListeningSTATE();		}
+		else{
+			Log.d(TAG,"Redundant late call to: positionListenersCallback");
+
+		}
 	}
 	
 	public static void checkWifiSignatureCOMPLETE(VenueSmart currVenue) {
 		Log.d(TAG,"checkWifiSignatureCOMPLETE");
 		Message message = new Message();
 		Bundle bundle = new Bundle();
-		bundle.putCharSequence("type", "positionListenersCOMPLETE");
+		bundle.putCharSequence("type", "checkWifiSignatureCOMPLETE");
 		bundle.putParcelable("currVenue", currVenue);
 		message.setData(bundle);
 		
-		locationThreadTaskHandler.sendMessage(message);
+		locationThreadTaskHandler.dispatchMessage(message);
 	}
 	private static void checkWifiSignatureCallback(VenueSmart currVenue)
 	{
@@ -352,10 +370,24 @@ public class LocationDetectionStateMachine {
 		bundle.putCharSequence("type", "passiveListenerDidReceiveLocation");
 		message.setData(bundle);
 		
-		locationThreadTaskHandler.sendMessage(message);
+		locationThreadTaskHandler.dispatchMessage(message);
 	}
 	public static void passiveListenerDidReceiveLocationCallback() {
 		stopPassiveLocationListener();
+	}
+	
+	public static void wifiScanListenerDidReceiveScan() {
+		Log.d(TAG,"wifiScanListenerDidReceiveScan");
+		Message message = new Message();
+		Bundle bundle = new Bundle();
+		bundle.putCharSequence("type", "wifiScanListenerDidReceiveScan");
+		message.setData(bundle);
+		
+		locationThreadTaskHandler.dispatchMessage(message);
+	}
+	
+	private static void wifiScanListenerDidReceiveScanCallback() {
+		stopWifiScanListener();
 	}
 	
 	
@@ -388,17 +420,15 @@ public class LocationDetectionStateMachine {
 			Log.d(TAG,"Warning: Tried to start passive location listener when it was already active.");
 	}
 	private static void startActiveLocationListener() {
-		
+		//Skip this state for now
+		/*
 		if (!activeLocationListenerActive) {
-        		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
-        				MAX_TIME, 
-        				MAX_DISTANCE, 
-        				activeLocationListener);
-        		
+			
         		activeLocationListenerActive = true;
 		}
 		else 
 			Log.d(TAG,"Warning: Tried to start active location listener when it was already active.");
+			*/
 	}
 	
 	private static void startWifiStateListener() {
@@ -455,7 +485,13 @@ public class LocationDetectionStateMachine {
 	private static void stopWifiStateListener() {
 		
 		if (wifiStateBroadcastReceiverActive) {
+			try{
         		wifiStateBroadcastReceiver.unregisterForConnectionState(myContext);
+			}
+			catch(Exception e){
+				Log.d(TAG,"Error: Tried to stop wifiStateBroadcastReceiver when it wasn't active.  Boolean protection failed!");
+				Log.d(TAG,"Error:" + e.getMessage());
+			}
 			wifiStateBroadcastReceiverActive = false;
 		}
 		else 
