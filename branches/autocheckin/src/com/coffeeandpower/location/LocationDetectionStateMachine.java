@@ -5,17 +5,25 @@ import java.util.Observable;
 import java.util.Observer;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.cont.VenueSmart;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.LocationManager;
+import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
 public class LocationDetectionStateMachine {
+	
+	private static final String TAG = "LocationDetectionStateMachine";
 	
 	private static int currentState = 0;
 	
@@ -23,7 +31,7 @@ public class LocationDetectionStateMachine {
 	private static final int MAX_DISTANCE = 0;
 	
 	private static Context myContext;
-	private static Handler taskHandler;
+	private static Handler locationThreadTaskHandler;
 	
 	private static LocationManager locationManager;
 	private static ActiveLocationListener activeLocationListener;
@@ -36,17 +44,63 @@ public class LocationDetectionStateMachine {
 	private static ArrayList<VenueSmart> triggeringVenuesCACHE;
 	private static VenueSmart currVenueCACHE;
 	
-	
+	private static boolean stateMachineActive = false;
+	private static boolean passiveLocationReceiverActive = false;
+	private static boolean activeLocationListenerActive = false;
+	private static boolean wifiStateBroadcastReceiverActive = false;
+	private static boolean wifiScanBroadcastReceiverActive = false;
 	
 	// This function must be called before the state machine will work
 	public static void init(Context context) {
 		
+		Log.d(TAG,"LocationDetectionStateMachine.init()");
+		
 		myContext = context;
+		
+		Looper.prepare();
+		
+		//Looper.myLooper().prepare();
+		
+		locationThreadTaskHandler = new Handler(Looper.myLooper()) {
+
+			// handleMessage - on the main thread
+			@Override
+			public void handleMessage(Message msg) {
+				
+				String messageType = msg.getData().getString("type");
+				Log.d(TAG,"locationThreadTaskHandler.handleMessage: " + messageType);
+				
+				if (messageType.equalsIgnoreCase("start")) {
+					startCallback();
+				}
+				else if (messageType.equalsIgnoreCase("stop")) {
+					stopCallback();
+				}
+				else if (messageType.equalsIgnoreCase("positionListenersCOMPLETE")) {
+					boolean isHighAssurance = msg.getData().getBoolean("isHighAssurance");
+					ArrayList<VenueSmart> triggeringVenues = msg.getData().getParcelableArrayList("triggeringVenues");
+					positionListenersCallback(isHighAssurance,triggeringVenues);
+				}
+				else if (messageType.equalsIgnoreCase("checkWifiSignatureCOMPLETE")) {
+					VenueSmart currVenue = msg.getData().getParcelable("currVenue");
+					checkWifiSignatureCallback(currVenue);
+				}
+				else if (messageType.equalsIgnoreCase("passiveListenerDidReceiveLocation")) {
+					passiveListenerDidReceiveLocationCallback();
+				}
+				
+				super.handleMessage(msg);
+			}
+		};
 		
 		activeLocationListener = new ActiveLocationListener();
 		locationManager = (LocationManager) myContext.getSystemService(Context.LOCATION_SERVICE);
 		wifiStateBroadcastReceiver = new WifiStateBroadcastReceiver();
 		wifiScanBroadcastReceiver = new WifiScanBroadcastReceiver(myContext);
+		
+		startCallback();
+		
+		
 	}
 	
 	//=============================================================
@@ -55,22 +109,22 @@ public class LocationDetectionStateMachine {
 	//All state transitions are dataless, all data flows through
 	//member variables
 	private static void passiveListeningSTATE(){
-		Log.d("LocationDetectionStateMachine", "passiveListeningSTATE");
+		Log.d(TAG, "passiveListeningSTATE");
 		currentState = 0;
 		startPassiveListenersINIT();
 	}
 	private static void locationBasedVerificationSTATE(){
-		Log.d("LocationDetectionStateMachine", "locationBasedVerificationSTATE");
+		Log.d(TAG, "locationBasedVerificationSTATE");
 		currentState = 1;
 		commandGPSINIT();
 	}
 	private static void wifiBasedVerificationSTATE(){
-		Log.d("LocationDetectionStateMachine", "wifiBasedVerificationSTATE");
+		Log.d(TAG, "wifiBasedVerificationSTATE");
 		currentState = 2;
 		checkWifiSignatureINIT();
 	}
 	private static void venueStateTransitionSTATE(){
-		Log.d("LocationDetectionStateMachine", "venueStateTransitionSTATE");
+		Log.d(TAG, "venueStateTransitionSTATE");
 		currentState = 3;
 		transitionVenueCheckinINIT();
 	}
@@ -84,9 +138,8 @@ public class LocationDetectionStateMachine {
 	private static void startPassiveListenersINIT() {
 		//DEBUG
 		//Listening to only wifi to start
-		PassiveLocationUpdateReceiver.reset();
 		startPassiveLocationListener();
-		//startWifiStateListener();
+		startWifiStateListener();
 	}
 	
 	private static void commandGPSINIT() {
@@ -96,10 +149,11 @@ public class LocationDetectionStateMachine {
 		//FIXME
 		//This belongs in a helper function
 		activeLocationListener.init();
-		//taskHandler.post(startActiveLocationListener);
+		startActiveLocationListener();
 	}
 	
 	private static void checkWifiSignatureINIT() {
+		startWifiScanListener();
 		wifiScanBroadcastReceiver.checkVenueSignature(myContext, triggeringVenuesCACHE);
 	}
 	
@@ -121,16 +175,74 @@ public class LocationDetectionStateMachine {
 	
 	//=============================================================
 	// COMPLETE: PUBLIC State transition completers
-	//=============================================================
+	// These are in public/private pairs where the public method
+	// can be called from any thread, and the corresponding
+	// private method will be called on the "location" thread.
+	//
 	//All calls should end in STATE(), transitioning the state to
 	//something new
+	//=============================================================
 	public static void start() {
-		passiveListeningSTATE();	
+		
+		Log.d(TAG,"LocationDetectionStateMachine.start()");
+		
+		if (!stateMachineActive) {
+			stateMachineActive = true;
+			
+        		Message message = new Message();
+        		Bundle bundle = new Bundle();
+        		bundle.putCharSequence("type", "start");
+        		message.setData(bundle);
+        		
+        		Log.d(TAG,"Sending message...");
+        		locationThreadTaskHandler.sendMessage(message);
+        		
+		} else {
+			Log.d(TAG,"Warning: Tried to start state machine while already active...");
+		}
+		
+		
 	}
+	private static void startCallback() {
+		passiveListeningSTATE();
+	}
+	
+	public static void stop() {
+		
+		Log.d(TAG,"Stopping...");
+		if (stateMachineActive) {
+			stateMachineActive = false;
+			
+        		Message message = new Message();
+        		Bundle bundle = new Bundle();
+        		bundle.putCharSequence("type", "stop");
+        		message.setData(bundle);
+        		
+        		locationThreadTaskHandler.sendMessage(message);
+		}
+	}
+	private static void stopCallback() {
+		
+		stopPassiveListeners();
+		stopActiveLocationListener();
+		stopWifiScanListener();
+	}
+	
 	//Closer for startPassiveListeners(), commandGPSINIT()
 	//FIXME
 	//This needs a handler of some kind since it can be called from multiple listeners
 	public static void positionListenersCOMPLETE(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
+		Log.d(TAG,"positionListenersCOMPLETE");
+		Message message = new Message();
+		Bundle bundle = new Bundle();
+		bundle.putCharSequence("type", "positionListenersCOMPLETE");
+		bundle.putBoolean("isHighConfidence", isHighConfidence);
+		bundle.putParcelableArrayList("triggeringVenues", triggeringVenues);
+		message.setData(bundle);
+		
+		locationThreadTaskHandler.sendMessage(message);
+	}
+	private static void positionListenersCallback(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
 		triggeringVenuesCACHE = triggeringVenues;
 		//If we have a fence break respond
 		if(triggeringVenues != null )
@@ -172,7 +284,17 @@ public class LocationDetectionStateMachine {
 		}
 	}
 	
-	public static void checkWifiSignatureCOMPLETE(VenueSmart currVenue)
+	public static void checkWifiSignatureCOMPLETE(VenueSmart currVenue) {
+		Log.d(TAG,"checkWifiSignatureCOMPLETE");
+		Message message = new Message();
+		Bundle bundle = new Bundle();
+		bundle.putCharSequence("type", "positionListenersCOMPLETE");
+		bundle.putParcelable("currVenue", currVenue);
+		message.setData(bundle);
+		
+		locationThreadTaskHandler.sendMessage(message);
+	}
+	private static void checkWifiSignatureCallback(VenueSmart currVenue)
 	{
 		if(AppCAP.isUserCheckedIn())
 		{
@@ -211,66 +333,143 @@ public class LocationDetectionStateMachine {
 		}
 	}
 	
+	
+	public static void passiveListenerDidReceiveLocation() {
+		Log.d(TAG,"passiveListenerDidReceiveLocation");
+		Message message = new Message();
+		Bundle bundle = new Bundle();
+		bundle.putCharSequence("type", "passiveListenerDidReceiveLocation");
+		message.setData(bundle);
+		
+		locationThreadTaskHandler.sendMessage(message);
+	}
+	public static void passiveListenerDidReceiveLocationCallback() {
+		stopPassiveLocationListener();
+	}
+	
+	
+	
 	//=============================================================
 	// Private Helper functions
 	//=============================================================
 	
-	private static void stopPassiveListeners() {
-		//DEBUG
-		stopPassiveLocationListener();
-		//stopWifiStateListener();
-	}
+	
 	
 	private static void startPassiveLocationListener() {
-		// Create pending intent for passive location listener
-		Intent receiverIntent = new Intent(myContext,PassiveLocationUpdateReceiver.class);
-		pendingPassiveReceiverIntent = PendingIntent.getBroadcast(myContext,
-				0,
-				receiverIntent,
-				PendingIntent.FLAG_UPDATE_CURRENT);
-
-		// Register the passive listener for updates
-		locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 
-				MAX_TIME, 
-				MAX_DISTANCE, 
-				pendingPassiveReceiverIntent);
+		
+		if (!passiveLocationReceiverActive) {
+        		// Create pending intent for passive location listener
+        		Intent receiverIntent = new Intent(myContext,PassiveLocationUpdateReceiver.class);
+        		pendingPassiveReceiverIntent = PendingIntent.getBroadcast(myContext,
+        				0,
+        				receiverIntent,
+        				PendingIntent.FLAG_UPDATE_CURRENT);
+        
+        		// Register the passive listener for updates
+        		locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 
+        				MAX_TIME, 
+        				MAX_DISTANCE, 
+        				pendingPassiveReceiverIntent);
+        		
+        		passiveLocationReceiverActive = true;
+		}
+		else 
+			Log.d(TAG,"Warning: Tried to start passive location listener when it was already active.");
+	}
+	private static void startActiveLocationListener() {
+		
+		if (!activeLocationListenerActive) {
+        		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
+        				MAX_TIME, 
+        				MAX_DISTANCE, 
+        				activeLocationListener);
+        		
+        		activeLocationListenerActive = true;
+		}
+		else 
+			Log.d(TAG,"Warning: Tried to start active location listener when it was already active.");
 	}
 	
 	private static void startWifiStateListener() {
 		
-		wifiStateBroadcastReceiver.registerForConnectionState(myContext); 
+		if (!wifiStateBroadcastReceiverActive) {
+        		wifiStateBroadcastReceiver.registerForConnectionState(myContext);
+        		wifiStateBroadcastReceiverActive = true;
+		}
+		else 
+			Log.d(TAG,"Warning: Tried to start wifi state listener when it was already active.");
 		
+	}
+	
+	private static void startWifiScanListener() {
+		
+		if (!wifiScanBroadcastReceiverActive) {
+        		myContext.registerReceiver(wifiScanBroadcastReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        		wifiScanBroadcastReceiverActive = true;
+		}
+		else 
+			Log.d(TAG,"Warning: Tried to start wifi scan listener when it was already active.");
+		
+	}
+	
+	
+	private static void stopPassiveListeners() {
+		//DEBUG
+		stopPassiveLocationListener();
+		stopWifiStateListener();
 	}
 	
 	private static void stopPassiveLocationListener() {
 		
-		locationManager.removeUpdates(pendingPassiveReceiverIntent);
+		if (passiveLocationReceiverActive) {
+			locationManager.removeUpdates(pendingPassiveReceiverIntent);
+			passiveLocationReceiverActive = false;
+		}
+		else 
+			Log.d(TAG,"Warning: Tried to stop passive location listener when it wasn't active.");
+		
+	}
+	
+	private static void stopActiveLocationListener() {
+		
+		if (activeLocationListenerActive) {
+			locationManager.removeUpdates(activeLocationListener);
+			activeLocationListenerActive = false;
+		}
+		else 
+			Log.d(TAG,"Warning: Tried to stop active location listener when it wasn't active.");
 		
 	}
 	
 	private static void stopWifiStateListener() {
 		
-		wifiStateBroadcastReceiver.unregisterForConnectionState(myContext);
+		if (wifiStateBroadcastReceiverActive) {
+        		wifiStateBroadcastReceiver.unregisterForConnectionState(myContext);
+			wifiStateBroadcastReceiverActive = false;
+		}
+		else 
+			Log.d(TAG,"Warning: Tried to stop wifiStateBroadcastReceiver when it wasn't active.");
 		
 	}
 	
-	private static void startActiveLocationListener() {
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
-				MAX_TIME, 
-				MAX_DISTANCE, 
-				activeLocationListener);
+	private static void stopWifiScanListener() {
+		
+		if (wifiScanBroadcastReceiverActive) {
+        		wifiScanBroadcastReceiver.unregisterForWifiScans(myContext);
+        		wifiScanBroadcastReceiverActive = false;
+		}
+		else 
+			Log.d(TAG,"Warning: Tried to stop wifiScanBroadcastReceiver when it wasn't active.");
+		
 	}
+	
+	
 	
 	//=============================================================
 	// PUBLIC METHODS
 	//=============================================================	
 	
-	public static void stop() {
-		//FIXME
-		//We really need to stop all listeners here
-		stopPassiveListeners();
-		
-	}
+	
 
 	
 

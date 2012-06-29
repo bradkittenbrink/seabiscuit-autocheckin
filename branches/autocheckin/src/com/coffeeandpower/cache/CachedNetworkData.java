@@ -82,7 +82,7 @@ public class CachedNetworkData extends Observable{
 			if (Constants.debugLog)
 				Log.d("CachedNetworkData","Sending cached data for API: " + this.type + "...");
 			setChanged();   // Not sure if this is necessary
-			notifyObservers(new CachedDataContainer(cachedData));
+			notifyObservers(new CachedDataContainer(cachedData.copy()));
 		}
 	}
 	

@@ -27,6 +27,8 @@ public class PassiveLocationUpdateReceiver  extends BroadcastReceiver {
         	if (intent.hasExtra(key)) {
         		//Once we get an update we need to stop listening so that we avoid concurrent changes
 
+        		LocationDetectionStateMachine.passiveListenerDidReceiveLocation();
+        		
         		// This update came from Passive provider, so we can extract the location
         		// directly.
         		location = (Location)intent.getExtras().get(key);

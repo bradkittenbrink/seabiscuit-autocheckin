@@ -15,6 +15,8 @@ public class LocationDetectionService extends Service {
 
 	protected static String TAG = "LocationDetectionService";
 	
+	private Context locationDetectionServiceContext;
+	
 	//private static LocationDetectionStateMachine sm = new LocationDetectionStateMachine(this);
 	
 	
@@ -32,7 +34,16 @@ public class LocationDetectionService extends Service {
 	public void onCreate() {
 		Log.d(TAG,"onCreate()");
 		
-		LocationDetectionStateMachine.init(this);
+		locationDetectionServiceContext = this;
+		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				LocationDetectionStateMachine.init(locationDetectionServiceContext);
+				
+			}
+		}).start();
+		
 		
 	}
 	
@@ -52,7 +63,8 @@ public class LocationDetectionService extends Service {
 		
 		  
 		
-		LocationDetectionStateMachine.start();
+		
+		
 		
 		return START_STICKY;
 		

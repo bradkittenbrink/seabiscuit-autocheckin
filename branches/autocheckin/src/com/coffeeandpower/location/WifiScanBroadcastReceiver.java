@@ -20,7 +20,7 @@ import android.util.Log;
 public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	private static final int posMatchThreshold = 4;
 	private WifiManager wifiManager;
-	private boolean registeredForScans = false;
+	//private boolean registeredForScans = false;
 	private ArrayList<VenueSmart> venuesBeingVerified;
 	
 	public WifiScanBroadcastReceiver(Context context){
@@ -32,30 +32,10 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	  	    //Forcing the scan requires a permission and I don't think we need it because the scan happens
 	  	    //frequently enough
 	  	    wifiManager.startScan();
-		    if(registeredForScans)
-		    {
-			    //Particularly on disconnect we can get multiple calls
-			    Log.d("WifiScanBroadcast","Already registered for scan broadcast");
-		    }
-		    else
-		    {
-			    Log.d("WifiScanBroadcast","Registering for scan broadcast");
-			    context.registerReceiver(this, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-			    registeredForScans = true;
-		    }
 	}
 	
 	public void unregisterForWifiScans(Context context) {
-		if(registeredForScans)
-		{
-			context.unregisterReceiver(this);
-			registeredForScans = false;
-		}
-		else
-		{
-			Log.d("WifiScanBroadcast","Not registered for Wifi scans, skipping unregister...");
-			
-		}
+		context.unregisterReceiver(this);
 	}
 
 	@Override

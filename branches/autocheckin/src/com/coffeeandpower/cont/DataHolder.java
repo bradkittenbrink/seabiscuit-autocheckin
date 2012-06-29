@@ -22,6 +22,13 @@ public class DataHolder {
 		this.object = object;
 		this.responseCode = 0;
 	}
+	
+	// DOES NOT DEEP COPY OBJECT
+	public DataHolder copy() {
+		return new DataHolder(this.handlerCode,
+				new String(this.responseMessage),
+				this.object);
+	}
 
 	public int getHandlerCode() {
 		return handlerCode;

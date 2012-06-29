@@ -130,16 +130,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		setContentView(R.layout.tab_activity_map);
 		
 		startService(new Intent(this, CacheMgrService.class));
-		Thread t = new Thread(){
-			public void run(){
-			getApplicationContext().bindService(
-				new Intent(getApplicationContext(), LocationDetectionService.class),
-			        serviceConnection,
-			        Context.BIND_AUTO_CREATE
-			    );
-			}
-			};
-			t.start();
 		startService(new Intent(this, LocationDetectionService.class));
 
 		progress = new ProgressDialog(this);
