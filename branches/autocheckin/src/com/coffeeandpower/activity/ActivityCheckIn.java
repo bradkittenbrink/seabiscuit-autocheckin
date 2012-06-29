@@ -399,12 +399,12 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 						
 			Object[] obj = (Object[]) result.getObject();
 			@SuppressWarnings("unchecked")
-			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+			List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
 			
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putCharSequence("type", counterdata.type);
-			bundle.putParcelableArrayList("users", arrayUsers);
+			bundle.putParcelableArrayList("users", new ArrayList<UserSmart>(arrayUsers));
 
 			message.setData(bundle);
 			

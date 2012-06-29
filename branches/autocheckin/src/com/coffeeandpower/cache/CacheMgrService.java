@@ -1,6 +1,6 @@
 package com.coffeeandpower.cache;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Observer;
 
 import com.coffeeandpower.AppCAP;
@@ -447,7 +447,7 @@ public class CacheMgrService extends Service {
 		DataHolder venuesWithCheckins = venuesWithCheckinsCache.getData();
 		Object[] obj = (Object[]) venuesWithCheckins.getObject();
 		@SuppressWarnings("unchecked")
-		ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+		List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
 		boolean venueFound = false;
 		VenueSmart tmpVenue = null;
 		for(VenueSmart currVenue : arrayVenues)
@@ -475,7 +475,7 @@ public class CacheMgrService extends Service {
 		//People list Related
 		//Find the current logged in user in the people list and update their status to checkedin
 		@SuppressWarnings("unchecked")
-		ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+		List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
 		boolean userFound = false;
 		for(UserSmart currUser : arrayUsers)
 		{
@@ -507,7 +507,7 @@ public class CacheMgrService extends Service {
                 DataHolder venuesWithCheckins = venuesWithCheckinsCache.getData();
                 Object[] obj = (Object[]) venuesWithCheckins.getObject();
                 @SuppressWarnings("unchecked")
-                ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+                List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
                 boolean venueFound = false;
                 VenueSmart tmpVenue = null;
                 for(VenueSmart currVenue : arrayVenues)
@@ -555,7 +555,7 @@ public class CacheMgrService extends Service {
                 //People list Related
                 //Find the current logged in user in the people list and update their status to checkedOut
                 @SuppressWarnings("unchecked")
-                ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+                List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
                 boolean userFound = false;
                 for(UserSmart currUser : arrayUsers)
                 {

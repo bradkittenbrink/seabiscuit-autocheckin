@@ -102,7 +102,6 @@ public class LocationFence {
                 					venuesWithAutoCheckins.add(currentVenue);
                 					//Lets make the search array smaller everytime we find
                 					//a hit
-                					arrayVenues.remove(currentVenue);
                 					break;
                 				}
                 			}
@@ -130,7 +129,8 @@ public class LocationFence {
         			}
         			venuesWithFenceBreaks = null;
         		}
-			Log.d("LocationFence","LocationFence returning to state machine");
+			if (Constants.debugLog)
+				Log.d("LocationFence","LocationFence returning to state machine");
 			LocationDetectionStateMachine.positionListenersCOMPLETE(highAssurance, venuesWithFenceBreaks);
         		
         	}

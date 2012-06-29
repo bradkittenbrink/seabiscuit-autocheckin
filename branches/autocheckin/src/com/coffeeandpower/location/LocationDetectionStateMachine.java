@@ -141,7 +141,7 @@ public class LocationDetectionStateMachine {
 		//DEBUG
 		//Listening to only wifi to start
 		startPassiveLocationListener();
-		startWifiStateListener();
+		//startWifiStateListener();
 	}
 	
 	private static void commandGPSINIT() {
