@@ -63,6 +63,8 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 		final String action = intent.getAction();
 		if(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(action))
 		{
+			//We have scan results so we can stop listening for additional scan results
+			this.unregisterForWifiScans(context);
 			//Grab results from fresh scan of wifi networks
 			List<ScanResult> visibleWifiNetworks = wifiManager.getScanResults();
 			boolean modeCollection = false;
@@ -81,14 +83,34 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	
 	private void reportMatch(venueWifiSignature matchingVenue)
 	{
-		for(VenueSmart currVenue: this.venuesBeingVerified)
+		VenueSmart outputVenue = new VenueSmart();
+		if(matchingVenue != null)
 		{
-			if(matchingVenue.venueId == currVenue.getVenueId())
-			{
-				LocationDetectionStateMachine.checkWifiSignatureCOMPLETE(currVenue);
-				break;
-			}
+        		boolean foundMatch = false;
+        		for(VenueSmart currVenue: this.venuesBeingVerified)
+        		{
+        			if(matchingVenue.venueId == currVenue.getVenueId())
+        			{
+        				Log.d("WifiScanBroadcast","Wifi Match found:" + currVenue.getName());
+        				outputVenue = currVenue;
+        				foundMatch = true;
+        				break;
+        			}
+        		}
+        		if(foundMatch == false)
+        		{
+        			
+        			Log.d("WifiScanBroadcast","Wifi Signature match, but venue lookup failed!!");
+        			outputVenue = null;
+        		}
 		}
+		else
+		{
+			Log.d("WifiScanBroadcast","Wifi Signature did not match");
+			outputVenue = null;
+		}
+		LocationDetectionStateMachine.checkWifiSignatureCOMPLETE(outputVenue);
+
 		
 	}
 	

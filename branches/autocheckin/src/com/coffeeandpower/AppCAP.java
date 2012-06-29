@@ -709,6 +709,7 @@ public class AppCAP extends Application {
 			}
 			
 			venueWifiSignature testSignature = new venueWifiSignature();
+			testSignature.venueId = 23;
 			testSignature.addConnectedSSID("coffeeandpower");
 			testSignature.addWifiNetworkToSignature(venueWifiNetworks);
 			arrayOfVenuesSigs.add(testSignature);

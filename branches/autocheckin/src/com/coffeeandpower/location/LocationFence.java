@@ -34,7 +34,7 @@ public class LocationFence {
 	private static final float initialCheckinFenceDist = 40;
 	private static final float initialCheckoutFenceDist = 60;
 	
-	private static final float highAssuranceThreshold = 30;
+	private static final float highAssuranceThreshold = 33;
 
 	
 	
@@ -78,6 +78,7 @@ public class LocationFence {
         		 * verify that the data is really of type CounterData, and log the
         		 * details
         		 */
+        		ArrayList<VenueSmart> venuesWithFenceBreaks =  new ArrayList<VenueSmart>();
         		if (data instanceof CachedDataContainer) {
         			CachedDataContainer counterdata = (CachedDataContainer) data;
         			DataHolder venuesWithCheckins = counterdata.getData();
@@ -85,9 +86,9 @@ public class LocationFence {
         			Object[] obj = (Object[]) venuesWithCheckins.getObject();
         			@SuppressWarnings("unchecked")
         			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-        			
-        			int[] venueIdsWithAuto = AppCAP.getVenuesWithAutoCheckins();
         			ArrayList<VenueSmart> venuesWithAutoCheckins = new ArrayList<VenueSmart>();
+
+        			int[] venueIdsWithAuto = AppCAP.getVenuesWithAutoCheckins();
         			//FIXME
         			//This has the same cache miss issue we have elsewhere, if their autocheckin venues
         			//aren't all covered by the venue list from nearbyvenueswithcheckins
@@ -108,18 +109,28 @@ public class LocationFence {
         				
         			}
         			//We have the venue positions now lets check for fence breaks
-        			ArrayList<VenueSmart> venuesWithFenceBreaks =  this.checkFence(venuesWithAutoCheckins);
-        			//FIXME
-        			//This is a helper class and should not return straight back to LocationDetectionStateMachine
-        			//It needs to go back to whatever location provider is doing the test
-				LocationDetectionStateMachine.positionListenersCOMPLETE(highAssurance, venuesWithAutoCheckins);
+        			venuesWithFenceBreaks =  this.checkFence(venuesWithAutoCheckins);
+        			if(venuesWithFenceBreaks.size() > 0)
+        			{
+        				if (Constants.debugLog)
+        					Log.d("LocationFence",String.valueOf(venuesWithFenceBreaks.size()) + " Fence breaks found");
+        			}
+        			else
+        			{
+        				if (Constants.debugLog)
+        					Log.d("LocationFence","Fence detection completed, no breaks");
+        			}
         		}
         		else
+        		{
         			if (Constants.debugLog)
+        			{
         				Log.d("LocationFence","Error: Received unexpected data type: " + data.getClass().toString());
-        		//FIXME
-        		//Need to add an exception case callback to the state machine
-        		
+        			}
+        			venuesWithFenceBreaks = null;
+        		}
+			Log.d("LocationFence","LocationFence returning to state machine");
+			LocationDetectionStateMachine.positionListenersCOMPLETE(highAssurance, venuesWithFenceBreaks);
         		
         	}
         	
@@ -146,15 +157,19 @@ public class LocationFence {
         			//Check that status the checkin
         			if(AppCAP.isUserCheckedIn())
         			{
+        				Log.d("LocationFence","User is checked in");
                 			if(distance > fenceCheckoutRadiusMeters)
                 			{
+                				Log.d("LocationFence","Fence break, user has left the venue");
                 				venuesWithFenceBreaks.add(currVenue);
                 			}
         			}
         			else
         			{
+        				Log.d("LocationFence","User is checked out");
                 			if(distance < fenceCheckinRadiusMeters)
                 			{
+                				Log.d("LocationFence","Fence break, has entered the venue");
                 				venuesWithFenceBreaks.add(currVenue);
                 			}
         			}

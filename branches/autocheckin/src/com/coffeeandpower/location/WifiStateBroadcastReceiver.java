@@ -83,32 +83,35 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver implements Obs
     	  NetworkInfo networkInfo = (NetworkInfo) intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
           if (networkInfo.getState().equals(NetworkInfo.State.CONNECTED))
           {
-      	    Log.d("WifiBroadcast","Wifi connected to:" + intent.getStringExtra(WifiManager.EXTRA_BSSID));
-      	    String ssid = this.grabCurrentSSID(context);
-  	    Log.d("WifiBroadcast","Wifi connected ssid:" + ssid);
-  	    
-  	    //Check connected Wifi and see if it is one we recognize
-  	    boolean knownSSID = false;
-  	    //Grab list of Venues with autocheckins from AppCAP
-  	    ArrayList<venueWifiSignature> testVenuesBeingVerified = AppCAP.getAutoCheckinWifiSignatures();
-  	    for(venueWifiSignature venueUnderTest:testVenuesBeingVerified)
-  	    {
-  		    for(String currSSID : venueUnderTest.connectedWifiSSIDs)
-  		    {
-                  	    if(ssid.equalsIgnoreCase(currSSID))
-                  	    {
-                  		    Log.d("WifiBroadcast","Connected to" + currSSID +", double check wifiSignature");
-                		    triggeredVenueId = venueUnderTest.venueId;
-                  		    knownSSID = true;
-                		    CacheMgrService.startObservingAPICall("venuesWithCheckins", this);
-                  		    break;
-                  	    }
-  		    }
-  	    }
-  	    if(knownSSID == false)
-  	    {
-  		    Log.d("WifiBroadcast","Wifi SSID is unrecognized"); 
-  	    }
+        	  //We only care about connects when we aren't checked in
+        	  if(AppCAP.isUserCheckedIn() == false)
+        	  {
+              	    String ssid = this.grabCurrentSSID(context);
+          	    Log.d("WifiBroadcast","Wifi connected ssid: " + ssid + " bssid: " + WifiManager.EXTRA_BSSID);
+          	    
+          	    //Check connected Wifi and see if it is one we recognize
+          	    boolean knownSSID = false;
+          	    //Grab list of Venues with autocheckins from AppCAP
+          	    ArrayList<venueWifiSignature> testVenuesBeingVerified = AppCAP.getAutoCheckinWifiSignatures();
+          	    for(venueWifiSignature venueUnderTest:testVenuesBeingVerified)
+          	    {
+          		    for(String currSSID : venueUnderTest.connectedWifiSSIDs)
+          		    {
+                          	    if(ssid.equalsIgnoreCase(currSSID))
+                          	    {
+                          		    Log.d("WifiBroadcast","Connected to" + currSSID +", positive match");
+                        		    triggeredVenueId = venueUnderTest.venueId;
+                          		    knownSSID = true;
+                        		    CacheMgrService.startObservingAPICall("venuesWithCheckins", this);
+                          		    break;
+                          	    }
+          		    }
+          	    }
+          	    if(knownSSID == false)
+          	    {
+          		    Log.d("WifiBroadcast","Wifi SSID is continuing to listen"); 
+          	    }
+        	  }
 
           }
           else if(networkInfo.getState().equals(NetworkInfo.State.DISCONNECTED))
@@ -147,15 +150,21 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver implements Obs
 			//FIXME
 			//This has the same cache miss issue we have elsewhere, if their autocheckin venues
 			//aren't all covered by the venue list from nearbyvenueswithcheckins
-
+			boolean foundMatch = false;
     			for(VenueSmart currentVenue:arrayVenues)
     			{
     				if(currentVenue.getVenueId() == triggeredVenueId)
     				{
     					venuesWithAutoCheckins.add(currentVenue);
     					LocationDetectionStateMachine.positionListenersCOMPLETE(true, venuesWithAutoCheckins);
+    					foundMatch = true;
     					break;
     				}
+    			}
+    			if(foundMatch == false)
+    			{
+    				LocationDetectionStateMachine.positionListenersCOMPLETE(true, null);
+
     			}
 		}
 		else

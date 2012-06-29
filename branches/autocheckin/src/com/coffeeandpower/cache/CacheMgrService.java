@@ -9,15 +9,10 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
-import com.coffeeandpower.location.PassiveLocationUpdateReceiver;
 import com.google.android.maps.GeoPoint;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;

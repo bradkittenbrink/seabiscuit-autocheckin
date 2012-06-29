@@ -12,6 +12,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.os.Handler;
+import android.util.Log;
 
 public class LocationDetectionStateMachine {
 	
@@ -21,6 +23,7 @@ public class LocationDetectionStateMachine {
 	private static final int MAX_DISTANCE = 0;
 	
 	private static Context myContext;
+	private static Handler taskHandler;
 	
 	private static LocationManager locationManager;
 	private static ActiveLocationListener activeLocationListener;
@@ -34,6 +37,7 @@ public class LocationDetectionStateMachine {
 	private static VenueSmart currVenueCACHE;
 	
 	
+	
 	// This function must be called before the state machine will work
 	public static void init(Context context) {
 		
@@ -42,6 +46,7 @@ public class LocationDetectionStateMachine {
 		activeLocationListener = new ActiveLocationListener();
 		locationManager = (LocationManager) myContext.getSystemService(Context.LOCATION_SERVICE);
 		wifiStateBroadcastReceiver = new WifiStateBroadcastReceiver();
+		wifiScanBroadcastReceiver = new WifiScanBroadcastReceiver(myContext);
 	}
 	
 	//=============================================================
@@ -50,18 +55,22 @@ public class LocationDetectionStateMachine {
 	//All state transitions are dataless, all data flows through
 	//member variables
 	private static void passiveListeningSTATE(){
+		Log.d("LocationDetectionStateMachine", "passiveListeningSTATE");
 		currentState = 0;
 		startPassiveListenersINIT();
 	}
 	private static void locationBasedVerificationSTATE(){
+		Log.d("LocationDetectionStateMachine", "locationBasedVerificationSTATE");
 		currentState = 1;
 		commandGPSINIT();
 	}
 	private static void wifiBasedVerificationSTATE(){
+		Log.d("LocationDetectionStateMachine", "wifiBasedVerificationSTATE");
 		currentState = 2;
 		checkWifiSignatureINIT();
 	}
 	private static void venueStateTransitionSTATE(){
+		Log.d("LocationDetectionStateMachine", "venueStateTransitionSTATE");
 		currentState = 3;
 		transitionVenueCheckinINIT();
 	}
@@ -73,8 +82,11 @@ public class LocationDetectionStateMachine {
 	//or external classes and methods.  None should end in STATE()
 	
 	private static void startPassiveListenersINIT() {
+		//DEBUG
+		//Listening to only wifi to start
+		PassiveLocationUpdateReceiver.reset();
 		startPassiveLocationListener();
-		startWifiStateListener();
+		//startWifiStateListener();
 	}
 	
 	private static void commandGPSINIT() {
@@ -84,10 +96,7 @@ public class LocationDetectionStateMachine {
 		//FIXME
 		//This belongs in a helper function
 		activeLocationListener.init();
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
-				MAX_TIME, 
-				MAX_DISTANCE, 
-				activeLocationListener);
+		//taskHandler.post(startActiveLocationListener);
 	}
 	
 	private static void checkWifiSignatureINIT() {
@@ -119,33 +128,42 @@ public class LocationDetectionStateMachine {
 		passiveListeningSTATE();	
 	}
 	//Closer for startPassiveListeners(), commandGPSINIT()
+	//FIXME
+	//This needs a handler of some kind since it can be called from multiple listeners
 	public static void positionListenersCOMPLETE(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
 		triggeringVenuesCACHE = triggeringVenues;
 		//If we have a fence break respond
-		if(triggeringVenues != null)
+		if(triggeringVenues != null )
 		{
-        		//PassiveListenersINIT returning
-        		if(currentState == 0)
-        		{
-        			stopPassiveListeners();
-                		if (isHighConfidence) {
-                			wifiBasedVerificationSTATE();
+			if(triggeringVenues.size() == 0)
+			{
+				passiveListeningSTATE();
+			}
+			else
+			{
+                		//PassiveListenersINIT returning
+                		if(currentState == 0)
+                		{
+                			stopPassiveListeners();
+                        		if (isHighConfidence) {
+                        			wifiBasedVerificationSTATE();
+                        		}
+                        		else {
+                        			locationBasedVerificationSTATE();
+                        		}
                 		}
-                		else {
-                			locationBasedVerificationSTATE();
+                		else{
+                			//commandGPSINIT
+                        		if (isHighConfidence) {
+                        			wifiBasedVerificationSTATE();
+                        		}
+                        		else {
+                        			//If we can't get a high assurance position
+                        			//Return to passive listening
+                        			passiveListeningSTATE();
+                        		}			
                 		}
-        		}
-        		else{
-        			//commandGPSINIT
-                		if (isHighConfidence) {
-                			wifiBasedVerificationSTATE();
-                		}
-                		else {
-                			//If we can't get a high assurance position
-                			//Return to passive listening
-                			passiveListeningSTATE();
-                		}			
-        		}
+			}
 		}
 		else
 		{
@@ -198,8 +216,9 @@ public class LocationDetectionStateMachine {
 	//=============================================================
 	
 	private static void stopPassiveListeners() {
+		//DEBUG
 		stopPassiveLocationListener();
-		stopWifiStateListener();
+		//stopWifiStateListener();
 	}
 	
 	private static void startPassiveLocationListener() {
@@ -233,6 +252,13 @@ public class LocationDetectionStateMachine {
 		
 		wifiStateBroadcastReceiver.unregisterForConnectionState(myContext);
 		
+	}
+	
+	private static void startActiveLocationListener() {
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
+				MAX_TIME, 
+				MAX_DISTANCE, 
+				activeLocationListener);
 	}
 	
 	//=============================================================

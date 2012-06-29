@@ -9,13 +9,11 @@ import android.location.LocationManager;
 import android.util.Log;
 
 public class PassiveLocationUpdateReceiver  extends BroadcastReceiver {
-
 	
 	protected static String TAG = "PassiveLocationChangedReceiver";
 	  
           /**
-           * When a new location is received, extract it from the Intent and use
-           * it to start the Service used to update the list of nearby places.
+           * When a new location is received, extract it from the Intent
            * 
            * This is the Passive receiver, used to receive Location updates from 
            * third party apps when the Activity is not visible. 
@@ -27,12 +25,12 @@ public class PassiveLocationUpdateReceiver  extends BroadcastReceiver {
         	
             
         	if (intent.hasExtra(key)) {
+        		//Once we get an update we need to stop listening so that we avoid concurrent changes
+
         		// This update came from Passive provider, so we can extract the location
         		// directly.
         		location = (Location)intent.getExtras().get(key);
         	        Log.d(TAG,"Received Updated Location: " + location.getLatitude() + ", " + location.getLongitude());
-        	        
-        	        
         	        
         	        LocationFence.isLocationWithinFence(location);
         	}
