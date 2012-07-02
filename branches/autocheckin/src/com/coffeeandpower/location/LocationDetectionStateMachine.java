@@ -54,6 +54,12 @@ public class LocationDetectionStateMachine {
 		
 		Looper.prepare();
 		
+		stateMachineActive = false;
+		passiveLocationReceiverActive = false;
+		activeLocationListenerActive = false;
+		wifiStateBroadcastReceiverActive = false;
+		wifiScanBroadcastReceiverActive = false;
+		
 		//Looper.myLooper().prepare();
 		
 		locationThreadTaskHandler = new Handler(Looper.myLooper()) {
@@ -273,7 +279,7 @@ public class LocationDetectionStateMachine {
                                 			//FIXME
                                 			//Skipping active GPS right now
                                 			wifiBasedVerificationSTATE();
-                                			//locationBasedVerificationSTATE();
+                                			locationBasedVerificationSTATE();
                                 		}
                         		}
                         		else{
@@ -421,14 +427,14 @@ public class LocationDetectionStateMachine {
 	}
 	private static void startActiveLocationListener() {
 		//Skip this state for now
-		/*
+		
 		if (!activeLocationListenerActive) {
 			
         		activeLocationListenerActive = true;
 		}
 		else 
 			Log.d(TAG,"Warning: Tried to start active location listener when it was already active.");
-			*/
+			
 	}
 	
 	private static void startWifiStateListener() {
