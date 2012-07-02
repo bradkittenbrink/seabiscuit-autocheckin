@@ -20,11 +20,7 @@ import android.util.Log;
 
 public class CacheMgrService extends Service {
 
-	protected static String TAG = "CacheMgrService";
-	
-	
-	
-	
+	protected static String TAG = "CacheMgrService";	
 	
 	private static final double DATA_DISTANCE_REFRESH_THRESHOLD = 1000;			// meters
 	
@@ -271,7 +267,7 @@ public class CacheMgrService extends Service {
 		public void run()
 		{
         	    // We are now on the main thread, so kick off the API call in a worker thread
-        	    new Thread(new Runnable() {
+        	    Thread thread = new Thread(new Runnable() {
 			public void run() {
         			    
         			    //isFirstRun = true;
@@ -420,7 +416,9 @@ public class CacheMgrService extends Service {
         			    
         		    }
         		    
-        	    }).start();
+        	    });
+        	    thread.setDaemon(true);
+        	    thread.start();
         	    
         	    
             }

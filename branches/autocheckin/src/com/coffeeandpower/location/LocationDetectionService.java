@@ -36,15 +36,15 @@ public class LocationDetectionService extends Service {
 		
 		locationDetectionServiceContext = this;
 		
-		new Thread(new Runnable() {
+		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				LocationDetectionStateMachine.init(locationDetectionServiceContext);
 				
 			}
-		}).start();
-		
-		
+		});
+		thread.setDaemon(true);
+		thread.start();		
 	}
 	
 	@Override

@@ -379,7 +379,7 @@ public class LocationDetectionStateMachine {
 		locationThreadTaskHandler.dispatchMessage(message);
 	}
 	public static void passiveListenerDidReceiveLocationCallback() {
-		stopPassiveLocationListener();
+		//stopPassiveLocationListener();
 	}
 	
 	public static void wifiScanListenerDidReceiveScan() {
@@ -462,7 +462,7 @@ public class LocationDetectionStateMachine {
 	
 	private static void stopPassiveListeners() {
 		//DEBUG
-		stopPassiveLocationListener();
+		//stopPassiveLocationListener();
 		stopWifiStateListener();
 	}
 	
