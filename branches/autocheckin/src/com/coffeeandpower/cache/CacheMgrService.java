@@ -1,5 +1,6 @@
 package com.coffeeandpower.cache;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
 
@@ -447,9 +448,10 @@ public class CacheMgrService extends Service {
 		DataHolder venuesWithCheckins = venuesWithCheckinsCache.getData();
 		Object[] obj = (Object[]) venuesWithCheckins.getObject();
 		@SuppressWarnings("unchecked")
-		List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
+		List<VenueSmart> listVenues = (List<VenueSmart>) obj[0];
 		boolean venueFound = false;
 		VenueSmart tmpVenue = null;
+		ArrayList<VenueSmart> arrayVenues = new ArrayList<VenueSmart>(listVenues);
 		for(VenueSmart currVenue : arrayVenues)
 		{
 			if(currVenue.getVenueId() == checkedInVenue.getVenueId())
@@ -507,10 +509,10 @@ public class CacheMgrService extends Service {
                 DataHolder venuesWithCheckins = venuesWithCheckinsCache.getData();
                 Object[] obj = (Object[]) venuesWithCheckins.getObject();
                 @SuppressWarnings("unchecked")
-                List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
+                List<VenueSmart> listVenues = (List<VenueSmart>) obj[0];
                 boolean venueFound = false;
                 VenueSmart tmpVenue = null;
-                for(VenueSmart currVenue : arrayVenues)
+                for(VenueSmart currVenue : listVenues)
                 {
                 	if(currVenue.getVenueId() == lastVenueId)
                 	{
