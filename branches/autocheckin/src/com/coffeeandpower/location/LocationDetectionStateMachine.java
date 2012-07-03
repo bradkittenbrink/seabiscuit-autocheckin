@@ -27,9 +27,10 @@ public class LocationDetectionStateMachine {
 	
 	private static Context myContext;
 	private static Handler locationThreadTaskHandler;
+	private static Handler mainThreadTaskHandler;
 	
 	private static LocationManager locationManager;
-	private static ActiveLocationListener activeLocationListener;
+	//private static ActiveLocationListener activeLocationListener;
 	
 	private static PendingIntent pendingPassiveReceiverIntent;
 	private static WifiStateBroadcastReceiver wifiStateBroadcastReceiver;
@@ -45,14 +46,15 @@ public class LocationDetectionStateMachine {
 	private static boolean wifiStateBroadcastReceiverActive = false;
 	private static boolean wifiScanBroadcastReceiverActive = false;
 	
+	private static LocationDetectionService myService;
+	
 	// This function must be called before the state machine will work
-	public static void init(Context context) {
+	public static void init(Context context, Handler mainThreadHandler) {
 		
 		Log.d(TAG,"LocationDetectionStateMachine.init()");
 		
 		myContext = context;
 		
-		Looper.prepare();
 		
 		stateMachineActive = false;
 		passiveLocationReceiverActive = false;
@@ -60,13 +62,16 @@ public class LocationDetectionStateMachine {
 		wifiStateBroadcastReceiverActive = false;
 		wifiScanBroadcastReceiverActive = false;
 		
-		//Looper.myLooper().prepare();
+		
+		mainThreadTaskHandler = mainThreadHandler;
 		
 		locationThreadTaskHandler = new Handler(Looper.myLooper()) {
 
 			// handleMessage - on the main thread
 			@Override
 			public void handleMessage(Message msg) {
+				
+				super.handleMessage(msg);
 				
 				String messageType = msg.getData().getString("type");
 				Log.d(TAG,"locationThreadTaskHandler.handleMessage: " + messageType);
@@ -97,11 +102,11 @@ public class LocationDetectionStateMachine {
 					Log.d(TAG, "TaskHandler message is unhandled!!!");
 				}
 				
-				super.handleMessage(msg);
+				
 			}
 		};
 		
-		activeLocationListener = new ActiveLocationListener();
+		
 		locationManager = (LocationManager) myContext.getSystemService(Context.LOCATION_SERVICE);
 		wifiStateBroadcastReceiver = new WifiStateBroadcastReceiver();
 		wifiScanBroadcastReceiver = new WifiScanBroadcastReceiver(myContext);
@@ -156,7 +161,7 @@ public class LocationDetectionStateMachine {
 		//triggeringVenuesCACHE
 		//FIXME
 		//This belongs in a helper function
-		activeLocationListener.init();
+		
 		startActiveLocationListener();
 	}
 	
@@ -203,7 +208,7 @@ public class LocationDetectionStateMachine {
         		message.setData(bundle);
         		
         		Log.d(TAG,"Sending message...");
-        		locationThreadTaskHandler.dispatchMessage(message);
+        		locationThreadTaskHandler.sendMessage(message);
         		
 		} else {
 			Log.d(TAG,"Warning: Tried to start state machine while already active...");
@@ -226,7 +231,7 @@ public class LocationDetectionStateMachine {
         		bundle.putCharSequence("type", "stop");
         		message.setData(bundle);
         		
-        		locationThreadTaskHandler.dispatchMessage(message);
+        		locationThreadTaskHandler.sendMessage(message);
 		}
 	}
 	private static void stopCallback() {
@@ -248,7 +253,7 @@ public class LocationDetectionStateMachine {
 		bundle.putParcelableArrayList("triggeringVenues", triggeringVenues);
 		message.setData(bundle);
 		
-		locationThreadTaskHandler.dispatchMessage(message);
+		locationThreadTaskHandler.sendMessage(message);
 	}
 	private static void positionListenersCallback(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
 		if(currentState == 0 || (currentState <= 1 && isHighConfidence))
@@ -327,7 +332,7 @@ public class LocationDetectionStateMachine {
 		bundle.putParcelable("currVenue", currVenue);
 		message.setData(bundle);
 		
-		locationThreadTaskHandler.dispatchMessage(message);
+		locationThreadTaskHandler.sendMessage(message);
 	}
 	private static void checkWifiSignatureCallback(VenueSmart currVenue)
 	{
@@ -376,7 +381,7 @@ public class LocationDetectionStateMachine {
 		bundle.putCharSequence("type", "passiveListenerDidReceiveLocation");
 		message.setData(bundle);
 		
-		locationThreadTaskHandler.dispatchMessage(message);
+		locationThreadTaskHandler.sendMessage(message);
 	}
 	public static void passiveListenerDidReceiveLocationCallback() {
 		//stopPassiveLocationListener();
@@ -389,7 +394,7 @@ public class LocationDetectionStateMachine {
 		bundle.putCharSequence("type", "wifiScanListenerDidReceiveScan");
 		message.setData(bundle);
 		
-		locationThreadTaskHandler.dispatchMessage(message);
+		locationThreadTaskHandler.sendMessage(message);
 	}
 	
 	private static void wifiScanListenerDidReceiveScanCallback() {
@@ -419,6 +424,7 @@ public class LocationDetectionStateMachine {
         				MAX_TIME, 
         				MAX_DISTANCE, 
         				pendingPassiveReceiverIntent);
+        				
         		
         		passiveLocationReceiverActive = true;
 		}
@@ -431,6 +437,18 @@ public class LocationDetectionStateMachine {
 		if (!activeLocationListenerActive) {
 			
         		activeLocationListenerActive = true;
+        		Log.d(TAG,"Active Location Listener requeset...");
+        		//Looper.prepare();
+        		
+        		// create message to send to main thread handler
+        		Message message = new Message();
+        		Bundle bundle = new Bundle();
+        		bundle.putCharSequence("type", "startActiveListener");
+        		message.setData(bundle);
+        		
+        		mainThreadTaskHandler.sendMessage(message);
+        		
+        		
 		}
 		else 
 			Log.d(TAG,"Warning: Tried to start active location listener when it was already active.");
@@ -480,7 +498,16 @@ public class LocationDetectionStateMachine {
 	private static void stopActiveLocationListener() {
 		
 		if (activeLocationListenerActive) {
-			locationManager.removeUpdates(activeLocationListener);
+			
+			// create message to send to main thread handler
+        		Message message = new Message();
+        		Bundle bundle = new Bundle();
+        		bundle.putCharSequence("type", "stopActiveListener");
+        		message.setData(bundle);
+        		
+        		mainThreadTaskHandler.sendMessage(message);
+        		
+			
 			activeLocationListenerActive = false;
 		}
 		else 

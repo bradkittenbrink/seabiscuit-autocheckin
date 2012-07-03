@@ -3,12 +3,16 @@ package com.coffeeandpower.location;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.cont.VenueSmart;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
 public class LocationDetectionService extends Service {
@@ -16,6 +20,36 @@ public class LocationDetectionService extends Service {
 	protected static String TAG = "LocationDetectionService";
 	
 	private Context locationDetectionServiceContext;
+	
+	private ActiveLocationListener activeLocationListener;
+	
+	private Handler mainThreadTaskHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			
+			super.handleMessage(msg);
+			
+			String messageType = msg.getData().getString("type");
+			Log.d(TAG,"mainThreadTaskHandler.handleMessage: " + messageType);
+			
+			if (messageType.equalsIgnoreCase("startActiveListener")) {
+				
+				
+				activeLocationListener.startListener();
+				//Looper.myLooper().quit();
+				
+				/*
+				LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+        				AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+        				0,
+        				activeLocationListener);*/
+			} else if (messageType.equalsIgnoreCase("stopActiveListener")) {
+				LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+				locationManager.removeUpdates(activeLocationListener);
+			}
+		}
+	};
 	
 	//private static LocationDetectionStateMachine sm = new LocationDetectionStateMachine(this);
 	
@@ -36,10 +70,18 @@ public class LocationDetectionService extends Service {
 		
 		locationDetectionServiceContext = this;
 		
+		activeLocationListener = new ActiveLocationListener(this);
+		activeLocationListener.init();
+		
 		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				LocationDetectionStateMachine.init(locationDetectionServiceContext);
+				
+				Looper.prepare();
+				
+				LocationDetectionStateMachine.init(locationDetectionServiceContext,mainThreadTaskHandler);
+				
+				Looper.loop();
 				
 			}
 		});
