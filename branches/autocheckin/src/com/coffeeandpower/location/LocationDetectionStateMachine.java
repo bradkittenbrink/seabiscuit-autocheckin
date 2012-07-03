@@ -2,7 +2,13 @@ package com.coffeeandpower.location;
 
 import java.util.ArrayList;
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.activity.ActivityCheckIn;
+import com.coffeeandpower.cache.CacheMgrService;
+import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.utils.Executor;
+import com.coffeeandpower.utils.Executor.ExecutorInterface;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -48,6 +54,8 @@ public class LocationDetectionStateMachine {
 	
 	private static LocationDetectionService myService;
 	
+	private static Executor exe;
+	
 	// This function must be called before the state machine will work
 	public static void init(Context context, Handler mainThreadHandler) {
 		
@@ -55,6 +63,18 @@ public class LocationDetectionStateMachine {
 		
 		myContext = context;
 		
+		exe = new Executor(myContext);
+		exe.setExecutorListener(new ExecutorInterface() {
+			@Override
+			public void onErrorReceived() {
+				errorReceived();
+			}
+
+			@Override
+			public void onActionFinished(int action) {
+				actionFinished(action);				
+			}
+		});
 		
 		stateMachineActive = false;
 		passiveLocationReceiverActive = false;
@@ -176,14 +196,30 @@ public class LocationDetectionStateMachine {
 		if(AppCAP.isUserCheckedIn())
 		{
 			//Checkout the user
-			//currVenueCACHE
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					DataHolder result = AppCAP.getConnection().checkOut();
+					
+					CacheMgrService.checkOutTrigger();
+					//userState.onCheckOut();
+				}
+			}).start();
 
 		}
 		else
 		{
 			//Checkin the user
+			Log.d(TAG,"Auto-checking in the user...");
+			final int checkInTime = (int) (System.currentTimeMillis() / 1000);
+			final int checkOutTime = checkInTime + 24 * 3600;
+			
+			exe.checkIn(currVenueCACHE, checkInTime, checkOutTime, "",false,true);
+			
 			//currVenueCACHE
 		}
+		
+		
 	}
 	
 	//=============================================================
@@ -545,10 +581,25 @@ public class LocationDetectionStateMachine {
 	
 	
 	//=============================================================
-	// PUBLIC METHODS
+	// EXE METHODS
 	//=============================================================	
 	
-	
+	private static void errorReceived() {
+
+	}
+
+	private static void actionFinished(int action) {
+		DataHolder result = exe.getResult();
+
+		switch (action) {
+
+		case Executor.HANDLE_CHECK_IN:
+			Log.d(TAG,"Handling post-checkin triggers...");
+			CacheMgrService.checkInTrigger(currVenueCACHE);
+			AppCAP.setUserCheckedIn(true);
+
+		}
+	}
 
 	
 

@@ -272,20 +272,20 @@ public class ActivityCheckIn extends RootActivity implements Observer {
         			
         			 public void onClick(DialogInterface arg0, int arg1) {
         				 Log.d("CheckIn","User clicked OK");
-        				 exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),true);
+        				 exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),true,false);
         		 	 }
         		});
         		myAlertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
         		       
                 		  public void onClick(DialogInterface arg0, int arg1) {
                 			  Log.d("CheckIn","User clicked Cancel");
-                			  exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false);
+                			  exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false);
                 		  }
         		});
         		myAlertDialog.show();
 		} else {
 			// If user already selected autocheckin, just check them in silently
-			exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false);
+			exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false);
 		}
 		
 		

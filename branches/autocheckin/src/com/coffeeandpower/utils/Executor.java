@@ -229,15 +229,19 @@ public class Executor {
 		}).start();
 	}
 
-	public synchronized void checkIn(final VenueSmart venue, final int checkInTime, final int checkOutTime, final String statusText, final boolean autoCheckin) {
-		progress.setMessage("Checking in...");
-		progress.show();
+	public synchronized void checkIn(final VenueSmart venue, final int checkInTime, final int checkOutTime, final String statusText, final boolean userDesiresAutoCheckin, final boolean checkinIsAutoCheckin) {
+		if (!checkinIsAutoCheckin) {
+			
+			progress.setMessage("Checking in...");
+			progress.show();
+		}
+		
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				result = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime, statusText);
 				//If user selected auto checkin, save that to preferences
-				if (autoCheckin) {
+				if (userDesiresAutoCheckin) {
 					LocationDetectionService.addVenueToAutoCheckinList(venue);
 				}
 		
