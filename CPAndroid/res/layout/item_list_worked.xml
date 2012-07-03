@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="100dp"
@@ -35,15 +34,15 @@
                 android:id="@+id/job_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
-                android:textColor="#6f6f6f" />
+                android:textColor="#6f6f6f"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/text_checkins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
-                android:textColor="#6f6f6f" />
+                android:textColor="#6f6f6f"
+                android:textSize="13sp" />
         </LinearLayout>
     </RelativeLayout>
 

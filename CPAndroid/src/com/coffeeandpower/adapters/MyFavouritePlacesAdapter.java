@@ -17,76 +17,84 @@ import com.coffeeandpower.imageutil.ImageLoader;
 
 public class MyFavouritePlacesAdapter extends BaseAdapter {
 
-	private ArrayList<Venue> venues;
-	private LayoutInflater inflater;
-	public ImageLoader imageLoader;
+    private ArrayList<Venue> venues;
+    private LayoutInflater inflater;
+    public ImageLoader imageLoader;
 
-	public MyFavouritePlacesAdapter(Activity context, ArrayList<Venue> venues) {
+    public MyFavouritePlacesAdapter(Activity context, ArrayList<Venue> venues) {
 
-		this.inflater = context.getLayoutInflater();
-		this.imageLoader = new ImageLoader(context.getApplicationContext());
+        this.inflater = context.getLayoutInflater();
+        this.imageLoader = new ImageLoader(context.getApplicationContext());
 
-		if (venues != null) {
-			this.venues = venues;
-		} else {
-			this.venues = new ArrayList<Venue>();
-		}
-	}
+        if (venues != null) {
+            this.venues = venues;
+        } else {
+            this.venues = new ArrayList<Venue>();
+        }
+    }
 
-	@Override
-	public int getCount() {
-		return venues.size();
-	}
+    @Override
+    public int getCount() {
+        return venues.size();
+    }
 
-	@Override
-	public Object getItem(int position) {
-		return venues.get(position);
-	}
+    @Override
+    public Object getItem(int position) {
+        return venues.get(position);
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return 0;
-	}
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
 
-	public static class ViewHolder {
+    public static class ViewHolder {
 
-		public ImageView image;
-		public TextView textVenueName;
-		public TextView textCheckinsCount;
+        public ImageView image;
+        public TextView textVenueName;
+        public TextView textCheckinsCount;
 
-		public ViewHolder(View convertView) {
+        public ViewHolder(View convertView) {
 
-			this.textVenueName = (TextView) convertView.findViewById(R.id.textview_place);
-			this.image = (ImageView) convertView.findViewById(R.id.imageview_image);
-			this.textCheckinsCount = (TextView) convertView.findViewById(R.id.textview_checkin);
-		}
-	}
+            this.textVenueName = (TextView) convertView
+                    .findViewById(R.id.textview_place);
+            this.image = (ImageView) convertView
+                    .findViewById(R.id.imageview_image);
+            this.textCheckinsCount = (TextView) convertView
+                    .findViewById(R.id.textview_checkin);
+        }
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-		ViewHolder holder;
+        ViewHolder holder;
 
-		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.item_list_favorite_places, null);
-			holder = new ViewHolder(convertView);
-			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder) convertView.getTag();
-		}
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.item_list_favorite_places,
+                    null);
+            holder = new ViewHolder(convertView);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-		holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(position).getName()));
-		
-		if (venues.get(position).getCheckinTime() > 1) {
-			holder.textCheckinsCount.setText(venues.get(position).getCheckinTime() + " hrs");
-		} else {
-			holder.textCheckinsCount.setText(venues.get(position).getCheckinTime() + " hr");
-		}
+        holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(
+                position).getName()));
 
-		// Try to load image
-		imageLoader.DisplayImage(venues.get(position).getPhotoUrl(), holder.image, R.drawable.picture_coming_soon, 70);
+        if (venues.get(position).getCheckinTime() > 1) {
+            holder.textCheckinsCount.setText(venues.get(position)
+                    .getCheckinTime() + " hrs");
+        } else {
+            holder.textCheckinsCount.setText(venues.get(position)
+                    .getCheckinTime() + " hr");
+        }
 
-		return convertView;
-	}
+        // Try to load image
+        imageLoader.DisplayImage(venues.get(position).getPhotoUrl(),
+                holder.image, R.drawable.picture_coming_soon, 70);
+
+        return convertView;
+    }
 
 }

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -39,8 +38,8 @@
             android:background="@drawable/btn_gray"
             android:clickable="true"
             android:onClick="onClickEnterInviteCode"
-            android:text="@string/activity_settings_invite"
             android:padding="10dp"
+            android:text="@string/activity_settings_invite"
             android:textColor="#dddddd"
             android:textSize="20sp" />
 
@@ -155,7 +154,7 @@
             android:layout_marginTop="10dip"
             android:background="#555555" />
 
-        <TextView 
+        <TextView
             android:id="@+id/dummy_text_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -165,7 +164,8 @@
             android:text="@string/user_menu_only"
             android:textColor="#e6e6e6" />
 
-        <ToggleButton android:id="@+id/toggle_checked_in"
+        <ToggleButton
+            android:id="@+id/toggle_checked_in"
             android:layout_width="95dip"
             android:layout_height="28dip"
             android:layout_below="@+id/dummy_view"
@@ -176,4 +176,5 @@
             android:textOff=""
             android:textOn="" />
     </RelativeLayout>
-</RelativeLayout>
+
+</RelativeLayout>

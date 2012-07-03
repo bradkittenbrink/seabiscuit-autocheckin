@@ -18,96 +18,106 @@ import com.coffeeandpower.imageutil.ImageLoader;
 
 public class MyPlacesAdapter extends BaseAdapter {
 
-	private ArrayList<VenueSmart> venues;
-	private LayoutInflater inflater;
-	public ImageLoader imageLoader;
+    private ArrayList<VenueSmart> venues;
+    private LayoutInflater inflater;
+    public ImageLoader imageLoader;
 
-	private double myLat;
-	private double myLng;
+    private double myLat;
+    private double myLng;
 
-	public MyPlacesAdapter(Activity context, ArrayList<VenueSmart> venues, double myLat, double myLng) {
+    public MyPlacesAdapter(Activity context, ArrayList<VenueSmart> venues,
+            double myLat, double myLng) {
 
-		this.inflater = context.getLayoutInflater();
-		this.myLat = myLat;
-		this.myLng = myLng;
-		this.imageLoader = new ImageLoader(context.getApplicationContext());
+        this.inflater = context.getLayoutInflater();
+        this.myLat = myLat;
+        this.myLng = myLng;
+        this.imageLoader = new ImageLoader(context.getApplicationContext());
 
-		if (venues != null) {
-			this.venues = venues;
-		} else {
-			this.venues = new ArrayList<VenueSmart>();
-		}
-	}
-	
-	public void setNewData(ArrayList<VenueSmart>newVenues) {
-		this.venues = newVenues;
-	}
+        if (venues != null) {
+            this.venues = venues;
+        } else {
+            this.venues = new ArrayList<VenueSmart>();
+        }
+    }
 
-	@Override
-	public int getCount() {
-		return venues.size();
-	}
+    public void setNewData(ArrayList<VenueSmart> newVenues) {
+        this.venues = newVenues;
+    }
 
-	@Override
-	public Object getItem(int position) {
-		return venues.get(position);
-	}
+    @Override
+    public int getCount() {
+        return venues.size();
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return 0;
-	}
+    @Override
+    public Object getItem(int position) {
+        return venues.get(position);
+    }
 
-	public static class ViewHolder {
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
 
-		public ImageView image;
-		public TextView textVenueName;
-		public TextView textAddress;
-		public TextView textDistance;
-		public TextView textCheckins;
+    public static class ViewHolder {
 
-		public ViewHolder(View convertView) {
+        public ImageView image;
+        public TextView textVenueName;
+        public TextView textAddress;
+        public TextView textDistance;
+        public TextView textCheckins;
 
-			this.textAddress = (TextView) convertView.findViewById(R.id.textview_place_adderes);
-			this.textDistance = (TextView) convertView.findViewById(R.id.textview_how_far);
-			this.textVenueName = (TextView) convertView.findViewById(R.id.textview_place_name);
-			this.textCheckins = (TextView) convertView.findViewById(R.id.textview_how_many_people);
-			this.image = (ImageView) convertView.findViewById(R.id.imageview_image_places);
-		}
-	}
+        public ViewHolder(View convertView) {
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+            this.textAddress = (TextView) convertView
+                    .findViewById(R.id.textview_place_adderes);
+            this.textDistance = (TextView) convertView
+                    .findViewById(R.id.textview_how_far);
+            this.textVenueName = (TextView) convertView
+                    .findViewById(R.id.textview_place_name);
+            this.textCheckins = (TextView) convertView
+                    .findViewById(R.id.textview_how_many_people);
+            this.image = (ImageView) convertView
+                    .findViewById(R.id.imageview_image_places);
+        }
+    }
 
-		ViewHolder holder;
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.item_list_places, null);
-			holder = new ViewHolder(convertView);
-			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder) convertView.getTag();
-		}
+        ViewHolder holder;
 
-		holder.textDistance.setText(
-				RootActivity.getDistanceBetween(myLat, myLng,
-						venues.get(position).getLat(), venues.get(position).getLng(), false));
-		
-		holder.textAddress.setText(AppCAP.cleanResponseString(venues.get(position).getAddress()));
-		holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(position).getName()));
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.item_list_places, null);
+            holder = new ViewHolder(convertView);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-		if (venues.get(position).getCheckins() != 0) {
-			String sc = venues.get(position).getCheckins() == 1 ? "1 person here now" : venues.get(position).getCheckins()
-					+ " people here now";
-			holder.textCheckins.setText(sc);
-		} else {
-			holder.textCheckins.setText(venues.get(position).getCheckinsForInterval() + " people this week");
-		}
+        holder.textDistance.setText(RootActivity.getDistanceBetween(myLat,
+                myLng, venues.get(position).getLat(), venues.get(position)
+                        .getLng(), false));
 
-		// Try to load image
-		imageLoader.DisplayImage(venues.get(position).getPhotoURL(), holder.image, R.drawable.picture_coming_soon, 70);
+        holder.textAddress.setText(AppCAP.cleanResponseString(venues.get(
+                position).getAddress()));
+        holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(
+                position).getName()));
 
-		return convertView;
-	}
+        if (venues.get(position).getCheckins() != 0) {
+            String sc = venues.get(position).getCheckins() == 1 ? "1 person here now"
+                    : venues.get(position).getCheckins() + " people here now";
+            holder.textCheckins.setText(sc);
+        } else {
+            holder.textCheckins.setText(venues.get(position)
+                    .getCheckinsForInterval() + " people this week");
+        }
+
+        // Try to load image
+        imageLoader.DisplayImage(venues.get(position).getPhotoURL(),
+                holder.image, R.drawable.picture_coming_soon, 70);
+
+        return convertView;
+    }
 
 }

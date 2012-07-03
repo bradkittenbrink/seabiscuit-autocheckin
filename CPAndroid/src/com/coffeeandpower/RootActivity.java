@@ -8,166 +8,159 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.coffeeandpower.tab.activities.ActivityMap;
 import com.google.android.maps.MapActivity;
-import com.urbanairship.UAirship;
 
 public class RootActivity extends MapActivity {
 
-	public static final int DIALOG_MUST_BE_A_MEMBER = 30;
-	
+    public static final int DIALOG_MUST_BE_A_MEMBER = 30;
 
-	private AlertDialog alert;
-	
-	
-	@Override
-	protected void onCreate(Bundle instance) {
-		super.onCreate(instance);
-		if (Constants.debugLog)
-			Log.d("RootActivity","RootActivity.onCreate()");
-		
-	}
-	
-	@Override
-	protected void onDestroy() {
-		
-		if (Constants.debugLog)
-			Log.d("RootActivity","RootActivity.onDestroy()");
-		
-		
-		
-		super.onDestroy();
-	}
-	
-	@Override
-	protected void onPause() {
-		if (Constants.debugLog)
-			Log.d("RootActivity","RootActivity.onPause()");
-		
-		
-		
-		super.onPause();
-	}
-	
-	@Override
-	protected void onStop() {
-		if (Constants.debugLog)
-			Log.d("RootActivity","RootActivity.onStop()");
-		
-		
-		
-		super.onStop();
-	}
-	
+    private AlertDialog alert;
 
-	/**
-	 * Easy log
-	 * 
-	 * @param msg
-	 */
-	public static void log(String msg) {
-		if (Constants.debugLog)
-			Log.d(AppCAP.TAG, msg);
-	}
+    @Override
+    protected void onCreate(Bundle instance) {
+        super.onCreate(instance);
+        if (Constants.debugLog)
+            Log.d("RootActivity", "RootActivity.onCreate()");
 
-	/**
-	 * Get distance between points
-	 * 
-	 * @param startLat
-	 * @param startLng
-	 * @param endLat
-	 * @param endLng
-	 * @return String 100m or 5.4km
-	 */
-	public static String getDistanceBetween(double startLat, double startLng, double endLat, double endLng, boolean addFarAway) {
-		float[] results = new float[1];
-		Location.distanceBetween(startLat, startLng, endLat, endLng, results);
-		
-		if (Float.isNaN(results[0]) || (addFarAway && (results[0] / 1000) > 500)) {
-			return AppCAP.getAppContext().getString(R.string.map_distance_far);
-		}
-		return formatToMetricsOrImperial(results[0]);
-	}
+    }
 
-	public static String formatToMetricsOrImperial(float distance) {
-		DecimalFormat oneDForm = new DecimalFormat("#.#");
-		String distanceS = "";
+    @Override
+    protected void onDestroy() {
 
-		if (AppCAP.isMetrics()) {
-			if (distance < 100) {
-				float d = Float.valueOf(oneDForm.format(distance));
-				distanceS = d + "m";
-			} else {
-				float d = Float.valueOf(oneDForm.format(distance / 1000));
-				distanceS = d + "km";
-			}
-		} else {
-			distance = distance * 3.28f; // feets
-			if (distance < 1000) {
-				float d = Float.valueOf(oneDForm.format(distance));
-				distanceS = d + "ft";
-			} else {
-				float d = Float.valueOf(oneDForm.format(distance / 5280));
-				distanceS = d + "mi";
-			}
-		}
-		return distanceS;
-	}
+        if (Constants.debugLog)
+            Log.d("RootActivity", "RootActivity.onDestroy()");
 
-	protected DisplayMetrics getDisplayMetrics() {
-		DisplayMetrics metrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		return metrics;
-	}
+        super.onDestroy();
+    }
 
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(RootActivity.this);
+    @Override
+    protected void onPause() {
+        if (Constants.debugLog)
+            Log.d("RootActivity", "RootActivity.onPause()");
 
-		switch (id) {
+        super.onPause();
+    }
 
-		case DIALOG_MUST_BE_A_MEMBER:
-			builder.setMessage("You must be a member to use this feature.").setCancelable(false)
-					.setPositiveButton("LOGIN", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							Activity a = alert.getOwnerActivity();
-							if (a != null) {
+    @Override
+    protected void onStop() {
+        if (Constants.debugLog)
+            Log.d("RootActivity", "RootActivity.onStop()");
 
-								if (a.getClass() == ActivityMap.class) {
-									AppCAP.setShouldStartLogIn(true);
-								}
-								AppCAP.setShouldFinishActivities(true);
-								a.finish();
-							}
-							dialog.cancel();
-						}
-					}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							dialog.cancel();
-						}
-					});
-			alert = builder.create();
-			break;
+        super.onStop();
+    }
 
-		default:
-			alert = null;
-			break;
-		}
+    /**
+     * Easy log
+     * 
+     * @param msg
+     */
+    public static void log(String msg) {
+        if (Constants.debugLog)
+            Log.d(AppCAP.TAG, msg);
+    }
 
-		return alert;
-	}
+    /**
+     * Get distance between points
+     * 
+     * @param startLat
+     * @param startLng
+     * @param endLat
+     * @param endLng
+     * @return String 100m or 5.4km
+     */
+    public static String getDistanceBetween(double startLat, double startLng,
+            double endLat, double endLng, boolean addFarAway) {
+        float[] results = new float[1];
+        Location.distanceBetween(startLat, startLng, endLat, endLng, results);
 
-	@Override
-	protected boolean isRouteDisplayed() {
-		return false;
-	}
-	
-	
-	
-	
+        if (Float.isNaN(results[0])
+                || (addFarAway && (results[0] / 1000) > 500)) {
+            return AppCAP.getAppContext().getString(R.string.map_distance_far);
+        }
+        return formatToMetricsOrImperial(results[0]);
+    }
+
+    public static String formatToMetricsOrImperial(float distance) {
+        DecimalFormat oneDForm = new DecimalFormat("#.#");
+        String distanceS = "";
+
+        if (AppCAP.isMetrics()) {
+            if (distance < 100) {
+                float d = Float.valueOf(oneDForm.format(distance));
+                distanceS = d + "m";
+            } else {
+                float d = Float.valueOf(oneDForm.format(distance / 1000));
+                distanceS = d + "km";
+            }
+        } else {
+            distance = distance * 3.28f; // feets
+            if (distance < 1000) {
+                float d = Float.valueOf(oneDForm.format(distance));
+                distanceS = d + "ft";
+            } else {
+                float d = Float.valueOf(oneDForm.format(distance / 5280));
+                distanceS = d + "mi";
+            }
+        }
+        return distanceS;
+    }
+
+    protected DisplayMetrics getDisplayMetrics() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        return metrics;
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(RootActivity.this);
+
+        switch (id) {
+
+        case DIALOG_MUST_BE_A_MEMBER:
+            builder.setMessage("You must be a member to use this feature.")
+                    .setCancelable(false)
+                    .setPositiveButton("LOGIN",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                        int id) {
+                                    Activity a = alert.getOwnerActivity();
+                                    if (a != null) {
+
+                                        if (a.getClass() == ActivityMap.class) {
+                                            AppCAP.setShouldStartLogIn(true);
+                                        }
+                                        AppCAP.setShouldFinishActivities(true);
+                                        a.finish();
+                                    }
+                                    dialog.cancel();
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                        int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            alert = builder.create();
+            break;
+
+        default:
+            alert = null;
+            break;
+        }
+
+        return alert;
+    }
+
+    @Override
+    protected boolean isRouteDisplayed() {
+        return false;
+    }
 
 }

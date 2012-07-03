@@ -17,86 +17,96 @@ import com.coffeeandpower.imageutil.ImageLoader;
 
 public class MyUserSmartAdapter extends BaseAdapter {
 
-	private ArrayList<UserSmart> mudArray;
-	private LayoutInflater inflater;
-	public ImageLoader imageLoader;
+    private ArrayList<UserSmart> mudArray;
+    private LayoutInflater inflater;
+    public ImageLoader imageLoader;
 
-	public MyUserSmartAdapter(Activity context, ArrayList<UserSmart> mudArray) {
+    public MyUserSmartAdapter(Activity context, ArrayList<UserSmart> mudArray) {
 
-		this.inflater = context.getLayoutInflater();
-		this.imageLoader = new ImageLoader(context.getApplicationContext());
+        this.inflater = context.getLayoutInflater();
+        this.imageLoader = new ImageLoader(context.getApplicationContext());
 
-		if (mudArray != null) {
-			this.mudArray = mudArray;
-		} else {
-			this.mudArray = new ArrayList<UserSmart>();
-		}
-	}
-	
-	public void setNewData(ArrayList<UserSmart>newUsers) {
-		this.mudArray = newUsers;
-	}
+        if (mudArray != null) {
+            this.mudArray = mudArray;
+        } else {
+            this.mudArray = new ArrayList<UserSmart>();
+        }
+    }
 
-	@Override
-	public int getCount() {
-		return mudArray.size();
-	}
+    public void setNewData(ArrayList<UserSmart> newUsers) {
+        this.mudArray = newUsers;
+    }
 
-	@Override
-	public Object getItem(int position) {
-		return mudArray.get(position);
-	}
+    @Override
+    public int getCount() {
+        return mudArray.size();
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return 0;
-	}
+    @Override
+    public Object getItem(int position) {
+        return mudArray.get(position);
+    }
 
-	public static class ViewHolder {
-		public TextView textNickName;
-		public TextView textJobName;
-		public TextView textCheckins;
-		public ImageView profileImage;
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
 
-		public ViewHolder(View convertView) {
+    public static class ViewHolder {
+        public TextView textNickName;
+        public TextView textJobName;
+        public TextView textCheckins;
+        public ImageView profileImage;
 
-			this.textNickName = (TextView) convertView.findViewById(R.id.text_name);
-			this.textJobName = (TextView) convertView.findViewById(R.id.job_name);
-			this.textCheckins = (TextView) convertView.findViewById(R.id.text_checkins);
-			this.profileImage = (ImageView) convertView.findViewById(R.id.imageview_image);
-		}
-	}
+        public ViewHolder(View convertView) {
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHolder holder;
+            this.textNickName = (TextView) convertView
+                    .findViewById(R.id.text_name);
+            this.textJobName = (TextView) convertView
+                    .findViewById(R.id.job_name);
+            this.textCheckins = (TextView) convertView
+                    .findViewById(R.id.text_checkins);
+            this.profileImage = (ImageView) convertView
+                    .findViewById(R.id.imageview_image);
+        }
+    }
 
-		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.item_list_worked, null);
-			holder = new ViewHolder(convertView);
-			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder) convertView.getTag();
-		}
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
 
-		holder.textJobName.setText(mudArray.get(position).getHeadLine().equals("null") ? "" : (mudArray.get(position).getHeadLine()
-				.equals("NULL") ? "" : ((mudArray.get(position).getHeadLine().equals(null) ? "" : AppCAP.cleanResponseString(mudArray
-				.get(position).getHeadLine())))));
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.item_list_worked, null);
+            holder = new ViewHolder(convertView);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-		if (AppCAP.isLoggedIn()) {
-			holder.textNickName.setText(AppCAP.cleanResponseString(mudArray.get(position).getNickName()));
+        holder.textJobName.setText(mudArray.get(position).getHeadLine()
+                .equals("null") ? "" : (mudArray.get(position).getHeadLine()
+                .equals("NULL") ? "" : ((mudArray.get(position).getHeadLine()
+                .equals(null) ? "" : AppCAP.cleanResponseString(mudArray.get(
+                position).getHeadLine())))));
 
-			String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray.get(position).getCheckInCount() + " Checkin"
-					: mudArray.get(position).getCheckInCount() + " Checkins";
-			holder.textCheckins.setText(checkStr);
+        if (AppCAP.isLoggedIn()) {
+            holder.textNickName.setText(AppCAP.cleanResponseString(mudArray
+                    .get(position).getNickName()));
 
-			// Try to load profile image
-			imageLoader.DisplayImage(mudArray.get(position).getFileName(), holder.profileImage, R.drawable.default_avatar50, 70);
-		} else {
-			holder.textNickName.setText("Name Hidden");
-			imageLoader.DisplayImage("", holder.profileImage, R.drawable.default_avatar50_login, 70);
-		}
+            String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray
+                    .get(position).getCheckInCount() + " Checkin"
+                    : mudArray.get(position).getCheckInCount() + " Checkins";
+            holder.textCheckins.setText(checkStr);
 
-		return convertView;
-	}
+            // Try to load profile image
+            imageLoader.DisplayImage(mudArray.get(position).getFileName(),
+                    holder.profileImage, R.drawable.default_avatar50, 70);
+        } else {
+            holder.textNickName.setText("Name Hidden");
+            imageLoader.DisplayImage("", holder.profileImage,
+                    R.drawable.default_avatar50_login, 70);
+        }
+
+        return convertView;
+    }
 }

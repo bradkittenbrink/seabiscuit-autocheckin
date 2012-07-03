@@ -1,42 +1,43 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_love_review"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dip"
-    android:paddingLeft="10dip" >
+    android:paddingLeft="10dip"
+    android:paddingTop="10dip" >
 
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/image"
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/image"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" >
 
-	    <ImageView
-	        android:id="@+id/image_thumbs_up"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentTop="true"
-	        android:layout_gravity="bottom"
-	        android:layout_marginBottom="2dip"
-	        android:background="@drawable/thumbs_up" />
-	    
-	    <ImageView
-	        android:id="@+id/image_send_love"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentTop="true"
-	        android:layout_gravity="bottom"
-	        android:layout_marginBottom="2dip"
-	        android:background="@drawable/send_love" />
-	</RelativeLayout>  
+        <ImageView
+            android:id="@+id/image_thumbs_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="2dip"
+            android:background="@drawable/thumbs_up" />
+
+        <ImageView
+            android:id="@+id/image_send_love"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="2dip"
+            android:background="@drawable/send_love" />
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/textview_review_love"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_gravity="bottom"
-        android:paddingLeft="6dip"
         android:layout_toRightOf="@+id/image"
+        android:paddingLeft="6dip"
         android:textColor="#444444"
         android:textSize="16dip" />
 

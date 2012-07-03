@@ -24,127 +24,130 @@ import com.coffeeandpower.views.CustomDialog;
  */
 public class ActivitySignInViaMail extends RootActivity {
 
-	private EditText editTextPassword;
-	private EditText editTextEmail;
+    private EditText editTextPassword;
+    private EditText editTextEmail;
+    private TextView textViewErrorMsg;
+    private ProgressDialog progress;
 
-	private TextView textViewErrorMsg;
+    private String userName;
+    private String password;
 
-	private ProgressDialog progress;
+    private DataHolder result;
 
-	private String userName;
-	private String password;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
 
-	private DataHolder result;
+            progress.dismiss();
 
-	private Handler handler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
+            switch (msg.what) {
 
-			progress.dismiss();
+            case AppCAP.HTTP_ERROR:
+                textViewErrorMsg.setVisibility(View.INVISIBLE);
+                new CustomDialog(ActivitySignInViaMail.this, "Error",
+                        "Internet connection error").show();
+                break;
 
-			switch (msg.what) {
+            case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:
 
-			case AppCAP.HTTP_ERROR:
-				textViewErrorMsg.setVisibility(View.INVISIBLE);
-				new CustomDialog(ActivitySignInViaMail.this, "Error", "Internet connection error").show();
-				break;
+                // now i should show message like
+                // result.getResponseMess() but
+                // it's ok like this for now
+                textViewErrorMsg
+                        .setText("Unable to login. Email and password do not match.");
+                textViewErrorMsg.setVisibility(View.VISIBLE);
+                break;
 
-			case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:
+            case AppCAP.HTTP_REQUEST_SUCCEEDED:
+                textViewErrorMsg.setVisibility(View.INVISIBLE);
 
-				// now i should show message like
-				// result.getResponseMess() but
-				// it's ok like this for now
-				textViewErrorMsg.setText("Unable to login. Email and password do not match.");
-				textViewErrorMsg.setVisibility(View.VISIBLE);
-				break;
+                Intent intent = new Intent(ActivitySignInViaMail.this,
+                        ActivityMap.class);
 
-			case AppCAP.HTTP_REQUEST_SUCCEEDED:
-				textViewErrorMsg.setVisibility(View.INVISIBLE);
+                // Get user data from login response
 
-				Intent intent = new Intent(ActivitySignInViaMail.this, ActivityMap.class);
+                // User user = (User) result.getObject();
+                // intent.putExtra("user", user);
+                startActivity(intent);
+                finish();
 
-				// Get user data from login response
+                break;
+            }
+        }
+    };
 
-				// User user = (User) result.getObject();
-				// intent.putExtra("user", user);
-				startActivity(intent);
-				finish();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sign_in);
 
-				break;
-			}
-		}
-	};
+        // Views
+        editTextEmail = (EditText) findViewById(R.id.edittext_sign_in_email);
+        editTextPassword = (EditText) findViewById(R.id.edittext_sign_in_password);
+        textViewErrorMsg = (TextView) findViewById(R.id.textview_unable_to_login);
+        progress = new ProgressDialog(ActivitySignInViaMail.this);
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_sign_in);
+        // Views states
+        textViewErrorMsg.setVisibility(View.INVISIBLE);
+        editTextEmail.setText(AppCAP.getUserEmail());
+        progress.setMessage("Logging in...");
 
-		// Views
-		editTextEmail = (EditText) findViewById(R.id.edittext_sign_in_email);
-		editTextPassword = (EditText) findViewById(R.id.edittext_sign_in_password);
-		textViewErrorMsg = (TextView) findViewById(R.id.textview_unable_to_login);
-		progress = new ProgressDialog(ActivitySignInViaMail.this);
+        // Other
 
-		// Views states
-		textViewErrorMsg.setVisibility(View.INVISIBLE);
-		editTextEmail.setText(AppCAP.getUserEmail());
-		progress.setMessage("Logging in...");
+    }
 
-		// Other
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
-	}
+    public void onClickSignIn(View v) {
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
+        userName = editTextEmail.getText().toString();
+        password = editTextPassword.getText().toString();
 
-	public void onClickSignIn(View v) {
+        // Check for valid email
+        if (userName
+                .matches("[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}")) {
 
-		userName = editTextEmail.getText().toString();
-		password = editTextPassword.getText().toString();
+            AppCAP.setUserEmail(userName);
+            progress.show();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    result = AppCAP.getConnection().login(userName, password);
+                    if (result.getHandlerCode() == AppCAP.HTTP_ERROR) {
+                        handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
+                    } else {
+                        handler.sendEmptyMessage(result.getHandlerCode());
+                    }
+                }
+            }).start();
 
-		// Check for valid email
-		if (userName.matches("[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}")) {
+        } else {
+            textViewErrorMsg
+                    .setText("You did not enter a valid email address.");
+            textViewErrorMsg.setVisibility(View.VISIBLE);
+        }
+    }
 
-			AppCAP.setUserEmail(userName);
-			progress.show();
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					result = AppCAP.getConnection().login(userName, password);
-					if (result.getHandlerCode() == AppCAP.HTTP_ERROR) {
-						handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-					} else {
-						handler.sendEmptyMessage(result.getHandlerCode());
-					}
-				}
-			}).start();
+    public void onClickJoin(View v) {
+        startActivity(new Intent(ActivitySignInViaMail.this, ActivityJoin.class));
+    }
 
-		} else {
-			textViewErrorMsg.setText("You did not enter a valid email address.");
-			textViewErrorMsg.setVisibility(View.VISIBLE);
-		}
-	}
+    public void onClickBack(View v) {
+        onBackPressed();
+    }
 
-	public void onClickJoin(View v) {
-		startActivity(new Intent(ActivitySignInViaMail.this, ActivityJoin.class));
-	}
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
-	public void onClickBack(View v) {
-		onBackPressed();
-	}
-
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
 }

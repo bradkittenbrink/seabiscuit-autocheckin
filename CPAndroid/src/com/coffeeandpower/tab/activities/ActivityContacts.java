@@ -42,425 +42,421 @@ import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.urbanairship.UAirship;
 
-public class ActivityContacts extends RootActivity implements TabMenu, UserMenu, Observer {
+public class ActivityContacts extends RootActivity implements TabMenu,
+        UserMenu, Observer {
 
-	private static final int SCREEN_SETTINGS = 0;
-	private static final int SCREEN_USER = 1;
+    private static final int SCREEN_SETTINGS = 0;
+    private static final int SCREEN_USER = 1;
 
-	private HorizontalPagerModified pager;
-	
-	private MyUsersAdapter adapterUsers;
+    private HorizontalPagerModified pager;
 
-	private UserAndTabMenu menu;
+    private MyUsersAdapter adapterUsers;
 
-	//private Executor exe;
-	
-	private ListView listView;
-	private ProgressDialog progress;
+    private UserAndTabMenu menu;
 
-	private ArrayList<UserSmart> arrayUsers;
+    // private Executor exe;
 
-	//private DataHolder result;
-	
-	private boolean initialLoad = true;
-	
-	private ImageView blankSlateImg;
+    private ListView listView;
+    private ProgressDialog progress;
 
-	
-	
-	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
-	protected Handler taskHandler = new Handler() {
+    private ArrayList<UserSmart> arrayUsers;
 
-		@Override
-		public void handleMessage(Message msg) {
+    // private DataHolder result;
 
-			// pass message data along to venue update method
-			ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("contacts");
-			updateUsersAndCheckinsFromApiResult(usersArray);
-			
-			progress.dismiss();
+    private boolean initialLoad = true;
 
-			super.handleMessage(msg);
-		}
-	};
+    private ImageView blankSlateImg;
 
+    // Scheduler - create a custom message handler for use in passing venue data
+    // from background API call to main thread
+    protected Handler taskHandler = new Handler() {
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.tab_activity_contacts);
+        @Override
+        public void handleMessage(Message msg) {
 
-		// Executor
-		/*
-		exe = new Executor(ActivityContacts.this);
-		exe.setExecutorListener(new ExecutorInterface() {
-			@Override
-			public void onErrorReceived() {
-				errorReceived();
-			}
+            // pass message data along to venue update method
+            ArrayList<UserSmart> usersArray = msg.getData()
+                    .getParcelableArrayList("contacts");
+            updateUsersAndCheckinsFromApiResult(usersArray);
 
-			@Override
-			public void onActionFinished(int action) {
-				actionFinished(action);
-			}
-		});*/
+            progress.dismiss();
 
-		((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
+            super.handleMessage(msg);
+        }
+    };
 
-		// Horizontal Pager
-		pager = (HorizontalPagerModified) findViewById(R.id.pager);
-		pager.setCurrentScreen(SCREEN_USER, false);
-		
-		
-		progress = new ProgressDialog(this);
-		progress.setMessage("Loading...");
-		progress.show();
-		
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.tab_activity_contacts);
 
+        // Executor
+        /*
+         * exe = new Executor(ActivityContacts.this);
+         * exe.setExecutorListener(new ExecutorInterface() {
+         * 
+         * @Override public void onErrorReceived() { errorReceived(); }
+         * 
+         * @Override public void onActionFinished(int action) {
+         * actionFinished(action); } });
+         */
 
-		// User and Tab Menu
-		menu = new UserAndTabMenu(this);
-		menu.setOnUserStateChanged(new OnUserStateChanged() {
+        ((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP
+                .getLoggedInUserNickname());
 
-			@Override
-			public void onLogOut() {
-				if (Constants.debugLog)
-					Log.d("Contacts","onLogOut()");
-				
-			}
+        // Horizontal Pager
+        pager = (HorizontalPagerModified) findViewById(R.id.pager);
+        pager.setCurrentScreen(SCREEN_USER, false);
 
-			@Override
-			public void onCheckOut() {
-				if (Constants.debugLog)
-					Log.d("Contacts","onCheckOut()");
-				setupTabBar();
-			}
-		});
+        progress = new ProgressDialog(this);
+        progress.setMessage("Loading...");
+        progress.show();
 
-		if (AppCAP.isLoggedIn()) {
-			((RelativeLayout) findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-			((ImageView) findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_pressed);
-			((TextView) findViewById(R.id.text_contacts)).setTextColor(Color.WHITE);
+        // User and Tab Menu
+        menu = new UserAndTabMenu(this);
+        menu.setOnUserStateChanged(new OnUserStateChanged() {
 
-			// Get Notification settings from shared prefs
-			((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP.getNotificationToggle());
-			((Button) findViewById(R.id.btn_from)).setText(AppCAP.getNotificationFrom());
+            @Override
+            public void onLogOut() {
+                if (Constants.debugLog)
+                    Log.d("Contacts", "onLogOut()");
 
-			// Check and Set Notification settings
-			menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in),
-					(Button) findViewById(R.id.btn_from), false);
+            }
 
-			// Get contacts list
-			//FIXME
-			//We are eliminating all .exe's
-			//exe.getContactsList();
+            @Override
+            public void onCheckOut() {
+                if (Constants.debugLog)
+                    Log.d("Contacts", "onCheckOut()");
+                setupTabBar();
+            }
+        });
 
-			//setupTabBar();
-			
-			//Display the list of users if the user is logged in
-			listView = (ListView) findViewById(R.id.contacts_listview);
-			//TODO Need to add listview listener here
-			listView.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-        				if (!AppCAP.isLoggedIn()) {
-        					showDialog(DIALOG_MUST_BE_A_MEMBER);
-        				} else {
-        					Intent intent = new Intent(ActivityContacts.this, ActivityUserDetails.class);
-        					intent.putExtra("mapuserobject", (UserSmart) adapterUsers.getItem(position));
-        					intent.putExtra("from_act", "list");
-        					startActivity(intent);
-        				}
-				}
-			});
-							
-			
-			blankSlateImg = (ImageView) findViewById(R.id.contacts_blank_slate_img);
-			
+        if (AppCAP.isLoggedIn()) {
+            ((RelativeLayout) findViewById(R.id.rel_contacts))
+                    .setBackgroundResource(R.drawable.bg_tabbar_selected);
+            ((ImageView) findViewById(R.id.imageview_contacts))
+                    .setImageResource(R.drawable.tab_contacts_pressed);
+            ((TextView) findViewById(R.id.text_contacts))
+                    .setTextColor(Color.WHITE);
 
+            // Get Notification settings from shared prefs
+            ((ToggleButton) findViewById(R.id.toggle_checked_in))
+                    .setChecked(AppCAP.getNotificationToggle());
+            ((Button) findViewById(R.id.btn_from)).setText(AppCAP
+                    .getNotificationFrom());
 
-		} else {
-			setContentView(R.layout.tab_activity_login);
-			((RelativeLayout) findViewById(R.id.rel_log_in)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-			((ImageView) findViewById(R.id.imageview_log_in)).setImageResource(R.drawable.tab_login_pressed);
-			((TextView) findViewById(R.id.text_log_in)).setTextColor(Color.WHITE);
+            // Check and Set Notification settings
+            menu.setOnNotificationSettingsListener(
+                    (ToggleButton) findViewById(R.id.toggle_checked_in),
+                    (Button) findViewById(R.id.btn_from), false);
 
-			RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
-			RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);
+            // Get contacts list
+            // FIXME
+            // We are eliminating all .exe's
+            // exe.getContactsList();
 
-			if (r != null) {
-				r.setVisibility(View.VISIBLE);
-			}
-			if (r1 != null) {
-				r1.setVisibility(View.GONE);
-			}
-			
-			
-		}
+            // setupTabBar();
 
+            // Display the list of users if the user is logged in
+            listView = (ListView) findViewById(R.id.contacts_listview);
+            // TODO Need to add listview listener here
+            listView.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View arg1,
+                        int position, long arg3) {
+                    if (!AppCAP.isLoggedIn()) {
+                        showDialog(DIALOG_MUST_BE_A_MEMBER);
+                    } else {
+                        Intent intent = new Intent(ActivityContacts.this,
+                                ActivityUserDetails.class);
+                        intent.putExtra("mapuserobject",
+                                (UserSmart) adapterUsers.getItem(position));
+                        intent.putExtra("from_act", "list");
+                        startActivity(intent);
+                    }
+                }
+            });
 
+            blankSlateImg = (ImageView) findViewById(R.id.contacts_blank_slate_img);
 
-	}
-	
-	
-	private void setupTabBar() {
-		if (AppCAP.isUserCheckedIn()) {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityContacts.this,
-					R.anim.rotate_indefinitely));
-		} else {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
-		}
-	}
+        } else {
+            setContentView(R.layout.tab_activity_login);
+            ((RelativeLayout) findViewById(R.id.rel_log_in))
+                    .setBackgroundResource(R.drawable.bg_tabbar_selected);
+            ((ImageView) findViewById(R.id.imageview_log_in))
+                    .setImageResource(R.drawable.tab_login_pressed);
+            ((TextView) findViewById(R.id.text_log_in))
+                    .setTextColor(Color.WHITE);
 
-	public void onClickLinkedIn(View v) {
-		AppCAP.setShouldFinishActivities(true);
-		AppCAP.setStartLoginPageFromContacts(true);
-		onBackPressed();
-	}
+            RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
+            RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);
 
+            if (r != null) {
+                r.setVisibility(View.VISIBLE);
+            }
+            if (r1 != null) {
+                r1.setVisibility(View.GONE);
+            }
 
-	public void onClickMenu(View v) {
-		if (pager.getCurrentScreen() == SCREEN_USER) {
-			pager.setCurrentScreen(SCREEN_SETTINGS, true);
-		} else {
-			pager.setCurrentScreen(SCREEN_USER, true);
-		}
-	}
-	
-	@Override
-	protected void onStart() {
-		if (Constants.debugLog)
-			Log.d("Contacts","ActivityContacts.onStart()");
-		super.onStart();
-		
-		setupTabBar();
-		
-		//If the user isn't logged in then we will displaying the login screen not the list of contacts.
-		if (AppCAP.isLoggedIn())
-		{
-			UAirship.shared().getAnalytics().activityStarted(this);
-			AppCAP.getCounter().getCachedDataForAPICall("contactsList",this);
-		}
-	}
+        }
 
-	@Override
-	public void onStop() {
-		if (Constants.debugLog)
-			Log.d("Contacts","ActivityContacts.onStop()");
-		super.onStop();
-		if (AppCAP.isLoggedIn())
-		{
-			UAirship.shared().getAnalytics().activityStopped(this);
-			AppCAP.getCounter().stoppedObservingAPICall("contactsList",this);
-		}
-	}
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
+    private void setupTabBar() {
+        if (AppCAP.isUserCheckedIn()) {
+            ((TextView) findViewById(R.id.textview_check_in))
+                    .setText("Check Out");
+            ((ImageView) findViewById(R.id.imageview_check_in_clock_hand))
+                    .setAnimation(AnimationUtils.loadAnimation(
+                            ActivityContacts.this, R.anim.rotate_indefinitely));
+        } else {
+            ((TextView) findViewById(R.id.textview_check_in))
+                    .setText("Check In");
+            ((ImageView) findViewById(R.id.imageview_check_in_clock_hand))
+                    .clearAnimation();
+        }
+    }
 
-		if (AppCAP.shouldFinishActivities()) {
-			onBackPressed();
-		} else {
-			// Get Notification settings from shared prefs
-			((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP.getNotificationToggle());
-			((Button) findViewById(R.id.btn_from)).setText(AppCAP.getNotificationFrom());
+    public void onClickLinkedIn(View v) {
+        AppCAP.setShouldFinishActivities(true);
+        AppCAP.setStartLoginPageFromContacts(true);
+        onBackPressed();
+    }
 
-			// Check and Set Notification settings
-			menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in),
-					(Button) findViewById(R.id.btn_from), false);
+    public void onClickMenu(View v) {
+        if (pager.getCurrentScreen() == SCREEN_USER) {
+            pager.setCurrentScreen(SCREEN_SETTINGS, true);
+        } else {
+            pager.setCurrentScreen(SCREEN_USER, true);
+        }
+    }
 
-			// Get contacts list
-			//FIXME
-			//We are eliminating all .exe's
-			//exe.getContactsList();
-		}
-	}
+    @Override
+    protected void onStart() {
+        if (Constants.debugLog)
+            Log.d("Contacts", "ActivityContacts.onStart()");
+        super.onStart();
 
-	/*
-	private void errorReceived() {
+        setupTabBar();
 
-	}
+        // If the user isn't logged in then we will displaying the login screen
+        // not the list of contacts.
+        if (AppCAP.isLoggedIn()) {
+            UAirship.shared().getAnalytics().activityStarted(this);
+            AppCAP.getCounter().getCachedDataForAPICall("contactsList", this);
+        }
+    }
 
-	
-	private void actionFinished(int action) {
-		result = exe.getResult();
+    @Override
+    public void onStop() {
+        if (Constants.debugLog)
+            Log.d("Contacts", "ActivityContacts.onStop()");
+        super.onStop();
+        if (AppCAP.isLoggedIn()) {
+            UAirship.shared().getAnalytics().activityStopped(this);
+            AppCAP.getCounter().stoppedObservingAPICall("contactsList", this);
+        }
+    }
 
-		switch (action) {
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-		case 0:
+        if (AppCAP.shouldFinishActivities()) {
+            onBackPressed();
+        } else {
+            // Get Notification settings from shared prefs
+            ((ToggleButton) findViewById(R.id.toggle_checked_in))
+                    .setChecked(AppCAP.getNotificationToggle());
+            ((Button) findViewById(R.id.btn_from)).setText(AppCAP
+                    .getNotificationFrom());
 
-			break;
-		}
-	}*/
+            // Check and Set Notification settings
+            menu.setOnNotificationSettingsListener(
+                    (ToggleButton) findViewById(R.id.toggle_checked_in),
+                    (Button) findViewById(R.id.btn_from), false);
 
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-	}
+            // Get contacts list
+            // FIXME
+            // We are eliminating all .exe's
+            // exe.getContactsList();
+        }
+    }
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
+    /*
+     * private void errorReceived() {
+     * 
+     * }
+     * 
+     * 
+     * private void actionFinished(int action) { result = exe.getResult();
+     * 
+     * switch (action) {
+     * 
+     * case 0:
+     * 
+     * break; } }
+     */
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
-	@Override
-	public void onClickEnterInviteCode(View v) {
-		menu.onClickEnterInviteCode(v);
-	}
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
-	@Override
-	public void onClickSettings(View v) {
-		menu.onClickSettings(v);
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
-	@Override
-	public void onClickLogout(View v) {
-		menu.onClickLogout(v);
-		onBackPressed();
-	}
+    @Override
+    public void onClickEnterInviteCode(View v) {
+        menu.onClickEnterInviteCode(v);
+    }
 
-	@Override
-	public void onClickMap(View v) {
-		menu.onClickMap(v);
-		finish();
-	}
+    @Override
+    public void onClickSettings(View v) {
+        menu.onClickSettings(v);
+    }
 
-	@Override
-	public void onClickPlaces(View v) {
-		menu.onClickPlaces(v);
-		finish();
-	}
+    @Override
+    public void onClickLogout(View v) {
+        menu.onClickLogout(v);
+        onBackPressed();
+    }
 
-	@Override
-	public void onClickCheckIn(View v) {
-		if (AppCAP.isLoggedIn()) {
-			menu.onClickCheckIn(v);
-		} else {
-			showDialog(DIALOG_MUST_BE_A_MEMBER);
-		}
-	}
+    @Override
+    public void onClickMap(View v) {
+        menu.onClickMap(v);
+        finish();
+    }
 
-	@Override
-	public void onClickPeople(View v) {
-		menu.onClickPeople(v);
-		finish();
-	}
+    @Override
+    public void onClickPlaces(View v) {
+        menu.onClickPlaces(v);
+        finish();
+    }
 
-	@Override
-	public void onClickContacts(View v) {
-		// menu.onClickContacts(v);
-	}
-	
-	
-	
-	//Observer callback implementation
-	@Override
-	public void update(Observable observable, Object data) {
-		/*
-		 * verify that the data is really of type CounterData, and log the
-		 * details
-		 */
-		if (data instanceof CounterData) {
-			CounterData counterdata = (CounterData) data;
-			
-			DataHolder contacts = counterdata.getData();
-			//Object[] obj = (Object[]) contacts.getObject();
-			@SuppressWarnings("unchecked")
-			ArrayList<UserSmart> arrayContacts = (ArrayList<UserSmart>) contacts.getObject();				
-			if (Constants.debugLog)
-				Log.d("Contacts","Warning: API callback temporarily disabled...");
-			
-			// Remove self from user array
-			UserSmart selfUser = null;
-			for (UserSmart aUser:arrayContacts) {
-				
-				if (AppCAP.getLoggedInUserId() == aUser.getUserId()) {
-					if (Constants.debugLog)
-						Log.d("Contacts"," - Removing self from users array: " + aUser.getNickName());
-					selfUser = aUser;
-				}
-			}
-			if (selfUser != null) {
-				arrayContacts.remove(selfUser);
-			}
-				
-			Message message = new Message();
-			Bundle bundle = new Bundle();
-			bundle.putCharSequence("type", counterdata.type);
-			bundle.putParcelableArrayList("contacts", arrayContacts);
-			message.setData(bundle);
-			
-			if (Constants.debugLog)
-				Log.d("Contacts","Contacts.update: Sending handler message with " + arrayContacts.size() + " contacts:");
-			
-			
-			
-			taskHandler.sendMessage(message);			
-		}
-		else
-			if (Constants.debugLog)
-				Log.d("Contacts","Error: Received unexpected data type: " + data.getClass().toString());
-	}
-	
-	
+    @Override
+    public void onClickCheckIn(View v) {
+        if (AppCAP.isLoggedIn()) {
+            menu.onClickCheckIn(v);
+        } else {
+            showDialog(DIALOG_MUST_BE_A_MEMBER);
+        }
+    }
 
-	
-	private void updateUsersAndCheckinsFromApiResult(ArrayList<UserSmart> newUsersArray) {
-		if (Constants.debugLog)
-			Log.d("Contacts","updateUsersAndCheckinsFromApiResult()");
-				
-		// Sort users list
-		if (newUsersArray != null) {
-			Collections.sort(newUsersArray, new Comparator<UserSmart>() {
-				@Override
-				public int compare(UserSmart m1, UserSmart m2) {
-					//if (m1.getCheckedIn() > m2.getCheckedIn()) {
-					//	return -1;
-					//}
-					return m1.getNickName().compareToIgnoreCase(m2.getNickName());
-					//return 1;
-				}
-			});
-		}
-		
-		if (newUsersArray.size() == 0) {
-			blankSlateImg.setVisibility(View.VISIBLE);
-		} else {
-			blankSlateImg.setVisibility(View.INVISIBLE);
-		}
-		
-		
-		
-		//Populate table view
-		this.arrayUsers = newUsersArray;
+    @Override
+    public void onClickPeople(View v) {
+        menu.onClickPeople(v);
+        finish();
+    }
 
-		if(initialLoad)
-		{
-			if (Constants.debugLog)
-				Log.d("ActivityContacts","Contacts List Initial Load");
-			adapterUsers = new MyUsersAdapter(ActivityContacts.this, this.arrayUsers);
-			listView.setAdapter(adapterUsers);
-			Utils.animateListView(listView);
-			initialLoad = false;
-		}
-		else
-		{
-			adapterUsers.setNewData(arrayUsers);
-			adapterUsers.notifyDataSetChanged();
-		}
-		
-		if (Constants.debugLog)
-			Log.d("Contacts","Set local array with " + newUsersArray.size() + " contacts.");
-	}
-	
-	
+    @Override
+    public void onClickContacts(View v) {
+        // menu.onClickContacts(v);
+    }
+
+    // Observer callback implementation
+    @Override
+    public void update(Observable observable, Object data) {
+        /*
+         * verify that the data is really of type CounterData, and log the
+         * details
+         */
+        if (data instanceof CounterData) {
+            CounterData counterdata = (CounterData) data;
+
+            DataHolder contacts = counterdata.getData();
+            // Object[] obj = (Object[]) contacts.getObject();
+            @SuppressWarnings("unchecked")
+            ArrayList<UserSmart> arrayContacts = (ArrayList<UserSmart>) contacts
+                    .getObject();
+            if (Constants.debugLog)
+                Log.d("Contacts",
+                        "Warning: API callback temporarily disabled...");
+
+            // Remove self from user array
+            UserSmart selfUser = null;
+            for (UserSmart aUser : arrayContacts) {
+
+                if (AppCAP.getLoggedInUserId() == aUser.getUserId()) {
+                    if (Constants.debugLog)
+                        Log.d("Contacts", " - Removing self from users array: "
+                                + aUser.getNickName());
+                    selfUser = aUser;
+                }
+            }
+            if (selfUser != null) {
+                arrayContacts.remove(selfUser);
+            }
+
+            Message message = new Message();
+            Bundle bundle = new Bundle();
+            bundle.putCharSequence("type", counterdata.type);
+            bundle.putParcelableArrayList("contacts", arrayContacts);
+            message.setData(bundle);
+
+            if (Constants.debugLog)
+                Log.d("Contacts",
+                        "Contacts.update: Sending handler message with "
+                                + arrayContacts.size() + " contacts:");
+
+            taskHandler.sendMessage(message);
+        } else if (Constants.debugLog)
+            Log.d("Contacts", "Error: Received unexpected data type: "
+                    + data.getClass().toString());
+    }
+
+    private void updateUsersAndCheckinsFromApiResult(
+            ArrayList<UserSmart> newUsersArray) {
+        if (Constants.debugLog)
+            Log.d("Contacts", "updateUsersAndCheckinsFromApiResult()");
+
+        // Sort users list
+        if (newUsersArray != null) {
+            Collections.sort(newUsersArray, new Comparator<UserSmart>() {
+                @Override
+                public int compare(UserSmart m1, UserSmart m2) {
+                    // if (m1.getCheckedIn() > m2.getCheckedIn()) {
+                    // return -1;
+                    // }
+                    return m1.getNickName().compareToIgnoreCase(
+                            m2.getNickName());
+                    // return 1;
+                }
+            });
+        }
+
+        if (newUsersArray.size() == 0) {
+            blankSlateImg.setVisibility(View.VISIBLE);
+        } else {
+            blankSlateImg.setVisibility(View.INVISIBLE);
+        }
+
+        // Populate table view
+        this.arrayUsers = newUsersArray;
+
+        if (initialLoad) {
+            if (Constants.debugLog)
+                Log.d("ActivityContacts", "Contacts List Initial Load");
+            adapterUsers = new MyUsersAdapter(ActivityContacts.this,
+                    this.arrayUsers);
+            listView.setAdapter(adapterUsers);
+            Utils.animateListView(listView);
+            initialLoad = false;
+        } else {
+            adapterUsers.setNewData(arrayUsers);
+            adapterUsers.notifyDataSetChanged();
+        }
+
+        if (Constants.debugLog)
+            Log.d("Contacts", "Set local array with " + newUsersArray.size()
+                    + " contacts.");
+    }
 
 }

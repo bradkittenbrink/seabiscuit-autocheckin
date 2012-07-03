@@ -45,393 +45,409 @@ import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.urbanairship.UAirship;
 
-public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, UserMenu, Observer{
+public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu,
+        UserMenu, Observer {
 
-	private static final int SCREEN_SETTINGS = 0;
-	private static final int SCREEN_USER = 1;
-	
-	private static final String PLACES_SCREEN_TITLE = "Venues";
-	private static final String PEOPLE_SCREEN_TITLE = "People";
+    private static final int SCREEN_SETTINGS = 0;
+    private static final int SCREEN_USER = 1;
 
-	private MyUsersAdapter adapterUsers;
-	private MyPlacesAdapter adapterPlaces;
+    private static final String PLACES_SCREEN_TITLE = "Venues";
+    private static final String PEOPLE_SCREEN_TITLE = "People";
 
-	private ProgressDialog progress;
+    private MyUsersAdapter adapterUsers;
+    private MyPlacesAdapter adapterPlaces;
 
-	private ListView listView;
+    private ProgressDialog progress;
 
-	private HorizontalPagerModified pager;
+    private ListView listView;
 
-	//private DataHolder result;
+    private HorizontalPagerModified pager;
 
-	private ArrayList<UserSmart> arrayUsers;
-	private ArrayList<VenueSmart> arrayVenues;
+    // private DataHolder result;
 
-	private double userLat;
-	private double userLng;
-	private double data[];
+    private ArrayList<UserSmart> arrayUsers;
+    private ArrayList<VenueSmart> arrayVenues;
 
-	private boolean isPeopleList;
+    private double userLat;
+    private double userLng;
+    private double data[];
 
-	private UserAndTabMenu menu;
+    private boolean isPeopleList;
 
-	private String type;
-	
-	private boolean initialLoad = true;
-	
-	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
-	protected Handler taskHandler = new Handler() {
+    private UserAndTabMenu menu;
 
-		// handleMessage - on the main thread
-		@Override
-		public void handleMessage(Message msg) {
+    private String type;
 
-			if (type.equals("people")) {
-				
-				arrayUsers = msg.getData().getParcelableArrayList("users");
-				
-				
-				// Sort users list
-				if (arrayUsers != null) {
-					Collections.sort(arrayUsers, new Comparator<UserSmart>() {
-						@Override
-						public int compare(UserSmart m1, UserSmart m2) {
-							if (m1.getCheckedIn() > m2.getCheckedIn()) {
-								return -1;
-							}
-							return 1;
-						}
-					});
-				}
-				//Populate table view
-				setPeopleList();
-			}
-			else
-			{
-				// pass message data along to venue update method
-				arrayVenues = msg.getData().getParcelableArrayList("venues");
-				setPlaceList();	
-			}
+    private boolean initialLoad = true;
 
-			progress.dismiss();
-			
-			super.handleMessage(msg);
-		}
-	};
+    // Scheduler - create a custom message handler for use in passing venue data
+    // from background API call to main thread
+    protected Handler taskHandler = new Handler() {
 
-	{
-		data = new double[6];
-		// default view is People List
-		isPeopleList = true;
-	}
+        // handleMessage - on the main thread
+        @Override
+        public void handleMessage(Message msg) {
 
-	/**
-	 * Check if user is checked in or not
-	 */
-	private void checkUserState() {
-		if (AppCAP.isUserCheckedIn()) {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityPeopleAndPlaces.this,
-					R.anim.rotate_indefinitely));
-		} else {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
-		}
-	}
+            if (type.equals("people")) {
 
-	private void setPeopleList() {
-		
-		if(initialLoad)
-		{
-			if (Constants.debugLog)
-				Log.d("ActivityPeopleAndPlaces","People List Initial Load");
-			adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
-			listView.setAdapter(adapterUsers);
-			Utils.animateListView(listView);
-			initialLoad = false;
-		}
-		else
-		{
-			adapterUsers.setNewData(arrayUsers);
-			adapterUsers.notifyDataSetChanged();
-		}
+                arrayUsers = msg.getData().getParcelableArrayList("users");
 
-	}
+                // Sort users list
+                if (arrayUsers != null) {
+                    Collections.sort(arrayUsers, new Comparator<UserSmart>() {
+                        @Override
+                        public int compare(UserSmart m1, UserSmart m2) {
+                            if (m1.getCheckedIn() > m2.getCheckedIn()) {
+                                return -1;
+                            }
+                            return 1;
+                        }
+                    });
+                }
+                // Populate table view
+                setPeopleList();
+            } else {
+                // pass message data along to venue update method
+                arrayVenues = msg.getData().getParcelableArrayList("venues");
+                setPlaceList();
+            }
 
-	private void setPlaceList() {
-		isPeopleList = false;
-		((CustomFontView) findViewById(R.id.textview_location_name)).setText(PLACES_SCREEN_TITLE);
-		
-		if(initialLoad)
-		{
-			if (Constants.debugLog)
-				Log.d("ActivityPeopleAndPlaces","Place List Initial Load");
-			adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
-			listView.setAdapter(adapterPlaces);
-			Utils.animateListView(listView);
-			initialLoad = false;
-		}
-		else
-		{
-			adapterPlaces.setNewData(arrayVenues);
-			adapterPlaces.notifyDataSetChanged();
-		}
-	}
+            progress.dismiss();
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (Constants.debugLog)
-			Log.d("ActivityPeopleAndPlaces","ActivityPeopleAndPlaces.onCreate()");
-		setContentView(R.layout.tab_activity_people_and_places);
+            super.handleMessage(msg);
+        }
+    };
 
-		((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
+    {
+        data = new double[6];
+        // default view is People List
+        isPeopleList = true;
+    }
 
-		// Default View
-		pager = (HorizontalPagerModified) findViewById(R.id.pager);
-		pager.setCurrentScreen(SCREEN_USER, false);
+    /**
+     * Check if user is checked in or not
+     */
+    private void checkUserState() {
+        if (AppCAP.isUserCheckedIn()) {
+            ((TextView) findViewById(R.id.textview_check_in))
+                    .setText("Check Out");
+            ((ImageView) findViewById(R.id.imageview_check_in_clock_hand))
+                    .setAnimation(AnimationUtils.loadAnimation(
+                            ActivityPeopleAndPlaces.this,
+                            R.anim.rotate_indefinitely));
+        } else {
+            ((TextView) findViewById(R.id.textview_check_in))
+                    .setText("Check In");
+            ((ImageView) findViewById(R.id.imageview_check_in_clock_hand))
+                    .clearAnimation();
+        }
+    }
 
-		initialLoad = true;
-		
-		
-		
-		progress = new ProgressDialog(this);
-		progress.setMessage("Loading...");
-		progress.show();
+    private void setPeopleList() {
 
-		listView = (ListView) findViewById(R.id.list);
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				if (isPeopleList) {
-					if (!AppCAP.isLoggedIn()) {
-						showDialog(DIALOG_MUST_BE_A_MEMBER);
-					} else {
-						Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityUserDetails.class);
-						intent.putExtra("mapuserobject", (UserSmart) adapterUsers.getItem(position));
-						intent.putExtra("from_act", "list");
-						startActivity(intent);
-					}
-				} else {
-					Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
-					intent.putExtra("venueSmart", (VenueSmart) adapterPlaces.getItem(position));
-					//We are sending the whole place object so we won't need the 4sqId separately
-					//intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
-					//I don't know what data is, but I don't think we will need
-					//intent.putExtra("coords", data);
-					startActivity(intent);
-				}
+        if (initialLoad) {
+            if (Constants.debugLog)
+                Log.d("ActivityPeopleAndPlaces", "People List Initial Load");
+            adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this,
+                    arrayUsers, userLat, userLng);
+            listView.setAdapter(adapterUsers);
+            Utils.animateListView(listView);
+            initialLoad = false;
+        } else {
+            adapterUsers.setNewData(arrayUsers);
+            adapterUsers.notifyDataSetChanged();
+        }
 
-			}
-		});
+    }
 
-		// User and Tab Menu
-		checkUserState();
-		menu = new UserAndTabMenu(this);
-		menu.setOnUserStateChanged(new OnUserStateChanged() {
-			@Override
-			public void onCheckOut() {
-				checkUserState();
-			}
+    private void setPlaceList() {
+        isPeopleList = false;
+        ((CustomFontView) findViewById(R.id.textview_location_name))
+                .setText(PLACES_SCREEN_TITLE);
 
-			@Override
-			public void onLogOut() {
-			}
-		});
+        if (initialLoad) {
+            if (Constants.debugLog)
+                Log.d("ActivityPeopleAndPlaces", "Place List Initial Load");
+            adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this,
+                    arrayVenues, userLat, userLng);
+            listView.setAdapter(adapterPlaces);
+            Utils.animateListView(listView);
+            initialLoad = false;
+        } else {
+            adapterPlaces.setNewData(arrayVenues);
+            adapterPlaces.notifyDataSetChanged();
+        }
+    }
 
-		// Get data from intent
-		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (Constants.debugLog)
+            Log.d("ActivityPeopleAndPlaces",
+                    "ActivityPeopleAndPlaces.onCreate()");
+        setContentView(R.layout.tab_activity_people_and_places);
 
-			// Check is it People or Places List
-			type = extras.getString("type");
-			if (type.equals("people")) {
-				((RelativeLayout) findViewById(R.id.rel_people)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-				((ImageView) findViewById(R.id.imageview_people)).setImageResource(R.drawable.tab_people_pressed);
-				((TextView) findViewById(R.id.text_people)).setTextColor(Color.WHITE);
-				((CustomFontView) findViewById(R.id.textview_location_name)).setText(PEOPLE_SCREEN_TITLE);
-			} else {
-				((RelativeLayout) findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-				((ImageView) findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
-				((TextView) findViewById(R.id.text_places)).setTextColor(Color.WHITE);
-				((CustomFontView) findViewById(R.id.textview_location_name)).setText(PLACES_SCREEN_TITLE);
-			}
+        ((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP
+                .getLoggedInUserNickname());
 
-			// Check is it click from Activity or Balloon
-			String from = extras.getString("from");
-			if (from != null) {
-				if (from.equals("from_tab")) {
+        // Default View
+        pager = (HorizontalPagerModified) findViewById(R.id.pager);
+        pager.setCurrentScreen(SCREEN_USER, false);
 
-					data[0] = extras.getDouble("sw_lat");
-					data[1] = extras.getDouble("sw_lng");
-					data[2] = extras.getDouble("ne_lat");
-					data[3] = extras.getDouble("ne_lng");
-					data[4] = extras.getDouble("user_lat");
-					data[5] = extras.getDouble("user_lng");
+        initialLoad = true;
 
-					userLat = data[4];
-					userLng = data[5];
-				} else {
+        progress = new ProgressDialog(this);
+        progress.setMessage("Loading...");
+        progress.show();
 
-				}
-			}
-		} else {
-			Log.d("PeopleAndPlaces","Extras was null!");
-		}
-		
-		
-	}   // end onCreate()
-	
-	@Override
-	protected void onStart() {
-		
-		ProgressDialog progress = new ProgressDialog(this);
-		progress.setMessage("Loading...");
-		
-		if (Constants.debugLog)
-			Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStart()");
-		super.onStart();
-		
-		//initialLoad = true;
-		UAirship.shared().getAnalytics().activityStarted(this);
-		AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins",this);	
-	}
+        listView = (ListView) findViewById(R.id.list);
+        listView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1,
+                    int position, long arg3) {
+                if (isPeopleList) {
+                    if (!AppCAP.isLoggedIn()) {
+                        showDialog(DIALOG_MUST_BE_A_MEMBER);
+                    } else {
+                        Intent intent = new Intent(
+                                ActivityPeopleAndPlaces.this,
+                                ActivityUserDetails.class);
+                        intent.putExtra("mapuserobject",
+                                (UserSmart) adapterUsers.getItem(position));
+                        intent.putExtra("from_act", "list");
+                        startActivity(intent);
+                    }
+                } else {
+                    Intent intent = new Intent(ActivityPeopleAndPlaces.this,
+                            ActivityPlaceDetails.class);
+                    intent.putExtra("venueSmart",
+                            (VenueSmart) adapterPlaces.getItem(position));
+                    // We are sending the whole place object so we won't need
+                    // the 4sqId separately
+                    // intent.putExtra("foursquare_id",
+                    // arrayVenues.get(position).getFoursquareId());
+                    // I don't know what data is, but I don't think we will need
+                    // intent.putExtra("coords", data);
+                    startActivity(intent);
+                }
 
-	@Override
-	public void onStop() {
-		if (Constants.debugLog)
-			Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStop()");
-		super.onStop();
-		UAirship.shared().getAnalytics().activityStopped(this);
-		AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins",this);
-	}
+            }
+        });
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		
-		checkUserState();
+        // User and Tab Menu
+        checkUserState();
+        menu = new UserAndTabMenu(this);
+        menu.setOnUserStateChanged(new OnUserStateChanged() {
+            @Override
+            public void onCheckOut() {
+                checkUserState();
+            }
 
-		if (AppCAP.shouldFinishActivities()) {
-			onBackPressed();
-		} else {
-			// Get Notification settings from shared prefs
-			((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP.getNotificationToggle());
-			((Button) findViewById(R.id.btn_from)).setText(AppCAP.getNotificationFrom());
+            @Override
+            public void onLogOut() {
+            }
+        });
 
-			// Check and Set Notification settings
-			menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in),
-					(Button) findViewById(R.id.btn_from), false);
-		}
-	}
+        // Get data from intent
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
 
-	public void onClickMenu(View v) {
-		if (pager.getCurrentScreen() == SCREEN_USER) {
-			pager.setCurrentScreen(SCREEN_SETTINGS, true);
-		} else {
-			pager.setCurrentScreen(SCREEN_USER, true);
-		}
-	}
+            // Check is it People or Places List
+            type = extras.getString("type");
+            if (type.equals("people")) {
+                ((RelativeLayout) findViewById(R.id.rel_people))
+                        .setBackgroundResource(R.drawable.bg_tabbar_selected);
+                ((ImageView) findViewById(R.id.imageview_people))
+                        .setImageResource(R.drawable.tab_people_pressed);
+                ((TextView) findViewById(R.id.text_people))
+                        .setTextColor(Color.WHITE);
+                ((CustomFontView) findViewById(R.id.textview_location_name))
+                        .setText(PEOPLE_SCREEN_TITLE);
+            } else {
+                ((RelativeLayout) findViewById(R.id.rel_places))
+                        .setBackgroundResource(R.drawable.bg_tabbar_selected);
+                ((ImageView) findViewById(R.id.imageview_places))
+                        .setImageResource(R.drawable.tab_places_pressed);
+                ((TextView) findViewById(R.id.text_places))
+                        .setTextColor(Color.WHITE);
+                ((CustomFontView) findViewById(R.id.textview_location_name))
+                        .setText(PLACES_SCREEN_TITLE);
+            }
 
-	public void onClickBack(View v) {
-		onBackPressed();
-	}
+            // Check is it click from Activity or Balloon
+            String from = extras.getString("from");
+            if (from != null) {
+                if (from.equals("from_tab")) {
 
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-	}
+                    data[0] = extras.getDouble("sw_lat");
+                    data[1] = extras.getDouble("sw_lng");
+                    data[2] = extras.getDouble("ne_lat");
+                    data[3] = extras.getDouble("ne_lng");
+                    data[4] = extras.getDouble("user_lat");
+                    data[5] = extras.getDouble("user_lng");
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
+                    userLat = data[4];
+                    userLng = data[5];
+                } else {
 
-	@Override
-	public void onClickEnterInviteCode(View v) {
-		menu.onClickEnterInviteCode(v);
-	}
+                }
+            }
+        } else {
+            Log.d("PeopleAndPlaces", "Extras was null!");
+        }
 
-	@Override
-	public void onClickSettings(View v) {
-		menu.onClickSettings(v);
+    } // end onCreate()
 
-	}
+    @Override
+    protected void onStart() {
 
-	@Override
-	public void onClickLogout(View v) {
-		menu.onClickLogout(v);
-		onBackPressed();
-	}
+        ProgressDialog progress = new ProgressDialog(this);
+        progress.setMessage("Loading...");
 
-	@Override
-	public void onClickMap(View v) {
-		menu.onClickMap(v);
-		finish();
-	}
+        if (Constants.debugLog)
+            Log.d("PeoplePlaces", "ActivityPeopleAndPlaces.onStart()");
+        super.onStart();
 
-	@Override
-	public void onClickContacts(View v) {
-		menu.onClickContacts(v);
-		finish();
-	}
+        // initialLoad = true;
+        UAirship.shared().getAnalytics().activityStarted(this);
+        AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins", this);
+    }
 
-	public void onClickPlaces(View v) {
-		menu.onClickPlaces(v);
-		finish();
-	}
+    @Override
+    public void onStop() {
+        if (Constants.debugLog)
+            Log.d("PeoplePlaces", "ActivityPeopleAndPlaces.onStop()");
+        super.onStop();
+        UAirship.shared().getAnalytics().activityStopped(this);
+        AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins", this);
+    }
 
-	public void onClickPeople(View v) {
-		menu.onClickPeople(v);
-		finish();
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-	@Override
-	public void onClickCheckIn(View v) {
-		if (AppCAP.isLoggedIn()) {
-			menu.onClickCheckIn(v);
-		} else {
-			showDialog(DIALOG_MUST_BE_A_MEMBER);
-		}
-	}
-	
-	@Override
-	public void update(Observable observable, Object data) {
-		/*
-		 * verify that the data is really of type CounterData, and log the
-		 * details
-		 */
-		if (data instanceof CounterData) {
-			CounterData counterdata = (CounterData) data;
-			DataHolder venuesWithCheckins = counterdata.getData();
-						
-			Object[] obj = (Object[]) venuesWithCheckins.getObject();
-			@SuppressWarnings("unchecked")
-			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-			@SuppressWarnings("unchecked")
-			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
-			
-			Message message = new Message();
-			Bundle bundle = new Bundle();
-			bundle.putCharSequence("type", counterdata.type);
-			if (type.equals("people")) {
-				bundle.putParcelableArrayList("users", arrayUsers);
-			} else {
-				bundle.putParcelableArrayList("venues", arrayVenues);
-			}
-			message.setData(bundle);
-			
-			if (Constants.debugLog)
-				Log.d("PeoplePlaces","ActivityPeopleAndPlaces.update: Sending handler message...");
-			taskHandler.sendMessage(message);
-			
-			
-		}
-		else
-			if (Constants.debugLog)
-				Log.d("PeoplePlaces","Error: Received unexpected data type: " + data.getClass().toString());
-	}
-	
+        checkUserState();
 
+        if (AppCAP.shouldFinishActivities()) {
+            onBackPressed();
+        } else {
+            // Get Notification settings from shared prefs
+            ((ToggleButton) findViewById(R.id.toggle_checked_in))
+                    .setChecked(AppCAP.getNotificationToggle());
+            ((Button) findViewById(R.id.btn_from)).setText(AppCAP
+                    .getNotificationFrom());
+
+            // Check and Set Notification settings
+            menu.setOnNotificationSettingsListener(
+                    (ToggleButton) findViewById(R.id.toggle_checked_in),
+                    (Button) findViewById(R.id.btn_from), false);
+        }
+    }
+
+    public void onClickMenu(View v) {
+        if (pager.getCurrentScreen() == SCREEN_USER) {
+            pager.setCurrentScreen(SCREEN_SETTINGS, true);
+        } else {
+            pager.setCurrentScreen(SCREEN_USER, true);
+        }
+    }
+
+    public void onClickBack(View v) {
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onClickEnterInviteCode(View v) {
+        menu.onClickEnterInviteCode(v);
+    }
+
+    @Override
+    public void onClickSettings(View v) {
+        menu.onClickSettings(v);
+
+    }
+
+    @Override
+    public void onClickLogout(View v) {
+        menu.onClickLogout(v);
+        onBackPressed();
+    }
+
+    @Override
+    public void onClickMap(View v) {
+        menu.onClickMap(v);
+        finish();
+    }
+
+    @Override
+    public void onClickContacts(View v) {
+        menu.onClickContacts(v);
+        finish();
+    }
+
+    public void onClickPlaces(View v) {
+        menu.onClickPlaces(v);
+        finish();
+    }
+
+    public void onClickPeople(View v) {
+        menu.onClickPeople(v);
+        finish();
+    }
+
+    @Override
+    public void onClickCheckIn(View v) {
+        if (AppCAP.isLoggedIn()) {
+            menu.onClickCheckIn(v);
+        } else {
+            showDialog(DIALOG_MUST_BE_A_MEMBER);
+        }
+    }
+
+    @Override
+    public void update(Observable observable, Object data) {
+        /*
+         * verify that the data is really of type CounterData, and log the
+         * details
+         */
+        if (data instanceof CounterData) {
+            CounterData counterdata = (CounterData) data;
+            DataHolder venuesWithCheckins = counterdata.getData();
+
+            Object[] obj = (Object[]) venuesWithCheckins.getObject();
+            @SuppressWarnings("unchecked")
+            ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+            @SuppressWarnings("unchecked")
+            ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+
+            Message message = new Message();
+            Bundle bundle = new Bundle();
+            bundle.putCharSequence("type", counterdata.type);
+            if (type.equals("people")) {
+                bundle.putParcelableArrayList("users", arrayUsers);
+            } else {
+                bundle.putParcelableArrayList("venues", arrayVenues);
+            }
+            message.setData(bundle);
+
+            if (Constants.debugLog)
+                Log.d("PeoplePlaces",
+                        "ActivityPeopleAndPlaces.update: Sending handler message...");
+            taskHandler.sendMessage(message);
+
+        } else if (Constants.debugLog)
+            Log.d("PeoplePlaces", "Error: Received unexpected data type: "
+                    + data.getClass().toString());
+    }
 
 }

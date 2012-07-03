@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="hello">Hello World, ActivityMain!</string>
@@ -7,19 +6,16 @@
     <!-- Linked In -->
 
 
-    <!-- staging
+    <!--
+    staging
     <string name="linkedInApiKey">4xkfzpnvuc72</string>
-    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
     -->
-    
+
+
     <!-- production -->
     <string name="linkedInApiKey">5tk2ex0mnjqk</string>
     <string name="linkedInApiSec">9JIH0rUiSbvJuHI2</string>
-    
-    
-    
- 
-    
     <string name="back">Back</string>
     <string name="send">Send</string>
     <string name="cancel">Cancel</string>
@@ -95,6 +91,6 @@
     <string name="user_menu_in_city">in city</string>
     <string name="user_menu_only">Only when I am\nchecked in</string>
     <string name="googleMapsApiKey">0N2B-_20GlM_H0LiHavOsRcF1VIqEQmyxijXZ3w</string>
-    
+    <string name="map_distance_far">Far far away</string>
 
 </resources>

@@ -8,14 +8,14 @@ import com.google.android.maps.MapView;
 
 public class CustomMapView extends MapView {
 
-	public CustomMapView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public CustomMapView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	@Override
-	public void draw(Canvas canvas) {
-		canvas.drawARGB(125, 0, 0, 255);
-		super.draw(canvas);
-	}
+    @Override
+    public void draw(Canvas canvas) {
+        canvas.drawARGB(125, 0, 0, 255);
+        super.draw(canvas);
+    }
 
 }

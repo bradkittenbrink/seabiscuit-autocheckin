@@ -4,405 +4,404 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
-import com.coffeeandpower.utils.Executor;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class VenueSmart implements Parcelable, Comparable{
+@SuppressWarnings("rawtypes")
+public class VenueSmart implements Parcelable, Comparable {
 
-	private int venueId;
-	private String name;
-	private String address;
-	private String city;
-	private String state;
-	public String zip;
-	private double distance;
-	private String foursquareId;
+    private int venueId;
+    private String name;
+    private String address;
+    private String city;
+    private String state;
+    public String zip;
+    private double distance;
+    private String foursquareId;
 
-	private int checkins;
-	private int checkinsForWeek;
-	private int checkinsForInterval;
+    private int checkins;
+    private int checkinsForWeek;
+    private int checkinsForInterval;
 
-	private String photoURL;
-	private String phone;
-	private String formattedPhone;
-	private String lastChatEntry;
+    private String photoURL;
+    private String phone;
+    private String formattedPhone;
+    private String lastChatEntry;
 
-	private double lat;
-	private double lng;
+    private double lat;
+    private double lng;
 
-	private ArrayList<CheckinData> arrayCheckins;
-	
-	public static class CheckinData implements Parcelable {
-		int userId;
-		int checkinCount;
-		int checkedIn;
+    private ArrayList<CheckinData> arrayCheckins;
 
-		public CheckinData(int userId, int checkinCount, int checkedIn) {
-			this.userId = userId;
-			this.checkinCount = checkinCount;
-			this.checkedIn = checkedIn;
-		}
+    public static class CheckinData implements Parcelable {
+        int userId;
+        int checkinCount;
+        int checkedIn;
 
-		public int getUserId() {
-			return userId;
-		}
+        public CheckinData(int userId, int checkinCount, int checkedIn) {
+            this.userId = userId;
+            this.checkinCount = checkinCount;
+            this.checkedIn = checkedIn;
+        }
 
-		public int getCheckinCount() {
-			return checkinCount;
-		}
+        public int getUserId() {
+            return userId;
+        }
 
-		public int getCheckedIn() {
-			return checkedIn;
-		}
-		
-		@Override
-		public int describeContents() {
-			return 0;
-		}
+        public int getCheckinCount() {
+            return checkinCount;
+        }
 
-		@Override
-		public void writeToParcel(Parcel out, int flags) {
-			out.writeInt(userId);
-			out.writeInt(checkinCount);
-			out.writeInt(checkedIn);
-		}
-		public static final Parcelable.Creator<CheckinData> CREATOR = new Parcelable.Creator<CheckinData>() {
-		            public CheckinData createFromParcel(Parcel in) {
-		                return new CheckinData(in);
-		            }
-		        
-		            public CheckinData[] newArray(int size) {
-		                return new CheckinData[size];
-		            }
-			};
+        public int getCheckedIn() {
+            return checkedIn;
+        }
 
-		        private CheckinData(Parcel in) {
-		        	this.userId = in.readInt();
-		        	this.checkinCount = in.readInt();
-		        	this.checkedIn = in.readInt();		    
-		        }
+        @Override
+        public int describeContents() {
+            return 0;
+        }
 
-			public static Creator<CheckinData> CREATOR() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-	}
-	public VenueSmart(JSONObject objVenue, ArrayList<CheckinData> arrayCheckins)
-	{
-		this.venueId = objVenue.optInt("venue_id");
-		this.name = objVenue.optString("name");
-		this.address = objVenue.optString("address");
-		this.city = objVenue.optString("city");
-		this.state = objVenue.optString("state");
-		this.zip = objVenue.optString("postalCode");
-		this.distance = objVenue.optDouble("distance");
-		this.foursquareId = objVenue.optString("foursquare_id");
-		this.checkins = objVenue.optInt("checkins");
-		this.checkinsForWeek = objVenue.optInt("checkins_for_week");
-		this.checkinsForInterval = objVenue.optInt("checkins_for_interval");
-		this.photoURL = objVenue.optString("photo_url");
-		this.phone = objVenue.optString("phone");
-		this.formattedPhone = objVenue.optString("formatted_phone");
-		this.lastChatEntry = objVenue.optString("lastChatEntry");		
-		this.lat = objVenue.optDouble("lat");
-		this.lng = objVenue.optDouble("lng");
-		this.arrayCheckins = arrayCheckins;
-	}
-	
-	public VenueSmart(String foursquareId, String name, JSONObject objVenue)
-	{
-		//this.venueId = venue_id;
-		this.foursquareId = foursquareId;
-		this.name = name;
-		//this.venueId = objVenue.optInt("venue_id");
-		//this.name = objVenue.optString("name");
-		this.address = objVenue.optString("address");
-		this.city = objVenue.optString("city");
-		this.state = objVenue.optString("state");
-		this.zip = objVenue.optString("postalCode");
-		this.distance = objVenue.optDouble("distance");
-		this.checkins = objVenue.optInt("checkins");
-		this.checkinsForWeek = objVenue.optInt("checkins_for_week");
-		this.checkinsForInterval = objVenue.optInt("checkins_for_interval");
-		this.photoURL = objVenue.optString("photo_url");
-		this.phone = objVenue.optString("phone");
-		this.formattedPhone = objVenue.optString("formatted_phone");
-		this.lastChatEntry = objVenue.optString("lastChatEntry");
-		this.lat = objVenue.optDouble("lat");
-		this.lng = objVenue.optDouble("lng");
-	}
-	
-	
-	
-	public static VenueSmart createVenueFromJSON(JSONObject obj) {
-		return new VenueSmart(obj,null);
-	}
-	
-	/**
-	 * Create empty venue obj
-	 */
-	public VenueSmart() {
-		this(0, "", "", "", "", 0 , "", 0, 0, 0, "", "", "", "", 0, 0, new ArrayList<CheckinData>());
-	}
-	
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeInt(userId);
+            out.writeInt(checkinCount);
+            out.writeInt(checkedIn);
+        }
 
-	public VenueSmart(int venueId, String name, String address, String city, String state, double distance, String foursquareId, int checkins,
-			int checkinsForWeek, int checkinsForInterval, String photoURL, String phone, String formattedPhone, String lastChatEntry,
-			double lat, double lng,
-			ArrayList<CheckinData> arrayCheckins) {
-		this.venueId = venueId;
-		this.name = name;
-		this.address = address;
-		this.city = city;
-		this.state = state;
-		this.distance = distance;
-		this.foursquareId = foursquareId;
-		this.checkins = checkins;
-		this.checkinsForWeek = checkinsForWeek;
-		this.checkinsForInterval = checkinsForInterval;
-		this.photoURL = photoURL;
-		this.phone = phone;
-		this.formattedPhone = formattedPhone;
-		this.lastChatEntry = lastChatEntry;
-		this.lat = lat;
-		this.lng = lng;
-		this.arrayCheckins = arrayCheckins;
-	}
-	
-	
-	public static VenueSmart createVenuePlaceholder(String fourSquareId,String name) {
-		return new VenueSmart(0, name, "", "", "", 0, fourSquareId, 0, 0, 0, "", "", "", "", 0, 0, null);		
-	}
+        public static final Parcelable.Creator<CheckinData> CREATOR = new Parcelable.Creator<CheckinData>() {
+            public CheckinData createFromParcel(Parcel in) {
+                return new CheckinData(in);
+            }
 
-	public int getVenueId() {
-		return venueId;
-	}
+            public CheckinData[] newArray(int size) {
+                return new CheckinData[size];
+            }
+        };
 
-	public void setVenueId(int venueId) {
-		this.venueId = venueId;
-	}
+        private CheckinData(Parcel in) {
+            this.userId = in.readInt();
+            this.checkinCount = in.readInt();
+            this.checkedIn = in.readInt();
+        }
 
-	public String getName() {
-		return name;
-	}
+        public static Creator<CheckinData> CREATOR() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public VenueSmart(JSONObject objVenue, ArrayList<CheckinData> arrayCheckins) {
+        this.venueId = objVenue.optInt("venue_id");
+        this.name = objVenue.optString("name");
+        this.address = objVenue.optString("address");
+        this.city = objVenue.optString("city");
+        this.state = objVenue.optString("state");
+        this.zip = objVenue.optString("postalCode");
+        this.distance = objVenue.optDouble("distance");
+        this.foursquareId = objVenue.optString("foursquare_id");
+        this.checkins = objVenue.optInt("checkins");
+        this.checkinsForWeek = objVenue.optInt("checkins_for_week");
+        this.checkinsForInterval = objVenue.optInt("checkins_for_interval");
+        this.photoURL = objVenue.optString("photo_url");
+        this.phone = objVenue.optString("phone");
+        this.formattedPhone = objVenue.optString("formatted_phone");
+        this.lastChatEntry = objVenue.optString("lastChatEntry");
+        this.lat = objVenue.optDouble("lat");
+        this.lng = objVenue.optDouble("lng");
+        this.arrayCheckins = arrayCheckins;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public VenueSmart(String foursquareId, String name, JSONObject objVenue) {
+        // this.venueId = venue_id;
+        this.foursquareId = foursquareId;
+        this.name = name;
+        // this.venueId = objVenue.optInt("venue_id");
+        // this.name = objVenue.optString("name");
+        this.address = objVenue.optString("address");
+        this.city = objVenue.optString("city");
+        this.state = objVenue.optString("state");
+        this.zip = objVenue.optString("postalCode");
+        this.distance = objVenue.optDouble("distance");
+        this.checkins = objVenue.optInt("checkins");
+        this.checkinsForWeek = objVenue.optInt("checkins_for_week");
+        this.checkinsForInterval = objVenue.optInt("checkins_for_interval");
+        this.photoURL = objVenue.optString("photo_url");
+        this.phone = objVenue.optString("phone");
+        this.formattedPhone = objVenue.optString("formatted_phone");
+        this.lastChatEntry = objVenue.optString("lastChatEntry");
+        this.lat = objVenue.optDouble("lat");
+        this.lng = objVenue.optDouble("lng");
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public static VenueSmart createVenueFromJSON(JSONObject obj) {
+        return new VenueSmart(obj, null);
+    }
 
-	public String getCity() {
-		return city;
-	}
+    /**
+     * Create empty venue obj
+     */
+    public VenueSmart() {
+        this(0, "", "", "", "", 0, "", 0, 0, 0, "", "", "", "", 0, 0,
+                new ArrayList<CheckinData>());
+    }
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+    public VenueSmart(int venueId, String name, String address, String city,
+            String state, double distance, String foursquareId, int checkins,
+            int checkinsForWeek, int checkinsForInterval, String photoURL,
+            String phone, String formattedPhone, String lastChatEntry,
+            double lat, double lng, ArrayList<CheckinData> arrayCheckins) {
+        this.venueId = venueId;
+        this.name = name;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.distance = distance;
+        this.foursquareId = foursquareId;
+        this.checkins = checkins;
+        this.checkinsForWeek = checkinsForWeek;
+        this.checkinsForInterval = checkinsForInterval;
+        this.photoURL = photoURL;
+        this.phone = phone;
+        this.formattedPhone = formattedPhone;
+        this.lastChatEntry = lastChatEntry;
+        this.lat = lat;
+        this.lng = lng;
+        this.arrayCheckins = arrayCheckins;
+    }
 
-	public String getState() {
-		return state;
-	}
+    public static VenueSmart createVenuePlaceholder(String fourSquareId,
+            String name) {
+        return new VenueSmart(0, name, "", "", "", 0, fourSquareId, 0, 0, 0,
+                "", "", "", "", 0, 0, null);
+    }
 
-	public void setState(String state) {
-		this.state = state;
-	}
+    public int getVenueId() {
+        return venueId;
+    }
 
-	public Double getDistance() {
-		return distance;
-	}
-	
-	public float getDistanceFloat() {
-		return (float) distance;
-	}
+    public void setVenueId(int venueId) {
+        this.venueId = venueId;
+    }
 
-	public void setDistance(double distance) {
-		this.distance = distance;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getFoursquareId() {
-		return foursquareId;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setFoursquareId(String foursquareId) {
-		this.foursquareId = foursquareId;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public int getCheckins() {
-		return checkins;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setCheckins(int checkins) {
-		this.checkins = checkins;
-	}
+    public String getCity() {
+        return city;
+    }
 
-	public int getCheckinsForWeek() {
-		return checkinsForWeek;
-	}
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-	public void setCheckinsForWeek(int checkinsForWeek) {
-		this.checkinsForWeek = checkinsForWeek;
-	}
+    public String getState() {
+        return state;
+    }
 
-	public int getCheckinsForInterval() {
-		return checkinsForInterval;
-	}
+    public void setState(String state) {
+        this.state = state;
+    }
 
-	public void setCheckinsForInterval(int checkinsForInterval) {
-		this.checkinsForInterval = checkinsForInterval;
-	}
+    public Double getDistance() {
+        return distance;
+    }
 
-	public String getPhotoURL() {
-		return photoURL;
-	}
+    public float getDistanceFloat() {
+        return (float) distance;
+    }
 
-	public void setPhotoURL(String photoURL) {
-		this.photoURL = photoURL;
-	}
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
 
-	public String getPhone() {
-		return phone;
-	}
+    public String getFoursquareId() {
+        return foursquareId;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public void setFoursquareId(String foursquareId) {
+        this.foursquareId = foursquareId;
+    }
 
-	public String getFormattedPhone() {
-		return formattedPhone;
-	}
+    public int getCheckins() {
+        return checkins;
+    }
 
-	public void setFormattedPhone(String formattedPhone) {
-		this.formattedPhone = formattedPhone;
-	}
+    public void setCheckins(int checkins) {
+        this.checkins = checkins;
+    }
 
-	public String getLastChatEntry() {
-		return lastChatEntry;
-	}
+    public int getCheckinsForWeek() {
+        return checkinsForWeek;
+    }
 
-	public void setLastChatEntry(String lastChatEntry) {
-		this.lastChatEntry = lastChatEntry;
-	}
+    public void setCheckinsForWeek(int checkinsForWeek) {
+        this.checkinsForWeek = checkinsForWeek;
+    }
 
-	public double getLat() {
-		return lat;
-	}
+    public int getCheckinsForInterval() {
+        return checkinsForInterval;
+    }
 
-	public void setLat(double lat) {
-		this.lat = lat;
-	}
+    public void setCheckinsForInterval(int checkinsForInterval) {
+        this.checkinsForInterval = checkinsForInterval;
+    }
 
-	public double getLng() {
-		return lng;
-	}
+    public String getPhotoURL() {
+        return photoURL;
+    }
 
-	public void setLng(double lng) {
-		this.lng = lng;
-	}
+    public void setPhotoURL(String photoURL) {
+        this.photoURL = photoURL;
+    }
 
-	public ArrayList<CheckinData> getArrayCheckins() {
-		return arrayCheckins;
-	}
+    public String getPhone() {
+        return phone;
+    }
 
-	public void setArrayCheckins(ArrayList<CheckinData> arrayCheckins) {
-		this.arrayCheckins = arrayCheckins;
-	}
-	
-	
-	@Override
-	public int describeContents() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-	@Override
-	public void writeToParcel(Parcel out, int flags) {
-		// TODO Auto-generated method stub
-		
-		
-		out.writeInt(this.venueId);
-		out.writeString(this.name);
-		out.writeString(this.address);
-		out.writeString(this.city);
-		out.writeString(this.state);
-		out.writeDouble(this.distance);
-		out.writeString(this.foursquareId);
-		
-		out.writeInt(this.checkins);
-		out.writeInt(this.checkinsForWeek);
-		out.writeInt(this.checkinsForInterval);
-		
-		out.writeString(this.photoURL);
-		out.writeString(this.phone);
-		out.writeString(this.formattedPhone);
-		
-		out.writeDouble(this.lat);
-		out.writeDouble(this.lng);
-		
-		//This should be a list of users, need to get that resolved at some point
-		out.writeTypedList(this.arrayCheckins);
-		
-	}
-	public static final Parcelable.Creator<VenueSmart> CREATOR = new Parcelable.Creator<VenueSmart>() {
-	            public VenueSmart createFromParcel(Parcel in) {
-	                return new VenueSmart(in);
-	            }
-	        
-	            public VenueSmart[] newArray(int size) {
-	                return new VenueSmart[size];
-	            }
-		};
+    public String getFormattedPhone() {
+        return formattedPhone;
+    }
 
-	        private VenueSmart(Parcel in) {
-	            this.venueId = in.readInt();
-	            this.name = in.readString();
-	            this.address = in.readString();
-	            this.city = in.readString();
-	            this.state = in.readString();
-	            this.distance = in.readDouble();
-	            this.foursquareId = in.readString();
-	            
-	            this.checkins = in.readInt();
-	            this.checkinsForWeek = in.readInt();
-	            this.checkinsForInterval = in.readInt();
-	            
-	            this.photoURL = in.readString();
-	            this.phone = in.readString();
-	            this.formattedPhone = in.readString();
-	            
-	            this.lat = in.readDouble();
-	            this.lng = in.readDouble();
-	            
-	            this.arrayCheckins =  new ArrayList<CheckinData>();
-	            in.readTypedList(this.arrayCheckins,CheckinData.CREATOR);
-	        }
+    public void setFormattedPhone(String formattedPhone) {
+        this.formattedPhone = formattedPhone;
+    }
 
-		@Override
-		public int compareTo(Object obj) {
-			
-			// Compare VenueSmarts based on distance from user
-			// This is used by the CheckInList view to sort the venues by distance
-			if (obj instanceof VenueSmart) {
-				VenueSmart otherVenue = (VenueSmart)obj;
-				
-				if (otherVenue.distance < this.distance)
-					return 1;
-				if (otherVenue.distance > this.distance)
-					return -1;
-				else
-					return 0;
-			}
-			
-			// Return less than if other obj is not a VenueSmart
-			return -1;
-		}
+    public String getLastChatEntry() {
+        return lastChatEntry;
+    }
+
+    public void setLastChatEntry(String lastChatEntry) {
+        this.lastChatEntry = lastChatEntry;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public ArrayList<CheckinData> getArrayCheckins() {
+        return arrayCheckins;
+    }
+
+    public void setArrayCheckins(ArrayList<CheckinData> arrayCheckins) {
+        this.arrayCheckins = arrayCheckins;
+    }
+
+    @Override
+    public int describeContents() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        // TODO Auto-generated method stub
+
+        out.writeInt(this.venueId);
+        out.writeString(this.name);
+        out.writeString(this.address);
+        out.writeString(this.city);
+        out.writeString(this.state);
+        out.writeDouble(this.distance);
+        out.writeString(this.foursquareId);
+
+        out.writeInt(this.checkins);
+        out.writeInt(this.checkinsForWeek);
+        out.writeInt(this.checkinsForInterval);
+
+        out.writeString(this.photoURL);
+        out.writeString(this.phone);
+        out.writeString(this.formattedPhone);
+
+        out.writeDouble(this.lat);
+        out.writeDouble(this.lng);
+
+        // This should be a list of users, need to get that resolved at some
+        // point
+        out.writeTypedList(this.arrayCheckins);
+
+    }
+
+    public static final Parcelable.Creator<VenueSmart> CREATOR = new Parcelable.Creator<VenueSmart>() {
+        public VenueSmart createFromParcel(Parcel in) {
+            return new VenueSmart(in);
+        }
+
+        public VenueSmart[] newArray(int size) {
+            return new VenueSmart[size];
+        }
+    };
+
+    private VenueSmart(Parcel in) {
+        this.venueId = in.readInt();
+        this.name = in.readString();
+        this.address = in.readString();
+        this.city = in.readString();
+        this.state = in.readString();
+        this.distance = in.readDouble();
+        this.foursquareId = in.readString();
+
+        this.checkins = in.readInt();
+        this.checkinsForWeek = in.readInt();
+        this.checkinsForInterval = in.readInt();
+
+        this.photoURL = in.readString();
+        this.phone = in.readString();
+        this.formattedPhone = in.readString();
+
+        this.lat = in.readDouble();
+        this.lng = in.readDouble();
+
+        this.arrayCheckins = new ArrayList<CheckinData>();
+        in.readTypedList(this.arrayCheckins, CheckinData.CREATOR);
+    }
+
+    @Override
+    public int compareTo(Object obj) {
+
+        // Compare VenueSmarts based on distance from user
+        // This is used by the CheckInList view to sort the venues by distance
+        if (obj instanceof VenueSmart) {
+            VenueSmart otherVenue = (VenueSmart) obj;
+
+            if (otherVenue.distance < this.distance)
+                return 1;
+            if (otherVenue.distance > this.distance)
+                return -1;
+            else
+                return 0;
+        }
+
+        // Return less than if other obj is not a VenueSmart
+        return -1;
+    }
 
 }
