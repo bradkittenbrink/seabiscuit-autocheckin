@@ -284,7 +284,7 @@ public class LocationDetectionStateMachine {
                                 			//FIXME
                                 			//Skipping active GPS right now
                                 			wifiBasedVerificationSTATE();
-                                			locationBasedVerificationSTATE();
+                                			//locationBasedVerificationSTATE();
                                 		}
                         		}
                         		else{
@@ -384,7 +384,7 @@ public class LocationDetectionStateMachine {
 		locationThreadTaskHandler.sendMessage(message);
 	}
 	public static void passiveListenerDidReceiveLocationCallback() {
-		//stopPassiveLocationListener();
+		stopPassiveLocationListener();
 	}
 	
 	public static void wifiScanListenerDidReceiveScan() {
@@ -479,8 +479,7 @@ public class LocationDetectionStateMachine {
 	
 	
 	private static void stopPassiveListeners() {
-		//DEBUG
-		//stopPassiveLocationListener();
+		stopPassiveLocationListener();
 		stopWifiStateListener();
 	}
 	
