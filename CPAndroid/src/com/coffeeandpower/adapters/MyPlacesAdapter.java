@@ -89,8 +89,10 @@ public class MyPlacesAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		holder.textDistance.setText(RootActivity.getDistanceBetween(myLat, myLng, venues.get(position).getLat(), venues.get(position)
-				.getLng()));
+		holder.textDistance.setText(
+				RootActivity.getDistanceBetween(myLat, myLng,
+						venues.get(position).getLat(), venues.get(position).getLng(), false));
+		
 		holder.textAddress.setText(AppCAP.cleanResponseString(venues.get(position).getAddress()));
 		holder.textVenueName.setText(AppCAP.cleanResponseString(venues.get(position).getName()));
 

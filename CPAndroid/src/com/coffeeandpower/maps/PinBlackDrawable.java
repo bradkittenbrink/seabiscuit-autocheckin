@@ -48,7 +48,7 @@ public class PinBlackDrawable extends Drawable {
 		if (bitmapPin != null) {
 			canvas.drawBitmap(bitmapPin, 0 - (bitmapPin.getWidth() / 2) + 2, 0 - bitmapPin.getHeight(), paintPin); // !!!
 															       // -3
-			canvas.drawText(text, 0 - (textBound.width() / 2), 0 - (bitmapPin.getHeight() + 5), paintText);
+			canvas.drawText(text, 0 - ((textBound.width() + 20) / 2), 0 - (bitmapPin.getHeight() + 5), paintText);
 		}
 	}
 

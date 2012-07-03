@@ -17,7 +17,6 @@ import android.util.Log;
 import com.coffeeandpower.datatiming.Counter;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
-import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.PushManager;
 import com.urbanairship.push.PushPreferences;
@@ -95,6 +94,7 @@ public class AppCAP extends Application {
 	
 
 	private static AppCAP instance;
+	private static Context context;
 	private static int mapCenterLng;
 	private static int mapCenterLat;	
 
@@ -118,6 +118,8 @@ public class AppCAP extends Application {
 		
 		
 		super.onCreate();
+		
+		AppCAP.context = getApplicationContext();
 
 		this.http = new HttpUtil();
 		
@@ -635,4 +637,7 @@ public class AppCAP extends Application {
 		return data;
 	}
 
+	public static Context getAppContext() {
+		return AppCAP.context;
+	}
 }

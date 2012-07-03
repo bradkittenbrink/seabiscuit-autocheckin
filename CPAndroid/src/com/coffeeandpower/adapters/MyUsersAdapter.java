@@ -146,8 +146,9 @@ public class MyUsersAdapter extends BaseAdapter {
 		}
 		else
 		{
-			holder.textDistance.setText(RootActivity.getDistanceBetween(myLat, myLng, mudArray.get(position).getLat(), mudArray.get(position)
-				.getLng()));
+			holder.textDistance.setText(
+					RootActivity.getDistanceBetween(myLat, myLng,
+							mudArray.get(position).getLat(), mudArray.get(position).getLng(), false));
 		}
 
 		// Check if we have hereNow user

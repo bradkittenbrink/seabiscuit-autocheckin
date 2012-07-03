@@ -83,9 +83,13 @@ public class RootActivity extends MapActivity {
 	 * @param endLng
 	 * @return String 100m or 5.4km
 	 */
-	public static String getDistanceBetween(double startLat, double startLng, double endLat, double endLng) {
+	public static String getDistanceBetween(double startLat, double startLng, double endLat, double endLng, boolean addFarAway) {
 		float[] results = new float[1];
 		Location.distanceBetween(startLat, startLng, endLat, endLng, results);
+		
+		if (Float.isNaN(results[0]) || (addFarAway && (results[0] / 1000) > 500)) {
+			return AppCAP.getAppContext().getString(R.string.map_distance_far);
+		}
 		return formatToMetricsOrImperial(results[0]);
 	}
 

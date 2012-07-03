@@ -10,16 +10,17 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -72,6 +73,7 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 
 	private static final int DIALOG_SEND_PROP = 0;
 	private static final int DIALOG_SEND_F2F_INVITE = 1;
+	private static final int MAPVIEW_HEIGHT = 350;
 
 	private UserSmart mud;
 
@@ -192,14 +194,24 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		// Navigate map to location from intent data
 		if (mud != null) {
 			GeoPoint point = new GeoPoint((int) (mud.getLat() * 1E6), (int) (mud.getLng() * 1E6));
-			GeoPoint pointForCenter = new GeoPoint(point.getLatitudeE6()
-					+ Utils.getScreenDependentItemSize(Utils.MAP_VER_OFFSET_FROM_CENTER), point.getLongitudeE6()
-					- Utils.getScreenDependentItemSize(Utils.MAP_HOR_OFFSET_FROM_CENTER));
-			mapController.animateTo(pointForCenter);
+			
+			Point p = new Point();
+			DisplayMetrics m = getResources().getDisplayMetrics();
+			mapView.getProjection().toPixels(point, p);
 
-			itemizedoverlay = new MyItemizedOverlay2(getPinDrawable(
-					RootActivity.getDistanceBetween(AppCAP.getUserCoordinates()[4], AppCAP.getUserCoordinates()[5], mud.getLat(),
-							mud.getLng()) + " away", point));
+			int height = (int) Utils.pixelToDp(ActivityUserDetails.MAPVIEW_HEIGHT / 3, m);
+			if (mud.getCheckedIn() == 0) {
+				height = (int) Utils.pixelToDp(ActivityUserDetails.MAPVIEW_HEIGHT / 5, m);
+			}
+			p.set(p.x - (int) Utils.pixelToDp(m.widthPixels / 5, m), p.y - height);
+			GeoPoint pointForCenter = mapView.getProjection().fromPixels(p.x, p.y);
+			mapController.animateTo(pointForCenter);
+			
+			String distanceStr = RootActivity.getDistanceBetween(
+					AppCAP.getUserCoordinates()[4], AppCAP.getUserCoordinates()[5], mud.getLat(), mud.getLng(), true);
+			
+			String distanceAway = distanceStr.contains("away") ? distanceStr : distanceStr + " away"; 
+			itemizedoverlay = new MyItemizedOverlay2(getPinDrawable(distanceAway, point));
 			createMarker(point);
 		}
 
@@ -255,7 +267,7 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		icon.setBounds(0, -icon.getIntrinsicHeight(), icon.getIntrinsicWidth(), 0);
 		return icon;
 	}
-
+	
 	/**
 	 * Update users data in UI, from favoritePlaces and userResumeData
 	 */
