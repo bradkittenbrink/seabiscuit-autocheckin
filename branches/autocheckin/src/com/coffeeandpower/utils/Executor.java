@@ -14,6 +14,7 @@ import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.location.LocationDetectionService;
+import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.views.CustomDialog;
 import com.google.android.maps.GeoPoint;
 
@@ -248,6 +249,7 @@ public class Executor {
 				//FIXME
 				//This assumes that the checkin is going to be successful, it doesn't look like there
 				//is currently any code to verify that the checkin was successful
+				LocationDetectionStateMachine.checkinCheckoutCOMPLETE();
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		}).start();

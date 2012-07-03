@@ -117,9 +117,12 @@ public class LocationDetectionStateMachine {
 				else if (messageType.equalsIgnoreCase("wifiScanListenerDidReceiveScan")) {
 					wifiScanListenerDidReceiveScanCallback();
 				}
+				else if (messageType.equalsIgnoreCase("checkinCheckoutCOMPLETE")) {
+					checkinCheckoutCallback();
+				}
 				else
 				{
-					Log.d(TAG, "TaskHandler message is unhandled!!!");
+					Log.d(TAG, "Location TaskHandler message is unhandled!!!");
 				}
 				
 				
@@ -169,19 +172,11 @@ public class LocationDetectionStateMachine {
 	//or external classes and methods.  None should end in STATE()
 	
 	private static void startPassiveListenersINIT() {
-		//DEBUG
-		//Listening to only wifi to start
 		startPassiveLocationListener();
-		//startWifiStateListener();
+		startWifiStateListener();
 	}
 	
 	private static void commandGPSINIT() {
-		//FIXME
-		//This needs to get fed in here
-		//triggeringVenuesCACHE
-		//FIXME
-		//This belongs in a helper function
-		
 		startActiveLocationListener();
 	}
 	
@@ -203,6 +198,7 @@ public class LocationDetectionStateMachine {
 					
 					CacheMgrService.checkOutTrigger();
 					//userState.onCheckOut();
+					LocationDetectionStateMachine.checkinCheckoutCOMPLETE();
 				}
 			}).start();
 
@@ -218,6 +214,8 @@ public class LocationDetectionStateMachine {
 			
 			//currVenueCACHE
 		}
+		
+		
 		
 		
 	}
@@ -407,6 +405,20 @@ public class LocationDetectionStateMachine {
 				passiveListeningSTATE();
 			}
 		}
+	}
+	
+	public static void checkinCheckoutCOMPLETE() {
+		Log.d(TAG,"checkinCheckoutCOMPLETE");
+		Message message = new Message();
+		Bundle bundle = new Bundle();
+		bundle.putCharSequence("type", "checkinCheckoutCOMPLETE");
+		message.setData(bundle);
+		
+		locationThreadTaskHandler.sendMessage(message);
+		
+	}
+	private static void checkinCheckoutCallback() {
+		passiveListeningSTATE();
 	}
 	
 	
