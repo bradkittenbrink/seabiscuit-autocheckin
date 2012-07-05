@@ -129,8 +129,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		
 		setContentView(R.layout.tab_activity_map);
 		
-		startService(new Intent(this, CacheMgrService.class));
-		startService(new Intent(this, LocationDetectionService.class));
+		// start services
+		AppCAP.mainActivityDidStart(this);
+		
 
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
@@ -671,11 +672,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		    if (Constants.debugLog)
 				Log.d("Coffee","User exit detected.");
 	        
-	        UAirship.land(); 
-	        CacheMgrService.stopPeriodicTimer();
-	        //ProximityManager.onStop(this);
-	        stopService(new Intent(this,CacheMgrService.class));
-	        stopService(new Intent(this,LocationDetectionService.class));
+	        AppCAP.applicationWillExit(this);
 	        
 	    }
 	    return super.onKeyDown(keyCode, event);

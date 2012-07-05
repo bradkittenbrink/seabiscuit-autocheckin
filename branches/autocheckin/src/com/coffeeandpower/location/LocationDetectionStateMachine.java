@@ -47,10 +47,10 @@ public class LocationDetectionStateMachine {
 	private static VenueSmart currVenueCACHE;
 	
 	private static boolean stateMachineActive = false;
-	private static boolean passiveLocationReceiverActive = false;
-	private static boolean activeLocationListenerActive = false;
-	private static boolean wifiStateBroadcastReceiverActive = false;
-	private static boolean wifiScanBroadcastReceiverActive = false;
+	//private static boolean passiveLocationReceiverActive = false;
+	//private static boolean activeLocationListenerActive = false;
+	//private static boolean wifiStateBroadcastReceiverActive = false;
+	//private static boolean wifiScanBroadcastReceiverActive = false;
 	
 	private static LocationDetectionService myService;
 	
@@ -77,10 +77,10 @@ public class LocationDetectionStateMachine {
 		});
 		
 		stateMachineActive = false;
-		passiveLocationReceiverActive = false;
-		activeLocationListenerActive = false;
-		wifiStateBroadcastReceiverActive = false;
-		wifiScanBroadcastReceiverActive = false;
+		//passiveLocationReceiverActive = false;
+		//activeLocationListenerActive = false;
+		//wifiStateBroadcastReceiverActive = false;
+		//wifiScanBroadcastReceiverActive = false;
 		
 		
 		mainThreadTaskHandler = mainThreadHandler;
@@ -257,6 +257,8 @@ public class LocationDetectionStateMachine {
 	public static void stop() {
 		
 		Log.d(TAG,"Stopping...");
+		
+		/*
 		if (stateMachineActive) {
 			stateMachineActive = false;
 			
@@ -266,10 +268,12 @@ public class LocationDetectionStateMachine {
         		message.setData(bundle);
         		
         		locationThreadTaskHandler.sendMessage(message);
-		}
+		}*/
+		stopCallback();
 	}
 	private static void stopCallback() {
 		
+		Log.d(TAG,"Stop callback...");
 		stopPassiveListeners();
 		stopActiveLocationListener();
 		stopWifiScanListener();
@@ -459,7 +463,7 @@ public class LocationDetectionStateMachine {
 	
 	private static void startPassiveLocationListener() {
 		
-		if (!passiveLocationReceiverActive) {
+		//if (!passiveLocationReceiverActive) {
         		// Create pending intent for passive location listener
         		Intent receiverIntent = new Intent(myContext,PassiveLocationUpdateReceiver.class);
         		pendingPassiveReceiverIntent = PendingIntent.getBroadcast(myContext,
@@ -474,17 +478,17 @@ public class LocationDetectionStateMachine {
         				pendingPassiveReceiverIntent);
         				
         		
-        		passiveLocationReceiverActive = true;
-		}
-		else 
-			Log.d(TAG,"Warning: Tried to start passive location listener when it was already active.");
+        		//passiveLocationReceiverActive = true;
+		//}
+		//else 
+			//Log.d(TAG,"Warning: Tried to start passive location listener when it was already active.");
 	}
 	private static void startActiveLocationListener() {
 		//Skip this state for now
 		
-		if (!activeLocationListenerActive) {
+		//if (!activeLocationListenerActive) {
 			
-        		activeLocationListenerActive = true;
+        		//activeLocationListenerActive = true;
         		Log.d(TAG,"Active Location Listener requeset...");
         		//Looper.prepare();
         		
@@ -497,54 +501,75 @@ public class LocationDetectionStateMachine {
         		mainThreadTaskHandler.sendMessage(message);
         		
         		
-		}
-		else 
-			Log.d(TAG,"Warning: Tried to start active location listener when it was already active.");
+		//}
+		//else 
+			//Log.d(TAG,"Warning: Tried to start active location listener when it was already active.");
 			
 	}
 	
 	private static void startWifiStateListener() {
 		
-		if (!wifiStateBroadcastReceiverActive) {
+		//if (!wifiStateBroadcastReceiverActive) {
+		try {
         		wifiStateBroadcastReceiver.registerForConnectionState(myContext);
-        		wifiStateBroadcastReceiverActive = true;
 		}
-		else 
-			Log.d(TAG,"Warning: Tried to start wifi state listener when it was already active.");
+		catch(Exception e){
+			Log.d(TAG,"Warning: Tried to register wifiStateBroadcastReceiver and failed:");
+			Log.d(TAG,"Error:" + e.getMessage());
+		}
+        		//wifiStateBroadcastReceiverActive = true;
+		//}
+		//else 
+		//	Log.d(TAG,"Warning: Tried to start wifi state listener when it was already active.");
 		
 	}
 	
 	private static void startWifiScanListener() {
 		
-		if (!wifiScanBroadcastReceiverActive) {
+		//if (!wifiScanBroadcastReceiverActive) {
+		try {
         		myContext.registerReceiver(wifiScanBroadcastReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        		wifiScanBroadcastReceiverActive = true;
 		}
-		else 
-			Log.d(TAG,"Warning: Tried to start wifi scan listener when it was already active.");
+		catch(Exception e){
+			Log.d(TAG,"Warning: Tried to register wifiScanBroadcastReceiver and failed:");
+			Log.d(TAG,"Error:" + e.getMessage());
+		}	
+        		//wifiScanBroadcastReceiverActive = true;
+		//}
+		//else 
+			//Log.d(TAG,"Warning: Tried to start wifi scan listener when it was already active.");
 		
 	}
 	
 	
 	private static void stopPassiveListeners() {
+		Log.d(TAG,"Calling Stop Passive State Listener...");
 		stopPassiveLocationListener();
+		
+		Log.d(TAG,"Calling Stop Wifi State Listener...");
 		stopWifiStateListener();
 	}
 	
 	private static void stopPassiveLocationListener() {
 		
-		if (passiveLocationReceiverActive) {
+		//if (passiveLocationReceiverActive) {
+		try {
 			locationManager.removeUpdates(pendingPassiveReceiverIntent);
-			passiveLocationReceiverActive = false;
+			//passiveLocationReceiverActive = false;
 		}
-		else 
-			Log.d(TAG,"Warning: Tried to stop passive location listener when it wasn't active.");
+		catch(Exception e){
+			Log.d(TAG,"Warning: Tried to unregister pendingPassiveReceiverIntent that wasn't registered:");
+			Log.d(TAG,"Error:" + e.getMessage());
+		}
+		//}
+		//else 
+		//	Log.d(TAG,"Warning: Tried to stop passive location listener when it wasn't active.");
 		
 	}
 	
 	private static void stopActiveLocationListener() {
 		
-		if (activeLocationListenerActive) {
+		//if (activeLocationListenerActive) {
 			
 			// create message to send to main thread handler
         		Message message = new Message();
@@ -555,38 +580,46 @@ public class LocationDetectionStateMachine {
         		mainThreadTaskHandler.sendMessage(message);
         		
 			
-			activeLocationListenerActive = false;
-		}
-		else 
-			Log.d(TAG,"Warning: Tried to stop active location listener when it wasn't active.");
+			//activeLocationListenerActive = false;
+		////}
+		//else 
+		//	Log.d(TAG,"Warning: Tried to stop active location listener when it wasn't active.");
 		
 	}
 	
 	private static void stopWifiStateListener() {
 		
-		if (wifiStateBroadcastReceiverActive) {
+		Log.d(TAG,"Stopping Wifi State Listener...");
+		
+		//if (wifiStateBroadcastReceiverActive) {
 			try{
         		wifiStateBroadcastReceiver.unregisterForConnectionState(myContext);
 			}
 			catch(Exception e){
-				Log.d(TAG,"Error: Tried to stop wifiStateBroadcastReceiver when it wasn't active.  Boolean protection failed!");
+				Log.d(TAG,"Warning: Tried to unregister wifiStateBroadcastReceiver that wasn't registered:");
 				Log.d(TAG,"Error:" + e.getMessage());
 			}
-			wifiStateBroadcastReceiverActive = false;
-		}
-		else 
-			Log.d(TAG,"Warning: Tried to stop wifiStateBroadcastReceiver when it wasn't active.");
+			//wifiStateBroadcastReceiverActive = false;
+		//}
+		//else 
+		//	Log.d(TAG,"Warning: Tried to stop wifiStateBroadcastReceiver when it wasn't active.");
 		
 	}
 	
 	private static void stopWifiScanListener() {
 		
-		if (wifiScanBroadcastReceiverActive) {
+		//if (wifiScanBroadcastReceiverActive) {
+		try {
         		wifiScanBroadcastReceiver.unregisterForWifiScans(myContext);
-        		wifiScanBroadcastReceiverActive = false;
+        		//wifiScanBroadcastReceiverActive = false;
 		}
-		else 
-			Log.d(TAG,"Warning: Tried to stop wifiScanBroadcastReceiver when it wasn't active.");
+		catch(Exception e){
+			Log.d(TAG,"Warning: Tried to unregister wifiScanBroadcastReceiver that wasn't registered:");
+			Log.d(TAG,"Error:" + e.getMessage());
+		}
+		//}
+		//else 
+		//	Log.d(TAG,"Warning: Tried to stop wifiScanBroadcastReceiver when it wasn't active.");
 		
 	}
 	

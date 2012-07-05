@@ -2550,7 +2550,7 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_getNearestVenuesWithCheckinsToCoordinate: " + responseString);
+			//RootActivity.log("HttpUtil_getNearestVenuesWithCheckinsToCoordinate: " + responseString);
 			//Check to see if we got a response from the network
 			if (responseString != null) {
 

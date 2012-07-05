@@ -12,11 +12,14 @@ import java.util.List;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
 
+import com.coffeeandpower.cache.CacheMgrService;
+import com.coffeeandpower.location.LocationDetectionService;
 import com.coffeeandpower.location.MyScanResult;
 import com.coffeeandpower.location.venueWifiSignature;
 import com.coffeeandpower.urbanairship.IntentReceiver;
@@ -108,6 +111,11 @@ public class AppCAP extends Application {
 
 	private HttpUtil http;
 	
+	
+	// Service management
+	private static boolean locationDetectionServiceRunning = false;
+	
+	
 	//private Counter timingCounter;
 
 	public AppCAP() {
@@ -163,7 +171,51 @@ public class AppCAP extends Application {
 		
 		
 	}
+	
+	
+	// called from onCreate of main activity (ActivityMap)
+	public static void mainActivityDidStart(Context context) {
+		
+		context.startService(new Intent(context, CacheMgrService.class));
+		
+		enableAutoCheckin(context);
+				
+	}
 
+	// called from main activity on app exit
+	public static void applicationWillExit(Context context) {
+		
+		UAirship.land(); 
+	        CacheMgrService.stopPeriodicTimer();
+	        //ProximityManager.onStop(this);
+	        context.stopService(new Intent(context,CacheMgrService.class));
+	        
+	        disableAutoCheckin(context);
+	        
+	}
+	
+	public static boolean autoCheckinEnabled() {
+		return locationDetectionServiceRunning;
+	}
+	
+	public static void enableAutoCheckin(Context context) {
+		if (!locationDetectionServiceRunning) {
+			
+			context.startService(new Intent(context, LocationDetectionService.class));
+			locationDetectionServiceRunning = true;
+		}
+	}
+	
+	
+	public static void disableAutoCheckin(Context context) {
+		if (locationDetectionServiceRunning) {
+			
+			context.stopService(new Intent(context,LocationDetectionService.class));
+			locationDetectionServiceRunning = false;
+		}
+	}
+	
+	
 	
 	
 	/**

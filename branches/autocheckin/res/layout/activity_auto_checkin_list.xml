@@ -1,46 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+<LinearLayout android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#333333" >
+    android:background="#333333" 
+	android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <!-- Horizontal Pager View -->
-
-    <com.coffeeandpower.views.HorizontalPagerModified
-        android:id="@+id/pager"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
 
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:background="#333333" >
+            <com.coffeeandpower.views.CustomFontView
+                android:id="@+id/textview_autocheckinlist_name"
+                android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:paddingTop="5dp"
+		        android:paddingLeft="5dp"
+		        android:text=""
+		        android:textColor="#ffffff"
+		        android:textSize="25dip" />
 
-            <RelativeLayout
-                android:id="@+id/dummy_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="45dip"
-                android:background="@drawable/header" >
-
-
-                <com.coffeeandpower.views.CustomFontView
-                    android:id="@+id/textview_location_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:paddingLeft="5dp"
-                    android:text=""
-                    android:textColor="#ffffff"
-                    android:textSize="25dip" />
-            </RelativeLayout>
-
+            <LinearLayout
+                android:id="@+id/master_auto_checkin_toggle_layout"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal"
+		        android:background="#333333" >
+	        
+		        <TextView
+		            android:text=" Auto Check In To Venues"
+		            android:layout_width="0dip"
+			        android:layout_height="wrap_content"
+		            android:textColor="#ffffff"
+		            android:textSize="15dip"
+		            android:layout_weight="1"
+		            android:layout_gravity="center"
+		            android:gravity="left"    />
+	
+		        <ToggleButton
+		            android:id="@+id/toggleButtonMasterAutoCheckinToggle"
+		            android:layout_width="80dp"
+		            android:layout_height="wrap_content"/>
+        
+    		</LinearLayout>
+    		
+            <!-- 
 
             <ListView
-				android:id="@+id/venue_auto_checkin_list"
+				android:id="@+id/master_auto_checkin_toggle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
                 android:layout_below="@+id/dummy_layout"
@@ -48,7 +53,16 @@
 				android:dividerHeight="1dip"
                 android:divider="#4a4a4a" >
 		</ListView>
-        </RelativeLayout>
-    </com.coffeeandpower.views.HorizontalPagerModified>
+		-->
+            <ListView
+				android:id="@+id/venue_auto_checkin_list"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+                android:layout_below="@+id/master_auto_checkin_toggle_layout"
+                android:cacheColorHint="#00000000"
+				android:dividerHeight="1dip"
+                android:divider="#4a4a4a" >
+		</ListView>
+        
 
-</RelativeLayout>
+</LinearLayout>

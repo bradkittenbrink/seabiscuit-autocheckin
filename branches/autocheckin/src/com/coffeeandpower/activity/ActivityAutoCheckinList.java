@@ -1,6 +1,7 @@
 package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -8,6 +9,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.adapters.MyNotificationsListAdapter;
 import com.coffeeandpower.adapters.MyVenueNotificationAdapter;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cache.CachedDataContainer;
@@ -19,6 +21,7 @@ import com.urbanairship.UAirship;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,19 +31,27 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ToggleButton;
 
 public class ActivityAutoCheckinList extends RootActivity implements Observer {
 	
 	private String AUTOCHECKIN_SCREEN_TITLE = "Auto Checkin";
 	
-	private ListView autoCheckinList = null;
-	private MyVenueNotificationAdapter myVenueNotificationAdapter = null;
+	private ListView autoCheckinList = null;		// List with one row for each venue user has checked into before
+	//private ListView masterAutoCheckinToggleList = null;    // List with only one row for master toggle switch
 	
-	private ArrayList<VenueSmart> arrayVenues;
+	private ToggleButton masterToggleSwitch = null;
+	
+	private MyVenueNotificationAdapter myVenueNotificationAdapter = null;   // adapter for venue list
+	//private MyNotificationsListAdapter myNotificationsListAdapter = null;   // adapter for master toggle switch list
+	
+	//private ArrayList<VenueSmart> arrayVenues;
 	
 	private ProgressDialog progress;
 	
 	private boolean initialLoad = true;
+	
+	private Context contextForServiceManagement;
 	
 	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
 	protected Handler taskHandler = new Handler() {
@@ -49,11 +60,11 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 		@Override
 		public void handleMessage(Message msg) {
 
-			arrayVenues = msg.getData().getParcelableArrayList("venues");
+			ArrayList<VenueSmart> arrayVenues = msg.getData().getParcelableArrayList("venues");
 			
 			Log.d("Notifications","arrayVenues: " + arrayVenues);
 
-			setListData();
+			setListData(arrayVenues);
 			
 			progress.dismiss();
 			
@@ -67,7 +78,56 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_auto_checkin_list);
 		
+		this.masterToggleSwitch = (ToggleButton) findViewById(R.id.toggleButtonMasterAutoCheckinToggle);
+		
 		this.autoCheckinList = (ListView) findViewById(R.id.venue_auto_checkin_list);
+		
+		//this.masterAutoCheckinToggleList = (ListView) findViewById(R.id.master_auto_checkin_toggle);
+		/*
+		this.masterToggleSwitch.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+			}
+		});
+		*/
+		
+		this.masterToggleSwitch.setChecked(AppCAP.autoCheckinEnabled());
+		
+		contextForServiceManagement = this;
+		
+		this.masterToggleSwitch.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+				//Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
+				//intent.putExtra("venueSmart", (VenueSmart) adapterPlaces.getItem(position));
+				//We are sending the whole place object so we won't need the 4sqId separately
+				//intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
+				//I don't know what data is, but I don't think we will need
+				//intent.putExtra("coords", data);
+				//startActivity(intent);
+				
+				
+				
+				Log.d("AutoCheckin","User clicked toggle button.");
+				
+				
+				if (!masterToggleSwitch.isChecked()) {
+					Log.d("AutoCheckin","Disabling auto-checkin...");
+					AppCAP.disableAutoCheckin(contextForServiceManagement);
+				}
+				else {
+					Log.d("AutoCheckin","Enabling auto-checkin...");
+					AppCAP.enableAutoCheckin(contextForServiceManagement);
+				}
+				
+				
+				
+
+			}
+		});
+		
 		this.autoCheckinList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
@@ -86,7 +146,36 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 
 			}
 		});
+		
+		/*
+		this.masterAutoCheckinToggleList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+				
+				//Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
+				//intent.putExtra("venueSmart", (VenueSmart) adapterPlaces.getItem(position));
+				//We are sending the whole place object so we won't need the 4sqId separately
+				//intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
+				//I don't know what data is, but I don't think we will need
+				//intent.putExtra("coords", data);
+				//startActivity(intent);
+				Log.d("Notifications","User clicked on master toggle row.");
+				
+				
+				
 
+			}
+		});
+		*/
+		
+		
+		// Create adapter and single row for master toggle switch
+		/*
+		ArrayList<String> toggleStringArray = new ArrayList<String>();
+		toggleStringArray.add("Auto Check In At Venues");
+		myNotificationsListAdapter = new MyNotificationsListAdapter(ActivityAutoCheckinList.this, toggleStringArray);
+		this.autoCheckinList.setAdapter(myVenueNotificationAdapter);
+		*/
 		
 		// prevent keyboard popup
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); 
@@ -97,7 +186,7 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 		
 		// Views
 		
-		((CustomFontView) findViewById(R.id.textview_location_name)).setText(AUTOCHECKIN_SCREEN_TITLE);
+		((CustomFontView) findViewById(R.id.textview_autocheckinlist_name)).setText(AUTOCHECKIN_SCREEN_TITLE);
 	}
 	
 	@Override
@@ -126,7 +215,7 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 	}
 	
 	
-	private void setListData() {
+	private void setListData(ArrayList<VenueSmart> arrayVenues) {
 		if(initialLoad)
 		{
 			if (Constants.debugLog)
@@ -159,7 +248,8 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 					
 		Object[] obj = (Object[]) venuesWithCheckins.getObject();
 		@SuppressWarnings("unchecked")
-		ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+		List<VenueSmart> listVenues = (List<VenueSmart>) obj[0];
+		ArrayList<VenueSmart> arrayVenues = new ArrayList<VenueSmart>(listVenues);
         	
 		//List of Venues we are going to send to list adapter
 		ArrayList<VenueSmart> deliveredVenues = new ArrayList<VenueSmart>();
