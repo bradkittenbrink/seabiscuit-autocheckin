@@ -8,12 +8,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
@@ -25,6 +29,7 @@ import com.coffeeandpower.location.venueWifiSignature;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
 import com.urbanairship.UAirship;
+import com.urbanairship.iap.IAPManager;
 import com.urbanairship.push.PushManager;
 import com.urbanairship.push.PushPreferences;
 
@@ -103,6 +108,8 @@ public class AppCAP extends Application {
 	public static final int HTTP_REQUEST_SUCCEEDED = 1404;
 	public static final int ERROR_SUCCEEDED_SHOW_MESS = 1407;
 	
+	private static Application myApplicationReferenceForUAirship;
+	
 	// App wide observables
 	
 
@@ -128,45 +135,41 @@ public class AppCAP extends Application {
 	@Override
 	public void onCreate() {
 		
-		// You should not actually see any of the Log.d messages in onCreate() - don't know why
-		if (Constants.debugLog)
-			Log.d("Coffee","AppCAP.onCreate(): ");
-		
-		
+		// You may or may not see the onCreate messages in LogCat...
 		super.onCreate();
-
-		this.http = new HttpUtil();
 		
-		// Set up Urban Airship and push preferences
+		// Start Urban Airship
 		UAirship.takeOff(this);
-		PushPreferences prefs = PushManager.shared().getPreferences();
-		prefs.setSoundEnabled(true);
-		prefs.setVibrateEnabled(true);
 		
+		// Detect whether we are on the main thread.  If so, do app init stuff
+		// onCreate will get triggered multiple times due to the UA process getting started
+		// so we only want to call the app init stuff on the main thread/process		
 		
-		
-		// Create app timing Counter
-		//if (Constants.debugLog)
-		//	Log.d("Coffee","Creating counter...");
-		//instance.timingCounter = new Counter(10, 1);
-		
-		
-		
-		
-
-		// Get country code for metrics/imperial units
-		TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-		if (Constants.debugLog)
-			Log.d("LOG", "Locale: " + tm.getSimCountryIso());
-		if (tm.getSimCountryIso() != null && !tm.getSimCountryIso().equals("")) {
-			if (tm.getSimCountryIso().contains("US") || tm.getSimCountryIso().contains("us") || tm.getSimCountryIso().contains("usa")
-					|| tm.getSimCountryIso().contains("um")) {
-				setMetricsSys(false);
+		if (getAppName().equalsIgnoreCase("com.coffeeandpower")) {
+			
+			Log.d("Coffee","Main process loading (onCreate)...");
+			
+			this.http = new HttpUtil();
+			
+			PushPreferences prefs = PushManager.shared().getPreferences();
+			prefs.setSoundEnabled(true);
+			prefs.setVibrateEnabled(true);
+			
+			// Get country code for metrics/imperial units
+			TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+			if (Constants.debugLog)
+				Log.d("LOG", "Locale: " + tm.getSimCountryIso());
+			if (tm.getSimCountryIso() != null && !tm.getSimCountryIso().equals("")) {
+				if (tm.getSimCountryIso().contains("US") || tm.getSimCountryIso().contains("us") || tm.getSimCountryIso().contains("usa")
+						|| tm.getSimCountryIso().contains("um")) {
+					setMetricsSys(false);
+				} else {
+					setMetricsSys(true);
+				}
 			} else {
-				setMetricsSys(true);
+				setMetricsSys(false);
 			}
-		} else {
-			setMetricsSys(false);
+			
 		}
 		
 		
@@ -176,6 +179,8 @@ public class AppCAP extends Application {
 	// called from onCreate of main activity (ActivityMap)
 	public static void mainActivityDidStart(Context context) {
 		
+		
+				
 		context.startService(new Intent(context, CacheMgrService.class));
 		
 		enableAutoCheckin(context);
@@ -185,12 +190,21 @@ public class AppCAP extends Application {
 	// called from main activity on app exit
 	public static void applicationWillExit(Context context) {
 		
-		UAirship.land(); 
+		Log.d("AppCAP","Running app cleanup...");
+		
+		
 	        CacheMgrService.stopPeriodicTimer();
 	        //ProximityManager.onStop(this);
 	        context.stopService(new Intent(context,CacheMgrService.class));
 	        
 	        disableAutoCheckin(context);
+	        
+	        try {
+	        	UAirship.land();
+	        }
+	        catch (Exception e) {
+	        	Log.d("AppCAP","ERROR: UAirship crash landed: " + e + ", " + e.getStackTrace());
+	        }
 	        
 	}
 	
@@ -782,5 +796,40 @@ public class AppCAP extends Application {
 			arrayOfVenuesSigs.add(andrewTestSignature);
 			return arrayOfVenuesSigs;
 	    }
+	    
+	    
+	    
+	    
+
+	    private String getAppName()
+	    {
+		int pID = android.os.Process.myPid();
+	        String processName = "";
+	        ActivityManager am = (ActivityManager)this.getSystemService(ACTIVITY_SERVICE);
+	        List<RunningAppProcessInfo> l = am.getRunningAppProcesses();
+	        Iterator<RunningAppProcessInfo> i = l.iterator();
+	        PackageManager pm = this.getPackageManager();
+	        while(i.hasNext()) 
+	        {
+	              ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo)(i.next());
+	              try 
+	              { 
+	                  if(info.pid == pID)
+	                  {
+	                      //CharSequence c = pm.getApplicationLabel(pm.getApplicationInfo(info.processName, PackageManager.GET_META_DATA));
+	                      //Log.d("Process", "Id: "+ info.pid +" ProcessName: "+ info.processName +"  Label: "+c.toString());
+	                      //processName = c.toString();
+	                      processName = info.processName;
+	                  }
+	              }
+	              catch(Exception e) 
+	              {
+	                    //Log.d("Process", "Error>> :"+ e.toString());
+	              }
+	       }
+	        return processName;
+	    }
+
+
 
 }
