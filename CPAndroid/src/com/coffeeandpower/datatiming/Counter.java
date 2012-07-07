@@ -110,7 +110,7 @@ public class Counter {
                 Log.d("Counter",
                         "Enabling contactsList API for " + context.toString());
             contactsListCache.activate();
-            nearbyVenuesCache.addObserver(context);
+            contactsListCache.addObserver(context);
         }
 
         // The user is moving around the activities lets keep the data fresh
@@ -313,8 +313,8 @@ public class Counter {
                                     Log.d("Counter",
                                             "Refreshing nearbyVenuesCache...");
                                 final GeoPoint gp = new GeoPoint(
-                                        (int) (latForAPI * 1E6),
-                                        (int) (lonForAPI * 1E6));
+                                        (int) (AppCAP.getUserLatLon()[0] * 1E6),
+                                        (int) (AppCAP.getUserLatLon()[1] * 1E6));
                                 nearbyVenuesCache.setNewData(AppCAP
                                         .getConnection()
                                         .getVenuesCloseToLocation(gp, 20));

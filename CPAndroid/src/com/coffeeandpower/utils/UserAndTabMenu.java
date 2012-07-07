@@ -201,9 +201,8 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
             double userLng = data[5];
 
             if (userLat != 0 && userLng != 0) {
+                AppCAP.getCounter().refreshAllData();
                 Intent intent = new Intent(context, ActivityCheckInList.class);
-                intent.putExtra("lat", (int) (userLat * 1E6));
-                intent.putExtra("lng", (int) (userLng * 1E6));
                 context.startActivity(intent);
             }
         }
