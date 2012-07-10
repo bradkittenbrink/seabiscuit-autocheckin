@@ -142,29 +142,33 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 		return matchingVenue;
 	}
 	    
-    private venueWifiSignature checkForMatch(List<ScanResult> visibleWifiNetworks, ArrayList<venueWifiSignature> venuesBeingVerified) {
+	private venueWifiSignature checkForMatch(List<ScanResult> visibleWifiNetworks, ArrayList<venueWifiSignature> venuesBeingVerified) {
 	    //This is the match threshold, once hit we know we have a match
-    for(venueWifiSignature currVenueSig : venuesBeingVerified)
-    {
-    	int matches = 0;
-        for(ScanResult currNet:visibleWifiNetworks)
-        {
-        	for(MyScanResult currVenueNet:currVenueSig.wifiSignature)
-        	{
-        		String testArg1 = currNet.BSSID;
-        		String TestArg2 = currVenueNet.BSSID;
-        		//The below was returning false positives, why is not clear
-        		//if(currNet.BSSID.equalsIgnoreCase(currVenueNet.BSSID));
-        		if(testArg1.equalsIgnoreCase(TestArg2))
-        		{
-        			matches++;
-        			if(matches>=posMatchThreshold)
-        				return currVenueSig;
-        		}
-        	}
-        	//Log.d("WifiBroadcast","SSID: " + currNet.SSID + " BSSID: " + currNet.BSSID);
-                }
-	    }
-	    return null;
-    }
+            for(venueWifiSignature currVenueSig : venuesBeingVerified)
+            {
+            	int matches = 0;
+                for(ScanResult currNet:visibleWifiNetworks)
+                {
+                	String testArg1 = currNet.BSSID;
+                	
+                	for(MyScanResult currVenueNet:currVenueSig.wifiSignature)
+                	{
+                		
+                		String testArg2 = currVenueNet.BSSID;
+                		//The below was returning false positives, why is not clear
+                		//if(currNet.BSSID.equalsIgnoreCase(currVenueNet.BSSID));
+                		
+                		if(testArg1.equalsIgnoreCase(testArg2))
+                		{
+                			matches++;
+                			if(matches>=posMatchThreshold)
+                				return currVenueSig;
+                			break;
+                		}
+                	}
+                	//Log.d("WifiBroadcast","SSID: " + currNet.SSID + " BSSID: " + currNet.BSSID);
+                        }
+	    	}
+	    	return null;
+    	}
 }

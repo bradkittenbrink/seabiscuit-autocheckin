@@ -125,8 +125,8 @@ public class CacheMgrService extends Service {
 		numberOfCalls = 0;
 		//Restart the timer
 		allowCachedDataThisRun = true;
-		if (Constants.debugLog)
-			Log.d(TAG,"getCachedDataForAPICall is calling stop/start");
+		//if (Constants.debugLog)
+		//	Log.d(TAG,"getCachedDataForAPICall is calling stop/start");
 		stopPeriodicTimer();
 		startPeriodicTimer();
 		
@@ -160,8 +160,8 @@ public class CacheMgrService extends Service {
 		numberOfCalls = 0;
 		//Restart the timer
 		allowCachedDataThisRun = true;
-		if (Constants.debugLog)
-			Log.d(TAG,"getCachedDataForAPICall is calling stop/start");
+		//if (Constants.debugLog)
+			//Log.d(TAG,"getCachedDataForAPICall is calling stop/start");
 		stopPeriodicTimer();
 		startPeriodicTimer();
 		
@@ -213,8 +213,8 @@ public class CacheMgrService extends Service {
 	public static void stopPeriodicTimer() {
 		
 		if (isRunning == true) {
-			if (Constants.debugLog)
-				Log.d(TAG,"CacheMgrService.stop()");
+			//if (Constants.debugLog)
+			//	Log.d(TAG,"CacheMgrService.stop()");
 			isRunning = false;
 			taskHandler.removeCallbacks(runTimer);
 		}
@@ -228,8 +228,8 @@ public class CacheMgrService extends Service {
 	public static void startPeriodicTimer() {
 		
 		if (isRunning == false) {
-			if (Constants.debugLog)
-				Log.d(TAG,"CacheMgrService.start()");
+			//if (Constants.debugLog)
+			//	Log.d(TAG,"CacheMgrService.start()");
 			isRunning = true;
 			taskHandler.removeCallbacks(runTimer);
 			taskHandler.post(runTimer);
@@ -287,12 +287,12 @@ public class CacheMgrService extends Service {
 				    llArray[1] = lonForAPI;
                                 	   
 				    // Debug instrumentation
-				    if (Constants.debugLog)
-						Log.d(TAG,"API calls: Using coordinates: " + latForAPI + ", " + lonForAPI);
-				    if (Constants.debugLog)
-						Log.d(TAG,"Cache Status: venuesWithCheckins: " + venuesWithCheckinsCache.hasData() +
-                				    " nearbyVenues: " + nearbyVenuesCache.hasData() + 
-                				    " contactsList: " + contactsListCache.hasData());
+				    //if (Constants.debugLog)
+					//	Log.d(TAG,"API calls: Using coordinates: " + latForAPI + ", " + lonForAPI);
+				    //if (Constants.debugLog)
+					//	Log.d(TAG,"Cache Status: venuesWithCheckins: " + venuesWithCheckinsCache.hasData() +
+                			//	    " nearbyVenues: " + nearbyVenuesCache.hasData() + 
+                			//	    " contactsList: " + contactsListCache.hasData());
 				    if (Constants.debugLog)
 						Log.d(TAG," APIs Active: venuesWithCheckins: " + venuesWithCheckinsCache.isActive() +
                 				    " nearbyVenues: " + nearbyVenuesCache.isActive() + 

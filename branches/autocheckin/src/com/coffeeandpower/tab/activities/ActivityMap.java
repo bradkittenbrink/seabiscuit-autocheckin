@@ -40,6 +40,7 @@ import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.location.LocationDetectionService;
+import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.maps.BalloonItemizedOverlay;
 import com.coffeeandpower.maps.MyItemizedOverlay;
 import com.coffeeandpower.maps.MyOverlayItem;
@@ -60,7 +61,7 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.urbanairship.UAirship;
 
-public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Observer {
+public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_MAP = 1;
 
@@ -89,18 +90,29 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 
 	private Executor exe;
 	
+	private MyCachedDataObserver myCachedDataObserver = new MyCachedDataObserver();
+	private MyAutoCheckinTriggerObserver myAutoCheckinObserver = new MyAutoCheckinTriggerObserver();
+	
 	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
-	protected Handler taskHandler = new Handler() {
+	private Handler mainThreadTaskHandler = new Handler() {
 		
 		@Override
 		public void handleMessage(Message msg) {
 			
-			// pass message data along to venue update method
-			ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
-			ArrayList<UserSmart> userArray = msg.getData().getParcelableArrayList("users");
-			updateVenuesAndCheckinsFromApiResult(venueArray, userArray);
-
-			progress.dismiss();
+			// Determine which message type is being sent
+			String type = msg.getData().getString("type");
+			
+			if (type.equalsIgnoreCase("AutoCheckinTrigger")) {
+				checkUserState();
+			}
+			else { // if the message isn't an autocheckin trigger, assume its a cached data update
+        			// pass message data along to venue update method
+        			ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
+        			ArrayList<UserSmart> userArray = msg.getData().getParcelableArrayList("users");
+        			updateVenuesAndCheckinsFromApiResult(venueArray, userArray);
+        
+        			progress.dismiss();
+			}
 			super.handleMessage(msg);
 		}
 	};
@@ -479,7 +491,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	protected void onDestroy() {
 		myLocationOverlay.disableMyLocation();
 
-		CacheMgrService.stopPeriodicTimer();
+		//CacheMgrService.stopPeriodicTimer();
 		
 		if (AppCAP.shouldFinishActivities() && AppCAP.shouldStartLogIn()) {
 			startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
@@ -554,7 +566,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		super.onStart();
 		checkUserState();
 		UAirship.shared().getAnalytics().activityStarted(this);
-		CacheMgrService.startObservingAPICall("venuesWithCheckins",this);
+		CacheMgrService.startObservingAPICall("venuesWithCheckins",myCachedDataObserver);
+		LocationDetectionStateMachine.startObservingAutoCheckinTrigger(myAutoCheckinObserver);
 	}
 
 	@Override
@@ -565,7 +578,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 		UAirship.shared().getAnalytics().activityStopped(this);
 		
 		
-		CacheMgrService.stopObservingAPICall("venuesWithCheckins",this);
+		CacheMgrService.stopObservingAPICall("venuesWithCheckins",myCachedDataObserver);
+		LocationDetectionStateMachine.stopObservingAutoCheckinTrigger(myAutoCheckinObserver);
+		
 		//Lets turn off the GPS when we exit the map screen
 		if (Constants.debugLog)
 			Log.d("ActivityMap","Disabling location updates");
@@ -592,39 +607,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 			}
 		}
 
-	}
-	@Override
-	public void update(Observable observable, Object data) {
-		/*
-		 * verify that the data is really of type CounterData, and log the
-		 * details
-		 */
-		if (Constants.debugLog)
-			Log.d("ActivityMap","update()");
-		
-		if (data instanceof CachedDataContainer) {
-			CachedDataContainer counterdata = (CachedDataContainer) data;
-			DataHolder venuesWithCheckins = counterdata.getData();
-						
-			Object[] obj = (Object[]) venuesWithCheckins.getObject();
-			@SuppressWarnings("unchecked")
-			List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
-			@SuppressWarnings("unchecked")
-			List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
-			
-			Message message = new Message();
-			Bundle bundle = new Bundle();
-			bundle.putCharSequence("type", counterdata.type);
-			bundle.putParcelableArrayList("venues", new ArrayList<VenueSmart>(arrayVenues));
-			bundle.putParcelableArrayList("users", new ArrayList<UserSmart>(arrayUsers));
-			message.setData(bundle);
-			
-			if (Constants.debugLog)
-				Log.d("Map","ActivityMap.update: Sending handler message...");
-			taskHandler.sendMessage(message);
-			
-			
-		}
 	}
 	
 	
@@ -677,10 +659,71 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu, Obse
 	    }
 	    return super.onKeyDown(keyCode, event);
 	}
+	
+	
+	
+	
+	
+	
+	private class MyAutoCheckinTriggerObserver implements Observer {
 
-	
+		@Override
+		public void update(Observable arg0, Object arg1) {
 
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putCharSequence("type", "AutoCheckinTrigger");
+			
+			message.setData(bundle);
+			
+			Log.d("AutoCheckin","Received Autocheckin Observable...");
+			mainThreadTaskHandler.sendMessage(message);
+			
+		}
+		
+	}
 	
-	
+	private class MyCachedDataObserver implements Observer {
+		
+		@Override
+		public void update(Observable observable, Object data) {
+
+			if (Constants.debugLog)
+				Log.d("ActivityMap","update()");
+			
+			if (data instanceof CachedDataContainer) {
+				CachedDataContainer counterdata = (CachedDataContainer) data;
+				DataHolder venuesWithCheckins = counterdata.getData();
+							
+				Object[] obj = (Object[]) venuesWithCheckins.getObject();
+				@SuppressWarnings("unchecked")
+				List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
+				@SuppressWarnings("unchecked")
+				List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
+				
+				Message message = new Message();
+				Bundle bundle = new Bundle();
+				bundle.putCharSequence("type", counterdata.type);
+				bundle.putParcelableArrayList("venues", new ArrayList<VenueSmart>(arrayVenues));
+				bundle.putParcelableArrayList("users", new ArrayList<UserSmart>(arrayUsers));
+				message.setData(bundle);
+				
+				if (Constants.debugLog)
+					Log.d("Map","ActivityMap.update: Sending handler message...");
+				
+				
+				
+				mainThreadTaskHandler.sendMessage(message);
+				
+				
+			}
+		}
+	}
 	
 }
+
+	
+
+	
+	
+	

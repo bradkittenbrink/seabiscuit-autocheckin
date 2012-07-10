@@ -1,6 +1,9 @@
 package com.coffeeandpower.location;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.activity.ActivityCheckIn;
 import com.coffeeandpower.cache.CacheMgrService;
@@ -55,6 +58,11 @@ public class LocationDetectionStateMachine {
 	private static LocationDetectionService myService;
 	
 	private static Executor exe;
+	
+	private static class MyAutoCheckinObservable extends Observable {
+		
+	}
+	private static MyAutoCheckinObservable myAutoCheckinObservable = new MyAutoCheckinObservable();
 	
 	// This function must be called before the state machine will work
 	public static void init(Context context, Handler mainThreadHandler) {
@@ -139,6 +147,10 @@ public class LocationDetectionStateMachine {
 		
 	}
 	
+	
+	
+	
+	
 	//=============================================================
 	// STATES
 	//=============================================================
@@ -196,7 +208,10 @@ public class LocationDetectionStateMachine {
 				public void run() {
 					DataHolder result = AppCAP.getConnection().checkOut();
 					
+					Log.d("AutoCheckin","Checking user out...");
 					CacheMgrService.checkOutTrigger();
+					
+					myAutoCheckinObservable.notifyObservers(null);
 					//userState.onCheckOut();
 					LocationDetectionStateMachine.checkinCheckoutCOMPLETE();
 				}
@@ -206,12 +221,13 @@ public class LocationDetectionStateMachine {
 		else
 		{
 			//Checkin the user
-			Log.d(TAG,"Auto-checking in the user...");
+			Log.d("AutoCheckin","Auto-checking in the user...");
 			final int checkInTime = (int) (System.currentTimeMillis() / 1000);
 			final int checkOutTime = checkInTime + 24 * 3600;
 			
 			exe.checkIn(currVenueCACHE, checkInTime, checkOutTime, "",false,true);
 			
+			myAutoCheckinObservable.notifyObservers(null);
 			//currVenueCACHE
 		}
 		
@@ -221,7 +237,7 @@ public class LocationDetectionStateMachine {
 	}
 	
 	//=============================================================
-	// COMPLETE: PUBLIC State transition completers
+	// PUBLIC State transition completers
 	// These are in public/private pairs where the public method
 	// can be called from any thread, and the corresponding
 	// private method will be called on the "location" thread.
@@ -308,7 +324,8 @@ public class LocationDetectionStateMachine {
         					// TODO Auto-generated catch block
         					e.printStackTrace();
         				}
-                			passiveListeningSTATE();			}
+                			passiveListeningSTATE();			
+                		}
         			else
         			{
                         		//PassiveListenersINIT returning
@@ -433,7 +450,11 @@ public class LocationDetectionStateMachine {
 		bundle.putCharSequence("type", "passiveListenerDidReceiveLocation");
 		message.setData(bundle);
 		
-		locationThreadTaskHandler.sendMessage(message);
+		if (locationThreadTaskHandler != null)
+			locationThreadTaskHandler.sendMessage(message);
+		else
+			Log.d(TAG,"WARNING: Passive Listener received location before State Machine init was called...");
+		
 	}
 	public static void passiveListenerDidReceiveLocationCallback() {
 		stopPassiveLocationListener();
@@ -555,6 +576,7 @@ public class LocationDetectionStateMachine {
 		//if (passiveLocationReceiverActive) {
 		try {
 			locationManager.removeUpdates(pendingPassiveReceiverIntent);
+			Log.d(TAG,"Pending Passive Receiver Intent removed.");
 			//passiveLocationReceiverActive = false;
 		}
 		catch(Exception e){
@@ -644,6 +666,24 @@ public class LocationDetectionStateMachine {
 			AppCAP.setUserCheckedIn(true);
 
 		}
+	}
+	
+	
+	
+	
+	
+	//=============================================================
+	// Non-Transitioning Public Methods
+	//=============================================================	
+	
+	public static void startObservingAutoCheckinTrigger(Observer obs) {
+		myAutoCheckinObservable.addObserver(obs);
+		
+	}
+	
+	public static void stopObservingAutoCheckinTrigger(Observer obs) {
+		myAutoCheckinObservable.deleteObserver(obs);
+		
 	}
 
 	

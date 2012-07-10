@@ -2269,7 +2269,7 @@ public class HttpUtil {
 	 * 
 	 * @return
 	 */
-	public DataHolder checkIn(VenueSmart venue, int checkInTime, int checkOutTime, String statusText) {
+	public DataHolder checkIn(VenueSmart venue, int checkInTime, int checkOutTime, String statusText, boolean isAutomatic) {
 
 		DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, "Internet connection error", null);
 
@@ -2293,6 +2293,11 @@ public class HttpUtil {
 			params.add(new BasicNameValuePair("zip", venue.zip + ""));
 			params.add(new BasicNameValuePair("phone", ""));
 			params.add(new BasicNameValuePair("status", statusText + ""));
+			
+			if (isAutomatic)
+				params.add(new BasicNameValuePair("is_automatic", "1"));
+			else
+				params.add(new BasicNameValuePair("is_automatic", "0"));
 
 			post.setEntity(new UrlEncodedFormEntity(params));
 

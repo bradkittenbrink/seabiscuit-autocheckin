@@ -36,6 +36,16 @@ public class MyScanResult implements Parcelable{
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	@Override
+	public String toString() {
+		
+		if (SSID != null) {
+			return "MyScanResult [" + SSID + "] " + BSSID;
+		}
+		else
+			return "MyScanResult [] " + BSSID;
+	}
 
 	@Override
 	public void writeToParcel(Parcel out, int flags) {

@@ -24,7 +24,7 @@ import android.util.Log;
 public class WifiStateBroadcastReceiver extends BroadcastReceiver implements Observer{
 	
 	private static WifiManager wifiManager;
-	private static WifiScanBroadcastReceiver scanReceiver;
+	//private static WifiScanBroadcastReceiver scanReceiver;
 	
 	private static IntentFilter intentFilter = new IntentFilter();
 	
@@ -56,14 +56,14 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver implements Obs
         	//WIFI_STATE_CHANGED_ACTION never triggers, and it isnt' clear why
         	//intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         	context.registerReceiver(this, intentFilter);
-      	    	scanReceiver = new WifiScanBroadcastReceiver(context);        	
+      	    	//scanReceiver = new WifiScanBroadcastReceiver(context);        	
         }
         
         public void unregisterForConnectionState(Context currContext) {
         	currContext.unregisterReceiver(this);
         	
         	// Also send message to scan receiver to unregister
-        	scanReceiver.unregisterForWifiScans(currContext);
+        	//scanReceiver.unregisterForWifiScans(currContext);
         }
 	
     @Override

@@ -240,7 +240,7 @@ public class Executor {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				result = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime, statusText);
+				result = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime, statusText, checkinIsAutoCheckin);
 				//If user selected auto checkin, save that to preferences
 				if (userDesiresAutoCheckin) {
 					LocationDetectionService.addVenueToAutoCheckinList(venue);
