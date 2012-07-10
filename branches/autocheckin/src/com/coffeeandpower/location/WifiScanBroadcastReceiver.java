@@ -20,18 +20,28 @@ import android.util.Log;
 public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	private static final int posMatchThreshold = 4;
 	private WifiManager wifiManager;
+  	private boolean modeCollection = false;
+  	private boolean modeVerification = false;
 	//private boolean registeredForScans = false;
 	private ArrayList<VenueSmart> venuesBeingVerified;
+	private venueWifiSignature venueForSignature;
 	
 	public WifiScanBroadcastReceiver(Context context){
 	  	wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+	  	modeCollection = false;
+	  	modeVerification = false;
 	}	
 	
 	public void checkVenueSignature(Context context, ArrayList<VenueSmart> venuesBeingVerified){
 		    this.venuesBeingVerified = venuesBeingVerified;
-	  	    //Forcing the scan requires a permission and I don't think we need it because the scan happens
-	  	    //frequently enough
 	  	    wifiManager.startScan();
+	  	  modeVerification = true;
+	}
+	
+	public void grabVenueSignature(Context context, venueWifiSignature currentVenue){
+		this.venueForSignature = currentVenue;
+		wifiManager.startScan();
+		modeCollection = true;
 	}
 	
 	public void unregisterForWifiScans(Context context) {
@@ -47,12 +57,12 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 			LocationDetectionStateMachine.wifiScanListenerDidReceiveScan();
 			//Grab results from fresh scan of wifi networks
 			List<ScanResult> visibleWifiNetworks = wifiManager.getScanResults();
-			boolean modeCollection = false;
 			if(modeCollection)
 			{
 				List<MyScanResult> venueWifiSig = this.collectWifiSignature(8, visibleWifiNetworks);
+				this.venueForSignature.addWifiNetworkToSignature(venueWifiSig);
+				this.reportWifiSignature(this.venueForSignature);
 			}
-			boolean modeVerification = true;
 			if(modeVerification)
 			{
 				venueWifiSignature matchingVenue = signatureVerification(context, visibleWifiNetworks);
@@ -171,4 +181,11 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	    	}
 	    	return null;
     	}
+    private void reportWifiSignature(venueWifiSignature signatureForCurrVenue)
+    {
+	    AppCAP.addAutoCheckinWifiSignature(signatureForCurrVenue);
+	    
+	    
+    }
+    
 }
