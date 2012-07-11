@@ -299,7 +299,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	@Override
 	protected void onStart() {
 		
-		
+		checkUserState();
 		
 		if (Constants.debugLog)
 			Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStart()");

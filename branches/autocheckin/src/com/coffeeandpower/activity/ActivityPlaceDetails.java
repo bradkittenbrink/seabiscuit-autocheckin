@@ -473,9 +473,12 @@ public class ActivityPlaceDetails extends RootActivity {
 							
 				Object[] obj = (Object[]) result.getObject();
 				@SuppressWarnings("unchecked")
-				ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+				List<VenueSmart> listVenues = (List<VenueSmart>) obj[0];
 				@SuppressWarnings("unchecked")
-				ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+				List<UserSmart> listUsers = (List<UserSmart>) obj[1];
+				
+				ArrayList<VenueSmart> arrayVenues = new ArrayList<VenueSmart>(listVenues);
+				ArrayList<UserSmart> arrayUsers = new ArrayList<UserSmart>(listUsers);
 				
 				Message message = new Message();
 				Bundle bundle = new Bundle();
