@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -37,6 +38,7 @@ import com.coffeeandpower.cont.VenueChatEntry;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.imageutil.ImageLoader;
+import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
@@ -46,7 +48,7 @@ import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomFontView;
 import com.urbanairship.UAirship;
 
-public class ActivityPlaceDetails extends RootActivity implements Observer {
+public class ActivityPlaceDetails extends RootActivity {
 
 	private String foursquareId;
 
@@ -55,10 +57,15 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 	//private Executor exe;
 
 	//private ArrayList<UserSmart> arrayUsers;
-	private ArrayList<VenueSmart> arrayVenues;
+	private ArrayList<VenueSmart> cachedVenues = new ArrayList<VenueSmart>();
+	private ArrayList<UserSmart> cachedUsers = new ArrayList<UserSmart>();
+	
+	private ArrayList<UserSmart> arrayUsersHereNow = new ArrayList<UserSmart>();
+	private ArrayList<UserSmart> arrayUsersWereHere = new ArrayList<UserSmart>();
+	
 	private ArrayList<CheckinData> arrayUsersInVenue;
-	private ArrayList<UserSmart> arrayUsersHereNow;
-	private ArrayList<UserSmart> arrayUsersWereHere;
+	//private ArrayList<UserSmart> arrayUsersHereNow;
+	//private ArrayList<UserSmart> arrayUsersWereHere;
 
 	private VenueSmart selectedVenue;
 
@@ -70,29 +77,39 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 
 	private ImageLoader imageLoader;
 
-	private boolean amICheckedIn;
+	private boolean amICheckedIn = false;
 	private boolean initialLoadNow = true;
 	private boolean initialLoadWere = true;
 
-	private double data[];
+	private MyCachedDataObserver myCachedDataObserver = new MyCachedDataObserver();
+	private MyAutoCheckinTriggerObserver myAutoCheckinObserver = new MyAutoCheckinTriggerObserver();
+	//private double data[];
 
-	{
-		arrayUsersHereNow = new ArrayList<UserSmart>();
-		arrayUsersWereHere = new ArrayList<UserSmart>();
-		amICheckedIn = false;
-	}
+	
+	
+	//amICheckedIn = false;
+	
 	
 	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
-	protected Handler taskHandler = new Handler() {
+	protected Handler mainThreadTaskHandler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
 			
-		ArrayList<UserSmart> arrayUsers = msg.getData().getParcelableArrayList("users");
-		ArrayList<VenueSmart> arrayVenues = msg.getData().getParcelableArrayList("venues");
-		// Fill venue and users data
-		fillData(arrayUsers, arrayVenues);
-		super.handleMessage(msg);
+        		String type = msg.getData().getString("type");
+        		
+        		if (type.equalsIgnoreCase("AutoCheckinTrigger")) {
+        			// call fillData with previously cached data, to redraw the checkin options
+        			// called below
+        		}
+        		else {
+        			cachedUsers = msg.getData().getParcelableArrayList("users");
+        			cachedVenues = msg.getData().getParcelableArrayList("venues");
+        		}
+        		
+        		fillData(cachedUsers, cachedVenues);
+			
+        		super.handleMessage(msg);
 		}
 	};
 	
@@ -152,7 +169,8 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 			Log.d("PlaceDetail","ActivityPlaceDetail.onStart()");
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
-		CacheMgrService.startObservingAPICall("venuesWithCheckins",this);
+		CacheMgrService.startObservingAPICall("venuesWithCheckins",myCachedDataObserver);
+		LocationDetectionStateMachine.startObservingAutoCheckinTrigger(myAutoCheckinObserver);
 		
 		initialLoadNow = true;
 		initialLoadWere = true;
@@ -165,7 +183,8 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
 
-		CacheMgrService.stopObservingAPICall("venuesWithCheckins",this);
+		CacheMgrService.stopObservingAPICall("venuesWithCheckins",myCachedDataObserver);
+		LocationDetectionStateMachine.stopObservingAutoCheckinTrigger(myAutoCheckinObserver);
 	}
 
 	private void fillData(ArrayList<UserSmart> arrayUsers, ArrayList<VenueSmart> arrayVenues) {
@@ -418,39 +437,64 @@ public class ActivityPlaceDetails extends RootActivity implements Observer {
 		startActivity(intent);
 	}
 	
-	@Override
-	public void update(Observable observable, Object data) {
-		/*
-		 * verify that the data is really of type CounterData, and log the
-		 * details
-		 */
-		if (data instanceof CachedDataContainer) {
-			CachedDataContainer counterdata = (CachedDataContainer) data;
-			DataHolder result = counterdata.getData();
-						
-			Object[] obj = (Object[]) result.getObject();
-			@SuppressWarnings("unchecked")
-			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-			@SuppressWarnings("unchecked")
-			ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
-			
+	
+	
+	
+	
+	private class MyAutoCheckinTriggerObserver implements Observer {
+
+		@Override
+		public void update(Observable arg0, Object arg1) {
+
 			Message message = new Message();
 			Bundle bundle = new Bundle();
-			bundle.putCharSequence("type", counterdata.type);
-			bundle.putParcelableArrayList("users", arrayUsers);
-			bundle.putParcelableArrayList("venues", arrayVenues);
-
-
+			bundle.putCharSequence("type", "AutoCheckinTrigger");
+			
 			message.setData(bundle);
 			
-			if (Constants.debugLog)
-				Log.d("PlaceDetail","ActivityPlaceDetail.update: Sending handler message...");
-			taskHandler.sendMessage(message);
-			
+			Log.d("AutoCheckin","Received Autocheckin Observable...");
+			mainThreadTaskHandler.sendMessage(message);
 			
 		}
-		else
-			if (Constants.debugLog)
-				Log.d("PlaceDetail","Error: Received unexpected data type: " + data.getClass().toString());
+		
+	}
+	
+	private class MyCachedDataObserver implements Observer {
+		
+		@Override
+		public void update(Observable observable, Object data) {
+			/*
+			 * verify that the data is really of type CounterData, and log the
+			 * details
+			 */
+			if (data instanceof CachedDataContainer) {
+				CachedDataContainer counterdata = (CachedDataContainer) data;
+				DataHolder result = counterdata.getData();
+							
+				Object[] obj = (Object[]) result.getObject();
+				@SuppressWarnings("unchecked")
+				ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+				@SuppressWarnings("unchecked")
+				ArrayList<UserSmart> arrayUsers = (ArrayList<UserSmart>) obj[1];
+				
+				Message message = new Message();
+				Bundle bundle = new Bundle();
+				bundle.putCharSequence("type", counterdata.type);
+				bundle.putParcelableArrayList("users", arrayUsers);
+				bundle.putParcelableArrayList("venues", arrayVenues);
+
+
+				message.setData(bundle);
+				
+				if (Constants.debugLog)
+					Log.d("PlaceDetail","ActivityPlaceDetail.update: Sending handler message...");
+				mainThreadTaskHandler.sendMessage(message);
+				
+				
+			}
+			else
+				if (Constants.debugLog)
+					Log.d("PlaceDetail","Error: Received unexpected data type: " + data.getClass().toString());
+		}
 	}
 }

@@ -35,8 +35,10 @@ import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
+import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
@@ -44,7 +46,7 @@ import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.urbanairship.UAirship;
 
-public class ActivityContacts extends RootActivity implements TabMenu, UserMenu, Observer {
+public class ActivityContacts extends RootActivity implements TabMenu, UserMenu {
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_USER = 1;
@@ -68,19 +70,27 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 	
 	private ImageView blankSlateImg;
 
-	
+	private MyCachedDataObserver myCachedDataObserver = new MyCachedDataObserver();
+	private MyAutoCheckinTriggerObserver myAutoCheckinObserver = new MyAutoCheckinTriggerObserver();
 	
 	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
-	protected Handler taskHandler = new Handler() {
+	protected Handler mainThreadTaskHandler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
 
-			// pass message data along to venue update method
-			ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("contacts");
-			updateUsersAndCheckinsFromApiResult(usersArray);
+			String type = msg.getData().getString("type");
 			
-			progress.dismiss();
+			if (type.equalsIgnoreCase("AutoCheckinTrigger")) {
+				// Update view
+				setupTabBar();
+			} else {
+        			// pass message data along to venue update method
+        			ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("contacts");
+        			updateUsersAndCheckinsFromApiResult(usersArray);
+        			
+        			progress.dismiss();
+			}
 
 			super.handleMessage(msg);
 		}
@@ -243,7 +253,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		if (AppCAP.isLoggedIn())
 		{
 			UAirship.shared().getAnalytics().activityStarted(this);
-			CacheMgrService.startObservingAPICall("contactsList",this);
+			CacheMgrService.startObservingAPICall("contactsList",myCachedDataObserver);
+			LocationDetectionStateMachine.startObservingAutoCheckinTrigger(myAutoCheckinObserver);
 		}
 	}
 
@@ -255,7 +266,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		if (AppCAP.isLoggedIn())
 		{
 			UAirship.shared().getAnalytics().activityStopped(this);
-			CacheMgrService.stopObservingAPICall("contactsList",this);
+			CacheMgrService.stopObservingAPICall("contactsList",myCachedDataObserver);
+			LocationDetectionStateMachine.stopObservingAutoCheckinTrigger(myAutoCheckinObserver);
 		}
 	}
 
@@ -276,7 +288,6 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 
 			// Get contacts list
 			//FIXME
-			//We are eliminating all .exe's
 			//exe.getContactsList();
 		}
 	}
@@ -371,61 +382,6 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 	public void onClickContacts(View v) {
 		// menu.onClickContacts(v);
 	}
-	
-	
-	
-	//Observer callback implementation
-	@Override
-	public void update(Observable observable, Object data) {
-		/*
-		 * verify that the data is really of type CounterData, and log the
-		 * details
-		 */
-		if (data instanceof CachedDataContainer) {
-			CachedDataContainer counterdata = (CachedDataContainer) data;
-			
-			DataHolder contacts = counterdata.getData();
-			//Object[] obj = (Object[]) contacts.getObject();
-			@SuppressWarnings("unchecked")
-			List<UserSmart> arrayContacts = (List<UserSmart>) contacts.getObject();
-			
-			if (Constants.debugLog)
-				Log.d("Contacts","Warning: API callback temporarily disabled...");
-			
-			// Remove self from user array
-			UserSmart selfUser = null;
-			ArrayList<UserSmart> mutableArrayContacts = new ArrayList<UserSmart>(arrayContacts);
-			for (UserSmart aUser:mutableArrayContacts) {
-				
-				if (AppCAP.getLoggedInUserId() == aUser.getUserId()) {
-					if (Constants.debugLog)
-						Log.d("Contacts"," - Removing self from users array: " + aUser.getNickName());
-					selfUser = aUser;
-				}
-			}
-			if (selfUser != null) {
-				mutableArrayContacts.remove(selfUser);
-			}
-				
-			Message message = new Message();
-			Bundle bundle = new Bundle();
-			bundle.putCharSequence("type", counterdata.type);
-			bundle.putParcelableArrayList("contacts", mutableArrayContacts);
-			message.setData(bundle);
-			
-			if (Constants.debugLog)
-				Log.d("Contacts","Contacts.update: Sending handler message with " + mutableArrayContacts.size() + " contacts:");
-			
-			
-			
-			taskHandler.sendMessage(message);			
-		}
-		else
-			if (Constants.debugLog)
-				Log.d("Contacts","Error: Received unexpected data type: " + data.getClass().toString());
-	}
-	
-	
 
 	
 	private void updateUsersAndCheckinsFromApiResult(ArrayList<UserSmart> newUsersArray) {
@@ -474,6 +430,79 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu,
 		
 		if (Constants.debugLog)
 			Log.d("Contacts","Set local array with " + newUsersArray.size() + " contacts.");
+	}
+	
+	
+	
+	private class MyAutoCheckinTriggerObserver implements Observer {
+
+		@Override
+		public void update(Observable arg0, Object arg1) {
+
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putCharSequence("type", "AutoCheckinTrigger");
+			
+			message.setData(bundle);
+			
+			Log.d("AutoCheckin","Received Autocheckin Observable...");
+			mainThreadTaskHandler.sendMessage(message);
+			
+		}
+		
+	}
+	
+	private class MyCachedDataObserver implements Observer {
+		
+		@Override
+		public void update(Observable observable, Object data) {
+		/*
+		 * verify that the data is really of type CounterData, and log the
+		 * details
+		 */
+		if (data instanceof CachedDataContainer) {
+			CachedDataContainer counterdata = (CachedDataContainer) data;
+			
+			DataHolder contacts = counterdata.getData();
+			//Object[] obj = (Object[]) contacts.getObject();
+			@SuppressWarnings("unchecked")
+			List<UserSmart> arrayContacts = (List<UserSmart>) contacts.getObject();
+			
+			if (Constants.debugLog)
+				Log.d("Contacts","Warning: API callback temporarily disabled...");
+			
+			// Remove self from user array
+			UserSmart selfUser = null;
+			ArrayList<UserSmart> mutableArrayContacts = new ArrayList<UserSmart>(arrayContacts);
+			for (UserSmart aUser:mutableArrayContacts) {
+				
+				if (AppCAP.getLoggedInUserId() == aUser.getUserId()) {
+					if (Constants.debugLog)
+						Log.d("Contacts"," - Removing self from users array: " + aUser.getNickName());
+					selfUser = aUser;
+				}
+			}
+			if (selfUser != null) {
+				mutableArrayContacts.remove(selfUser);
+			}
+				
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putCharSequence("type", counterdata.type);
+			bundle.putParcelableArrayList("contacts", mutableArrayContacts);
+			message.setData(bundle);
+			
+			if (Constants.debugLog)
+				Log.d("Contacts","Contacts.update: Sending handler message with " + mutableArrayContacts.size() + " contacts:");
+			
+			
+			
+			mainThreadTaskHandler.sendMessage(message);			
+		}
+		else
+			if (Constants.debugLog)
+				Log.d("Contacts","Error: Received unexpected data type: " + data.getClass().toString());
+		}
 	}
 	
 	
