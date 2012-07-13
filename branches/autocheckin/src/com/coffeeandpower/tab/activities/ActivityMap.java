@@ -142,8 +142,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		setContentView(R.layout.tab_activity_map);
 		
 		// start services
-		AppCAP.mainActivityDidStart(this);
-		
+		AppCAP.mainActivityDidStart(this);		
 
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");

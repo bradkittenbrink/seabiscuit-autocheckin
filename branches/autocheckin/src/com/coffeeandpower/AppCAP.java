@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +29,8 @@ import com.coffeeandpower.location.MyScanResult;
 import com.coffeeandpower.location.venueWifiSignature;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.urbanairship.UAirship;
 import com.urbanairship.iap.IAPManager;
 import com.urbanairship.push.PushManager;
@@ -80,6 +83,7 @@ public class AppCAP extends Application {
 	private static final String TAG_INFO_DIALOG = "tag_info_dialog";
 	//private static final String TAG_VENUES_WITH_USER_CHECKINS = "venuesWithUserCheckins";
 	private static final String TAG_VENUES_WITH_AUTO_CHECKINS = "venuesWithAutoCheckins";
+	private static final String TAG_VENUE_WIFI_SIGNATURES = "venueWifiSignatures";
 
 	// Notification settings
 	private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
@@ -169,10 +173,7 @@ public class AppCAP extends Application {
 			} else {
 				setMetricsSys(false);
 			}
-			
 		}
-		
-		
 	}
 	
 	
@@ -762,8 +763,71 @@ public class AppCAP extends Application {
 	
 	/**
 	 * 
+	 * @category setter
+	 */
+	public static void addAutoCheckinWifiSignature(venueWifiSignature currentSig)
+	{	
+		Gson gsonConverter =  new Gson();
+		Type listOfVenueWifiSigs = new TypeToken <ArrayList<venueWifiSignature>>(){}.getType();
+		
+		String jsonWifiSigs = getSharedPreferences().getString(TAG_VENUE_WIFI_SIGNATURES, "");
+
+		ArrayList<venueWifiSignature> ArrayOfSignatures = gsonConverter.fromJson(jsonWifiSigs, listOfVenueWifiSigs);
+		if(ArrayOfSignatures.contains(currentSig))
+		{
+			//If the current venue already exists in the array
+			//we replace it, by removing it here and adding it again below
+			ArrayOfSignatures.remove(currentSig);
+		}
+		ArrayOfSignatures.add(currentSig);
+		 String outputString = gsonConverter.toJson(ArrayOfSignatures, listOfVenueWifiSigs);
+		getSharedPreferences().edit().putString(TAG_VENUE_WIFI_SIGNATURES, outputString).commit();
+	}
+	
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void removeAutoCheckinWifiSignature(int venueId)
+	{	
+		venueWifiSignature currentSig = new venueWifiSignature();
+		currentSig.venueId = venueId;
+		Gson gsonConverter =  new Gson();
+		Type listOfVenueWifiSigs = new TypeToken <ArrayList<venueWifiSignature>>(){}.getType();
+		
+		String jsonWifiSigs = getSharedPreferences().getString(TAG_VENUE_WIFI_SIGNATURES, "");
+
+		ArrayList<venueWifiSignature> ArrayOfSignatures = gsonConverter.fromJson(jsonWifiSigs, listOfVenueWifiSigs);
+		if(ArrayOfSignatures.contains(currentSig))
+		{
+			ArrayOfSignatures.remove(currentSig);
+		}
+		 String outputString = gsonConverter.toJson(ArrayOfSignatures, listOfVenueWifiSigs);
+		getSharedPreferences().edit().putString(TAG_VENUE_WIFI_SIGNATURES, outputString).commit();
+	}
+	
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static ArrayList<venueWifiSignature> getAutoCheckinWifiSignatures()
+	{	
+		Gson gsonConverter =  new Gson();
+		Type listOfVenueWifiSigs = new TypeToken <ArrayList<venueWifiSignature>>(){}.getType();
+		
+		String jsonWifiSigs = getSharedPreferences().getString(TAG_VENUE_WIFI_SIGNATURES, "");
+
+		if(jsonWifiSigs == "")
+		{
+			return new ArrayList<venueWifiSignature>();
+		}
+		return gsonConverter.fromJson(jsonWifiSigs, listOfVenueWifiSigs);
+	}
+	/**
+	 * 
 	 * @category tempTestData
 	 */
+	/*
 	    public static ArrayList<venueWifiSignature> getAutoCheckinWifiSignatures()
 	    {
 			ArrayList<venueWifiSignature> arrayOfVenuesSigs = new ArrayList<venueWifiSignature>();
@@ -796,11 +860,7 @@ public class AppCAP extends Application {
 			arrayOfVenuesSigs.add(andrewTestSignature);
 			return arrayOfVenuesSigs;
 	    }
-	    
-	    
-	    
-	    
-
+	    */
 	    private String getAppName()
 	    {
 		int pID = android.os.Process.myPid();
@@ -829,7 +889,6 @@ public class AppCAP extends Application {
 	       }
 	        return processName;
 	    }
-
 
 
 }

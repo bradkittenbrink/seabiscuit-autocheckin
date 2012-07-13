@@ -50,14 +50,12 @@ public class LocationDetectionStateMachine {
 	private static VenueSmart currVenueCACHE;
 	
 	private static boolean stateMachineActive = false;
-	//private static boolean passiveLocationReceiverActive = false;
-	//private static boolean activeLocationListenerActive = false;
-	//private static boolean wifiStateBroadcastReceiverActive = false;
-	//private static boolean wifiScanBroadcastReceiverActive = false;
 	
 	private static LocationDetectionService myService;
 	
 	private static Executor exe;
+	
+	private static VenueSmart collectionVenue;
 	
 	private static class MyAutoCheckinObservable extends Observable {
 		
@@ -85,12 +83,8 @@ public class LocationDetectionStateMachine {
 		});
 		
 		stateMachineActive = false;
-		//passiveLocationReceiverActive = false;
-		//activeLocationListenerActive = false;
-		//wifiStateBroadcastReceiverActive = false;
-		//wifiScanBroadcastReceiverActive = false;
 		
-		
+		//This is used for the activeLocationListener, which is currently disabled
 		mainThreadTaskHandler = mainThreadHandler;
 		
 		locationThreadTaskHandler = new Handler(Looper.myLooper()) {
@@ -109,6 +103,10 @@ public class LocationDetectionStateMachine {
 				}
 				else if (messageType.equalsIgnoreCase("stop")) {
 					stopCallback();
+				}
+				else if (messageType.equalsIgnoreCase("startCollection")) {
+					VenueSmart venue = msg.getData().getParcelable("venue");
+					startCollectionCallback(venue);
 				}
 				else if (messageType.equalsIgnoreCase("positionListenersCOMPLETE")) {
 					boolean isHighAssurance = msg.getData().getBoolean("isHighAssurance");
@@ -147,8 +145,25 @@ public class LocationDetectionStateMachine {
 		
 	}
 	
+	public static void manualCheckin(Context context, Handler mainThreadHandler, VenueSmart venue) {
+		//If the statemachine isn't running we need to activate it
+		if(!stateMachineActive)
+		{
+			init(context, mainThreadHandler);	
+		}
+		
+		stateMachineActive = true;
+		
+		Message message = new Message();
+		Bundle bundle = new Bundle();
+		bundle.putCharSequence("type", "startCollection");
+		bundle.putParcelable("venue", venue);
+		message.setData(bundle);
+		
+		Log.d(TAG,"Sending message..." + bundle.getString("type"));
+		locationThreadTaskHandler.sendMessage(message);
 	
-	
+	}
 	
 	
 	//=============================================================
@@ -156,6 +171,14 @@ public class LocationDetectionStateMachine {
 	//=============================================================
 	//All state transitions are dataless, all data flows through
 	//member variables
+	private static void signatureCollectionSTATE(){
+		Log.d(TAG,"signatureCollectionSTATE");
+		currentState = -1;
+		//This state is unique because the initial kickoff comes
+		//comes from another thread with data so we get in this state
+		//and then call asdfasdfaf in startCollectionCallback(venue)
+	}
+	
 	private static void passiveListeningSTATE(){
 		Log.d(TAG, "passiveListeningSTATE");
 		currentState = 0;
@@ -257,7 +280,7 @@ public class LocationDetectionStateMachine {
         		bundle.putCharSequence("type", "start");
         		message.setData(bundle);
         		
-        		Log.d(TAG,"Sending message...");
+        		Log.d(TAG,"Sending message..." + bundle.getString("type"));
         		locationThreadTaskHandler.sendMessage(message);
         		
 		} else {
@@ -266,6 +289,7 @@ public class LocationDetectionStateMachine {
 		
 		
 	}
+	
 	private static void startCallback() {
 		passiveListeningSTATE();
 	}
@@ -285,6 +309,8 @@ public class LocationDetectionStateMachine {
         		
         		locationThreadTaskHandler.sendMessage(message);
 		}*/
+		//FIXME
+		//Why don't we need to sendMessage here?
 		stopCallback();
 	}
 	private static void stopCallback() {
@@ -295,9 +321,31 @@ public class LocationDetectionStateMachine {
 		stopWifiScanListener();
 	}
 	
+	private static void startCollectionCallback(VenueSmart venue)
+	{
+		//This is after the handler so it should be ok to call stop, we might want to send all 
+		//stop calls through the locationThreadTaskHandler
+		stopCallback();
+		signatureCollectionSTATE();
+		wifiScanBroadcastReceiver.grabVenueSignature(myContext, venue.getVenueId());
+	}
+	
+	public static void collectionCOMPLETE(venueWifiSignature signatureForCurrVenue){
+		//We should be on the main thread which is where we should call AppCAP
+		//I believe AppCAP isn't very thread safe already
+		AppCAP.addAutoCheckinWifiSignature(signatureForCurrVenue);
+		
+		//Let the state machine run again once we have the WifiSignature
+		Message message = new Message();
+		Bundle bundle = new Bundle();
+		bundle.putCharSequence("type", "start");
+		message.setData(bundle);
+		
+		Log.d(TAG,"Sending message..." + bundle.getString("type"));
+		locationThreadTaskHandler.sendMessage(message);
+	}
+	
 	//Closer for startPassiveListeners(), commandGPSINIT()
-	//FIXME
-	//This needs a handler of some kind since it can be called from multiple listeners
 	public static void positionListenersCOMPLETE(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
 		Log.d(TAG,"positionListenersCOMPLETE");
 		Message message = new Message();
@@ -479,9 +527,6 @@ public class LocationDetectionStateMachine {
 	//=============================================================
 	// Private Helper functions
 	//=============================================================
-	
-	
-	
 	private static void startPassiveLocationListener() {
 		
 		//if (!passiveLocationReceiverActive) {

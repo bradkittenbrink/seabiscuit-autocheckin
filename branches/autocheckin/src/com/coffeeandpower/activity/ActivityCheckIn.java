@@ -37,6 +37,7 @@ import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.imageutil.ImageLoader;
+import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
 import com.coffeeandpower.tab.activities.ActivityContacts;
 import com.coffeeandpower.utils.Executor;
@@ -268,17 +269,18 @@ public class ActivityCheckIn extends RootActivity implements Observer {
         		AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
         		myAlertDialog.setTitle("Automatic Checkin");
         		myAlertDialog.setMessage("Do you want to check in to " + venue.getName() + " automatically?");
-        		myAlertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        		myAlertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
         			
         			 public void onClick(DialogInterface arg0, int arg1) {
-        				 Log.d("CheckIn","User clicked OK");
+        				 Log.d("CheckIn","User clicked YES");
         				 exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),true,false);
+        				 LocationDetectionStateMachine.manualCheckin(getApplicationContext(),new Handler(), venue);
         		 	 }
         		});
-        		myAlertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        		myAlertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
         		       
                 		  public void onClick(DialogInterface arg0, int arg1) {
-                			  Log.d("CheckIn","User clicked Cancel");
+                			  Log.d("CheckIn","User clicked NO");
                 			  exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false);
                 		  }
         		});

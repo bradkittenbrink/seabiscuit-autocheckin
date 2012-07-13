@@ -1,6 +1,8 @@
 package com.coffeeandpower.location;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import android.net.wifi.ScanResult;
 
 public class venueWifiSignature {
@@ -9,7 +11,13 @@ public class venueWifiSignature {
 	public ArrayList<MyScanResult> wifiSignature;
 	
 	public venueWifiSignature(){
-		venueId = 0;
+		this.venueId = 0;
+		this.connectedWifiSSIDs = new ArrayList<String>();
+		this.wifiSignature = new ArrayList<MyScanResult>();
+	}
+	public venueWifiSignature(int venueId)
+	{
+		this.venueId = venueId;
 		this.connectedWifiSSIDs = new ArrayList<String>();
 		this.wifiSignature = new ArrayList<MyScanResult>();
 	}
@@ -30,7 +38,16 @@ public class venueWifiSignature {
 			this.wifiSignature.add(network);
 		}
 	}
+	
 	public void addWifiNetworkToSignature(ArrayList<MyScanResult> networks)
+	{
+		for(MyScanResult currMyScanResult: networks)
+		{
+			this.addWifiNetworkToSignature(currMyScanResult);
+		}
+	}
+	
+	public void addWifiNetworkToSignature(List<MyScanResult> networks)
 	{
 		for(MyScanResult currMyScanResult: networks)
 		{
@@ -42,4 +59,14 @@ public class venueWifiSignature {
 	{
 		this.addWifiNetworkToSignature(new MyScanResult(scanResult));
 	}
+	
+	//Do compare based on venueId
+	@Override
+	public boolean equals(Object obj) {
+	        if (obj instanceof venueWifiSignature)
+	            return venueId == ((venueWifiSignature) obj).venueId;
+	        else
+	            return false;
+	    }
+	
 }

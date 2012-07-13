@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
@@ -38,8 +39,12 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	  	  modeVerification = true;
 	}
 	
-	public void grabVenueSignature(Context context, venueWifiSignature currentVenue){
-		this.venueForSignature = currentVenue;
+	public void grabVenueSignature(Context context, int venueId){
+		this.venueForSignature = new venueWifiSignature(venueId);
+		wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+      	    	this.venueForSignature.addConnectedSSID(wifiInfo.getSSID());
+      	    	//Force the scan to get the ssid's as soon as possible
 		wifiManager.startScan();
 		modeCollection = true;
 	}
@@ -153,6 +158,26 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	}
 	    
 	private venueWifiSignature checkForMatch(List<ScanResult> visibleWifiNetworks, ArrayList<venueWifiSignature> venuesBeingVerified) {
+	    //If there isn't many wifi results knock down the threshold
+	    double tmpThreshold = 0.40 * (double) visibleWifiNetworks.size();
+	    int tmpRoundedThreshold = (int) Math.floor(tmpThreshold);
+	    int threshold = 0;
+	    if(tmpRoundedThreshold<posMatchThreshold)
+	    {
+		    if(tmpRoundedThreshold < 2)
+		    {
+			    threshold = 2;
+		    }
+		    else
+		    {
+			    threshold = tmpRoundedThreshold;
+		    }
+	    }
+	    else
+	    {
+		    threshold = this.posMatchThreshold;
+	    }
+	    
 	    //This is the match threshold, once hit we know we have a match
             for(venueWifiSignature currVenueSig : venuesBeingVerified)
             {
@@ -160,32 +185,24 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
                 for(ScanResult currNet:visibleWifiNetworks)
                 {
                 	String testArg1 = currNet.BSSID;
-                	
                 	for(MyScanResult currVenueNet:currVenueSig.wifiSignature)
                 	{
-                		
                 		String testArg2 = currVenueNet.BSSID;
-                		//The below was returning false positives, why is not clear
-                		//if(currNet.BSSID.equalsIgnoreCase(currVenueNet.BSSID));
-                		
                 		if(testArg1.equalsIgnoreCase(testArg2))
                 		{
                 			matches++;
-                			if(matches>=posMatchThreshold)
+                			if(matches>=threshold)
                 				return currVenueSig;
                 			break;
                 		}
                 	}
-                	//Log.d("WifiBroadcast","SSID: " + currNet.SSID + " BSSID: " + currNet.BSSID);
-                        }
-	    	}
-	    	return null;
+                }
+	    }
+	    return null;
     	}
     private void reportWifiSignature(venueWifiSignature signatureForCurrVenue)
     {
-	    AppCAP.addAutoCheckinWifiSignature(signatureForCurrVenue);
-	    
-	    
+	    LocationDetectionStateMachine.collectionCOMPLETE(signatureForCurrVenue);
     }
     
 }
