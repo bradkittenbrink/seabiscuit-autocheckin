@@ -771,8 +771,16 @@ public class AppCAP extends Application {
 		Type listOfVenueWifiSigs = new TypeToken <ArrayList<venueWifiSignature>>(){}.getType();
 		
 		String jsonWifiSigs = getSharedPreferences().getString(TAG_VENUE_WIFI_SIGNATURES, "");
+		ArrayList<venueWifiSignature> ArrayOfSignatures = new ArrayList<venueWifiSignature>();
+		if(jsonWifiSigs.equals(""))
+		{
+			//No existing venues in autocheckin list
+		}
+		else
+		{
+			ArrayOfSignatures = gsonConverter.fromJson(jsonWifiSigs, listOfVenueWifiSigs);
+		}
 
-		ArrayList<venueWifiSignature> ArrayOfSignatures = gsonConverter.fromJson(jsonWifiSigs, listOfVenueWifiSigs);
 		if(ArrayOfSignatures.contains(currentSig))
 		{
 			//If the current venue already exists in the array

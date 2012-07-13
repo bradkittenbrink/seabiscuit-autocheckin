@@ -54,9 +54,7 @@ public class LocationDetectionStateMachine {
 	private static LocationDetectionService myService;
 	
 	private static Executor exe;
-	
-	private static VenueSmart collectionVenue;
-	
+		
 	private static class MyAutoCheckinObservable extends Observable {
 		
 	}
@@ -326,8 +324,9 @@ public class LocationDetectionStateMachine {
 		//This is after the handler so it should be ok to call stop, we might want to send all 
 		//stop calls through the locationThreadTaskHandler
 		stopCallback();
-		signatureCollectionSTATE();
 		wifiScanBroadcastReceiver.grabVenueSignature(myContext, venue.getVenueId());
+		startWifiScanListener();
+		signatureCollectionSTATE();
 	}
 	
 	public static void collectionCOMPLETE(venueWifiSignature signatureForCurrVenue){
@@ -358,7 +357,7 @@ public class LocationDetectionStateMachine {
 		locationThreadTaskHandler.sendMessage(message);
 	}
 	private static void positionListenersCallback(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
-		if(currentState == 0 || (currentState <= 1 && isHighConfidence))
+		if(currentState == 0 || (currentState > 0 && currentState <= 1 && isHighConfidence))
 		{
         		triggeringVenuesCACHE = triggeringVenues;
         		//If we have a fence break respond
@@ -487,7 +486,14 @@ public class LocationDetectionStateMachine {
 		
 	}
 	private static void checkinCheckoutCallback() {
-		passiveListeningSTATE();
+		if(currentState > 0)
+		{
+			passiveListeningSTATE();
+		}
+		else
+		{
+			Log.d(TAG,"Overridding passiveListeningSTATE waiting for signature to be collected");
+		}
 	}
 	
 	

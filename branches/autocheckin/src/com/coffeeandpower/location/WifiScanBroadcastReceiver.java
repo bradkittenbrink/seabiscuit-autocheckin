@@ -40,6 +40,7 @@ public class WifiScanBroadcastReceiver extends BroadcastReceiver{
 	}
 	
 	public void grabVenueSignature(Context context, int venueId){
+		Log.d("WifiScanBroadcast","grabVenueSignature");
 		this.venueForSignature = new venueWifiSignature(venueId);
 		wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
