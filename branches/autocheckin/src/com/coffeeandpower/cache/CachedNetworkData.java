@@ -39,15 +39,13 @@ public class CachedNetworkData extends Observable{
 	}
 	
 	public void setNewData(DataHolder newData, double[] userLocation) {
-		
-		cachedData = newData;
-		
-		//This gets called so often it makes a mess
-		//Log.d("CachedNetworkData","Setting user location to: " + userLocation[0] + ", " + userLocation[1]);
-		userLocationWhenDataCollected.setLatitude(userLocation[0]);
-		userLocationWhenDataCollected.setLongitude(userLocation[1]);
-		
+				
 		if (cachedData.getResponseMessage().equals("HTTP 200 OK")) {
+			cachedData = newData;
+			//This gets called so often it makes a mess
+			//Log.d("CachedNetworkData","Setting user location to: " + userLocation[0] + ", " + userLocation[1]);
+			userLocationWhenDataCollected.setLatitude(userLocation[0]);
+			userLocationWhenDataCollected.setLongitude(userLocation[1]);
 			if (Constants.debugLog)
 				Log.d("CachedNetworkData","Sending notifyObservers with received data from API call: " + type + "...");
 	                    
