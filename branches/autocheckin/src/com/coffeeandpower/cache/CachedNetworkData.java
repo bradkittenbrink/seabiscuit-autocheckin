@@ -40,7 +40,7 @@ public class CachedNetworkData extends Observable{
 	
 	public void setNewData(DataHolder newData, double[] userLocation) {
 				
-		if (cachedData.getResponseMessage().equals("HTTP 200 OK")) {
+		if (newData.getResponseMessage().equals("HTTP 200 OK")) {
 			cachedData = newData;
 			//This gets called so often it makes a mess
 			//Log.d("CachedNetworkData","Setting user location to: " + userLocation[0] + ", " + userLocation[1]);
