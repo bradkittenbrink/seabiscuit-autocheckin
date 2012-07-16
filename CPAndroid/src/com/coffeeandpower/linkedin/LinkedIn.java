@@ -4,7 +4,9 @@
  */
 package com.coffeeandpower.linkedin;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +19,7 @@ import com.google.code.linkedinapi.client.oauth.LinkedInAccessToken;
 import com.google.code.linkedinapi.client.oauth.LinkedInOAuthService;
 import com.google.code.linkedinapi.client.oauth.LinkedInOAuthServiceFactory;
 import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
+import com.google.code.linkedinapi.schema.Connections;
 import com.google.code.linkedinapi.schema.Person;
 
 /**
@@ -34,6 +37,7 @@ public class LinkedIn implements OAuthService {
     String apiSec;
 
     Person currUser;
+    Connections connections;
 
     public static final String OAUTH_CALLBACK_SCHEME = "x-oauthflow-linkedin";
     public static final String OAUTH_CALLBACK_HOST = "callback";
@@ -81,7 +85,7 @@ public class LinkedIn implements OAuthService {
         // client.postNetworkUpdate("LinkedIn Android app test, token = "
         // +
         // accessToken.getToken());
-        if (client != null)
+        if (client != null) {
             currUser = client
                     .getProfileForCurrentUser(EnumSet
                             .of(com.google.code.linkedinapi.client.enumeration.ProfileField.ID,
@@ -94,7 +98,13 @@ public class LinkedIn implements OAuthService {
                                     com.google.code.linkedinapi.client.enumeration.ProfileField.LOCATION_NAME,
                                     com.google.code.linkedinapi.client.enumeration.ProfileField.MAIN_ADDRESS,
                                     com.google.code.linkedinapi.client.enumeration.ProfileField.LOCATION_COUNTRY));
-
+            connections = client.getConnectionsForCurrentUser(EnumSet
+                    .of(com.google.code.linkedinapi.client.enumeration.ProfileField.ID,
+                            com.google.code.linkedinapi.client.enumeration.ProfileField.FIRST_NAME,
+                            com.google.code.linkedinapi.client.enumeration.ProfileField.LAST_NAME,
+                            com.google.code.linkedinapi.client.enumeration.ProfileField.PICTURE_URL));
+            AppCAP.setConnections(connections);
+        }
         return client != null && accessToken.getToken() != null;
     }
 
@@ -102,7 +112,7 @@ public class LinkedIn implements OAuthService {
         try {
             accessToken = new LinkedInAccessToken(token, tokenSecret);
             client = factory.createLinkedInApiClient(accessToken);
-            if (client != null)
+            if (client != null) {
                 currUser = client
                         .getProfileForCurrentUser(EnumSet
                                 .of(com.google.code.linkedinapi.client.enumeration.ProfileField.ID,
@@ -115,6 +125,27 @@ public class LinkedIn implements OAuthService {
                                         com.google.code.linkedinapi.client.enumeration.ProfileField.LOCATION_NAME,
                                         com.google.code.linkedinapi.client.enumeration.ProfileField.MAIN_ADDRESS,
                                         com.google.code.linkedinapi.client.enumeration.ProfileField.LOCATION_COUNTRY));
+            connections = client.getConnectionsForCurrentUser(EnumSet
+                    .of(com.google.code.linkedinapi.client.enumeration.ProfileField.ID,
+                            com.google.code.linkedinapi.client.enumeration.ProfileField.FIRST_NAME,
+                            com.google.code.linkedinapi.client.enumeration.ProfileField.LAST_NAME,
+                            com.google.code.linkedinapi.client.enumeration.ProfileField.PICTURE_URL));
+            AppCAP.setConnections(connections);
+            }
+        } catch (Exception e) {
+
+        }
+
+        return client != null && accessToken.getToken() != null;
+    }
+    
+    public boolean sendInvite(String token, String tokenSecret, List<String> arraySelectedUsersIds, String title, String messageContent) {
+        try {
+            accessToken = new LinkedInAccessToken(token, tokenSecret);
+            client = factory.createLinkedInApiClient(accessToken);
+            if (client != null) {
+                client.sendMessage(arraySelectedUsersIds , title, messageContent); 
+            }
         } catch (Exception e) {
 
         }

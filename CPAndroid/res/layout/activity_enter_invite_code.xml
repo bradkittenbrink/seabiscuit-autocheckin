@@ -61,6 +61,27 @@
             android:textColor="#cecece"
             android:textSize="90dip" />
 
+        <TextView
+            android:id="@+id/instructions_invite_text"
+            android:layout_width="210dip"
+            android:layout_height="65dip"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dip"
+            android:layout_marginTop="5dip"
+            android:gravity="center"
+            android:text="@string/activity_enter_invite_linkedin"
+            android:textSize="18sp" />
+        
+        <ImageButton
+            android:id="@+id/btn_linked_in_invite_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dip"
+            android:background="@drawable/linkedin_invite"
+            android:contentDescription="@string/help_linked_in_invite_list"
+            android:onClick="onClickLinkedInInviteList" />
+        
         <Button
             android:id="@+id/later_btn"
             android:layout_width="wrap_content"
@@ -76,6 +97,7 @@
             android:text="@string/later"
             android:textColor="#ffffff"
             android:visibility="invisible" />
+
     </LinearLayout>
 
 </RelativeLayout>

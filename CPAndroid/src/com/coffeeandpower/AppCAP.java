@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONObject;
 
 import android.app.Application;
 import android.content.Context;
@@ -14,9 +18,12 @@ import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
 
+import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.datatiming.Counter;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
+import com.google.code.linkedinapi.schema.Connections;
+import com.google.code.linkedinapi.schema.Person;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.PushManager;
 import com.urbanairship.push.PushPreferences;
@@ -101,6 +108,8 @@ public class AppCAP extends Application {
     private static int mapCenterLng;
     private static int mapCenterLat;
 
+    private static Connections connections;
+    
     private HttpUtil http;
 
     private Counter timingCounter;
@@ -751,5 +760,24 @@ public class AppCAP extends Application {
 
     public static Context getAppContext() {
         return AppCAP.context;
+    }
+
+ 
+    public Connections getConnections() {
+        return connections;
+    }
+
+    public static void setConnections(Connections linkedInConnections) {
+        connections = linkedInConnections;
+    }
+
+    public static ArrayList<Person> getUsersConnections() {
+        ArrayList<Person> listPersons;
+        if (connections != null) {
+            listPersons = (ArrayList<Person>) connections.getPersonList();
+        } else {
+            listPersons = new ArrayList<Person>();
+        }
+        return listPersons;
     }
 }

@@ -1,6 +1,7 @@
 package com.coffeeandpower.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -85,6 +86,14 @@ public class ActivityEnterInviteCode extends Activity {
     private void errorReceived() {
 
     }
+
+    public void onClickLinkedInInviteList(View v) {
+        TextView inviteCodeText = (TextView) findViewById(R.id.edit_text);
+        Intent intent = new Intent(this, ActivityInviteContacts.class);
+        intent.putExtra("inviteCodeText", inviteCodeText.getText().toString());
+        startActivity(intent);
+    }
+    
 
     private void actionFinished(int action) {
         result = exe.getResult();
