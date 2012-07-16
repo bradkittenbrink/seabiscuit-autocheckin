@@ -8,13 +8,11 @@ import java.util.Observer;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -136,8 +134,6 @@ public class ActivityContacts extends RootActivity implements TabMenu,
                     .setBackgroundResource(R.drawable.bg_tabbar_selected);
             ((ImageView) findViewById(R.id.imageview_contacts))
                     .setImageResource(R.drawable.tab_contacts_pressed);
-            ((TextView) findViewById(R.id.text_contacts))
-                    .setTextColor(Color.WHITE);
 
             // Get Notification settings from shared prefs
             ((ToggleButton) findViewById(R.id.toggle_checked_in))
@@ -185,8 +181,6 @@ public class ActivityContacts extends RootActivity implements TabMenu,
                     .setBackgroundResource(R.drawable.bg_tabbar_selected);
             ((ImageView) findViewById(R.id.imageview_log_in))
                     .setImageResource(R.drawable.tab_login_pressed);
-            ((TextView) findViewById(R.id.text_log_in))
-                    .setTextColor(Color.WHITE);
 
             RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
             RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);
@@ -206,14 +200,9 @@ public class ActivityContacts extends RootActivity implements TabMenu,
         if (AppCAP.isUserCheckedIn()) {
             ((TextView) findViewById(R.id.textview_check_in))
                     .setText("Check Out");
-            ((ImageView) findViewById(R.id.imageview_check_in_clock_hand))
-                    .setAnimation(AnimationUtils.loadAnimation(
-                            ActivityContacts.this, R.anim.rotate_indefinitely));
         } else {
             ((TextView) findViewById(R.id.textview_check_in))
                     .setText("Check In");
-            ((ImageView) findViewById(R.id.imageview_check_in_clock_hand))
-                    .clearAnimation();
         }
     }
 

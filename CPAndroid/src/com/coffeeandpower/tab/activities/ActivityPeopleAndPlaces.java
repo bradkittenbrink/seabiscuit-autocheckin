@@ -8,13 +8,11 @@ import java.util.Observer;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -131,15 +129,9 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu,
         if (AppCAP.isUserCheckedIn()) {
             ((TextView) findViewById(R.id.textview_check_in))
                     .setText("Check Out");
-            ((ImageView) findViewById(R.id.imageview_check_in_clock_hand))
-                    .setAnimation(AnimationUtils.loadAnimation(
-                            ActivityPeopleAndPlaces.this,
-                            R.anim.rotate_indefinitely));
         } else {
             ((TextView) findViewById(R.id.textview_check_in))
                     .setText("Check In");
-            ((ImageView) findViewById(R.id.imageview_check_in_clock_hand))
-                    .clearAnimation();
         }
     }
 
@@ -259,17 +251,11 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu,
                         .setBackgroundResource(R.drawable.bg_tabbar_selected);
                 ((ImageView) findViewById(R.id.imageview_people))
                         .setImageResource(R.drawable.tab_people_pressed);
-                ((TextView) findViewById(R.id.text_people))
-                        .setTextColor(Color.WHITE);
                 ((CustomFontView) findViewById(R.id.textview_location_name))
                         .setText(PEOPLE_SCREEN_TITLE);
             } else {
                 ((RelativeLayout) findViewById(R.id.rel_places))
                         .setBackgroundResource(R.drawable.bg_tabbar_selected);
-                ((ImageView) findViewById(R.id.imageview_places))
-                        .setImageResource(R.drawable.tab_places_pressed);
-                ((TextView) findViewById(R.id.text_places))
-                        .setTextColor(Color.WHITE);
                 ((CustomFontView) findViewById(R.id.textview_location_name))
                         .setText(PLACES_SCREEN_TITLE);
             }

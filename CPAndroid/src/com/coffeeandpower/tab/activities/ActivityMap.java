@@ -8,7 +8,6 @@ import java.util.Observer;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -118,14 +117,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu,
         if (AppCAP.isUserCheckedIn()) {
             ((TextView) findViewById(R.id.textview_check_in))
                     .setText("Check Out");
-            ((ImageView) findViewById(R.id.imageview_check_in_clock_hand))
-                    .setAnimation(AnimationUtils.loadAnimation(
-                            ActivityMap.this, R.anim.rotate_indefinitely));
         } else {
             ((TextView) findViewById(R.id.textview_check_in))
                     .setText("Check In");
-            ((ImageView) findViewById(R.id.imageview_check_in_clock_hand))
-                    .clearAnimation();
         }
     }
 
@@ -195,8 +189,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu,
         ((RelativeLayout) findViewById(R.id.rel_map))
                 .setBackgroundResource(R.drawable.bg_tabbar_selected);
         ((ImageView) findViewById(R.id.imageview_map))
-                .setImageResource(R.drawable.tab_map_pressed);
-        ((TextView) findViewById(R.id.text_map)).setTextColor(Color.WHITE);
+                .setImageResource(R.drawable.tab_places_pressed);
 
         // Set others
         mapView.getOverlays().add(myLocationOverlay);
