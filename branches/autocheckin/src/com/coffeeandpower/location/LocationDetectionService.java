@@ -123,7 +123,7 @@ public class LocationDetectionService extends Service {
 	public static void addVenueToAutoCheckinList(VenueSmart checkinVenue)
         {
         	// Create a prox alert if this is a new venue for this user
-        	if (AppCAP.addVenueToAutoCheckinList(checkinVenue.getVenueId())) {
+        	if (AppCAP.enableAutoCheckinForVenue(checkinVenue.getVenueId())) {
         		//createProxAlert(checkinVenue);
         	}
         }

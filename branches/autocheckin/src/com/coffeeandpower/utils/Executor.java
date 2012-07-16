@@ -1,5 +1,8 @@
 package com.coffeeandpower.utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
@@ -241,16 +244,39 @@ public class Executor {
 			@Override
 			public void run() {
 				result = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime, statusText, checkinIsAutoCheckin);
-				//If user selected auto checkin, save that to preferences
-				if (userDesiresAutoCheckin) {
-					LocationDetectionService.addVenueToAutoCheckinList(venue);
+				
+				// Add current venue to list of venues with user checkins
+				int venueId = venue.getVenueId();
+				
+				if (venueId == 0) {
+					try {
+        					JSONObject json = new JSONObject(result.getResponseMessage());
+        					if (json != null) {
+        
+        						int newVenueId = json.optInt("venue_id");
+        						if (newVenueId != 0) {
+        							venueId = newVenueId;
+        						}
+        					}
+					}
+					catch (JSONException e) {
+						Log.d("Executor","JSON Error: Checkin failed to return venue ID, and we didn't have a venue ID cached...");
+					}
 				}
-		
-				//FIXME
-				//This assumes that the checkin is going to be successful, it doesn't look like there
-				//is currently any code to verify that the checkin was successful
-				LocationDetectionStateMachine.checkinCheckoutCOMPLETE();
-				handler.sendEmptyMessage(result.getHandlerCode());
+				
+				if (venueId != 0) {
+				
+        				//If user selected auto checkin, save that to preferences
+        				if (userDesiresAutoCheckin) {
+        					LocationDetectionService.addVenueToAutoCheckinList(venue);
+        				}
+        		
+        				//FIXME
+        				//This assumes that the checkin is going to be successful, it doesn't look like there
+        				//is currently any code to verify that the checkin was successful
+        				LocationDetectionStateMachine.checkinCheckoutCOMPLETE();
+        				handler.sendEmptyMessage(result.getHandlerCode());
+				}
 			}
 		}).start();
 	}

@@ -128,54 +128,8 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 			}
 		});
 		
-		this.autoCheckinList.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				
-				//Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
-				//intent.putExtra("venueSmart", (VenueSmart) adapterPlaces.getItem(position));
-				//We are sending the whole place object so we won't need the 4sqId separately
-				//intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
-				//I don't know what data is, but I don't think we will need
-				//intent.putExtra("coords", data);
-				//startActivity(intent);
-				Log.d("Notifications","User clicked on row.");
-				
-				
-				
-
-			}
-		});
-		
-		/*
-		this.masterAutoCheckinToggleList.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				
-				//Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
-				//intent.putExtra("venueSmart", (VenueSmart) adapterPlaces.getItem(position));
-				//We are sending the whole place object so we won't need the 4sqId separately
-				//intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
-				//I don't know what data is, but I don't think we will need
-				//intent.putExtra("coords", data);
-				//startActivity(intent);
-				Log.d("Notifications","User clicked on master toggle row.");
-				
-				
-				
-
-			}
-		});
-		*/
 		
 		
-		// Create adapter and single row for master toggle switch
-		/*
-		ArrayList<String> toggleStringArray = new ArrayList<String>();
-		toggleStringArray.add("Auto Check In At Venues");
-		myNotificationsListAdapter = new MyNotificationsListAdapter(ActivityAutoCheckinList.this, toggleStringArray);
-		this.autoCheckinList.setAdapter(myVenueNotificationAdapter);
-		*/
 		
 		// prevent keyboard popup
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); 
@@ -241,7 +195,7 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 	@Override
 	public void update(Observable observable, Object data) {
 		// Get list of venues with user checkins
-        	int[] venueList = AppCAP.getVenuesWithAutoCheckins();
+        	int[] venueList = AppCAP.getVenuesWithUserCheckins();
         	
         	CachedDataContainer counterdata = (CachedDataContainer) data;
 		DataHolder venuesWithCheckins = counterdata.getData();
@@ -254,8 +208,7 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 		//List of Venues we are going to send to list adapter
 		ArrayList<VenueSmart> deliveredVenues = new ArrayList<VenueSmart>();
 
-		//Grab the Venue data from the cache and see if it matches all the venues in the
-		//previously checkedin list
+		//Add VenueSmarts to deliveredVenues if the venueID matches a venue where user has checked in before
 		for (VenueSmart receivedVenue: arrayVenues) {
 			for (int myVenueId:venueList) {
 				if (myVenueId == receivedVenue.getVenueId()) {

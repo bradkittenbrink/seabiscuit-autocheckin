@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyVenuesAdapter.ViewHolder;
@@ -18,6 +20,8 @@ import com.coffeeandpower.cont.VenueSmart;
 
 public class MyVenueNotificationAdapter extends BaseAdapter {
 
+	private final String TAG = "NotificationsAdapter";
+	
 	private ArrayList<VenueSmart> venues;
 	private LayoutInflater inflater;
 
@@ -55,13 +59,44 @@ public class MyVenueNotificationAdapter extends BaseAdapter {
 	public static class ViewHolder {
 		public TextView textName;
 		public TextView textAddress;
+		public TextView textAddress2;
+		public TextView textHiddenVenueId;
 		public ToggleButton toggleButton; 
+		
+		public int myVenueId;
 
 		public ViewHolder(View convertView) {
 
 			this.textAddress = (TextView) convertView.findViewById(R.id.text_address);
 			this.textName = (TextView) convertView.findViewById(R.id.text_name);
 			this.toggleButton = (ToggleButton) convertView.findViewById(R.id.autoCheckinToggleButton);
+			
+			this.toggleButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					
+					//Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
+					//intent.putExtra("venueSmart", (VenueSmart) adapterPlaces.getItem(position));
+					//We are sending the whole place object so we won't need the 4sqId separately
+					//intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
+					//I don't know what data is, but I don't think we will need
+					//intent.putExtra("coords", data);
+					//startActivity(intent);
+					
+					
+					
+					Log.d("AutoCheckin","User clicked toggle button for venue: " + myVenueId);					
+
+					if (!toggleButton.isChecked()) {
+						Log.d("AutoCheckin","Disabling auto-checkin for venue: " + myVenueId);
+						AppCAP.disableAutoCheckinForVenue(myVenueId);
+					}
+					else {
+						Log.d("AutoCheckin","Enabling auto-checkin for venue: " + myVenueId);
+						AppCAP.enableAutoCheckinForVenue(myVenueId);
+					}
+				}
+			});
 		}
 	}
 
@@ -77,9 +112,15 @@ public class MyVenueNotificationAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
+		int venueId = venues.get(position).getVenueId();
+		
+		Log.d(TAG,"getView for venue: " + venueId);
+		
 		holder.textAddress.setText(venues.get(position).getAddress());
 		holder.textName.setText(venues.get(position).getName());
+		holder.myVenueId = venueId;
 		
+		holder.toggleButton.setChecked(AppCAP.isVenueAutoCheckinEnabled(venueId));
 
 		return convertView;
 	}

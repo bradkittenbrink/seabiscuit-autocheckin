@@ -81,7 +81,8 @@ public class AppCAP extends Application {
 	private static final String TAG_SCREEN_WIDTH = "tag_screen_width";
 	private static final String TAG_FIRST_START = "tag_first_start";
 	private static final String TAG_INFO_DIALOG = "tag_info_dialog";
-	//private static final String TAG_VENUES_WITH_USER_CHECKINS = "venuesWithUserCheckins";
+	
+	private static final String TAG_VENUES_WITH_USER_CHECKINS = "venuesWithUserCheckins";
 	private static final String TAG_VENUES_WITH_AUTO_CHECKINS = "venuesWithAutoCheckins";
 	private static final String TAG_VENUE_WIFI_SIGNATURES = "venueWifiSignatures";
 
@@ -113,6 +114,8 @@ public class AppCAP extends Application {
 	public static final int ERROR_SUCCEEDED_SHOW_MESS = 1407;
 	
 	private static Application myApplicationReferenceForUAirship;
+	
+	private static Gson gsonConverter = new Gson();
 	
 	// App wide observables
 	
@@ -153,6 +156,9 @@ public class AppCAP extends Application {
 			
 			Log.d("Coffee","Main process loading (onCreate)...");
 			
+			getSharedPreferences().edit().putString(TAG_VENUES_WITH_AUTO_CHECKINS, null).commit();
+			getSharedPreferences().edit().putString(TAG_VENUES_WITH_USER_CHECKINS, null).commit();
+			
 			this.http = new HttpUtil();
 			
 			PushPreferences prefs = PushManager.shared().getPreferences();
@@ -173,6 +179,8 @@ public class AppCAP extends Application {
 			} else {
 				setMetricsSys(false);
 			}
+		} else {
+			Log.d(TAG, "Starting process " + getAppName());
 		}
 	}
 	
@@ -233,6 +241,8 @@ public class AppCAP extends Application {
 	
 	
 	
+	
+	
 	/**
 	 * 
 	 * @category sharedResource
@@ -271,13 +281,19 @@ public class AppCAP extends Application {
 		return instance.getSharedPreferences(AppCAP.TAG, MODE_PRIVATE);
 	}
 	
+	
+	
+	
+	
+	
+	
 	/*
-	 * Add a Venue to the Auto Checkin List
+	 * Add a Venue to the User Checkin List
 	 * @category localUserData
 	 */
-	public static boolean addVenueToAutoCheckinList(int venueId) {
+	public static boolean addVenueToUserCheckinList(int venueId) {
 		
-		int[] currentVenues = getVenuesWithAutoCheckins();
+		int[] currentVenues = getVenuesWithUserCheckins();
 		int venueIdx = 0;
 		
 		// If the venue is already present, return false
@@ -287,43 +303,159 @@ public class AppCAP extends Application {
 			venueIdx += 1;
 		}
 		
+		ArrayList<Integer> venueArray = new ArrayList<Integer>();
+		
 		venueIdx = 0;
-		String newPrefValue = "";
 		
 		// Concat all venues together
 		while (venueIdx < currentVenues.length) {
-			newPrefValue += String.valueOf(currentVenues[venueIdx]) + ",";
+			venueArray.add(currentVenues[venueIdx]);
 			venueIdx += 1;
 		}
 		
 		// Save comma-separated string to preferences
-		newPrefValue += String.valueOf(venueId);
+		venueArray.add(venueId);
+		
+		String newPrefValue = gsonConverter.toJson(venueArray);
+		
+		Log.d("GSON","Writing string to user checkins: " + newPrefValue);
+		
+		getSharedPreferences().edit().putString(TAG_VENUES_WITH_USER_CHECKINS, newPrefValue).commit();
+		return true;
+		
+	}
+	
+	
+	/*
+	 * Return list of venue IDs for which the user has selected Auto Checkin
+	 */
+	public static int[] getVenuesWithUserCheckins() {
+		
+		
+		//return getSharedPreferences().getStringSet("venuesWithUserCheckins",null);
+		String venueStrings = getSharedPreferences().getString(TAG_VENUES_WITH_USER_CHECKINS,null);
+		Log.d("GSON","Queried user checkins value: " + venueStrings);
+		
+		int[] returnArray = gsonConverter.fromJson(venueStrings,int[].class);
+		
+		if (returnArray != null)
+			return returnArray;
+		else
+			return new int[0];
+	}
+	
+	
+	
+	/*
+	 * Add a Venue to the Auto Checkin List
+	 * @category localUserData
+	 */
+	public static boolean enableAutoCheckinForVenue(int venueId) {
+		
+		int[] currentAutoCheckinVenues = getVenuesWithAutoCheckins();
+		int venueIdx = 0;
+		
+		// If the venue is already present, return - this should not happen and would be considered a bug
+		while (venueIdx < currentAutoCheckinVenues.length) {
+			if (currentAutoCheckinVenues[venueIdx] == venueId) {
+				Log.d(TAG,"WARNING: Tried to enable autocheckin for a venue already on the list...");
+				return false;
+			}
+			venueIdx += 1;
+		}
+		
+		ArrayList<Integer> venueArray = new ArrayList<Integer>();
+		
+		venueIdx = 0;
+		
+		
+		// Concat all venues together
+		while (venueIdx < currentAutoCheckinVenues.length) {
+			venueArray.add(currentAutoCheckinVenues[venueIdx]);
+			venueIdx += 1;
+		}
+		
+		// Save comma-separated string to preferences
+		venueArray.add(venueId);
+		String newPrefValue = gsonConverter.toJson(venueArray);
+		
+		Log.d("GSON","Updating auto checkins value: " + newPrefValue);
+		
 		getSharedPreferences().edit().putString(TAG_VENUES_WITH_AUTO_CHECKINS, newPrefValue).commit();
 		return true;
 		
 	}
 	
+	
+	public static boolean disableAutoCheckinForVenue(int venueId) {
+		int[] currentAutoCheckinVenues = getVenuesWithAutoCheckins();
+		
+		
+		ArrayList<Integer> venueArray = new ArrayList<Integer>();
+		
+		
+		int venueIdx = 0;
+		
+		boolean venueFound = false;
+		
+		// Concat all venues together except target venue
+		while (venueIdx < currentAutoCheckinVenues.length) {
+			if (currentAutoCheckinVenues[venueIdx] != venueId) {
+				venueArray.add(currentAutoCheckinVenues[venueIdx]);
+			} else {
+				venueFound = true;
+			}
+			
+			venueIdx += 1;
+		}
+		
+		if (!venueFound) {
+			Log.d(TAG,"WARNING: Tried to disable autocheckin for a venue not on the list...");
+		}
+		
+		// Save json-encoded string
+		String newPrefValue = gsonConverter.toJson(venueArray);
+		
+		Log.d("GSON","Saving auto checkins value: " + newPrefValue);
+		
+		getSharedPreferences().edit().putString(TAG_VENUES_WITH_AUTO_CHECKINS, newPrefValue).commit();
+		return true;
+	}
+	
+	
 	/*
 	 * Return list of venue IDs for which the user has selected Auto Checkin
 	 */
 	public static int[] getVenuesWithAutoCheckins() {
-		//return getSharedPreferences().getStringSet("venuesWithUserCheckins",null);
-		String venueStrings = getSharedPreferences().getString(TAG_VENUES_WITH_AUTO_CHECKINS,null);
 		
-		if (venueStrings != null) {
-			String[] stringArray = venueStrings.split(",");
-			int[] returnArray = new int[stringArray.length];
-			
-			int tokenIdx = 0;
-			while (tokenIdx < returnArray.length) {
-				returnArray[tokenIdx] = Integer.parseInt(stringArray[tokenIdx]);						
-				tokenIdx += 1;
-			}
-			
+		
+		String venueStrings = getSharedPreferences().getString(TAG_VENUES_WITH_AUTO_CHECKINS,null);
+		Log.d("GSON","Queried auto checkins value: " + venueStrings);
+		
+		int[] returnArray = gsonConverter.fromJson(venueStrings,int[].class);
+		
+		if (returnArray != null)
 			return returnArray;
+		else
+			return new int[0];
+		
+		
+		
+	}
+	
+	
+	public static boolean isVenueAutoCheckinEnabled(int venueId) {
+		int[] currentAutoCheckinVenues = getVenuesWithAutoCheckins();
+		int venueIdx = 0;
+		
+		// Concat all venues together except target venue
+		while (venueIdx < currentAutoCheckinVenues.length) {
+			if (currentAutoCheckinVenues[venueIdx] == venueId) 
+				return true;
+			venueIdx += 1;
 		}
 		
-		return new int[0];
+		return false;
 	}
 	
 	
@@ -594,7 +726,7 @@ public class AppCAP extends Application {
 		return data;
 	}
 	/**
-	 * data[0] = user_lat; data[1] = user_lng;
+	 * data[0] = user_lat; data[1]) = user_lng;
 	 * @category localUserData
 	 */
 	public static double[] getUserLatLon() {

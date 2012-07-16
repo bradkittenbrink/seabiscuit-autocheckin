@@ -2315,6 +2315,8 @@ public class HttpUtil {
 
 					boolean res = json.optBoolean("error");
 					if (!res) {
+						result.setResponseMessage(responseString);
+						
 						result.setHandlerCode(Executor.HANDLE_CHECK_IN);
 						return result;
 					}
