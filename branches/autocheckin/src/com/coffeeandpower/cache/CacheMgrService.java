@@ -42,7 +42,7 @@ public class CacheMgrService extends Service {
 	
 	private static int numberOfCalls = 0;
 	
-	private static int apisCalledThisUpdate = 0;
+	//private static int apisCalledThisUpdate = 0;
 	private static boolean cachedDataSentThisUpdate = false;
 	
 	// Scheduler
@@ -65,6 +65,8 @@ public class CacheMgrService extends Service {
 	@Override
 	public void onDestroy() {
 		Log.d(TAG,"onDestroy()");
+		
+		stopPeriodicTimer();
 		//locationManager.removeUpdates(passiveLocationReceiver);
 		
 	}
@@ -96,6 +98,8 @@ public class CacheMgrService extends Service {
 	//=====================================================
 
 	public static void startObservingAPICall(String apicall, Observer context) {
+		
+		Log.d(TAG,"Observer " + context + " is registering for API: " + apicall);
 		
 		if (apicall.equals("venuesWithCheckins")) {
 			if (Constants.debugLog)
@@ -136,6 +140,8 @@ public class CacheMgrService extends Service {
 	
 	
 	public static void startObservingAPICalls(String apicall1, String apicall2, Observer context) {
+		
+		Log.d(TAG,"Observer " + context + " is registering for APIs: " + apicall1 + ", " + apicall2);
 		
 		if (apicall1.equals("venuesWithCheckins") || apicall2.equals("venuesWithCheckins")) {
 			if (Constants.debugLog)
@@ -210,7 +216,7 @@ public class CacheMgrService extends Service {
 	// Periodic timer management
 	//=====================================================	
 
-	public static void stopPeriodicTimer() {
+	private static void stopPeriodicTimer() {
 		
 		if (isRunning == true) {
 			//if (Constants.debugLog)
@@ -225,11 +231,12 @@ public class CacheMgrService extends Service {
 		}
 	}
 
-	public static void startPeriodicTimer() {
+	private static void startPeriodicTimer() {
 		
 		if (isRunning == false) {
 			//if (Constants.debugLog)
 			//	Log.d(TAG,"CacheMgrService.start()");
+			Log.d(TAG,"Starting periodic timer...");
 			isRunning = true;
 			taskHandler.removeCallbacks(runTimer);
 			taskHandler.post(runTimer);
@@ -242,14 +249,17 @@ public class CacheMgrService extends Service {
 		
 	}
 	
-	public static void manualTrigger() {
+	/*
+	private static void manualTrigger() {
 		if (Constants.debugLog)
 			Log.d(TAG,"manualTrigger()");
 		stopPeriodicTimer();
 		startPeriodicTimer();
 	}
+	*/
 	
-	public static void refreshAllData() {
+	
+	private static void refreshAllData() {
 		if (Constants.debugLog)
 			Log.d(TAG,"refreshAllData()");
 		refreshAllDataThisRun = true;
@@ -266,9 +276,13 @@ public class CacheMgrService extends Service {
 		@Override
 		public void run()
 		{
+			Log.d(TAG,"Starting new thread for periodic timer...");
         	    // We are now on the main thread, so kick off the API call in a worker thread
         	    Thread thread = new Thread(new Runnable() {
-			public void run() {
+        		    
+        		    private int apisCalledThisUpdate;
+        		    
+        		    public void run() {
         			    
         			    //isFirstRun = true;
         			    
@@ -304,6 +318,7 @@ public class CacheMgrService extends Service {
 				    // - refreshAllDataThisRun hasn't been set &&
 				    // - the current distance from the cached data is within the threshold
 				    
+				    Log.d(TAG,"Resetting cache update status variables...");
                 		    apisCalledThisUpdate = 0;
                 		    cachedDataSentThisUpdate = false;
                 		    

@@ -202,7 +202,7 @@ public class AppCAP extends Application {
 		Log.d("AppCAP","Running app cleanup...");
 		
 		
-	        CacheMgrService.stopPeriodicTimer();
+	        
 	        //ProximityManager.onStop(this);
 	        context.stopService(new Intent(context,CacheMgrService.class));
 	        
