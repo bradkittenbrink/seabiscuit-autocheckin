@@ -221,7 +221,7 @@ public class CacheMgrService extends Service {
 		else
 		{
 			if (Constants.debugLog)
-				Log.d(TAG,"Warning: Tried to stop CacheMgrService but it was not started...");
+				Log.d(TAG,"Warning: Tried to stop CacheMgrService periodic timer but it was not started...");
 		}
 	}
 
@@ -289,14 +289,7 @@ public class CacheMgrService extends Service {
 				    // Debug instrumentation
 				    //if (Constants.debugLog)
 					//	Log.d(TAG,"API calls: Using coordinates: " + latForAPI + ", " + lonForAPI);
-				    //if (Constants.debugLog)
-					//	Log.d(TAG,"Cache Status: venuesWithCheckins: " + venuesWithCheckinsCache.hasData() +
-                			//	    " nearbyVenues: " + nearbyVenuesCache.hasData() + 
-                			//	    " contactsList: " + contactsListCache.hasData());
-				    if (Constants.debugLog)
-						Log.d(TAG," APIs Active: venuesWithCheckins: " + venuesWithCheckinsCache.isActive() +
-                				    " nearbyVenues: " + nearbyVenuesCache.isActive() + 
-                				    " contactsList: " + contactsListCache.isActive());
+				    
                 		    
 				    // Do API calls for active caches
 				    //
@@ -324,16 +317,16 @@ public class CacheMgrService extends Service {
                 					    venuesWithCheckinsCache.hasData() && 
                 					    !refreshAllDataThisRun &&
                 					    venuesWithCheckinsCache.dataDistanceFrom(llArray) < DATA_DISTANCE_REFRESH_THRESHOLD) {
-                				    if (Constants.debugLog)
-                						Log.d(TAG,"Sending cached data for venuesWithCheckins");
+                				    //if (Constants.debugLog)
+                					//	Log.d(TAG,"Sending cached data for venuesWithCheckins");
                 				    venuesWithCheckinsCache.sendCachedData();
                 				    cachedDataSentThisUpdate = true;
                 			    } else {
-                				    if (Constants.debugLog)
-                						Log.d(TAG,"Refreshing venuesWithCheckinsCache...");
+                				    //if (Constants.debugLog)
+                					//	Log.d(TAG,"Refreshing venuesWithCheckinsCache...");
                         			    venuesWithCheckinsCache.setNewData(AppCAP.getConnection().getNearestVenuesWithCheckinsToCoordinate(llArray),llArray);
-                        			    if (Constants.debugLog)
-                        					Log.d(TAG,"Called VenuesWithCheckins, Received: " + venuesWithCheckinsCache.getData().getResponseMessage());
+                        			    //if (Constants.debugLog)
+                        				//	Log.d(TAG,"Called VenuesWithCheckins, Received: " + venuesWithCheckinsCache.getData().getResponseMessage());
                         			    apisCalledThisUpdate += 1;
                 			    } 
                 		    }
@@ -347,17 +340,17 @@ public class CacheMgrService extends Service {
                 					    nearbyVenuesCache.hasData() && 
                 					    !refreshAllDataThisRun &&
                         				    nearbyVenuesCache.dataDistanceFrom(llArray) < DATA_DISTANCE_REFRESH_THRESHOLD) {
-                				    if (Constants.debugLog)
-                						Log.d(TAG,"Sending cached data for nearbyVenues");
+                				    //if (Constants.debugLog)
+                					//	Log.d(TAG,"Sending cached data for nearbyVenues");
                 				    nearbyVenuesCache.sendCachedData();
                 				    cachedDataSentThisUpdate = true;
                 			    } else {
-                				    if (Constants.debugLog)
-                						Log.d(TAG,"Refreshing nearbyVenuesCache...");
+                				    //if (Constants.debugLog)
+                					//	Log.d(TAG,"Refreshing nearbyVenuesCache...");
                                 		    final GeoPoint gp = new GeoPoint((int)(latForAPI*1E6), (int)(lonForAPI*1E6));
                                 		    nearbyVenuesCache.setNewData(AppCAP.getConnection().getVenuesCloseToLocation(gp,20),new double[]{latForAPI,lonForAPI});
-                                		    if (Constants.debugLog)
-                                				Log.d(TAG,"Called VenuesWithCheckins, Received: " + nearbyVenuesCache.getData().getResponseMessage());
+                                		    //if (Constants.debugLog)
+                                			//	Log.d(TAG,"Called VenuesWithCheckins, Received: " + nearbyVenuesCache.getData().getResponseMessage());
                                 		    apisCalledThisUpdate += 1;
                 			    }
                 		    }
@@ -371,26 +364,38 @@ public class CacheMgrService extends Service {
                 					    contactsListCache.hasData() && 
                 					    !refreshAllDataThisRun &&
                         				    contactsListCache.dataDistanceFrom(llArray) > DATA_DISTANCE_REFRESH_THRESHOLD) {
-                				    if (Constants.debugLog)
-                						Log.d(TAG,"Sending cached data for contactsList");
+                				    //if (Constants.debugLog)
+                					//	Log.d(TAG,"Sending cached data for contactsList");
                 				    contactsListCache.sendCachedData();
                 				    cachedDataSentThisUpdate = true;
                 			    } else {
-                				    if (Constants.debugLog)
-                						Log.d(TAG,"Refreshing contactsListCache...");
+                				    //if (Constants.debugLog)
+                					//	Log.d(TAG,"Refreshing contactsListCache...");
                         			    contactsListCache.setNewData(AppCAP.getConnection().getContactsList(),new double[]{latForAPI,lonForAPI});
-                        			    if (Constants.debugLog)
-                        					Log.d(TAG,"Called getContactsList, Received: " + contactsListCache.getData().getResponseMessage());
+                        			    //if (Constants.debugLog)
+                        				//	Log.d(TAG,"Called getContactsList, Received: " + contactsListCache.getData().getResponseMessage());
                                 		    apisCalledThisUpdate += 1;
                 			    }
                 		    }
                 		    
-                		    if (cachedDataSentThisUpdate && Constants.debugLog) 
-                			    Log.d(TAG,"Cached Data sent this update.");
-                		    if (apisCalledThisUpdate > 0 && Constants.debugLog)
-                			    Log.d(TAG,"API calls this made this update: " + apisCalledThisUpdate);
+                		    if (Constants.debugLog)
+                			    Log.d(TAG," - CacheMgr Periodic Timer Run Summary:");
+                		    
+                		    if (Constants.debugLog)
+						Log.d(TAG,"    - Cache Status: venuesWithCheckins: " + venuesWithCheckinsCache.hasData() +
+            				    " nearbyVenues: " + nearbyVenuesCache.hasData() + 
+            				    " contactsList: " + contactsListCache.hasData());
+				    if (Constants.debugLog)
+						Log.d(TAG,"    - APIs Active: venuesWithCheckins: " + venuesWithCheckinsCache.isActive() +
+            				    " nearbyVenues: " + nearbyVenuesCache.isActive() + 
+            				    " contactsList: " + contactsListCache.isActive());
+                		    
+                		    if (Constants.debugLog) 
+                			    Log.d(TAG,"    - Cached Data sent this update: " + cachedDataSentThisUpdate);
+                		    if (Constants.debugLog)
+                			    Log.d(TAG,"    - API calls this made this update: " + apisCalledThisUpdate);
                 		    if (!cachedDataSentThisUpdate && apisCalledThisUpdate == 0 && Constants.debugLog)
-                			    Log.d(TAG,"No data consumers active.");
+                			    Log.d(TAG,"    - => No data consumers active.");
                         	    
                 		    // Clear any flags that control behavior for a single update
         			    allowCachedDataThisRun = false;

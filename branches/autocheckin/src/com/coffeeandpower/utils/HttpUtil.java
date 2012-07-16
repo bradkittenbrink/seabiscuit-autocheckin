@@ -108,7 +108,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_getResumeForUserId: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_getResumeForUserId: " + responseString);
 			AppCAP.logInFile(responseString);
 
 			if (responseString != null) {
@@ -442,7 +443,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_getCheckInDataWithUserId: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_getCheckInDataWithUserId: " + responseString);
 
 			if (responseString != null) {
 
@@ -490,7 +492,7 @@ public class HttpUtil {
 		try {
 			myFileUrl = new URL(url);
 		} catch (MalformedURLException e) {
-			RootActivity.log("HttpUtil_getBitmapFromURL url:" + url);
+			RootActivity.log("HttpUtil_getBitmapFromURL URL ERROR:" + url);
 			e.printStackTrace();
 		}
 
@@ -539,7 +541,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_uploadUserProfilePhoto: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_uploadUserProfilePhoto: " + responseString);
 
 			if (responseString != null) {
 
@@ -605,7 +608,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_sendOneOnOneChatMessage: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_sendOneOnOneChatMessage: " + responseString);
 
 			if (responseString != null) {
 
@@ -665,7 +669,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_sendReview: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_sendReview: " + responseString);
 
 			if (responseString != null) {
 
@@ -729,7 +734,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_getOneOnOneChatHistory: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_getOneOnOneChatHistory: " + responseString);
 
 			if (responseString != null) {
 
@@ -815,7 +821,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_setUserProfileData: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_setUserProfileData: " + responseString);
 
 			if (responseString != null) {
 
@@ -880,7 +887,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_setNotificationSettings: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_setNotificationSettings: " + responseString);
 
 			if (responseString != null) {
 
@@ -1023,7 +1031,8 @@ public class HttpUtil {
 
 			String responseString = EntityUtils.toString(resEntity);
 			AppCAP.logInFile(responseString);
-			RootActivity.log("HttpUtil_getVenuesAndUsersWithCheckinsInBoundsDuringInterval: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_getVenuesAndUsersWithCheckinsInBoundsDuringInterval: " + responseString);
 
 			if (responseString != null) {
 
@@ -1187,7 +1196,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_getUsersCheckedIn: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_getUsersCheckedIn: " + responseString);
 
 			if (responseString != null) {
 
@@ -1275,7 +1285,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_sendContactRequestToUserId: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_sendContactRequestToUserId: " + responseString);
 
 			if (responseString != null) {
 
@@ -1335,7 +1346,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_sendAcceptContactRequestFromUserId: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_sendAcceptContactRequestFromUserId: " + responseString);
 
 			if (responseString != null) {
 
@@ -1392,7 +1404,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_sendF2FInvite: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_sendF2FInvite: " + responseString);
 
 			if (responseString != null) {
 
@@ -1454,7 +1467,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_addPlace: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_addPlace: " + responseString);
 
 			if (responseString != null) {
 
@@ -1560,7 +1574,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_sendF2FAccept: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_sendF2FAccept: " + responseString);
 
 			if (responseString != null) {
 
@@ -1620,7 +1635,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_sendF2FDecline: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_sendF2FDecline: " + responseString);
 
 			if (responseString != null) {
 
@@ -1682,7 +1698,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_sendF2FVerify: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_sendF2FVerify: " + responseString);
 
 			if (responseString != null) {
 
@@ -1736,7 +1753,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_getContactList: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_getContactList: " + responseString);
 
 			if (responseString != null) {
 				JSONObject json = new JSONObject(responseString);
@@ -1813,7 +1831,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_getInvitationCodeForLocation: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_getInvitationCodeForLocation: " + responseString);
 
 			if (responseString != null) {
 
@@ -1884,7 +1903,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_enterInvitationCode: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_enterInvitationCode: " + responseString);
 
 			if (responseString != null) {
 
@@ -1948,7 +1968,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_VenueChatForVenueWithID: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_VenueChatForVenueWithID: " + responseString);
 
 			if (responseString != null) {
 				JSONObject json = new JSONObject(responseString);
@@ -2109,7 +2130,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_saveUserMajorJobCategory: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_saveUserMajorJobCategory: " + responseString);
 
 			if (responseString != null) {
 
@@ -2174,7 +2196,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_saveUserSmartererName: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_saveUserSmartererName: " + responseString);
 
 			if (responseString != null) {
 
@@ -2232,7 +2255,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_checkOut: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_checkOut: " + responseString);
 
 			if (responseString != null) {
 
@@ -2306,7 +2330,9 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_checkIn: " + responseString);
+			
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_checkIn: " + responseString);
 
 			if (responseString != null) {
 
@@ -2384,7 +2410,8 @@ public class HttpUtil {
 			HttpEntity resEntity = responseClient.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_getVenuesInSWCoords " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_getVenuesInSWCoords " + responseString);
 
 			if (responseString != null) {
 				JSONObject json = new JSONObject(responseString);
@@ -2471,7 +2498,8 @@ public class HttpUtil {
 			HttpEntity resEntity = responseClient.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_getVenuesCloseToLocation " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_getVenuesCloseToLocation " + responseString);
 
 			if (responseString != null) {
 				JSONObject json = new JSONObject(responseString);
@@ -2719,7 +2747,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_getUserTrasactionData: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_getUserTrasactionData: " + responseString);
 
 			if (responseString != null) {
 
@@ -2788,7 +2817,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_getUserData: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_getUserData: " + responseString);
 
 			// Save cookies to share session with WebView
 			client.getCookieStore().getCookies();
@@ -2861,7 +2891,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_getNotificationSettings: " + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_getNotificationSettings: " + responseString);
 
 			if (responseString != null) {
 
@@ -2934,7 +2965,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_signup: " + EntityUtils.toString(post.getEntity()) + ":" + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_signup: " + EntityUtils.toString(post.getEntity()) + ":" + responseString);
 
 			if (responseString != null) {
 
@@ -3017,7 +3049,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_signup: " + EntityUtils.toString(post.getEntity()) + ":" + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_signup: " + EntityUtils.toString(post.getEntity()) + ":" + responseString);
 
 			if (responseString != null) {
 
@@ -3093,7 +3126,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_login: " + EntityUtils.toString(post.getEntity()) + ":" + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_login: " + EntityUtils.toString(post.getEntity()) + ":" + responseString);
 
 			if (responseString != null) {
 
@@ -3189,7 +3223,8 @@ public class HttpUtil {
 			HttpEntity resEntity = response.getEntity();
 
 			String responseString = EntityUtils.toString(resEntity);
-			RootActivity.log("HttpUtil_login: " + EntityUtils.toString(post.getEntity()) + ":" + responseString);
+			if (Constants.enableApiJsonLogging)
+				RootActivity.log("HttpUtil_login: " + EntityUtils.toString(post.getEntity()) + ":" + responseString);
 
 			if (responseString != null) {
 

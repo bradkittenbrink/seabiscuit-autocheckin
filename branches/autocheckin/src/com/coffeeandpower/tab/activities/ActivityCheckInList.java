@@ -285,12 +285,9 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 			bundle.putParcelableArrayList("venuesWCheckins", new ArrayList<VenueSmart>(arrayVenuesWCheckins));
 			message.setData(bundle);
 			
-			if (Constants.debugLog)
-				Log.d("CheckInList","ActivityCheckInList.update: Sending handler message with " + arrayVenues.size() + " venues...");
-			for (VenueSmart tempVenue:arrayVenues) {
-				if (Constants.debugLog)
-					Log.d("CheckInList","Venue: " + tempVenue.getName());
-			}
+			//if (Constants.debugLog)
+			//	Log.d("CheckInList","ActivityCheckInList.update: Sending handler message with " + arrayVenues.size() + " venues...");
+
 			
 			this.nearbyVenuesHolderWORKERTHREAD = null;
 			this.venuesWithCheckinsHolderWORKERTHREAD = null;
