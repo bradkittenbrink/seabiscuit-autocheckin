@@ -108,7 +108,7 @@ public class Executor {
 				result = AppCAP.getConnection().getUserResume(userId);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.getResumeForUserId").start();
 	}
 
 	public synchronized void sendReview(final UserResume userResume, final String review) {
@@ -120,7 +120,7 @@ public class Executor {
 				result = AppCAP.getConnection().sendReview(userResume, review);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.sendReview").start();
 	}
 
 	public synchronized void getVenuesAndUsersWithCheckinsInBoundsDuringInterval(final double[] coords, boolean withProgress) {
@@ -134,7 +134,7 @@ public class Executor {
 				result = AppCAP.getConnection().getVenuesAndUsersWithCheckinsInBoundsDuringInterval(coords, 7);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.getVenuesAndUsersWithCheckinsInBoundsDuringInterval").start();
 	}
 
 	public synchronized void getUserData() {
@@ -146,7 +146,7 @@ public class Executor {
 				result = AppCAP.getConnection().getUserData();
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.getUserData").start();
 	}
 
 	public synchronized void getVenuesCloseToLocation(final GeoPoint gp, final int number) {
@@ -158,7 +158,7 @@ public class Executor {
 				result = AppCAP.getConnection().getVenuesCloseToLocation(gp, number);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.getVenuesCloseToLocation").start();
 	}
 
 	public synchronized void sendFriendRequest(final int userId) {
@@ -170,7 +170,7 @@ public class Executor {
 				result = AppCAP.getConnection().sendFriendRequest(userId);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.sendFriendRequest").start();
 	}
 
 	public synchronized void addPlace(final String name) {
@@ -182,7 +182,7 @@ public class Executor {
 				result = AppCAP.getConnection().addPlace(name, AppCAP.getUserCoordinates());
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.addPlace").start();
 	}
 
 	public synchronized void getContactsList() {
@@ -194,7 +194,7 @@ public class Executor {
 				result = AppCAP.getConnection().getContactsList();
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.getContactsList").start();
 	}
 
 	public synchronized void getOneOnOneChatHistory(final int userId) {
@@ -206,7 +206,7 @@ public class Executor {
 				result = AppCAP.getConnection().getOneOnOneChatHistory(userId);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.getOneOnOneChatHistory").start();
 	}
 
 	public synchronized void sendOneOnOneChatMessage(final int userId, final String mess) {
@@ -218,7 +218,7 @@ public class Executor {
 				result = AppCAP.getConnection().sendOneOnOneChatMessage(userId, mess);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.sendOneOnOneChatMessage").start();
 	}
 
 	public synchronized void getUsersCheckedInAtFoursquareID(final String venueId) {
@@ -230,7 +230,7 @@ public class Executor {
 				result = AppCAP.getConnection().getUsersCheckedInAtFoursquareID(venueId);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.getUsersCheckedInAtFoursquareID").start();
 	}
 
 	public synchronized void checkIn(final VenueSmart venue, final int checkInTime, final int checkOutTime, final String statusText, final boolean userDesiresAutoCheckin, final boolean checkinIsAutoCheckin) {
@@ -278,7 +278,7 @@ public class Executor {
         				handler.sendEmptyMessage(result.getHandlerCode());
 				}
 			}
-		}).start();
+		},"Executor.checkIn").start();
 	}
 
 	public synchronized void enterInvitationCode(final String invitationCode, final double lat, final double lng) {
@@ -290,7 +290,7 @@ public class Executor {
 				result = AppCAP.getConnection().enterInvitationCode(invitationCode, lat, lng);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.enterInvitationCode").start();
 	}
 	
 	public synchronized void getInvitationCode(final double[] latLong)
@@ -303,7 +303,7 @@ public class Executor {
 				result = AppCAP.getConnection().getInvitationCodeForLocation(latLong[0], latLong[1]);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();		
+		},"Executor.getInvitationCode").start();		
 		
 	}
 
@@ -316,7 +316,7 @@ public class Executor {
 				result = AppCAP.getConnection().saveUserJobCategory(selectedMajorJob, selectedMinorJob);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.saveUserJobCategory").start();
 	}
 
 	public synchronized void setUserProfileData(final UserSmart user, final boolean isEmailChanged) {
@@ -328,7 +328,7 @@ public class Executor {
 				result = AppCAP.getConnection().setUserProfileData(user, isEmailChanged);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.setUserProfileData").start();
 	}
 
 	public synchronized void uploadUserProfilePhoto() {
@@ -340,7 +340,7 @@ public class Executor {
 				result = AppCAP.getConnection().uploadUserProfilePhoto();
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.uploadUserProfilePhoto").start();
 	}
 
 	public synchronized void getUserTransactionData() {
@@ -352,7 +352,7 @@ public class Executor {
 				result = AppCAP.getConnection().getUserTransactionData();
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.getUserTransactionData").start();
 	}
 
 	/**
@@ -374,7 +374,7 @@ public class Executor {
 				result = AppCAP.getConnection().venueChatForVenueWithID(venueId, lastChatIDString, message, isSend);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
-		}).start();
+		},"Executor.venueChat").start();
 	}
 
 }
