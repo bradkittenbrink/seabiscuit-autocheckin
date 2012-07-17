@@ -364,6 +364,11 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu,
     }
 
     @Override
+    public void onClickSupport(View v) {
+        menu.onClickSupport(v);
+    }
+
+    @Override
     public void onClickLogout(View v) {
         menu.onClickLogout(v);
         onBackPressed();

@@ -80,6 +80,8 @@ public class AppCAP extends Application {
     private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
     private static final String TAG_NOTIFICATION_TOGGLE = "tag_notification_toggle";
 
+    public static final String URL_FEEDBACK = "http://coffeeandpower.uservoice.com"; 
+
     public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
     // production
     // public static final String URL_WEB_SERVICE = "https://staging.candp.me/";
@@ -91,6 +93,7 @@ public class AppCAP extends Application {
     public static final String URL_LOGOUT = "logout.php";
     public static final String URL_SIGNUP = "signup.php";
     public static final String URL_API = "api.php";
+    public static final String URL_TOS = "terms.php#termsTabContent";
 
     // Activity codes
     public static final int ACT_CHECK_IN = 1888;

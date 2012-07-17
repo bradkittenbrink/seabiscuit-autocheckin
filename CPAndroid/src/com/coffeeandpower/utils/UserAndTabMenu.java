@@ -22,6 +22,7 @@ import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivitySettings;
+import com.coffeeandpower.activity.ActivitySupport;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
@@ -240,6 +241,12 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
     @Override
     public void onClickSettings(View v) {
         Intent intent = new Intent(context, ActivitySettings.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void onClickSupport(View v) {
+        Intent intent = new Intent(context, ActivitySupport.class);
         context.startActivity(intent);
     }
 

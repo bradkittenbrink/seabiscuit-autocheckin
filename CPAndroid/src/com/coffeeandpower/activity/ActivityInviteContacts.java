@@ -148,8 +148,6 @@ public class ActivityInviteContacts extends RootActivity  {
                     .setBackgroundResource(R.drawable.bg_tabbar_selected);
             ((ImageView) findViewById(R.id.imageview_log_in))
                     .setImageResource(R.drawable.tab_login_pressed);
-            ((TextView) findViewById(R.id.text_log_in))
-                    .setTextColor(Color.WHITE);
 
             RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
             RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);

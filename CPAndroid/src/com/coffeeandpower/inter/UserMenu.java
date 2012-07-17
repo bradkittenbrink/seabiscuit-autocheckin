@@ -8,5 +8,7 @@ public interface UserMenu {
 
     public void onClickSettings(View v);
 
+    public void onClickSupport(View v);
+
     public void onClickLogout(View v);
 }

@@ -1,0 +1,112 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#2d2d2d" >
+
+    <RelativeLayout
+        android:id="@+id/dummy_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="45dip"
+        android:background="@drawable/header" >
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/user_menu_support"
+            android:textColor="#ffffff"
+            android:textSize="25dip" />
+
+        <Button
+            android:layout_width="41dip"
+            android:layout_height="28dip"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dip"
+            android:background="@drawable/btn_settings"
+            android:onClick="onClickBack" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/dummy_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dummy_layout"
+        android:background="@drawable/header_shadow" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dummy_layout"
+        android:layout_margin="25dip"
+        android:background="@drawable/rounded_border_gray"
+        android:orientation="vertical" >
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="#444444" />
+
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickSupportSendFeedback" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:padding="10dip"
+                android:text="@string/activity_support_send_feedback" />
+
+            <ImageView
+                android:layout_width="11dip"
+                android:layout_height="16dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dip"
+                android:background="@drawable/list_arrow_dark_black" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="#444444" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickSupportTOS" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:padding="10dip"
+                android:text="@string/activity_support_tos" />
+
+            <ImageView
+                android:layout_width="11dip"
+                android:layout_height="16dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dip"
+                android:background="@drawable/list_arrow_dark_black" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+	           <TextView
+	        		android:id="@+id/activity_support_version_value"
+            		android:layout_centerVertical="true"
+	               	android:layout_width="wrap_content"
+	               	android:layout_height="wrap_content"
+	               	android:padding="10dip" 
+	               	android:text="@string/application_version" />
+	     </RelativeLayout>
+     </LinearLayout>
+
+</RelativeLayout>
