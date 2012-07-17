@@ -190,7 +190,7 @@ public class AppCAP extends Application {
 		
 		
 				
-		context.startService(new Intent(context, CacheMgrService.class));
+		//context.startService(new Intent(context, CacheMgrService.class));
 		
 		enableAutoCheckin(context);
 				

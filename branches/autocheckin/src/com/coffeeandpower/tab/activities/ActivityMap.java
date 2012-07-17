@@ -62,6 +62,9 @@ import com.google.android.maps.Overlay;
 import com.urbanairship.UAirship;
 
 public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
+	
+	private final String TAG = "ActivityMap";
+	
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_MAP = 1;
 
@@ -90,6 +93,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 
 	private Executor exe;
 	
+	float firstX = 0;
+	float firstY = 0;
+	
 	private MyCachedDataObserver myCachedDataObserver = new MyCachedDataObserver();
 	private MyAutoCheckinTriggerObserver myAutoCheckinObserver = new MyAutoCheckinTriggerObserver();
 	
@@ -117,19 +123,11 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		}
 	};
 
-	/**
-	 * Check if user is checked in or not
-	 */
-	private void checkUserState() {
-		if (AppCAP.isUserCheckedIn()) {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityMap.this,
-					R.anim.rotate_indefinitely));
-		} else {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
-		}
-	}
+	
+	
+	//====================================================================
+	// Lifecycle Management
+	//====================================================================
 
 	@Override
 	protected void onCreate(Bundle icicle) {
@@ -137,7 +135,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		super.onCreate(icicle);
 		
 		if (Constants.debugLog)
-			Log.d("ActivityMap","Creating ActivityMap...");
+			Log.d(TAG,"Creating ActivityMap...");
 		
 		setContentView(R.layout.tab_activity_map);
 		
@@ -154,7 +152,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		exe.setExecutorListener(new ExecutorInterface() {
 			@Override
 			public void onErrorReceived() {
-				errorReceived();
+				//errorReceived();
 			}
 
 			@Override
@@ -264,15 +262,14 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		//ProximityManager.onStart(this);
 	}
 
-	float firstX = 0;
-	float firstY = 0;
+	
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		
 		if (Constants.debugLog)
-			Log.d("ActivityMap","ActivityMap.onStart(): " + AppCAP.isUserCheckedIn());
+			Log.d(TAG,"ActivityMap.onResume() - isUserCheckedIn: " + AppCAP.isUserCheckedIn());
 		
 		checkUserState();
 		
@@ -306,6 +303,76 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 			}
 		}		
 	}
+	
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onDestroy() {
+		myLocationOverlay.disableMyLocation();
+
+		//CacheMgrService.stopPeriodicTimer();
+		
+		if (AppCAP.shouldFinishActivities() && AppCAP.shouldStartLogIn()) {
+			startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
+			AppCAP.setShouldStartLogIn(false);
+		}
+
+		super.onDestroy();
+	}
+	
+	
+	@Override
+	protected void onStart() {
+		if (Constants.debugLog)
+			Log.d(TAG,"ActivityMap.onStart()");
+		super.onStart();
+		checkUserState();
+		UAirship.shared().getAnalytics().activityStarted(this);
+		CacheMgrService.startObservingAPICall("venuesWithCheckins",myCachedDataObserver);
+		LocationDetectionStateMachine.startObservingAutoCheckinTrigger(myAutoCheckinObserver);
+	}
+
+	@Override
+	public void onStop() {
+		if (Constants.debugLog)
+			Log.d(TAG,"ActivityMap.onStop()");
+		super.onStop();
+		UAirship.shared().getAnalytics().activityStopped(this);
+		
+		
+		CacheMgrService.stopObservingAPICall("venuesWithCheckins",myCachedDataObserver);
+		LocationDetectionStateMachine.stopObservingAutoCheckinTrigger(myAutoCheckinObserver);
+		
+		//Lets turn off the GPS when we exit the map screen
+		if (Constants.debugLog)
+			Log.d(TAG,"Disabling location updates");
+		myLocationOverlay.disableMyLocation();
+	}
+	
+	
+	
+	// Capture the user pressing the back button in the map view and exit the app
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+		    if (Constants.debugLog)
+				Log.d(TAG,"User exit detected.");
+	        
+	        AppCAP.applicationWillExit(this);
+	        
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
+		
+	
+	//====================================================================
+	// Map View Management
+	//====================================================================
+	
 
 	/**
 	 * Create point on Map with data from MapUserdata
@@ -357,6 +424,20 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		AppCAP.setLoggedInUserNickname(loggedUser.getNickName());
 		textNickName.setText(loggedUser.getNickName());
 	}*/
+	
+	/**
+	 * Check if user is checked in or not
+	 */
+	private void checkUserState() {
+		if (AppCAP.isUserCheckedIn()) {
+			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
+			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityMap.this,
+					R.anim.rotate_indefinitely));
+		} else {
+			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
+			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
+		}
+	}
 
 	public void onClickMenu(View v) {
 		CustomFontView textInvite = (CustomFontView) findViewById(R.id.text_invite_codes);
@@ -476,29 +557,13 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		return data;
 	}
 
+	/*
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-	}
+	}*/
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
-	protected void onDestroy() {
-		myLocationOverlay.disableMyLocation();
-
-		//CacheMgrService.stopPeriodicTimer();
-		
-		if (AppCAP.shouldFinishActivities() && AppCAP.shouldStartLogIn()) {
-			startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
-			AppCAP.setShouldStartLogIn(false);
-		}
-
-		super.onDestroy();
-	}
+	
 
 	@Override
 	public void onClickEnterInviteCode(View v) {
@@ -558,37 +623,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		menu.onClickLogout(v);
 	}
 
-	@Override
-	protected void onStart() {
-		if (Constants.debugLog)
-			Log.d("ActivityMap","ActivityMap.onStart()");
-		super.onStart();
-		checkUserState();
-		UAirship.shared().getAnalytics().activityStarted(this);
-		CacheMgrService.startObservingAPICall("venuesWithCheckins",myCachedDataObserver);
-		LocationDetectionStateMachine.startObservingAutoCheckinTrigger(myAutoCheckinObserver);
-	}
+	
 
-	@Override
-	public void onStop() {
-		if (Constants.debugLog)
-			Log.d("ActivityMap","ActivityMap.onStop()");
-		super.onStop();
-		UAirship.shared().getAnalytics().activityStopped(this);
-		
-		
-		CacheMgrService.stopObservingAPICall("venuesWithCheckins",myCachedDataObserver);
-		LocationDetectionStateMachine.stopObservingAutoCheckinTrigger(myAutoCheckinObserver);
-		
-		//Lets turn off the GPS when we exit the map screen
-		if (Constants.debugLog)
-			Log.d("ActivityMap","Disabling location updates");
-		myLocationOverlay.disableMyLocation();
-	}
-
-	private void errorReceived() {
-
-	}
 
 	private void actionFinished(int action) {
 		result = exe.getResult();
@@ -609,10 +645,80 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private class MyAutoCheckinTriggerObserver implements Observer {
+
+		@Override
+		public void update(Observable arg0, Object arg1) {
+
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putCharSequence("type", "AutoCheckinTrigger");
+			
+			message.setData(bundle);
+			
+			Log.d(TAG,"Received Autocheckin Observable...");
+			mainThreadTaskHandler.sendMessage(message);
+			
+		}
+		
+	}
+	
+	
+	//====================================================================
+	// Cached Data Management
+	//====================================================================
+	
+	private class MyCachedDataObserver implements Observer {
+		
+		@Override
+		public void update(Observable observable, Object data) {
+
+			if (Constants.debugLog)
+				Log.d(TAG,"update()");
+			
+			if (data instanceof CachedDataContainer) {
+				CachedDataContainer counterdata = (CachedDataContainer) data;
+				DataHolder venuesWithCheckins = counterdata.getData();
+							
+				Object[] obj = (Object[]) venuesWithCheckins.getObject();
+				@SuppressWarnings("unchecked")
+				List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
+				@SuppressWarnings("unchecked")
+				List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
+				
+				Message message = new Message();
+				Bundle bundle = new Bundle();
+				bundle.putCharSequence("type", counterdata.type);
+				bundle.putParcelableArrayList("venues", new ArrayList<VenueSmart>(arrayVenues));
+				bundle.putParcelableArrayList("users", new ArrayList<UserSmart>(arrayUsers));
+				message.setData(bundle);
+				
+				if (Constants.debugLog)
+					Log.d(TAG,"ActivityMap.update: Sending handler message...");
+				
+				
+				
+				mainThreadTaskHandler.sendMessage(message);
+				
+				
+			}
+		}
+	}
+	
 	private void updateVenuesAndCheckinsFromApiResult(ArrayList<VenueSmart> venueArray, ArrayList<UserSmart> arrayUsers) {
 		
 		if (Constants.debugLog)
-			Log.d("Map","updateVenuesAndCheckinsFromApiResult()");
+			Log.d(TAG,"updateVenuesAndCheckinsFromApiResult()");
 		itemizedoverlay.clear();
 		
 		for (VenueSmart venue : venueArray) {
@@ -642,81 +748,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		checkUserState();
 		mapView.invalidate();
 		
-	}
-	
-	
-	// Capture the user pressing the back button in the map view and exit the app
-	// Move this to a separate function
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-	    if (keyCode == KeyEvent.KEYCODE_BACK) {
-		    if (Constants.debugLog)
-				Log.d("Coffee","User exit detected.");
-	        
-	        AppCAP.applicationWillExit(this);
-	        
-	    }
-	    return super.onKeyDown(keyCode, event);
-	}
-	
-	
-	
-	
-	
-	
-	private class MyAutoCheckinTriggerObserver implements Observer {
-
-		@Override
-		public void update(Observable arg0, Object arg1) {
-
-			Message message = new Message();
-			Bundle bundle = new Bundle();
-			bundle.putCharSequence("type", "AutoCheckinTrigger");
-			
-			message.setData(bundle);
-			
-			Log.d("AutoCheckin","Received Autocheckin Observable...");
-			mainThreadTaskHandler.sendMessage(message);
-			
-		}
-		
-	}
-	
-	private class MyCachedDataObserver implements Observer {
-		
-		@Override
-		public void update(Observable observable, Object data) {
-
-			if (Constants.debugLog)
-				Log.d("ActivityMap","update()");
-			
-			if (data instanceof CachedDataContainer) {
-				CachedDataContainer counterdata = (CachedDataContainer) data;
-				DataHolder venuesWithCheckins = counterdata.getData();
-							
-				Object[] obj = (Object[]) venuesWithCheckins.getObject();
-				@SuppressWarnings("unchecked")
-				List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
-				@SuppressWarnings("unchecked")
-				List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
-				
-				Message message = new Message();
-				Bundle bundle = new Bundle();
-				bundle.putCharSequence("type", counterdata.type);
-				bundle.putParcelableArrayList("venues", new ArrayList<VenueSmart>(arrayVenues));
-				bundle.putParcelableArrayList("users", new ArrayList<UserSmart>(arrayUsers));
-				message.setData(bundle);
-				
-				if (Constants.debugLog)
-					Log.d("Map","ActivityMap.update: Sending handler message...");
-				
-				
-				
-				mainThreadTaskHandler.sendMessage(message);
-				
-				
-			}
-		}
 	}
 	
 }

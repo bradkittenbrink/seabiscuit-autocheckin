@@ -86,7 +86,7 @@ public class CacheMgrService extends Service {
 		
 		
 		// Start the periodic timer
-		taskHandler.post(runTimer);
+		//taskHandler.post(runTimer);
 		
 		return START_STICKY;
 		
