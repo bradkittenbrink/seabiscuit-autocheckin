@@ -24,7 +24,7 @@ public class CacheMgrService extends Service {
 	
 	private static final double DATA_DISTANCE_REFRESH_THRESHOLD = 1000;			// meters
 	
-	private static Integer tick = 0;
+	private static Integer tick = 10;							// cache update rate (seconds)
 	
 	private static final double defaultLat = 37.7717121657157;
 	private static final double defaultLon = -122.4239288438208;
@@ -38,6 +38,7 @@ public class CacheMgrService extends Service {
 	private static boolean allowCachedDataThisRun = false;
 	private static boolean refreshAllDataThisRun = false;
 	
+	private static String tempString;
 	
 	
 	private static int numberOfCalls = 0;
@@ -58,7 +59,7 @@ public class CacheMgrService extends Service {
 		
 		
 		
-		tick = 10;
+		//tick = 10;
 		
 	}
 	
@@ -276,13 +277,13 @@ public class CacheMgrService extends Service {
 		@Override
 		public void run()
 		{
-			Log.d(TAG,"Starting new thread for periodic timer...");
-        	    // We are now on the main thread, so kick off the API call in a worker thread
-        	    Thread thread = new Thread(new Runnable() {
+			Log.d(TAG,"Starting new thread for periodic timer callback...");
+			// We are now on the main thread, so kick off the API call in a worker thread
+			Thread thread = new Thread(new Runnable() {
         		    
-        		    private int apisCalledThisUpdate;
+				private int apisCalledThisUpdate;
         		    
-        		    public void run() {
+				public void run() {
         			    
         			    //isFirstRun = true;
         			    
@@ -396,14 +397,29 @@ public class CacheMgrService extends Service {
                 		    if (Constants.debugLog)
                 			    Log.d(TAG," - CacheMgr Periodic Timer Run Summary:");
                 		    
-                		    if (Constants.debugLog)
-						Log.d(TAG,"    - Cache Status: venuesWithCheckins: " + venuesWithCheckinsCache.hasData() +
-            				    " nearbyVenues: " + nearbyVenuesCache.hasData() + 
-            				    " contactsList: " + contactsListCache.hasData());
-				    if (Constants.debugLog)
-						Log.d(TAG,"    - APIs Active: venuesWithCheckins: " + venuesWithCheckinsCache.isActive() +
-            				    " nearbyVenues: " + nearbyVenuesCache.isActive() + 
-            				    " contactsList: " + contactsListCache.isActive());
+                		    if (Constants.debugLog) {
+                			    tempString = "    - Caches With Data:";
+                			    if (venuesWithCheckinsCache.hasData())
+                				    tempString += " venuesWithCheckins";
+                			    if (nearbyVenuesCache.hasData())
+                				    tempString += " nearbyVenues";
+                			    if (contactsListCache.hasData())
+                				    tempString += " contactsList";
+                			    
+						Log.d(TAG,tempString);
+                		    }
+				    if (Constants.debugLog) {
+					    tempString = "    - APIs Active:";
+                			    if (venuesWithCheckinsCache.isActive())
+                				    tempString += " venuesWithCheckins";
+                			    if (nearbyVenuesCache.isActive())
+                				    tempString += " nearbyVenues";
+                			    if (contactsListCache.isActive())
+                				    tempString += " contactsList";
+                			    
+						Log.d(TAG,tempString);
+						
+				    }
                 		    
                 		    if (Constants.debugLog) 
                 			    Log.d(TAG,"    - Cached Data sent this update: " + cachedDataSentThisUpdate);
@@ -434,11 +450,11 @@ public class CacheMgrService extends Service {
         			    }
         			    
         			    
-        		    }
+				}
         		    
-        	    },"CacheMgrService.run");
-        	    thread.setDaemon(true);
-        	    thread.start();
+			},"CacheMgrService.run");
+			thread.setDaemon(true);
+			thread.start();
         	    
         	    
             }

@@ -683,8 +683,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		@Override
 		public void update(Observable observable, Object data) {
 
-			if (Constants.debugLog)
-				Log.d(TAG,"update()");
 			
 			if (data instanceof CachedDataContainer) {
 				CachedDataContainer counterdata = (CachedDataContainer) data;
@@ -704,7 +702,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 				message.setData(bundle);
 				
 				if (Constants.debugLog)
-					Log.d(TAG,"ActivityMap.update: Sending handler message...");
+					Log.d(TAG,"ActivityMap: Received cached data, processing...");
 				
 				
 				
