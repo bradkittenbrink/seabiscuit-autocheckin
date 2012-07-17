@@ -6,11 +6,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.tab.activities.ActivityMap;
 import com.google.android.maps.MapActivity;
 
@@ -25,16 +27,39 @@ public class RootActivity extends MapActivity {
         super.onCreate(instance);
         if (Constants.debugLog)
             Log.d("RootActivity", "RootActivity.onCreate()");
-
     }
 
     @Override
     protected void onDestroy() {
-
         if (Constants.debugLog)
             Log.d("RootActivity", "RootActivity.onDestroy()");
-
+        
         super.onDestroy();
+    }
+    
+    
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        
+        if (savedInstanceState.getBoolean("shouldchecklogin", false)) {
+            int uid = AppCAP.getLoggedInUserId();
+            if (uid != 0) {
+                AppCAP.setLoggedInUserId(uid);
+                AppCAP.setLoggedIn(true);            
+            } else {
+                Intent i = new Intent();
+                i.setClass(getApplicationContext(), ActivityLoginPage.class);
+                startActivity(i);
+                this.finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("shouldchecklogin", true);
     }
 
     @Override

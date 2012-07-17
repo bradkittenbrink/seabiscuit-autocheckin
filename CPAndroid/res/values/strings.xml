@@ -9,7 +9,7 @@
     <!--
     staging
     <string name="linkedInApiKey">4xkfzpnvuc72</string>
-    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
     -->
 
 
@@ -48,7 +48,7 @@
     <string name="activity_check_in_for_how_long">FOR HOW LONG?</string>
     <string name="activity_enter_invite_code_enter">Enter invite code from \nnearby C&amp;P user</string>
     <string name="activity_enter_invite_linkedin">Invite LinkedIn Connections</string>
-    <string name="activity_invite_contacts_send_invitation">Send LinkedIn Invitation</string>   
+    <string name="activity_invite_contacts_send_invitation">Send LinkedIn Invitation</string>
     <string name="activity_job_category_job">Job Categories</string>
     <string name="activity_job_caregory_major">Major Job Category</string>
     <string name="activity_job_caregory_minor">Minor Job Category</string>
@@ -97,15 +97,16 @@
     <string name="activity_invite_contacts_title">Invite LinkedIn Connections</string>
     <string name="activity_invite_confirm_header">%1$s is inviting you to Coffee &amp; Power</string>
     <string name="activity_invite_confirm_content">
-        <![CDATA[
+<![CDATA[
         Hi! %1$s is inviting you to join Coffee &amp; Power, the mobile work network.<br/>
 If you haven\'t already, first download the Coffee &amp; Power app in the iTunes app store.<br/>
 Your personal invite code is: %2$s<br/>
 This code is only good for 24 hours. If you accept this invitation, %1$s will be shown as your sponsor on your Coffee &amp; Power resume.<br/>
 Once signed up, you may sponsor other users with the \'Invite\' button in the app settings page.<br/>
 Welcome!
-	]]></string>
-   	<string name="googleMapsApiKey">0N2B-_20GlM_H0LiHavOsRcF1VIqEQmyxijXZ3w</string>
+	]]>
+    </string>
+    <string name="googleMapsApiKey">0N2B-_20GlM-0J9CB66oUTfUU4qrkYX84hx33LQ</string>
     <string name="map_distance_far">Far far away</string>
 
 </resources>
