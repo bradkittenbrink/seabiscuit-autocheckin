@@ -84,7 +84,7 @@ public class LocationDetectionService extends Service {
 				Looper.loop();
 				
 			}
-		});
+		},"LocationDetectionService.onCreate");
 		thread.setDaemon(true);
 		thread.start();		
 	}

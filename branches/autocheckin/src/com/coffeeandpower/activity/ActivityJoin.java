@@ -130,7 +130,7 @@ public class ActivityJoin extends RootActivity {
 							handler.sendEmptyMessage(result.getHandlerCode());
 						}
 					}
-				}).start();
+				},"ActivityJoin.onClickJoin").start();
 			} else {
 				textViewPassError.setText("The passwords did not match.");
 				textViewPassError.setVisibility(View.VISIBLE);

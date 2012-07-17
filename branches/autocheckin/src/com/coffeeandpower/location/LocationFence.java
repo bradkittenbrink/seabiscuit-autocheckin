@@ -131,7 +131,7 @@ public class LocationFence {
         		}
 			if (Constants.debugLog)
 				Log.d("LocationFence","LocationFence returning to state machine");
-			LocationDetectionStateMachine.positionListenersCOMPLETE(highAssurance, venuesWithFenceBreaks);
+			LocationDetectionStateMachine.positionListenersCOMPLETE(highAssurance, venuesWithFenceBreaks, "LocationFence");
         	}
         	
         	private ArrayList<VenueSmart> checkFence(ArrayList<VenueSmart> venuesWithAutoCheckins) {

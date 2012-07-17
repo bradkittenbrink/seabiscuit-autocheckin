@@ -121,7 +121,7 @@ public class ActivitySignInViaMail extends RootActivity {
 						handler.sendEmptyMessage(result.getHandlerCode());
 					}
 				}
-			}).start();
+			},"ActivitySignInViaMail.onClickSignIn").start();
 
 		} else {
 			textViewErrorMsg.setText("You did not enter a valid email address.");

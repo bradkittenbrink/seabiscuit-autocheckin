@@ -76,9 +76,11 @@ public class ActivityLoginPage extends RootActivity {
 		lastAuthorize.initialize((String) getResources().getText(R.string.LINKED_IN_API_KEY),
 				(String) getResources().getText(R.string.LINKED_IN_API_SEC));
 		if (AppCAP.getUserLinkedInID().equals("")) {
-			new Thread(new OAuthAuthorizeAction(lastAuthorize, new ActivityUtils.JoinProgressHandler(this), null)).start();
+			new Thread(new OAuthAuthorizeAction(lastAuthorize, new ActivityUtils.JoinProgressHandler(this), null), 
+					"ActivityLoginPage.connectLinkedIn.OAuthAuthorizeAction").start();
 		} else {
-			new Thread(new LoginAction(lastAuthorize, new ActivityUtils.LoginProgressHandler(this), null)).start();
+			new Thread(new LoginAction(lastAuthorize, new ActivityUtils.LoginProgressHandler(this), null),
+					"ActivityLoginPage.connectLinkedIn.LoginAction").start();
 		}
 	}
 
@@ -97,7 +99,8 @@ public class ActivityLoginPage extends RootActivity {
 			new Thread(new OAuthSignUpAction(lastAuthorize,
 			// the progress handler for this action
 					new ActivityUtils.JoinProgressHandler(this), new LoginAction(lastAuthorize,
-							new ActivityUtils.LoginProgressHandler(this), null))).start();
+							new ActivityUtils.LoginProgressHandler(this), null)),
+							"ActivityLoginPage.connectLinkedIn.OAuthSignUpAction").start();
 		}
 	}
 
@@ -134,7 +137,7 @@ public class ActivityLoginPage extends RootActivity {
 			if (result != null) {
 				handler.sendEmptyMessage(result.getHandlerCode());
 				if (result.getHandlerCode() == AppCAP.HTTP_REQUEST_SUCCEEDED && action != null)
-					new Thread(action).start();
+					new Thread(action, "ActivityLoginPage.connectLinkedIn.OAuthSignUpAction").start();
 			} else {
 				handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 			}

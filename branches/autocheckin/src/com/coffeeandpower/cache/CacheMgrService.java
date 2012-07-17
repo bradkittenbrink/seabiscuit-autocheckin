@@ -436,7 +436,7 @@ public class CacheMgrService extends Service {
         			    
         		    }
         		    
-        	    });
+        	    },"CacheMgrService.run");
         	    thread.setDaemon(true);
         	    thread.start();
         	    
@@ -453,7 +453,8 @@ public class CacheMgrService extends Service {
         //=====================================================	
         
 	public static void checkInTrigger(VenueSmart checkedInVenue) {
-
+		//FIXME
+		//This is currently on the main thread, it should not be
 		stopPeriodicTimer();
 		//Stow the venue Id for the checkout later
 		//FIXME

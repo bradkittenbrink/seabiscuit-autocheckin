@@ -236,7 +236,7 @@ public class LocationDetectionStateMachine {
 					//userState.onCheckOut();
 					LocationDetectionStateMachine.checkinCheckoutCOMPLETE();
 				}
-			}).start();
+			},"LocationDectionStateMachine.transitionVenueCheckinINIT").start();
 
 		}
 		else
@@ -345,7 +345,7 @@ public class LocationDetectionStateMachine {
 	}
 	
 	//Closer for startPassiveListeners(), commandGPSINIT()
-	public static void positionListenersCOMPLETE(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
+	public static void positionListenersCOMPLETE(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues, String senderId) {
 		Log.d(TAG,"positionListenersCOMPLETE");
 		Message message = new Message();
 		Bundle bundle = new Bundle();

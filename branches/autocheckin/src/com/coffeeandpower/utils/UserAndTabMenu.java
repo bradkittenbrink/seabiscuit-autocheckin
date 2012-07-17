@@ -175,7 +175,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 									result = AppCAP.getConnection().checkOut();
 									handler.sendEmptyMessage(result.getHandlerCode());
 								}
-							}).start();
+							},"UserAndTabMenu.onClickCheckIn").start();
 						}
 					}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
@@ -277,7 +277,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 					resultNotificationSettings = AppCAP.getConnection().getNotificationSettings();
 					handler.sendEmptyMessage(HANDLE_GET_NOTIFICATION_SETTINGS);
 				}
-			}).start();
+			},"UserAndTabMenu.setOnNotificationSettingsListener.allowGetNotificationSettingsFromInternet").start();
 		}
 
 		// Check Toggle State
@@ -291,7 +291,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 					public void run() {
 						AppCAP.getConnection().setNotificationSettings(AppCAP.getPushDistance(), isChecked);
 					}
-				}).start();
+				},"UserAndTabMenu.setOnNotificationSettingsListener.setOnCheckedChangeListener").start();
 			}
 		});
 
@@ -321,7 +321,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 																	AppCAP.getPushDistance(),
 																	toggle.isChecked());
 												}
-											}).start();
+											},"UserAndTabMenu.setOnNotificationSettingsListener.Alert").start();
 										}
 										dialog.dismiss();
 									}

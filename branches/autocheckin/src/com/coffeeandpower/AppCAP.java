@@ -222,10 +222,18 @@ public class AppCAP extends Application {
 	}
 	
 	public static void enableAutoCheckin(Context context) {
-		if (!locationDetectionServiceRunning) {
-			
-			context.startService(new Intent(context, LocationDetectionService.class));
-			locationDetectionServiceRunning = true;
+		int[] currentAutoCheckinVenues = getVenuesWithAutoCheckins();
+		//If the list of autocheckins is non-zero in length then proceed.
+		//Otherwise we can keep the whole locationDetectionStateMachine off
+		if(currentAutoCheckinVenues.length > 0)
+		{
+			//If the service is already running don't start it.
+			//There should only be one
+        		if (!locationDetectionServiceRunning) {
+        			
+        			context.startService(new Intent(context, LocationDetectionService.class));
+        			locationDetectionServiceRunning = true;
+        		}
 		}
 	}
 	
@@ -944,6 +952,7 @@ public class AppCAP extends Application {
 		}
 		 String outputString = gsonConverter.toJson(ArrayOfSignatures, listOfVenueWifiSigs);
 		getSharedPreferences().edit().putString(TAG_VENUE_WIFI_SIGNATURES, outputString).commit();
+		
 	}
 	
 	/**
