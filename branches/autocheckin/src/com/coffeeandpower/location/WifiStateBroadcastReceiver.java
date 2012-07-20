@@ -162,9 +162,9 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver implements Obs
     					break;
     				}
     			}
-    			if(foundMatch == false)
+    			if(foundMatch == false && AppCAP.isUserCheckedIn() == false)
     			{
-    				//LocationDetectionStateMachine.positionListenersCOMPLETE(true, null, "WifiStateBroadcastReceiver");
+    				LocationDetectionStateMachine.positionListenersCOMPLETE(true, null, "WifiStateBroadcastReceiver");
     			}
 		}
 		else
