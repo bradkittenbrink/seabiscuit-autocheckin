@@ -170,6 +170,7 @@ public class LocationDetectionStateMachine {
 	//All state transitions are dataless, all data flows through
 	//member variables
 	private static void signatureCollectionSTATE(){
+		AppCAP.showToast("signatureCollectionSTATE");
 		Log.d(TAG,"signatureCollectionSTATE");
 		currentState = -1;
 		//This state is unique because the initial kickoff comes
@@ -178,21 +179,25 @@ public class LocationDetectionStateMachine {
 	}
 	
 	private static void passiveListeningSTATE(){
+		AppCAP.showToast("passiveListeningSTATE");
 		Log.d(TAG, "passiveListeningSTATE");
 		currentState = 0;
 		startPassiveListenersINIT();
 	}
 	private static void locationBasedVerificationSTATE(){
+		AppCAP.showToast("locationBasedVerificationSTATE");
 		Log.d(TAG, "locationBasedVerificationSTATE");
 		currentState = 1;
 		commandGPSINIT();
 	}
 	private static void wifiBasedVerificationSTATE(){
+		AppCAP.showToast("wifiBasedVerificationSTATE");
 		Log.d(TAG, "wifiBasedVerificationSTATE");
 		currentState = 2;
 		checkWifiSignatureINIT();
 	}
 	private static void venueStateTransitionSTATE(){
+		AppCAP.showToast("venueStateTransitionSTATE");
 		Log.d(TAG, "venueStateTransitionSTATE");
 		currentState = 3;
 		transitionVenueCheckinINIT();
@@ -421,14 +426,19 @@ public class LocationDetectionStateMachine {
         		}
         		else
         		{
-        			//No fence breaks return to passive listening
-        			try {
-        				Thread.sleep(2000);
-        			} catch (InterruptedException e) {
-        				// TODO Auto-generated catch block
-        				e.printStackTrace();
+        			if (AppCAP.isUserCheckedIn()) {
+        				venueStateTransitionSTATE();
         			}
-        			passiveListeningSTATE();		
+        			else {
+                			//No fence breaks return to passive listening
+                			try {
+                				Thread.sleep(2000);
+                			} catch (InterruptedException e) {
+                				// TODO Auto-generated catch block
+                				e.printStackTrace();
+                			}
+                			passiveListeningSTATE();
+        			}
         		}
 		}
 		else{
@@ -438,6 +448,7 @@ public class LocationDetectionStateMachine {
 	}
 	
 	public static void checkWifiSignatureCOMPLETE(VenueSmart currVenue) {
+		AppCAP.showToast("checkWifiSignatureComplete");
 		Log.d(TAG,"checkWifiSignatureCOMPLETE");
 		Message message = new Message();
 		Bundle bundle = new Bundle();
@@ -449,6 +460,7 @@ public class LocationDetectionStateMachine {
 	}
 	private static void checkWifiSignatureCallback(VenueSmart currVenue)
 	{
+		AppCAP.showToast("checkWifiSignatureCallback");
 		if(AppCAP.isUserCheckedIn())
 		{
 			//If we get a null the venue did not match

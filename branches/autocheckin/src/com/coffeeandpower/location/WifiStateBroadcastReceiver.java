@@ -117,6 +117,8 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver implements Obs
           }
           else if(networkInfo.getState().equals(NetworkInfo.State.DISCONNECTED))
           {
+        	  AppCAP.showToast("Wifi Disconnected.");
+        	  
         	  if(AppCAP.isUserCheckedIn())
         	  {
 		    Log.d("WifiBroadcast","Wifi Disconnected, verifying that wifi signature no longer matches");
@@ -162,8 +164,9 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver implements Obs
     					break;
     				}
     			}
-    			if(foundMatch == false && AppCAP.isUserCheckedIn() == false)
+    			if(foundMatch == false && AppCAP.isUserCheckedIn() == true)
     			{
+    				//AppCAP.showToast("No signature match...");
     				LocationDetectionStateMachine.positionListenersCOMPLETE(true, null, "WifiStateBroadcastReceiver");
     			}
 		}
