@@ -233,7 +233,14 @@ public class Executor {
 		},"Executor.getUsersCheckedInAtFoursquareID").start();
 	}
 
-	public synchronized void checkIn(final VenueSmart venue, final int checkInTime, final int checkOutTime, final String statusText, final boolean userDesiresAutoCheckin, final boolean checkinIsAutoCheckin) {
+	public synchronized void checkIn(final VenueSmart venue, 
+			final int checkInTime, 
+			final int checkOutTime, 
+			final String statusText, 
+			final boolean userDesiresAutoCheckin, 
+			final boolean checkinIsAutoCheckin, 
+			final Context context) {
+		
 		if (!checkinIsAutoCheckin) {
 			
 			progress.setMessage("Checking in...");
@@ -270,6 +277,10 @@ public class Executor {
         				//If user selected auto checkin, save that to preferences
         				if (userDesiresAutoCheckin) {
         					LocationDetectionService.addVenueToAutoCheckinList(venue);
+        					if(LocationDetectionStateMachine.stateMachineActive==false)
+        					{
+        						AppCAP.enableAutoCheckin(context);
+        					}
         				}
         		
         				//FIXME

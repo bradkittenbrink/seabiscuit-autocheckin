@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.location.LocationDetectionService;
+import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.location.MyScanResult;
 import com.coffeeandpower.location.venueWifiSignature;
 import com.coffeeandpower.urbanairship.IntentReceiver;
@@ -402,6 +403,9 @@ public class AppCAP extends Application {
 		Log.d("GSON","Updating auto checkins value: " + newPrefValue);
 		
 		getSharedPreferences().edit().putString(TAG_VENUES_WITH_AUTO_CHECKINS, newPrefValue).commit();
+		
+		
+		
 		return true;
 		
 	}

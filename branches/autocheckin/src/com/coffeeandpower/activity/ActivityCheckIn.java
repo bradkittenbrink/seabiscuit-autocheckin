@@ -9,6 +9,7 @@ import java.util.Observer;
 import org.apache.http.NameValuePair;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -73,6 +74,8 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	private LinearLayout layoutPopUp;
 
 	private EditText statusEditText;
+	
+	private Context myContext;
 
 	private int checkInDuration;
 
@@ -125,7 +128,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		usersArray = new ArrayList<UserSmart>();
 		checkedInUsers = new ArrayList<UserShort>();
 
-
+		myContext = this;
 
 		// Executor
 		
@@ -273,7 +276,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
         			
         			 public void onClick(DialogInterface arg0, int arg1) {
         				 Log.d("CheckIn","User clicked YES");
-        				 exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),true,false);
+        				 exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),true,false,myContext);
         				 LocationDetectionStateMachine.manualCheckin(getApplicationContext(),new Handler(), venue);
         		 	 }
         		});
@@ -281,13 +284,13 @@ public class ActivityCheckIn extends RootActivity implements Observer {
         		       
                 		  public void onClick(DialogInterface arg0, int arg1) {
                 			  Log.d("CheckIn","User clicked NO");
-                			  exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false);
+                			  exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false,myContext);
                 		  }
         		});
         		myAlertDialog.show();
 		} else {
 			// If user already selected autocheckin, just check them in silently
-			exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false);
+			exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false,myContext);
 		}
 		
 		

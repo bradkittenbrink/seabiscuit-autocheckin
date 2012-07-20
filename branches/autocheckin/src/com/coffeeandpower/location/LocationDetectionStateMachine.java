@@ -49,7 +49,7 @@ public class LocationDetectionStateMachine {
 	private static ArrayList<VenueSmart> triggeringVenuesCACHE;
 	private static VenueSmart currVenueCACHE;
 	
-	private static boolean stateMachineActive = false;
+	public static boolean stateMachineActive = false;
 	
 	private static LocationDetectionService myService;
 	
@@ -138,7 +138,7 @@ public class LocationDetectionStateMachine {
 		wifiStateBroadcastReceiver = new WifiStateBroadcastReceiver();
 		wifiScanBroadcastReceiver = new WifiScanBroadcastReceiver(myContext);
 		
-		startCallback();
+		start();
 		
 		
 	}
@@ -248,7 +248,7 @@ public class LocationDetectionStateMachine {
 			final int checkInTime = (int) (System.currentTimeMillis() / 1000);
 			final int checkOutTime = checkInTime + 24 * 3600;
 			
-			exe.checkIn(currVenueCACHE, checkInTime, checkOutTime, "",false,true);
+			exe.checkIn(currVenueCACHE, checkInTime, checkOutTime, "",false,true,myContext);
 			
 			myAutoCheckinObservable.notifyObservers(null);
 			//currVenueCACHE
@@ -503,7 +503,7 @@ public class LocationDetectionStateMachine {
 		}
 		else
 		{
-			Log.d(TAG,"Overridding passiveListeningSTATE waiting for signature to be collected");
+			Log.d(TAG,"Overriding passiveListeningSTATE waiting for signature to be collected");
 		}
 	}
 	
