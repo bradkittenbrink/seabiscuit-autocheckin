@@ -244,6 +244,7 @@ public class Executor {
 			@Override
 			public void run() {
 				result = AppCAP.getConnection().checkIn(venue, checkInTime, checkOutTime, statusText, checkinIsAutoCheckin);
+				AppCAP.addVenueToUserCheckinList(venue.getVenueId());
 				
 				// Add current venue to list of venues with user checkins
 				int venueId = venue.getVenueId();
