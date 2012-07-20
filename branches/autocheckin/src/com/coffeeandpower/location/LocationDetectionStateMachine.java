@@ -349,14 +349,20 @@ public class LocationDetectionStateMachine {
 	//Closer for startPassiveListeners(), commandGPSINIT()
 	public static void positionListenersCOMPLETE(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues, String senderId) {
 		Log.d(TAG,"positionListenersCOMPLETE");
-		Message message = new Message();
-		Bundle bundle = new Bundle();
-		bundle.putCharSequence("type", "positionListenersCOMPLETE");
-		bundle.putBoolean("isHighConfidence", isHighConfidence);
-		bundle.putParcelableArrayList("triggeringVenues", triggeringVenues);
-		message.setData(bundle);
 		
-		locationThreadTaskHandler.sendMessage(message);
+		if (stateMachineActive) {
+        		Message message = new Message();
+        		Bundle bundle = new Bundle();
+        		bundle.putCharSequence("type", "positionListenersCOMPLETE");
+        		bundle.putBoolean("isHighConfidence", isHighConfidence);
+        		bundle.putParcelableArrayList("triggeringVenues", triggeringVenues);
+        		message.setData(bundle);
+		
+		
+			locationThreadTaskHandler.sendMessage(message);
+		}
+		else
+			Log.d(TAG,"WARNING: positionListenersCOMPLETE came back before state machine was initialized...");
 	}
 	private static void positionListenersCallback(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
 		if(currentState == 0 || (currentState > 0 && currentState <= 1 && isHighConfidence))

@@ -93,6 +93,10 @@ public class CacheMgrService extends Service {
 		
 	}
 	
+	public static void stop() {
+		stopPeriodicTimer();
+	}
+	
 	
 	//=====================================================
 	// Cached data consumer registration

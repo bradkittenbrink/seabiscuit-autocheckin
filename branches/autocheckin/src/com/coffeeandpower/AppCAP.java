@@ -22,6 +22,7 @@ import android.content.pm.PackageManager;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.location.LocationDetectionService;
@@ -117,6 +118,8 @@ public class AppCAP extends Application {
 	
 	private static Gson gsonConverter = new Gson();
 	
+	private static Context mapContext;
+	
 	// App wide observables
 	
 
@@ -155,7 +158,9 @@ public class AppCAP extends Application {
 		if (getAppName().equalsIgnoreCase("com.coffeeandpower")) {
 			
 			Log.d("Coffee","Main process loading (onCreate)...");
-						
+			
+			//getSharedPreferences().edit().putString(TAG_VENUES_WITH_AUTO_CHECKINS, null).commit();
+			//getSharedPreferences().edit().putString(TAG_VENUES_WITH_USER_CHECKINS, null).commit();
 			this.http = new HttpUtil();
 			
 			PushPreferences prefs = PushManager.shared().getPreferences();
@@ -186,7 +191,8 @@ public class AppCAP extends Application {
 	public static void mainActivityDidStart(Context context) {
 		
 		
-				
+		mapContext = context;
+		
 		//context.startService(new Intent(context, CacheMgrService.class));
 		
 		enableAutoCheckin(context);
@@ -201,8 +207,11 @@ public class AppCAP extends Application {
 		
 	        
 	        //ProximityManager.onStop(this);
-	        context.stopService(new Intent(context,CacheMgrService.class));
+		Log.d("AppCAP","Disabling cache service...");
+	        //context.stopService(new Intent(context,CacheMgrService.class));
+		CacheMgrService.stop();
 	        
+	        Log.d("AppCAP","Disabling auto checkin...");
 	        disableAutoCheckin(context);
 	        
 	        try {
@@ -244,6 +253,12 @@ public class AppCAP extends Application {
 	}
 	
 	
+	
+	public static void showToast(String msg) {
+		
+		Toast.makeText(mapContext, msg, Toast.LENGTH_LONG).show();
+		
+	}
 	
 	
 	

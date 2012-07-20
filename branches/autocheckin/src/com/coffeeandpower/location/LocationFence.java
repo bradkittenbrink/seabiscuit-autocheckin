@@ -153,24 +153,33 @@ public class LocationFence {
         			tmpLocation.setLongitude(currVenue.getLng());
         			//Calculate the distance between the venue and the pendingLocation
         			float distance = pendingLocation.distanceTo(tmpLocation);
+        			
+        			
+        			
         			//Check that status the checkin
         			if(AppCAP.isUserCheckedIn())
         			{
         				Log.d("LocationFence","User is checked in");
                 			if(distance > fenceCheckoutRadiusMeters)
                 			{
+                				AppCAP.showToast("CO Fence Break: " + distance);
                 				Log.d("LocationFence","Fence break, user has left the venue");
                 				venuesWithFenceBreaks.add(currVenue);
                 			}
+                			else
+                				AppCAP.showToast("CO Distance: " + distance);
         			}
         			else
         			{
         				Log.d("LocationFence","User is checked out");
                 			if(distance < fenceCheckinRadiusMeters)
                 			{
+                				AppCAP.showToast("CI Fence Break: " + distance);
                 				Log.d("LocationFence","Fence break, has entered the venue");
                 				venuesWithFenceBreaks.add(currVenue);
                 			}
+                			else
+                				AppCAP.showToast("CI Distancek: " + distance);
         			}
         		}
         		return venuesWithFenceBreaks;
