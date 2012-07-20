@@ -205,7 +205,9 @@ public class LocationDetectionStateMachine {
 	//or external classes and methods.  None should end in STATE()
 	
 	private static void startPassiveListenersINIT() {
-		startPassiveLocationListener();
+		//startPassiveLocationListener();
+		//FIXME
+		//Start with wifi only based checkins
 		startWifiStateListener();
 	}
 	
@@ -378,7 +380,10 @@ public class LocationDetectionStateMachine {
                         		//PassiveListenersINIT returning
                         		if(currentState == 0)
                         		{
-                        			stopPassiveListeners();
+                        			//We are going to move this until we have verified the Wifi
+                        			//Since we get a false state change everytime we register for the 
+                        			//WifiState listener
+                        			//stopPassiveListeners();
                                 		if (isHighConfidence) {
                                 			wifiBasedVerificationSTATE();
                                 		}

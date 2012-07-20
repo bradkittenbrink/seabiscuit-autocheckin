@@ -155,10 +155,7 @@ public class AppCAP extends Application {
 		if (getAppName().equalsIgnoreCase("com.coffeeandpower")) {
 			
 			Log.d("Coffee","Main process loading (onCreate)...");
-			
-			getSharedPreferences().edit().putString(TAG_VENUES_WITH_AUTO_CHECKINS, null).commit();
-			getSharedPreferences().edit().putString(TAG_VENUES_WITH_USER_CHECKINS, null).commit();
-			
+						
 			this.http = new HttpUtil();
 			
 			PushPreferences prefs = PushManager.shared().getPreferences();

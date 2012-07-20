@@ -164,7 +164,7 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver implements Obs
     			}
     			if(foundMatch == false)
     			{
-    				LocationDetectionStateMachine.positionListenersCOMPLETE(true, null, "WifiStateBroadcastReceiver");
+    				//LocationDetectionStateMachine.positionListenersCOMPLETE(true, null, "WifiStateBroadcastReceiver");
     			}
 		}
 		else
