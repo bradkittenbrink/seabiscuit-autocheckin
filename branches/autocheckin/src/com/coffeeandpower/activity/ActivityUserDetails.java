@@ -10,16 +10,17 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -69,10 +70,11 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.urbanairship.UAirship;
 
-public class ActivityUserDetails extends RootActivity implements Observer{
+public class ActivityUserDetails extends RootActivity implements Observer {
 
 	private static final int DIALOG_SEND_PROP = 0;
 	private static final int DIALOG_SEND_F2F_INVITE = 1;
+    private static final int MAPVIEW_HEIGHT = 350;
 
 	private UserSmart mud;
 
@@ -94,9 +96,9 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 
 	private ArrayList<Venue> favoritePlaces;
 	private ArrayList<VenueSmart> arraySmartVenues;
-	
-	
-	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
+
+    // Scheduler - create a custom message handler for use in passing venue data
+    // from background API call to main thread
 	protected Handler taskHandler = new Handler() {
 
 		// handleMessage - on the main thread
@@ -134,31 +136,37 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		favPlacesList = (ListView) findViewById(R.id.listview_favorite_places);
 		favPlacesList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-				Intent intent = new Intent(ActivityUserDetails.this, ActivityPlaceDetails.class);
+            public void onItemClick(AdapterView<?> arg0, View v, int position,
+                    long arg3) {
+                Intent intent = new Intent(ActivityUserDetails.this,
+                        ActivityPlaceDetails.class);
 				Venue currVenue = favoritePlaces.get(position);
-				//intent.putExtra("foursquare_id", currVenue);
-				//FIXME
-				//We need to eliminate the Venue class eventually
+                // intent.putExtra("foursquare_id", currVenue);
+                // FIXME
+                // We need to eliminate the Venue class eventually
 				ArrayList<CheckinData> arrayCheckins = new ArrayList<VenueSmart.CheckinData>();
-				VenueSmart currSmartVenue = new VenueSmart(currVenue.getVenueId(), currVenue.getName(), currVenue.getAddress(), currVenue.getCity(), currVenue.getCity(), currVenue.getDistance(), currVenue.getFoursquareId(), currVenue.getCheckinsCount(),
-						0, 0, currVenue.getPhotoUrl(), currVenue.getPhone(), currVenue.getPhone(), currVenue.getLat(), currVenue.getLng(),
-						arrayCheckins);
+                VenueSmart currSmartVenue = new VenueSmart(currVenue
+                        .getVenueId(), currVenue.getName(), currVenue
+                        .getAddress(), currVenue.getCity(),
+                        currVenue.getCity(), currVenue.getDistance(), currVenue
+                                .getFoursquareId(), currVenue
+                                .getCheckinsCount(), 0, 0, currVenue
+                                .getPhotoUrl(), currVenue.getPhone(), currVenue
+                                .getPhone(), "", currVenue.getLat(), currVenue
+                                .getLng(), arrayCheckins);
 				intent.putExtra("venueSmart", currSmartVenue);
-				if(arraySmartVenues!=null)
-				{
+                if (arraySmartVenues != null) {
 					boolean venueFound = false;
-					for(VenueSmart testSmartVenue:arraySmartVenues)
-					{
-						if(testSmartVenue.getVenueId() == currVenue.getVenueId())
-						{
+                    for (VenueSmart testSmartVenue : arraySmartVenues) {
+                        if (testSmartVenue.getVenueId() == currVenue
+                                .getVenueId()) {
 							intent.putExtra("venueSmart", testSmartVenue);
 							venueFound = true;
 							break;
 						}
 					}
-					//FIXME
-					//If we don't find the venue we need to pull it from http
+                    // FIXME
+                    // If we don't find the venue we need to pull it from http
 				}
 				intent.putExtra("coords", AppCAP.getUserCoordinates());
 				startActivity(intent);
@@ -172,7 +180,7 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 
-			//Not used so being removed
+            // Not used so being removed
 			String foursquareId = extras.getString("mapuserdata");
 			String fromAct = extras.getString("from_act");
 
@@ -192,32 +200,56 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 
 		// Navigate map to location from intent data
 		if (mud != null) {
-			GeoPoint point = new GeoPoint((int) (mud.getLat() * 1E6), (int) (mud.getLng() * 1E6));
-			GeoPoint pointForCenter = new GeoPoint(point.getLatitudeE6()
-					+ Utils.getScreenDependentItemSize(Utils.MAP_VER_OFFSET_FROM_CENTER), point.getLongitudeE6()
-					- Utils.getScreenDependentItemSize(Utils.MAP_HOR_OFFSET_FROM_CENTER));
+            GeoPoint point = new GeoPoint((int) (mud.getLat() * 1E6),
+                    (int) (mud.getLng() * 1E6));
+
+            Point p = new Point();
+            DisplayMetrics m = getResources().getDisplayMetrics();
+            mapView.getProjection().toPixels(point, p);
+
+            int height = (int) Utils.pixelToDp(
+                    ActivityUserDetails.MAPVIEW_HEIGHT / 3, m);
+            if (mud.getCheckedIn() == 0) {
+                height = (int) Utils.pixelToDp(
+                        ActivityUserDetails.MAPVIEW_HEIGHT / 5, m);
+            }
+            p.set(p.x - (int) Utils.pixelToDp(m.widthPixels / 5, m), p.y
+                    - height);
+            GeoPoint pointForCenter = mapView.getProjection().fromPixels(p.x,
+                    p.y);
 			mapController.animateTo(pointForCenter);
 
+            String distanceStr = RootActivity.getDistanceBetween(
+                    AppCAP.getUserCoordinates()[4],
+                    AppCAP.getUserCoordinates()[5], mud.getLat(), mud.getLng(),
+                    true);
+
+            String distanceAway = distanceStr.contains("away") ? distanceStr
+                    : distanceStr + " away";
 			itemizedoverlay = new MyItemizedOverlay2(getPinDrawable(
-					RootActivity.getDistanceBetween(AppCAP.getUserCoordinates()[4], AppCAP.getUserCoordinates()[5], mud.getLat(),
-							mud.getLng()) + " away", point));
+                    distanceAway, point));
 			createMarker(point);
 		}
 
 		// Set Views states
 		if (mud != null) {
-			((CustomFontView) findViewById(R.id.textview_user_name)).setText(mud.getNickName());
-			((TextView) findViewById(R.id.textview_user_status))
-					.setText(AppCAP.cleanResponseString(mud.getStatusText()) != null ? (AppCAP.cleanResponseString(
-							mud.getStatusText()).equals("") ? "" : "\"" + AppCAP.cleanResponseString(mud.getStatusText())
+            ((CustomFontView) findViewById(R.id.textview_user_name))
+                    .setText(mud.getNickName());
+            ((TextView) findViewById(R.id.textview_user_status)).setText(AppCAP
+                    .cleanResponseString(mud.getStatusText()) != null ? (AppCAP
+                    .cleanResponseString(mud.getStatusText()).equals("") ? ""
+                    : "\"" + AppCAP.cleanResponseString(mud.getStatusText())
 							+ "\"") : "");
-			((CustomFontView) findViewById(R.id.textview_nick_name)).setText(mud.getNickName());
+            ((CustomFontView) findViewById(R.id.textview_nick_name))
+                    .setText(mud.getNickName());
 
 			// If current user looking at own page, hide "plus"
 			// button
 			if (mud.getUserId() == AppCAP.getLoggedInUserId()) {
-				((ImageButton) findViewById(R.id.imagebutton_plus)).setVisibility(View.GONE);
-				((RelativeLayout) findViewById(R.id.rel_buttons)).setVisibility(View.GONE);
+                ((ImageButton) findViewById(R.id.imagebutton_plus))
+                        .setVisibility(View.GONE);
+                ((RelativeLayout) findViewById(R.id.rel_buttons))
+                        .setVisibility(View.GONE);
 			}
 
 		}
@@ -227,14 +259,14 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 			exe.getResumeForUserId(mud.getUserId());
 		}
 
-	}  //end onCreate()
-	
+    } // end onCreate()
+
 	@Override
 	protected void onStart() {
 		if (Constants.debugLog)
-			Log.d("UserDetails","ActivityUserDetails.onStart()");
+            Log.d("UserDetails", "ActivityUserDetails.onStart()");
 		super.onStart();
-		//initialLoad = true;
+        // initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
 		
 		CacheMgrService.startObservingAPICall("venuesWithCheckins",this);	
@@ -243,17 +275,17 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 	@Override
 	public void onStop() {
 		if (Constants.debugLog)
-			Log.d("UserDetails","ActivityUserDetails.onStop()");
+            Log.d("UserDetails", "ActivityUserDetails.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
 
 		CacheMgrService.stopObservingAPICall("venuesWithCheckins",this);
 	}
-	
 
 	private Drawable getPinDrawable(String text, GeoPoint gp) {
 		PinBlackDrawable icon = new PinBlackDrawable(this, text);
-		icon.setBounds(0, -icon.getIntrinsicHeight(), icon.getIntrinsicWidth(), 0);
+        icon.setBounds(0, -icon.getIntrinsicHeight(), icon.getIntrinsicWidth(),
+                0);
 		return icon;
 	}
 
@@ -263,108 +295,156 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 	private void updateUserDataInUI() {
 		if (userResumeData != null) {
 			// Load profile picture
-			imageLoader.DisplayImage(userResumeData.getUrlPhoto(), imageProfile, R.drawable.default_avatar50, 70);
+            imageLoader.DisplayImage(userResumeData.getUrlPhoto(),
+                    imageProfile, R.drawable.default_avatar50, 70);
 
-			((TextView) findViewById(R.id.textview_user_job_title)).setText(AppCAP.cleanResponseString(userResumeData.getJobTitle()));
-			((TextView) findViewById(R.id.textview_date)).setText(userResumeData.getJoined());
-			((TextView) findViewById(R.id.textview_sponsor)).setText(userResumeData.getJoinSponsor());
-
+            ((TextView) findViewById(R.id.textview_user_job_title))
+                    .setText(AppCAP.cleanResponseString(userResumeData
+                            .getJobTitle()));
+            ((TextView) findViewById(R.id.textview_date))
+                    .setText(userResumeData.getJoined());
+            ((TextView) findViewById(R.id.textview_sponsor))
+                    .setText(userResumeData.getJoinSponsor());
 
 			// Was EARNED now it's HOURS
-			((TextView) findViewById(R.id.textview_earned)).setText(userResumeData.getTotalHours()+"");
-			((TextView) findViewById(R.id.textview_love)).setText(userResumeData.getReviewsLoveReceived());
+            ((TextView) findViewById(R.id.textview_earned))
+                    .setText(userResumeData.getTotalHours() + "");
+            ((TextView) findViewById(R.id.textview_love))
+                    .setText(userResumeData.getReviewsLoveReceived());
 
-			((TextView) findViewById(R.id.textview_place)).setText(AppCAP.cleanResponseString(userResumeData.getCheckInData_Name()));
-			((TextView) findViewById(R.id.textview_street)).setText(AppCAP.cleanResponseString(userResumeData.getCheckInData_Address()));
+            ((TextView) findViewById(R.id.textview_place)).setText(AppCAP
+                    .cleanResponseString(userResumeData.getCheckInData_Name()));
+            ((TextView) findViewById(R.id.textview_street)).setText(AppCAP
+                    .cleanResponseString(userResumeData
+                            .getCheckInData_Address()));
 
 			if (isUserHereNow(userResumeData)) {
-				((CustomFontView) findViewById(R.id.box_title)).setText("Checked in ...");
-				((LinearLayout) findViewById(R.id.layout_available)).setVisibility(View.VISIBLE);
-				((TextView) findViewById(R.id.textview_minutes)).setVisibility(View.VISIBLE);
-				((TextView) findViewById(R.id.textview_minutes)).setText(getAvailableMins(userResumeData));
+                ((CustomFontView) findViewById(R.id.box_title))
+                        .setText("Checked in ...");
+                ((LinearLayout) findViewById(R.id.layout_available))
+                        .setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.textview_minutes))
+                        .setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.textview_minutes))
+                        .setText(getAvailableMins(userResumeData));
 
 				if (userResumeData.getCheckInData_usersHere() > 1) {
-					((LinearLayout) findViewById(R.id.layout_others_at_venue)).setVisibility(View.VISIBLE);
+                    ((LinearLayout) findViewById(R.id.layout_others_at_venue))
+                            .setVisibility(View.VISIBLE);
 					((TextView) findViewById(R.id.textview_others_here_now))
 							.setText(userResumeData.getCheckInData_usersHere() == 2 ? "1 other here now"
-									: (userResumeData.getCheckInData_usersHere() - 1) + " others here now");
+                                    : (userResumeData
+                                            .getCheckInData_usersHere() - 1)
+                                            + " others here now");
 				}
 
 			} else {
-				((CustomFontView) findViewById(R.id.box_title)).setText("Was checked in ...");
+                ((CustomFontView) findViewById(R.id.box_title))
+                        .setText("Was checked in ...");
 
 				if (userResumeData.getCheckInData_usersHere() > 0) {
-					((LinearLayout) findViewById(R.id.layout_others_at_venue)).setVisibility(View.VISIBLE);
+                    ((LinearLayout) findViewById(R.id.layout_others_at_venue))
+                            .setVisibility(View.VISIBLE);
 					((TextView) findViewById(R.id.textview_others_here_now))
-							.setText(userResumeData.getCheckInData_usersHere() == 1 ? "1 other here now" : userResumeData
-									.getCheckInData_usersHere() + " others here now");
+                            .setText(userResumeData.getCheckInData_usersHere() == 1 ? "1 other here now"
+                                    : userResumeData.getCheckInData_usersHere()
+                                            + " others here now");
 				}
 			}
 
 			// Check for Summary info
-			if (userResumeData.getBio() != null && !userResumeData.getBio().contains("null") && !userResumeData.getBio().equals("")) {
-				((TextView) findViewById(R.id.text_summary)).setText(AppCAP.cleanResponseString(userResumeData.getBio()));
-				((TextView) findViewById(R.id.text_summary_title)).setVisibility(View.VISIBLE);
-				((TextView) findViewById(R.id.text_summary)).setVisibility(View.VISIBLE);
+            if (userResumeData.getBio() != null
+                    && !userResumeData.getBio().contains("null")
+                    && !userResumeData.getBio().equals("")) {
+                ((TextView) findViewById(R.id.text_summary)).setText(AppCAP
+                        .cleanResponseString(userResumeData.getBio()));
+                ((TextView) findViewById(R.id.text_summary_title))
+                        .setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.text_summary))
+                        .setVisibility(View.VISIBLE);
 			}
 
 			// Chech if user is verified for LinkedIn and Facebook
 			if (userResumeData.getVerifiedLinkedIn().matches("1")) {
-				((LinearLayout) findViewById(R.id.layout_verified_linked_in)).setVisibility(View.VISIBLE);
+                ((LinearLayout) findViewById(R.id.layout_verified_linked_in))
+                        .setVisibility(View.VISIBLE);
 			}
 			if (userResumeData.getVerifiedFacebook().matches("1")) {
-				((LinearLayout) findViewById(R.id.layout_verified_facebook)).setVisibility(View.VISIBLE);
+                ((LinearLayout) findViewById(R.id.layout_verified_facebook))
+                        .setVisibility(View.VISIBLE);
 			}
 
 			// Check if user have Education Data
 			if (!userResumeData.getEducation().isEmpty()) {
-				((LinearLayout) findViewById(R.id.layout_edu_review)).setVisibility(View.VISIBLE);
+                ((LinearLayout) findViewById(R.id.layout_edu_review))
+                        .setVisibility(View.VISIBLE);
 
 				for (Education edu : userResumeData.getEducation()) {
 					LayoutInflater inflater = getLayoutInflater();
-					View view = inflater.inflate(R.layout.review_education, null);
+                    View view = inflater.inflate(R.layout.review_education,
+                            null);
 
-					String school = edu.getSchool().contains("null") ? "" : edu.getSchool();
-					String startDate = (edu.getStartDate() + "").contains("null") ? "" : edu.getStartDate() + "";
-					String endDate = (edu.getEndDate() + "").contains("null") ? "" : edu.getEndDate() + "";
-					String degree = edu.getDegree().contains("null") ? "" : edu.getDegree();
-					String concentration = edu.getConcentrations().contains("null") ? "" : edu.getConcentrations();
+                    String school = edu.getSchool().contains("null") ? "" : edu
+                            .getSchool();
+                    String startDate = (edu.getStartDate() + "")
+                            .contains("null") ? "" : edu.getStartDate() + "";
+                    String endDate = (edu.getEndDate() + "").contains("null") ? ""
+                            : edu.getEndDate() + "";
+                    String degree = edu.getDegree().contains("null") ? "" : edu
+                            .getDegree();
+                    String concentration = edu.getConcentrations().contains(
+                            "null") ? "" : edu.getConcentrations();
 
-					((TextView) view.findViewById(R.id.textview_review_edu)).setText(school + " " + startDate + "-" + endDate);
-					((TextView) view.findViewById(R.id.textview_review_degree)).setText(degree);
-					((TextView) view.findViewById(R.id.textview_review_concentrations)).setText(concentration);
-					((LinearLayout) findViewById(R.id.edu_inflate)).addView(view);
+                    ((TextView) view.findViewById(R.id.textview_review_edu))
+                            .setText(school + " " + startDate + "-" + endDate);
+                    ((TextView) view.findViewById(R.id.textview_review_degree))
+                            .setText(degree);
+                    ((TextView) view
+                            .findViewById(R.id.textview_review_concentrations))
+                            .setText(concentration);
+                    ((LinearLayout) findViewById(R.id.edu_inflate))
+                            .addView(view);
 				}
 			}
 
 			// Check if user have Work Data
 			if (!userResumeData.getWork().isEmpty()) {
-				((LinearLayout) findViewById(R.id.layout_work_review)).setVisibility(View.VISIBLE);
+                ((LinearLayout) findViewById(R.id.layout_work_review))
+                        .setVisibility(View.VISIBLE);
 
 				for (Work work : userResumeData.getWork()) {
 					LayoutInflater inflater = getLayoutInflater();
 					View view = inflater.inflate(R.layout.review_work, null);
 
-					String title = work.getTitle().contains("null") ? "" : work.getTitle();
-					String startDate = work.getStartDate().contains("null") ? "" : work.getStartDate() + "";
-					String endDate = work.getEndDate().contains("null") ? "" : work.getEndDate() + "";
-					String company = work.getCompany().contains("null") ? "" : work.getCompany();
+                    String title = work.getTitle().contains("null") ? "" : work
+                            .getTitle();
+                    String startDate = work.getStartDate().contains("null") ? ""
+                            : work.getStartDate() + "";
+                    String endDate = work.getEndDate().contains("null") ? ""
+                            : work.getEndDate() + "";
+                    String company = work.getCompany().contains("null") ? ""
+                            : work.getCompany();
 
 					if (!title.equals(""))
-						((TextView) view.findViewById(R.id.textview_job_title)).setText(title + " at " + company);
+                        ((TextView) view.findViewById(R.id.textview_job_title))
+                                .setText(title + " at " + company);
 
-					((TextView) view.findViewById(R.id.textview_job_date)).setText("(" + startDate + " - " + endDate + ")");
-					((LinearLayout) findViewById(R.id.work_inflate)).addView(view);
+                    ((TextView) view.findViewById(R.id.textview_job_date))
+                            .setText("(" + startDate + " - " + endDate + ")");
+                    ((LinearLayout) findViewById(R.id.work_inflate))
+                            .addView(view);
 				}
 			}
 
 			// Check if user has Reviews
 			if (userResumeData.getReviewsTotal() > 0) {
-				((LinearLayout) findViewById(R.id.layout_reviews)).setVisibility(View.VISIBLE);
+                ((LinearLayout) findViewById(R.id.layout_reviews))
+                        .setVisibility(View.VISIBLE);
 
 				// Check if we have love review
 				if (!userResumeData.getReviewsLoveReceived().equals("0")) {
-					((LinearLayout) findViewById(R.id.love_inflate)).setVisibility(View.VISIBLE);
+                    ((LinearLayout) findViewById(R.id.love_inflate))
+                            .setVisibility(View.VISIBLE);
 				}
 
 				// Find all love reviews
@@ -373,9 +453,16 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 						LayoutInflater inflater = getLayoutInflater();
 						View v = inflater.inflate(R.layout.review_props, null);
 
-						((TextView) v.findViewById(R.id.textview_review_love)).setText("from " + review.getAuthor() + ": \""
-								+ AppCAP.cleanResponseString(review.getReview()) + "\"");
-						((LinearLayout) findViewById(R.id.love_inflate)).addView(v);
+                        ((TextView) v.findViewById(R.id.textview_review_love))
+                                .setText("from "
+                                        + review.getAuthor()
+                                        + ": \""
+                                        + AppCAP.cleanResponseString(review
+                                                .getReview()) + "\"");
+                        ((ImageView) v.findViewById(R.id.image_thumbs_up))
+                                .setVisibility(View.GONE);
+                        ((LinearLayout) findViewById(R.id.love_inflate))
+                                .addView(v);
 					}
 				}
 
@@ -385,38 +472,52 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 						LayoutInflater inflater = getLayoutInflater();
 						View v = inflater.inflate(R.layout.review_props, null);
 
-						((TextView) v.findViewById(R.id.textview_review_love)).setText(AppCAP.cleanResponseString(review
-								.getReview()) + (review.getSkill().contains("null") ? "" : "\n" + review.getSkill()));
-						((LinearLayout) findViewById(R.id.love_inflate)).addView(v);
+                        ((TextView) v.findViewById(R.id.textview_review_love))
+                                .setText(AppCAP.cleanResponseString(review
+                                        .getReview())
+                                        + (review.getSkill().contains("null") ? ""
+                                                : "\n" + review.getSkill()));
+                        ((ImageView) v.findViewById(R.id.image_send_love))
+                                .setVisibility(View.GONE);
+                        ((LinearLayout) findViewById(R.id.love_inflate))
+                                .addView(v);
 					}
 				}
 			}
 
 			// Check Listings as Agent
 			if (!userResumeData.getAgentListings().isEmpty()) {
-				((LinearLayout) findViewById(R.id.layout_listings_agent)).setVisibility(View.VISIBLE);
+                ((LinearLayout) findViewById(R.id.layout_listings_agent))
+                        .setVisibility(View.VISIBLE);
 
 				for (Listing l : userResumeData.getAgentListings()) {
 					LayoutInflater inflater = getLayoutInflater();
 					View v = inflater.inflate(R.layout.review_listing, null);
-					((TextView) v.findViewById(R.id.textview_listing)).setText(AppCAP.cleanResponseString(l.getListing()));
-					((TextView) v.findViewById(R.id.text_price)).setText("$" + l.getPrice());
+                    ((TextView) v.findViewById(R.id.textview_listing))
+                            .setText(AppCAP.cleanResponseString(l.getListing()));
+                    ((TextView) v.findViewById(R.id.text_price)).setText("$"
+                            + l.getPrice());
 
-					((LinearLayout) findViewById(R.id.agent_inflate)).addView(v);
+                    ((LinearLayout) findViewById(R.id.agent_inflate))
+                            .addView(v);
 				}
 			}
 
 			// Check Listings as Client
 			if (!userResumeData.getClienListings().isEmpty()) {
-				((LinearLayout) findViewById(R.id.layout_listings_client)).setVisibility(View.VISIBLE);
+                ((LinearLayout) findViewById(R.id.layout_listings_client))
+                        .setVisibility(View.VISIBLE);
 
 				for (Listing l : userResumeData.getClienListings()) {
 					LayoutInflater inflater = getLayoutInflater();
 					View v = inflater.inflate(R.layout.review_listing, null);
-					((TextView) v.findViewById(R.id.textview_listing)).setText(AppCAP.cleanResponseString(l.getListing()));
-					((TextView) v.findViewById(R.id.text_price)).setText("$" + l.getPrice());
+                    ((TextView) v.findViewById(R.id.textview_listing))
+                            .setText(AppCAP.cleanResponseString(l.getListing()));
+                    ((TextView) v.findViewById(R.id.text_price)).setText("$"
+                            + l.getPrice());
 
-					((LinearLayout) findViewById(R.id.client_inflate)).addView(v);
+                    ((LinearLayout) findViewById(R.id.client_inflate))
+                            .addView(v);
 				}
 			}
 
@@ -424,7 +525,8 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 
 		// List view with venues
 		if (favoritePlaces != null) {
-			MyFavouritePlacesAdapter adapter = new MyFavouritePlacesAdapter(this, favoritePlaces);
+            MyFavouritePlacesAdapter adapter = new MyFavouritePlacesAdapter(
+                    this, favoritePlaces);
 			favPlacesList.setAdapter(adapter);
 			favPlacesList.postDelayed(new Runnable() {
 				@Override
@@ -439,7 +541,8 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		((ScrollView) findViewById(R.id.scroll)).post(new Runnable() {
 			@Override
 			public void run() {
-				((ScrollView) findViewById(R.id.scroll)).fullScroll(ScrollView.FOCUS_UP);
+                ((ScrollView) findViewById(R.id.scroll))
+                        .fullScroll(ScrollView.FOCUS_UP);
 			}
 		});
 	}
@@ -470,22 +573,26 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		animation.setDuration(400);
 		set.addAnimation(animation);
 
-		animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+        animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
 				3.0f, Animation.RELATIVE_TO_SELF, 0.0f);
 		animation.setDuration(300);
 		set.addAnimation(animation);
 
-		LayoutAnimationController controller = new LayoutAnimationController(set, 0.0f);
+        LayoutAnimationController controller = new LayoutAnimationController(
+                set, 0.0f);
 		v.setLayoutAnimation(controller);
 	}
 
 	private void startButtonsAnim(View v, boolean isPlus) {
 		if (isPlus) {
-			((RelativeLayout) findViewById(R.id.rel_buttons)).setVisibility(View.VISIBLE);
+            ((RelativeLayout) findViewById(R.id.rel_buttons))
+                    .setVisibility(View.VISIBLE);
 			animateView((RelativeLayout) findViewById(R.id.rel_buttons));
 
 			// Plus
-			Animation anim = new RotateAnimation(360.0f, 0.0f, v.getWidth() / 2, v.getHeight() / 2);
+            Animation anim = new RotateAnimation(360.0f, 0.0f,
+                    v.getWidth() / 2, v.getHeight() / 2);
 			anim.setDuration(700);
 			anim.setRepeatCount(0);
 			anim.setRepeatMode(Animation.REVERSE);
@@ -494,10 +601,12 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 			v.setBackgroundResource(R.drawable.go_menu_button_minus);
 
 		} else {
-			((RelativeLayout) findViewById(R.id.rel_buttons)).setVisibility(View.GONE);
+            ((RelativeLayout) findViewById(R.id.rel_buttons))
+                    .setVisibility(View.GONE);
 
 			// Plus
-			Animation anim = new RotateAnimation(0.0f, 360.0f, v.getWidth() / 2, v.getHeight() / 2);
+            Animation anim = new RotateAnimation(0.0f, 360.0f,
+                    v.getWidth() / 2, v.getHeight() / 2);
 			anim.setDuration(700);
 			anim.setRepeatCount(0);
 			anim.setRepeatMode(Animation.REVERSE);
@@ -515,14 +624,16 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 	 * @return
 	 */
 	private String getAvailableMins(UserResume ur) {
-		Calendar checkoutCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        Calendar checkoutCal = Calendar
+                .getInstance(TimeZone.getTimeZone("GMT"));
 		long checkout = Long.parseLong(ur.getCheckInData_checkOut());
 		int mins = (int) ((checkout - (checkoutCal.getTimeInMillis() / 1000)) / 60);
 
 		if (mins <= 60)
 			return mins == 1 ? mins + " min" : mins + " mins";
 		else
-			return ((mins / 60) == 1 ? "1 hour " : (mins / 60) + " hours ") + ((mins % 60) == 1 ? "1 min" : (mins % 60) + " mins");
+            return ((mins / 60) == 1 ? "1 hour " : (mins / 60) + " hours ")
+                    + ((mins % 60) == 1 ? "1 min" : (mins % 60) + " mins");
 
 	}
 
@@ -530,14 +641,16 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 	 * Check if I am checked in here
 	 */
 	public static boolean isUserHereNow(UserResume ur) {
-		Calendar checkoutCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        Calendar checkoutCal = Calendar
+                .getInstance(TimeZone.getTimeZone("GMT"));
 		long checkout = Long.parseLong(ur.getCheckInData_checkOut());
 
 		return checkout > checkoutCal.getTimeInMillis() / 1000;
 	}
 
 	public void onClickChat(View v) {
-		startActivity(new Intent(ActivityUserDetails.this, ActivityChat.class).putExtra("user_id", userResumeData.getCheckInData_userId())
+        startActivity(new Intent(ActivityUserDetails.this, ActivityChat.class)
+                .putExtra("user_id", userResumeData.getCheckInData_userId())
 				.putExtra("nick_name", userResumeData.getNickName()));
 	}
 
@@ -585,25 +698,40 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		case DIALOG_SEND_PROP:
 			dialog.setContentView(R.layout.dialog_send_love);
 			dialog.setTitle(R.string.activity_user_details_sendlove);
-			
-			dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-			((Button) dialog.findViewById(R.id.btn_send)).setOnClickListener(new OnClickListener() {
+
+            dialog.getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            ((Button) dialog.findViewById(R.id.btn_send))
+                    .setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (((EditText) dialog.findViewById(R.id.edit_review)).getText().toString().length() > 0) {
+                            if (((EditText) dialog
+                                    .findViewById(R.id.edit_review)).getText()
+                                    .toString().length() > 0) {
 						dialog.dismiss();
-						exe.sendReview(userResumeData, ((EditText) dialog.findViewById(R.id.edit_review)).getText().toString());
-						
-						Toast.makeText(ActivityUserDetails.this, "You recognized " + userResumeData.getNickName(), Toast.LENGTH_SHORT).show();
+                                exe.sendReview(
+                                        userResumeData,
+                                        ((EditText) dialog
+                                                .findViewById(R.id.edit_review))
+                                                .getText().toString());
+
+                                Toast.makeText(
+                                        ActivityUserDetails.this,
+                                        "You recognized "
+                                                + userResumeData.getNickName(),
+                                        Toast.LENGTH_SHORT).show();
 						onClickPlus(findViewById(R.id.imagebutton_plus));
 					} else {
 						dialog.dismiss();
-						Toast.makeText(ActivityUserDetails.this, "Review can't be empty!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ActivityUserDetails.this,
+                                        "Review can't be empty!",
+                                        Toast.LENGTH_SHORT).show();
 					}
 				}
 			});
 
-			((Button) dialog.findViewById(R.id.btn_cancel)).setOnClickListener(new OnClickListener() {
+            ((Button) dialog.findViewById(R.id.btn_cancel))
+                    .setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					dialog.dismiss();
@@ -612,15 +740,22 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 			break;
 
 		case DIALOG_SEND_F2F_INVITE:
-			AlertDialog.Builder builder = new AlertDialog.Builder(ActivityUserDetails.this);
-			builder.setMessage("Request to exchange contact info?").setCancelable(false)
-					.setPositiveButton("SEND", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    ActivityUserDetails.this);
+            builder.setMessage("Request to exchange contact info?")
+                    .setCancelable(false)
+                    .setPositiveButton("SEND",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                        int id) {
 							exe.sendFriendRequest(mud.getUserId());
 							dialog.cancel();
 						}
-					}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                        int id) {
 							dialog.cancel();
 						}
 					});
@@ -649,18 +784,19 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		case Executor.HANDLE_SEND_FRIEND_REQUEST:
 			String message = result.getResponseCode() == 0 ? "Contact Request Sent."
 					: (result.getResponseCode() == 4 ? "We've resent your request.\nThe password is: "
-							+ result.getResponseMessage() : (result.getResponseCode() == 6 ? "Request already sent"
+                            + result.getResponseMessage()
+                            : (result.getResponseCode() == 6 ? "Request already sent"
 							: result.getResponseMessage()));
 
-			Toast.makeText(ActivityUserDetails.this, message, Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivityUserDetails.this, message, Toast.LENGTH_LONG)
+                    .show();
 			break;
 		}
 	}
 
 	public void errorReceived() {
 	}
-	
-	
+
 	@Override
 	public void update(Observable observable, Object data) {
 		/*
@@ -670,25 +806,24 @@ public class ActivityUserDetails extends RootActivity implements Observer{
 		if (data instanceof CachedDataContainer) {
 			CachedDataContainer counterdata = (CachedDataContainer) data;
 			DataHolder venuesWithCheckins = counterdata.getData();
-						
+
 			Object[] obj = (Object[]) venuesWithCheckins.getObject();
 			@SuppressWarnings("unchecked")
 			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
-			
+
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putParcelableArrayList("venues", arrayVenues);
 			message.setData(bundle);
-			
+
 			if (Constants.debugLog)
-				Log.d("UserDetails","ActivityUserDetails.update: Sending handler message...");
+                Log.d("UserDetails",
+                        "ActivityUserDetails.update: Sending handler message...");
 			taskHandler.sendMessage(message);
-			
-			
+
+        } else if (Constants.debugLog)
+            Log.d("UserDetails", "Error: Received unexpected data type: "
+                    + data.getClass().toString());
 		}
-		else
-			if (Constants.debugLog)
-				Log.d("UserDetails","Error: Received unexpected data type: " + data.getClass().toString());
-	}
 
 }

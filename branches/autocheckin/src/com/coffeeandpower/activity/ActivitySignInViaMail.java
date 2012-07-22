@@ -26,9 +26,7 @@ public class ActivitySignInViaMail extends RootActivity {
 
 	private EditText editTextPassword;
 	private EditText editTextEmail;
-
 	private TextView textViewErrorMsg;
-
 	private ProgressDialog progress;
 
 	private String userName;
@@ -47,7 +45,8 @@ public class ActivitySignInViaMail extends RootActivity {
 
 			case AppCAP.HTTP_ERROR:
 				textViewErrorMsg.setVisibility(View.INVISIBLE);
-				new CustomDialog(ActivitySignInViaMail.this, "Error", "Internet connection error").show();
+                new CustomDialog(ActivitySignInViaMail.this, "Error",
+                        "Internet connection error").show();
 				break;
 
 			case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:
@@ -55,14 +54,16 @@ public class ActivitySignInViaMail extends RootActivity {
 				// now i should show message like
 				// result.getResponseMess() but
 				// it's ok like this for now
-				textViewErrorMsg.setText("Unable to login. Email and password do not match.");
+                textViewErrorMsg
+                        .setText("Unable to login. Email and password do not match.");
 				textViewErrorMsg.setVisibility(View.VISIBLE);
 				break;
 
 			case AppCAP.HTTP_REQUEST_SUCCEEDED:
 				textViewErrorMsg.setVisibility(View.INVISIBLE);
 
-				Intent intent = new Intent(ActivitySignInViaMail.this, ActivityMap.class);
+                Intent intent = new Intent(ActivitySignInViaMail.this,
+                        ActivityMap.class);
 
 				// Get user data from login response
 
@@ -107,7 +108,8 @@ public class ActivitySignInViaMail extends RootActivity {
 		password = editTextPassword.getText().toString();
 
 		// Check for valid email
-		if (userName.matches("[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}")) {
+        if (userName
+                .matches("[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}")) {
 
 			AppCAP.setUserEmail(userName);
 			progress.show();
@@ -124,7 +126,8 @@ public class ActivitySignInViaMail extends RootActivity {
 			},"ActivitySignInViaMail.onClickSignIn").start();
 
 		} else {
-			textViewErrorMsg.setText("You did not enter a valid email address.");
+            textViewErrorMsg
+                    .setText("You did not enter a valid email address.");
 			textViewErrorMsg.setVisibility(View.VISIBLE);
 		}
 	}

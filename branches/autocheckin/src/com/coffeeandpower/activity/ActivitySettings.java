@@ -38,29 +38,20 @@ import com.coffeeandpower.views.CustomDialog;
 public class ActivitySettings extends RootActivity {
 
 	public static final String IMAGE_FOLDER = "/CoffeeAndPower";
-
 	private final static int PROFILE_PIC_REQUEST = 1455;
 
 	private UserSmart loggedUser;
 
 	private EditText textNickName;
 	private EditText textEmail;
-
 	private ImageView imageClearNickNameField;
 	private ImageView imageClearEmailField;
 	private ImageView imageProfilePhoto;
 
 	private DataHolder result;
-
 	private Executor exe;
-
 	private ImageLoader imageLoader;
-
-	private boolean isUserDataChanged;
-
-	{
-		isUserDataChanged = false;
-	}
+    private boolean isUserDataChanged = false;
 
 	private void errorReceived() {
 
@@ -74,7 +65,8 @@ public class ActivitySettings extends RootActivity {
 		case Executor.HANDLE_SET_USER_PROFILE_DATA:
 			textEmail.setVisibility(View.VISIBLE);
 			textNickName.setVisibility(View.VISIBLE);
-			new CustomDialog(ActivitySettings.this, "Info", result.getResponseMessage()).show();
+            new CustomDialog(ActivitySettings.this, "Info",
+                    result.getResponseMessage()).show();
 			isUserDataChanged = true;
 			break;
 
@@ -89,7 +81,8 @@ public class ActivitySettings extends RootActivity {
 			if (result != null) {
 				if (result.getObject() != null) {
 					if (result.getObject() instanceof String) {
-						new CustomDialog(ActivitySettings.this, "Info", (String) result.getObject()).show();
+                        new CustomDialog(ActivitySettings.this, "Info",
+                                (String) result.getObject()).show();
 						loadProfilePhoto();
 					}
 				}
@@ -148,14 +141,16 @@ public class ActivitySettings extends RootActivity {
 		// Change Nick Name
 		textNickName.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            public boolean onEditorAction(TextView v, int actionId,
+                    KeyEvent event) {
 
 				switch (actionId) {
 				case EditorInfo.IME_ACTION_SEND:
 					textNickName.setVisibility(View.GONE);
 
 					if (loggedUser != null) {
-						loggedUser.setNickName(textNickName.getText().toString());
+                        loggedUser.setNickName(textNickName.getText()
+                                .toString());
 						exe.setUserProfileData(loggedUser, false);
 					}
 					break;
@@ -178,7 +173,8 @@ public class ActivitySettings extends RootActivity {
 		// Change Email
 		textEmail.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            public boolean onEditorAction(TextView v, int actionId,
+                    KeyEvent event) {
 
 				switch (actionId) {
 				case EditorInfo.IME_ACTION_SEND:
@@ -214,7 +210,8 @@ public class ActivitySettings extends RootActivity {
 	 */
 	private void loadProfilePhoto() {
 		if (AppCAP.getLocalUserPhotoURL().length() > 5) {
-			imageLoader.DisplayImage(AppCAP.getLocalUserPhotoURL(), imageProfilePhoto, R.drawable.default_avatar25, 70);
+            imageLoader.DisplayImage(AppCAP.getLocalUserPhotoURL(),
+                    imageProfilePhoto, R.drawable.default_avatar25, 70);
 		}
 	}
 
@@ -227,11 +224,14 @@ public class ActivitySettings extends RootActivity {
 
 	public void onClickPhoto(View v) {
 		// Create folders on sdcard for putting images and audio
-		File dir = new File(Environment.getExternalStorageDirectory() + IMAGE_FOLDER);
+        File dir = new File(Environment.getExternalStorageDirectory()
+                + IMAGE_FOLDER);
 		boolean res = dir.mkdir();
 
-		Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-		File photo = new File(Environment.getExternalStorageDirectory() + IMAGE_FOLDER, "photo_profile.jpg");
+        Intent cameraIntent = new Intent(
+                android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        File photo = new File(Environment.getExternalStorageDirectory()
+                + IMAGE_FOLDER, "photo_profile.jpg");
 
 		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
 
@@ -255,8 +255,10 @@ public class ActivitySettings extends RootActivity {
 					try {
 						OutputStream fOut = null;
 
-						Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
-						Bitmap resizedImage = GraphicUtils.resizeProfileImage(bitmap);
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+                                getContentResolver(), selectedImage);
+                        Bitmap resizedImage = GraphicUtils
+                                .resizeProfileImage(bitmap);
 
 						File file = new File(new URI(selectedImage.toString()));
 						fOut = new FileOutputStream(file);
@@ -274,7 +276,9 @@ public class ActivitySettings extends RootActivity {
 					exe.uploadUserProfilePhoto();
 
 				} else {
-					new CustomDialog(ActivitySettings.this, "Info", "Unable to save picture! We are working on that...").show();
+                    new CustomDialog(ActivitySettings.this, "Info",
+                            "Unable to save picture! We are working on that...")
+                            .show();
 				}
 			}
 

@@ -9,21 +9,19 @@ import java.util.Observer;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
@@ -42,6 +40,7 @@ import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
+import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.urbanairship.UAirship;
@@ -52,22 +51,22 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 	private static final int SCREEN_USER = 1;
 
 	private HorizontalPagerModified pager;
-	
+
 	private MyUsersAdapter adapterUsers;
 
 	private UserAndTabMenu menu;
 
-	//private Executor exe;
-	
+    // private Executor exe;
+
 	private ListView listView;
 	private ProgressDialog progress;
 
 	private ArrayList<UserSmart> arrayUsers;
 
-	//private DataHolder result;
-	
+    // private DataHolder result;
+
 	private boolean initialLoad = true;
-	
+
 	private ImageView blankSlateImg;
 
 	private MyCachedDataObserver myCachedDataObserver = new MyCachedDataObserver();
@@ -86,16 +85,16 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 				setupTabBar();
 			} else {
         			// pass message data along to venue update method
-        			ArrayList<UserSmart> usersArray = msg.getData().getParcelableArrayList("contacts");
+            ArrayList<UserSmart> usersArray = msg.getData()
+                    .getParcelableArrayList("contacts");
         			updateUsersAndCheckinsFromApiResult(usersArray);
-        			
+
         			progress.dismiss();
 			}
 
 			super.handleMessage(msg);
 		}
 	};
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -104,31 +103,25 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 
 		// Executor
 		/*
-		exe = new Executor(ActivityContacts.this);
-		exe.setExecutorListener(new ExecutorInterface() {
-			@Override
-			public void onErrorReceived() {
-				errorReceived();
-			}
+         * exe = new Executor(ActivityContacts.this);
+         * exe.setExecutorListener(new ExecutorInterface() {
+         * 
+         * @Override public void onErrorReceived() { errorReceived(); }
+         * 
+         * @Override public void onActionFinished(int action) {
+         * actionFinished(action); } });
+         */
 
-			@Override
-			public void onActionFinished(int action) {
-				actionFinished(action);
-			}
-		});*/
-
-		((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
+        ((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP
+                .getLoggedInUserNickname());
 
 		// Horizontal Pager
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
 		pager.setCurrentScreen(SCREEN_USER, false);
-		
-		
+
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
 		progress.show();
-		
-
 
 		// User and Tab Menu
 		menu = new UserAndTabMenu(this);
@@ -137,65 +130,70 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 			@Override
 			public void onLogOut() {
 				if (Constants.debugLog)
-					Log.d("Contacts","onLogOut()");
-				
+                    Log.d("Contacts", "onLogOut()");
+
 			}
 
 			@Override
 			public void onCheckOut() {
 				if (Constants.debugLog)
-					Log.d("Contacts","onCheckOut()");
+                    Log.d("Contacts", "onCheckOut()");
 				setupTabBar();
 			}
 		});
 
 		if (AppCAP.isLoggedIn()) {
-			((RelativeLayout) findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-			((ImageView) findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_pressed);
-			((TextView) findViewById(R.id.text_contacts)).setTextColor(Color.WHITE);
+            ((RelativeLayout) findViewById(R.id.rel_contacts))
+                    .setBackgroundResource(R.drawable.bg_tabbar_selected);
+            ((ImageView) findViewById(R.id.imageview_contacts))
+                    .setImageResource(R.drawable.tab_contacts_pressed);
 
 			// Get Notification settings from shared prefs
-			((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP.getNotificationToggle());
-			((Button) findViewById(R.id.btn_from)).setText(AppCAP.getNotificationFrom());
+            ((ToggleButton) findViewById(R.id.toggle_checked_in))
+                    .setChecked(AppCAP.getNotificationToggle());
+            ((Button) findViewById(R.id.btn_from)).setText(AppCAP
+                    .getNotificationFrom());
 
 			// Check and Set Notification settings
-			menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in),
+            menu.setOnNotificationSettingsListener(
+                    (ToggleButton) findViewById(R.id.toggle_checked_in),
 					(Button) findViewById(R.id.btn_from), false);
 
 			// Get contacts list
-			//FIXME
-			//We are eliminating all .exe's
-			//exe.getContactsList();
+            // FIXME
+            // We are eliminating all .exe's
+            // exe.getContactsList();
 
-			//setupTabBar();
-			
-			//Display the list of users if the user is logged in
+            // setupTabBar();
+
+            // Display the list of users if the user is logged in
 			listView = (ListView) findViewById(R.id.contacts_listview);
-			//TODO Need to add listview listener here
+            // TODO Need to add listview listener here
 			listView.setOnItemClickListener(new OnItemClickListener() {
 				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                public void onItemClick(AdapterView<?> arg0, View arg1,
+                        int position, long arg3) {
         				if (!AppCAP.isLoggedIn()) {
         					showDialog(DIALOG_MUST_BE_A_MEMBER);
         				} else {
-        					Intent intent = new Intent(ActivityContacts.this, ActivityUserDetails.class);
-        					intent.putExtra("mapuserobject", (UserSmart) adapterUsers.getItem(position));
+                        Intent intent = new Intent(ActivityContacts.this,
+                                ActivityUserDetails.class);
+                        intent.putExtra("mapuserobject",
+                                (UserSmart) adapterUsers.getItem(position));
         					intent.putExtra("from_act", "list");
         					startActivity(intent);
         				}
 				}
 			});
-							
-			
-			blankSlateImg = (ImageView) findViewById(R.id.contacts_blank_slate_img);
-			
 
+			blankSlateImg = (ImageView) findViewById(R.id.contacts_blank_slate_img);
 
 		} else {
 			setContentView(R.layout.tab_activity_login);
-			((RelativeLayout) findViewById(R.id.rel_log_in)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-			((ImageView) findViewById(R.id.imageview_log_in)).setImageResource(R.drawable.tab_login_pressed);
-			((TextView) findViewById(R.id.text_log_in)).setTextColor(Color.WHITE);
+            ((RelativeLayout) findViewById(R.id.rel_log_in))
+                    .setBackgroundResource(R.drawable.bg_tabbar_selected);
+            ((ImageView) findViewById(R.id.imageview_log_in))
+                    .setImageResource(R.drawable.tab_login_pressed);
 
 			RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
 			RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);
@@ -206,23 +204,18 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 			if (r1 != null) {
 				r1.setVisibility(View.GONE);
 			}
-			
-			
+
 		}
 
+    }
 
-
-	}
-	
-	
 	private void setupTabBar() {
 		if (AppCAP.isUserCheckedIn()) {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityContacts.this,
-					R.anim.rotate_indefinitely));
+            ((TextView) findViewById(R.id.textview_check_in))
+                    .setText("Check Out");
 		} else {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
+            ((TextView) findViewById(R.id.textview_check_in))
+                    .setText("Check In");
 		}
 	}
 
@@ -232,7 +225,6 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 		onBackPressed();
 	}
 
-
 	public void onClickMenu(View v) {
 		if (pager.getCurrentScreen() == SCREEN_USER) {
 			pager.setCurrentScreen(SCREEN_SETTINGS, true);
@@ -240,18 +232,18 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 			pager.setCurrentScreen(SCREEN_USER, true);
 		}
 	}
-	
+
 	@Override
 	protected void onStart() {
 		if (Constants.debugLog)
-			Log.d("Contacts","ActivityContacts.onStart()");
+            Log.d("Contacts", "ActivityContacts.onStart()");
 		super.onStart();
-		
+
 		setupTabBar();
-		
-		//If the user isn't logged in then we will displaying the login screen not the list of contacts.
-		if (AppCAP.isLoggedIn())
-		{
+
+        // If the user isn't logged in then we will displaying the login screen
+        // not the list of contacts.
+        if (AppCAP.isLoggedIn()) {
 			UAirship.shared().getAnalytics().activityStarted(this);
 			CacheMgrService.startObservingAPICall("contactsList",myCachedDataObserver);
 			LocationDetectionStateMachine.startObservingAutoCheckinTrigger(myAutoCheckinObserver);
@@ -261,10 +253,9 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 	@Override
 	public void onStop() {
 		if (Constants.debugLog)
-			Log.d("Contacts","ActivityContacts.onStop()");
+            Log.d("Contacts", "ActivityContacts.onStop()");
 		super.onStop();
-		if (AppCAP.isLoggedIn())
-		{
+        if (AppCAP.isLoggedIn()) {
 			UAirship.shared().getAnalytics().activityStopped(this);
 			CacheMgrService.stopObservingAPICall("contactsList",myCachedDataObserver);
 			LocationDetectionStateMachine.stopObservingAutoCheckinTrigger(myAutoCheckinObserver);
@@ -279,11 +270,14 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 			onBackPressed();
 		} else {
 			// Get Notification settings from shared prefs
-			((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP.getNotificationToggle());
-			((Button) findViewById(R.id.btn_from)).setText(AppCAP.getNotificationFrom());
+            ((ToggleButton) findViewById(R.id.toggle_checked_in))
+                    .setChecked(AppCAP.getNotificationToggle());
+            ((Button) findViewById(R.id.btn_from)).setText(AppCAP
+                    .getNotificationFrom());
 
 			// Check and Set Notification settings
-			menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in),
+            menu.setOnNotificationSettingsListener(
+                    (ToggleButton) findViewById(R.id.toggle_checked_in),
 					(Button) findViewById(R.id.btn_from), false);
 
 			// Get contacts list
@@ -293,21 +287,19 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 	}
 
 	/*
-	private void errorReceived() {
-
-	}
-
-	
-	private void actionFinished(int action) {
-		result = exe.getResult();
-
-		switch (action) {
-
-		case 0:
-
-			break;
-		}
-	}*/
+     * private void errorReceived() {
+     * 
+     * }
+     * 
+     * 
+     * private void actionFinished(int action) { result = exe.getResult();
+     * 
+     * switch (action) {
+     * 
+     * case 0:
+     * 
+     * break; } }
+     */
 
 	@Override
 	public void onBackPressed() {
@@ -330,13 +322,13 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 	}
 
 	@Override
-	public void onClickWallet(View v) {
-		menu.onClickWallet(v);
+    public void onClickSettings(View v) {
+        menu.onClickSettings(v);
 	}
 
 	@Override
-	public void onClickSettings(View v) {
-		menu.onClickSettings(v);
+    public void onClickSupport(View v) {
+        menu.onClickSupport(v);
 	}
 
 	@Override
@@ -382,57 +374,52 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 	public void onClickContacts(View v) {
 		// menu.onClickContacts(v);
 	}
-
 	
 	private void updateUsersAndCheckinsFromApiResult(ArrayList<UserSmart> newUsersArray) {
-		if (Constants.debugLog)
-			Log.d("Contacts","updateUsersAndCheckinsFromApiResult()");
-				
+        if (Constants.debugLog)
+            Log.d("Contacts","updateUsersAndCheckinsFromApiResult()");
+
 		// Sort users list
 		if (newUsersArray != null) {
 			Collections.sort(newUsersArray, new Comparator<UserSmart>() {
 				@Override
 				public int compare(UserSmart m1, UserSmart m2) {
-					//if (m1.getCheckedIn() > m2.getCheckedIn()) {
+                    // if (m1.getCheckedIn() > m2.getCheckedIn()) {
 					//	return -1;
-					//}
-					return m1.getNickName().compareToIgnoreCase(m2.getNickName());
-					//return 1;
+                    // }
+                    return m1.getNickName().compareToIgnoreCase(
+                            m2.getNickName());
+                    // return 1;
 				}
 			});
 		}
-		
+
 		if (newUsersArray.size() == 0) {
 			blankSlateImg.setVisibility(View.VISIBLE);
 		} else {
 			blankSlateImg.setVisibility(View.INVISIBLE);
 		}
-		
-		
-		
-		//Populate table view
+
+        // Populate table view
 		this.arrayUsers = newUsersArray;
 
-		if(initialLoad)
-		{
+        if (initialLoad) {
 			if (Constants.debugLog)
-				Log.d("ActivityContacts","Contacts List Initial Load");
-			adapterUsers = new MyUsersAdapter(ActivityContacts.this, this.arrayUsers);
+                Log.d("ActivityContacts", "Contacts List Initial Load");
+            adapterUsers = new MyUsersAdapter(ActivityContacts.this,
+                    this.arrayUsers);
 			listView.setAdapter(adapterUsers);
 			Utils.animateListView(listView);
 			initialLoad = false;
-		}
-		else
-		{
+        } else {
 			adapterUsers.setNewData(arrayUsers);
 			adapterUsers.notifyDataSetChanged();
 		}
-		
+
 		if (Constants.debugLog)
-			Log.d("Contacts","Set local array with " + newUsersArray.size() + " contacts.");
+            Log.d("Contacts", "Set local array with " + newUsersArray.size()
+                    + " contacts.");
 	}
-	
-	
 	
 	private class MyAutoCheckinTriggerObserver implements Observer {
 

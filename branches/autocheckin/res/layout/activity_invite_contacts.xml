@@ -1,0 +1,95 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#333333" >
+
+    <include
+        android:id="@+id/user_menu"
+        layout="@layout/user_menu" />
+
+    <com.coffeeandpower.views.HorizontalPagerModified
+        android:id="@+id/pager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <!-- FIRST VIEW -->
+
+        <RelativeLayout
+            android:id="@+id/dummy_vertical_line"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <View
+                android:layout_width="15dip"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/map_shadow" />
+        </RelativeLayout>
+
+        <!-- SECOND VIEW -->
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#2d2d2d"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/dummy_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="45dip"
+                android:background="@drawable/header" >
+
+                <Button
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dip"
+                    android:background="@drawable/rounded_border"
+                    android:onClick="onClickBack"
+                    android:padding="8dip"
+                    android:text="@string/back"
+                    android:textColor="#ffffff" />
+                
+                <com.coffeeandpower.views.CustomFontView
+                    android:id="@+id/textview_contact_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/activity_invite_contacts_title"
+                    android:textColor="#ffffff"
+                    android:textSize="25dip" />
+                
+                <Button
+                    android:id="@+id/btn_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dip"
+                    android:background="@drawable/rounded_border"
+                    android:onClick="onClickNext"
+                    android:padding="8dip"
+                    android:clickable="false"
+                    android:text="@string/next"
+                    android:textColor="#ffffff" />
+                </RelativeLayout>
+
+            <ListView
+                android:id="@+id/linkedin_users_listview"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_above="@+id/tab_bar"
+                android:layout_below="@+id/dummy_layout"
+                android:cacheColorHint="#00000000"
+                android:divider="#4a4a4a"
+                android:dividerHeight="1dip" />
+
+
+        </RelativeLayout>
+    </com.coffeeandpower.views.HorizontalPagerModified>
+
+</RelativeLayout>

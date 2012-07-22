@@ -7,7 +7,6 @@ import java.util.Observer;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -49,7 +47,6 @@ import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
-import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomDialog.ClickListener;
 import com.coffeeandpower.views.CustomFontView;
@@ -83,7 +80,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	private MapController mapController;
 	private MyLocationOverlay myLocationOverlay;
 	private MyItemizedOverlay itemizedoverlay;
-	
+
 	private ProgressDialog progress;
 
 	// Current user
@@ -101,10 +98,10 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	
 	// Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
 	private Handler mainThreadTaskHandler = new Handler() {
-		
+
 		@Override
 		public void handleMessage(Message msg) {
-			
+
 			// Determine which message type is being sent
 			String type = msg.getData().getString("type");
 			
@@ -113,8 +110,10 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 			}
 			else { // if the message isn't an autocheckin trigger, assume its a cached data update
         			// pass message data along to venue update method
-        			ArrayList<VenueSmart> venueArray = msg.getData().getParcelableArrayList("venues");
-        			ArrayList<UserSmart> userArray = msg.getData().getParcelableArrayList("users");
+            ArrayList<VenueSmart> venueArray = msg.getData()
+                    .getParcelableArrayList("venues");
+            ArrayList<UserSmart> userArray = msg.getData()
+                    .getParcelableArrayList("users");
         			updateVenuesAndCheckinsFromApiResult(venueArray, userArray);
         
         			progress.dismiss();
@@ -128,17 +127,32 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	//====================================================================
 	// Lifecycle Management
 	//====================================================================
+    
+    
+    /**
+     * Check if user is checked in or not
+     */
+    private void checkUserState() {
+        if (AppCAP.isUserCheckedIn()) {
+            ((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
+            //((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityMap.this,
+            //        R.anim.rotate_indefinitely));
+        } else {
+            ((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
+            //((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
+        }
+    }
 
 	@Override
 	protected void onCreate(Bundle icicle) {
-		
+
 		super.onCreate(icicle);
-		
+
 		if (Constants.debugLog)
 			Log.d(TAG,"Creating ActivityMap...");
 		
 		setContentView(R.layout.tab_activity_map);
-		
+
 		// start services
 		AppCAP.mainActivityDidStart(this);		
 
@@ -148,7 +162,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 
 		// Executor
 		exe = new Executor(ActivityMap.this);
-		//We need this to get the user Id
+        // We need this to get the user Id
 		exe.setExecutorListener(new ExecutorInterface() {
 			@Override
 			public void onErrorReceived() {
@@ -160,7 +174,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 				actionFinished(action);
 			}
 		});
-		
 
 		// Views
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
@@ -168,7 +181,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		textNickName = (CustomFontView) findViewById(R.id.text_nick_name);
 		imageRefresh = (ImageView) findViewById(R.id.imagebutton_map_refresh_progress);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
-		Drawable drawable = this.getResources().getDrawable(R.drawable.people_marker_turquoise_circle);
+        Drawable drawable = this.getResources().getDrawable(
+                R.drawable.people_marker_turquoise_circle);
 		itemizedoverlay = new MyItemizedOverlay(drawable, mapView);
 
 		// Views states
@@ -188,13 +202,15 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 				onBackPressed();
 				// Map Activity is root, so start Login Activity
 				// from here
-				startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
+                startActivity(new Intent(ActivityMap.this,
+                        ActivityLoginPage.class));
 			}
 		});
 
-		((RelativeLayout) findViewById(R.id.rel_map)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-		((ImageView) findViewById(R.id.imageview_map)).setImageResource(R.drawable.tab_map_pressed);
-		((TextView) findViewById(R.id.text_map)).setTextColor(Color.WHITE);
+        ((RelativeLayout) findViewById(R.id.rel_map))
+                .setBackgroundResource(R.drawable.bg_tabbar_selected);
+        ((ImageView) findViewById(R.id.imageview_map))
+                .setImageResource(R.drawable.tab_places_pressed);
 
 		// Set others
 		mapView.getOverlays().add(myLocationOverlay);
@@ -215,7 +231,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 
 		mapController = mapView.getController();
 		mapController.setZoom(12);
-		//Hardcoded to US until we get a fix
+        // Hardcoded to US until we get a fix
 		mapController.zoomToSpan(100448195, 94921874);
 
 		// User is logged in, get user data
@@ -236,7 +252,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 					break;
 
 				case MotionEvent.ACTION_CANCEL:
-					if (event.getX() > firstX + 10 || event.getX() < firstX - 10 || event.getY() > firstY + 10
+                    if (event.getX() > firstX + 10
+                            || event.getX() < firstX - 10
+                            || event.getY() > firstY + 10
 							|| event.getY() < firstY - 10) {
 						refreshMapDataSet();
 						firstX = event.getX();
@@ -246,7 +264,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 					break;
 
 				case MotionEvent.ACTION_UP:
-					if (event.getX() > firstX + 10 || event.getX() < firstX - 10 || event.getY() > firstY + 10
+                    if (event.getX() > firstX + 10
+                            || event.getX() < firstX - 10
+                            || event.getY() > firstY + 10
 							|| event.getY() < firstY - 10) {
 						refreshMapDataSet();
 						firstX = event.getX();
@@ -267,19 +287,20 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+
 		if (Constants.debugLog)
-			Log.d(TAG,"ActivityMap.onResume() - isUserCheckedIn: " + AppCAP.isUserCheckedIn());
-		
+            Log.d("ActivityMap",
+                    "ActivityMap.onStart(): " + AppCAP.isUserCheckedIn());
+
 		checkUserState();
-		
-		
 
-
-		if (AppCAP.isFirstStart() && AppCAP.getEnteredInviteCode()==false) {
-			startActivity(new Intent(ActivityMap.this, ActivityEnterInviteCode.class));
-		} else if (AppCAP.shouldShowInfoDialog() && AppCAP.getEnteredInviteCode()==false) {
-			CustomDialog cd = new CustomDialog(ActivityMap.this,
+        if (AppCAP.isFirstStart() && AppCAP.getEnteredInviteCode() == false) {
+            startActivity(new Intent(ActivityMap.this,
+                    ActivityEnterInviteCode.class));
+        } else if (AppCAP.shouldShowInfoDialog()
+                && AppCAP.getEnteredInviteCode() == false) {
+            CustomDialog cd = new CustomDialog(
+                    ActivityMap.this,
 					"Coffee & Power requires an invite for full membership but you have 30 days of full access to try us out.",
 					"If you get an invite from another C&P user you can enter it anytime by going to the Account page/Enter invite code tab.");
 			cd.setOnClickListener(new ClickListener() {
@@ -293,7 +314,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 			cd.show();
 		} else {
 			if (AppCAP.shouldFinishActivities()) {
-				startActivity(new Intent(ActivityMap.this, ActivityLoginPage.class));
+                startActivity(new Intent(ActivityMap.this,
+                        ActivityLoginPage.class));
 				onBackPressed();
 			} else {
 				myLocationOverlay.enableMyLocation();
@@ -301,7 +323,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 				// Refresh Data
 				refreshMapDataSet();
 			}
-		}		
+		}
 	}
 	
 	
@@ -323,6 +345,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 
 		super.onDestroy();
 	}
+	
 	
 	
 	@Override
@@ -354,7 +377,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	}
 	
 	
-	
 	// Capture the user pressing the back button in the map view and exit the app
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -367,6 +389,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	    }
 	    return super.onKeyDown(keyCode, event);
 	}
+	
 		
 	
 	//====================================================================
@@ -383,23 +406,28 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	 * @param venueName
 	 * @param isList
 	 */
-	private void createMarker(GeoPoint point, VenueSmart currVenueSmart, int checkinsSum, String venueName, boolean isPin) {
+    private void createMarker(GeoPoint point, VenueSmart currVenueSmart,
+            int checkinsSum, String venueName, boolean isPin) {
 		if (currVenueSmart != null) {
 			String checkStr = "";
 			if (!isPin) {
-				checkStr = checkinsSum == 1 ? " checkin in the last week" : " checkins in the last week";
+                checkStr = checkinsSum == 1 ? " checkin in the last week"
+                        : " checkins in the last week";
 			} else {
-				checkStr = checkinsSum == 1 ? " person here now" : " persons here now";
+                checkStr = checkinsSum == 1 ? " person here now"
+                        : " persons here now";
 			}
 			venueName = AppCAP.cleanResponseString(venueName);
 
-			MyOverlayItem overlayitem = new MyOverlayItem(point, venueName, checkinsSum + checkStr);
-			//overlayitem.setMapUserData(foursquareIdKey);
+            MyOverlayItem overlayitem = new MyOverlayItem(point, venueName,
+                    checkinsSum + checkStr);
+            // overlayitem.setMapUserData(foursquareIdKey);
 			overlayitem.setVenueSmartData(currVenueSmart);
 
 			if (myLocationOverlay.getMyLocation() != null) {
-				overlayitem.setMyLocationCoords(myLocationOverlay.getMyLocation().getLatitudeE6(), myLocationOverlay.getMyLocation()
-						.getLongitudeE6());
+                overlayitem.setMyLocationCoords(myLocationOverlay
+                        .getMyLocation().getLatitudeE6(), myLocationOverlay
+                        .getMyLocation().getLongitudeE6());
 			}
 
 			// Pin or marker
@@ -414,7 +442,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 
 	private Drawable getPinDrawable(int checkinsNum, GeoPoint gp) {
 		PinDrawable icon = new PinDrawable(this, checkinsNum);
-		icon.setBounds(0, -icon.getIntrinsicHeight(), icon.getIntrinsicWidth(), 0);
+        icon.setBounds(0, -icon.getIntrinsicHeight(), icon.getIntrinsicWidth(),
+                0);
 		return icon;
 	}
 
@@ -425,33 +454,18 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		textNickName.setText(loggedUser.getNickName());
 	}*/
 	
-	/**
-	 * Check if user is checked in or not
-	 */
-	private void checkUserState() {
-		if (AppCAP.isUserCheckedIn()) {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityMap.this,
-					R.anim.rotate_indefinitely));
-		} else {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
-		}
-	}
+	
 
 	public void onClickMenu(View v) {
 		CustomFontView textInvite = (CustomFontView) findViewById(R.id.text_invite_codes);
-		//Detect whether we already have an C&P invite or not
-		if(AppCAP.getEnteredInviteCode())
-		{
-			//We need to set to invite
+        // Detect whether we already have an C&P invite or not
+        if (AppCAP.getEnteredInviteCode()) {
+            // We need to set to invite
 			textInvite.setText("Invite");
-		}
-		else
-		{
-			//We need to set to enter invite code
+        } else {
+            // We need to set to enter invite code
 			textInvite.setText("Enter invite code");
-			
+
 		}
 		if (pager.getCurrentScreen() == SCREEN_MAP) {
 			pager.setCurrentScreen(SCREEN_SETTINGS, true);
@@ -485,31 +499,35 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 
 	private void refreshMapDataSet() {
 		checkUserState();
-		
-		int iconSize = Utils.getScreenDependentItemSize(Utils.REFRESH_ICON_SIZE);
 
-		Animation anim = new RotateAnimation(360.0f, 0.0f, iconSize / 2, iconSize / 2);
-		anim.setDuration(1000);
-		anim.setRepeatCount(0);
-		anim.setRepeatMode(Animation.REVERSE);
-		anim.setFillAfter(true);
+        Animation anim = AnimationUtils
+                .loadAnimation(this, R.anim.refresh_anim);
 		imageRefresh.setAnimation(anim);
 
 		hideBaloons();
 
-		//exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(getSWAndNECoordinatesBounds(mapView), false);
-		//AppCAP.getCounter().manualTrigger();
+        // exe.getVenuesAndUsersWithCheckinsInBoundsDuringInterval(getSWAndNECoordinatesBounds(mapView),
+        // false);
+        // AppCAP.getCounter().manualTrigger();
 
 		// For every refresh save Map coordinates
 		AppCAP.setUserCoordinates(getSWAndNECoordinatesBounds(mapView));
+        MapView map = (MapView) findViewById(R.id.mapview);
+        GeoPoint pointCenterMap = map.getMapCenter();
+        int lngSpan = pointCenterMap.getLongitudeE6();
+        int latSpan = pointCenterMap.getLatitudeE6();
+        AppCAP.setMapCenterCoordinates(lngSpan, latSpan);
 
 		// Get Notification settings from shared prefs
-		((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP.getNotificationToggle());
-		((Button) findViewById(R.id.btn_from)).setText(AppCAP.getNotificationFrom());
+        ((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP
+                .getNotificationToggle());
+        ((Button) findViewById(R.id.btn_from)).setText(AppCAP
+                .getNotificationFrom());
 
 		// Check and Set Notification settings
-		menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in), (Button) findViewById(R.id.btn_from),
-				true);
+        menu.setOnNotificationSettingsListener(
+                (ToggleButton) findViewById(R.id.toggle_checked_in),
+                (Button) findViewById(R.id.btn_from), true);
 
 	}
 
@@ -540,8 +558,12 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		int lngSpan = map.getLongitudeSpan();
 		int latSpan = map.getLatitudeSpan();
 
-		GeoPoint sw = new GeoPoint(pointCenterMap.getLatitudeE6() - latSpan / 2, pointCenterMap.getLongitudeE6() - lngSpan / 2);
-		GeoPoint ne = new GeoPoint(pointCenterMap.getLatitudeE6() + latSpan / 2, pointCenterMap.getLongitudeE6() + lngSpan / 2);
+        GeoPoint sw = new GeoPoint(
+                pointCenterMap.getLatitudeE6() - latSpan / 2,
+                pointCenterMap.getLongitudeE6() - lngSpan / 2);
+        GeoPoint ne = new GeoPoint(
+                pointCenterMap.getLatitudeE6() + latSpan / 2,
+                pointCenterMap.getLongitudeE6() + lngSpan / 2);
 
 		data[0] = sw.getLatitudeE6() / 1E6; // sw_lat
 		data[1] = sw.getLongitudeE6() / 1E6; // sw_lng
@@ -563,7 +585,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		super.onBackPressed();
 	}*/
 
-	
+    
 
 	@Override
 	public void onClickEnterInviteCode(View v) {
@@ -607,9 +629,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		}
 	}
 
-	@Override
-	public void onClickWallet(View v) {
-		menu.onClickWallet(v);
+    @Override
+    public void onClickSupport(View v) {
+        menu.onClickSupport(v);
 	}
 	
 	@Override
@@ -623,7 +645,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		menu.onClickLogout(v);
 	}
 
-	
+  
 
 
 	private void actionFinished(int action) {
@@ -687,24 +709,23 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 			if (data instanceof CachedDataContainer) {
 				CachedDataContainer counterdata = (CachedDataContainer) data;
 				DataHolder venuesWithCheckins = counterdata.getData();
-							
+
 				Object[] obj = (Object[]) venuesWithCheckins.getObject();
 				@SuppressWarnings("unchecked")
 				List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
 				@SuppressWarnings("unchecked")
 				List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
-				
+
 				Message message = new Message();
 				Bundle bundle = new Bundle();
 				bundle.putCharSequence("type", counterdata.type);
 				bundle.putParcelableArrayList("venues", new ArrayList<VenueSmart>(arrayVenues));
 				bundle.putParcelableArrayList("users", new ArrayList<UserSmart>(arrayUsers));
 				message.setData(bundle);
-				
+
 				if (Constants.debugLog)
 					Log.d(TAG,"ActivityMap: Received cached data, processing...");
-				
-				
+
 				
 				mainThreadTaskHandler.sendMessage(message);
 				
@@ -718,18 +739,21 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		if (Constants.debugLog)
 			Log.d(TAG,"updateVenuesAndCheckinsFromApiResult()");
 		itemizedoverlay.clear();
-		
+
 		for (VenueSmart venue : venueArray) {
-			GeoPoint gp = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
+            GeoPoint gp = new GeoPoint((int) (venue.getLat() * 1E6),
+                    (int) (venue.getLng() * 1E6));
 
 			if (venue.getCheckins() > 0) {
-				createMarker(gp, venue, venue.getCheckins(), venue.getName(), true);
+                createMarker(gp, venue, venue.getCheckins(), venue.getName(),
+                        true);
 			} else if (venue.getCheckinsForWeek() > 0) {
-				createMarker(gp, venue, venue.getCheckinsForWeek(), venue.getName(), false); // !!!
+                createMarker(gp, venue, venue.getCheckinsForWeek(),
+                        venue.getName(), false); // !!!
 															       // getCheckinsForWeek
 			}
 		}
-		
+
 		for (UserSmart user : arrayUsers) {
 			if (user.getUserId() == AppCAP.getLoggedInUserId()) {
 				if (user.getCheckedIn() == 1) {
@@ -739,19 +763,15 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 				}
 			}
 		}
-		
+
 		if (itemizedoverlay.size() > 0) {
 			mapView.getOverlays().add(itemizedoverlay);
 		}
 		checkUserState();
 		mapView.invalidate();
-		
+
 	}
-	
+
+   
+
 }
-
-	
-
-	
-	
-	

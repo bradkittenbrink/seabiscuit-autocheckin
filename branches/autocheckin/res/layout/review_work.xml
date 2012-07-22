@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_edu_review"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingTop="10dp" >
 
     <TextView
         android:id="@+id/textview_job_title"
@@ -13,9 +12,9 @@
         android:layout_gravity="bottom"
         android:layout_marginLeft="5dip"
         android:maxLines="2"
-        android:textStyle="bold"
         android:textColor="#ff000000"
-        android:textSize="16dip" />
+        android:textSize="16dip"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textview_job_date"
@@ -23,8 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginLeft="5dip"
-        android:textColor="#444444"
         android:maxLines="2"
+        android:textColor="#444444"
         android:textSize="16dip" />
 
 </LinearLayout>

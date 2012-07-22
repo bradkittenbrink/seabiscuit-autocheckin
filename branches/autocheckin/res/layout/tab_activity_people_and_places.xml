@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -34,8 +33,8 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:background="#333333" >
+            android:background="#333333"
+            android:orientation="vertical" >
 
             <RelativeLayout
                 android:id="@+id/dummy_layout"
@@ -43,7 +42,8 @@
                 android:layout_height="45dip"
                 android:background="@drawable/header" >
 
-                <Button android:id="@+id/btn_menu"
+                <Button
+                    android:id="@+id/btn_menu"
                     android:layout_width="41dip"
                     android:layout_height="28dip"
                     android:layout_alignParentLeft="true"
@@ -76,8 +76,8 @@
                 android:layout_above="@+id/tab_bar"
                 android:layout_below="@+id/dummy_layout"
                 android:cacheColorHint="#00000000"
-                android:dividerHeight="1dip"
-                android:divider="#4a4a4a" >
+                android:divider="#4a4a4a"
+                android:dividerHeight="1dip" >
             </ListView>
         </RelativeLayout>
     </com.coffeeandpower.views.HorizontalPagerModified>

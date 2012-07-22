@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="150dp" >
@@ -55,7 +54,6 @@
                     android:textColor="#ffdddddd"
                     android:textSize="26sp"
                     android:textStyle="bold" />
-
                 <TextView
                     android:id="@+id/textview_major_job"
                     android:layout_width="wrap_content"
@@ -88,9 +86,9 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
-                        android:textColor="#BABABA"
                         android:gravity="bottom"
                         android:singleLine="true"
+                        android:textColor="#BABABA"
                         android:textSize="13sp" />
 
                     <TextView
@@ -102,7 +100,8 @@
                         android:singleLine="true"
                         android:textColor="#ffffffff"
                         android:textSize="13sp" />
-                </LinearLayout>
+                    				
+                    </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

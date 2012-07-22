@@ -62,15 +62,15 @@ public class UserSmart implements Parcelable {
 		this.majorJobCategory = objUser.optString("major_job_category");
 		this.minorJobCategory = objUser.optString("minor_job_category");
 		this.headLine = objUser.optString("headline");
-		
+
 		if (!objUser.optString("filename").equals(""))
 			this.fileName = objUser.optString("filename");
 		else if (!objUser.optString("imageUrl").equals(""))
 			this.fileName = objUser.optString("imageUrl");
-		else
-			if (Constants.debugLog)
-				Log.d("UserSmart","Warning, could not parse user image URL with keys 'filename' or 'imageUrl'...");
-		
+        else if (Constants.debugLog)
+            Log.d("UserSmart",
+                    "Warning, could not parse user image URL with keys 'filename' or 'imageUrl'...");
+
 		this.lat = objUser.optDouble("lat");
 		this.lng = objUser.optDouble("lng");
 		this.checkedIn = objUser.optInt("checked_in");
@@ -80,18 +80,18 @@ public class UserSmart implements Parcelable {
 		this.checkInCount = objUser.optInt("checkin_count");
 		this.skills = objUser.optString("skills");
 		this.sponsorNickname = objUser.optString("sponsorNickname");
-		if(this.sponsorNickname.equalsIgnoreCase("")==false)
-		{
-			Log.d("UserSmart","Sponsor: %s" + this.sponsorNickname);
+        if (this.sponsorNickname.equalsIgnoreCase("") == false) {
+            Log.d("UserSmart", "Sponsor: %s" + this.sponsorNickname);
 			int test = 5;
 			int test2 = test;
 		}
 		this.met = objUser.optBoolean("met");
 	}
-	
 
-	public UserSmart(int checkInId, int userId, String nickName, String statusText, String photo, String majorJobCategory,
-			String minorJobCategory, String headLine, String fileName, double lat, double lng, int checkedIn, String foursquareId,
+    public UserSmart(int checkInId, int userId, String nickName,
+            String statusText, String photo, String majorJobCategory,
+            String minorJobCategory, String headLine, String fileName,
+            double lat, double lng, int checkedIn, String foursquareId,
 			String venueName, int checkInCount, String skills, boolean met) {
 		super();
 		this.checkInId = checkInId;
@@ -248,7 +248,7 @@ public class UserSmart implements Parcelable {
 	public void setMet(boolean met) {
 		this.met = met;
 	}
-	
+
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -257,7 +257,7 @@ public class UserSmart implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		
+
 		out.writeInt(this.checkInId);
 		out.writeInt(this.userId);
 		out.writeString(this.nickName);
@@ -273,14 +273,14 @@ public class UserSmart implements Parcelable {
 		out.writeString(this.skills);
 		out.writeInt(this.met ? 1 : 0);
 		out.writeInt(this.isFirstInList ? 1 : 0);
-		
+
 	}
-	
+
 	public static final Parcelable.Creator<UserSmart> CREATOR = new Parcelable.Creator<UserSmart>() {
             public UserSmart createFromParcel(Parcel in) {
                 return new UserSmart(in);
             }
-        
+
             public UserSmart[] newArray(int size) {
                 return new UserSmart[size];
             }
@@ -300,10 +300,9 @@ public class UserSmart implements Parcelable {
             this.lng = in.readDouble();
             this.checkedIn = in.readInt();
             this.skills = in.readString();
-            this.met = ( in.readInt() == 1 ? true : false );
-            this.isFirstInList = ( in.readInt() == 1 ? true : false );
-        		    
-        		    
+        this.met = (in.readInt() == 1 ? true : false);
+        this.isFirstInList = (in.readInt() == 1 ? true : false);
+
         }
 
 }

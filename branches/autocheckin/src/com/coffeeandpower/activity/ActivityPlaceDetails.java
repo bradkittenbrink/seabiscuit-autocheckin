@@ -1,9 +1,6 @@
 package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -51,12 +48,10 @@ import com.urbanairship.UAirship;
 public class ActivityPlaceDetails extends RootActivity {
 
 	private String foursquareId;
-
 	private DataHolder result;
+    private Executor exe;
 
-	//private Executor exe;
-
-	//private ArrayList<UserSmart> arrayUsers;
+    // private ArrayList<UserSmart> arrayUsers;
 	private ArrayList<VenueSmart> cachedVenues = new ArrayList<VenueSmart>();
 	private ArrayList<UserSmart> cachedUsers = new ArrayList<UserSmart>();
 	
@@ -71,7 +66,7 @@ public class ActivityPlaceDetails extends RootActivity {
 
 	private ListView listWereHere;
 	private MyUserSmartAdapter listWereHereAdapter;
-	
+
 	private ListView listHereNow;
 	private MyUserSmartAdapter listHereNowAdapter;
 
@@ -84,7 +79,6 @@ public class ActivityPlaceDetails extends RootActivity {
 	private MyCachedDataObserver myCachedDataObserver = new MyCachedDataObserver();
 	private MyAutoCheckinTriggerObserver myAutoCheckinObserver = new MyAutoCheckinTriggerObserver();
 	//private double data[];
-
 	
 	
 	//amICheckedIn = false;
@@ -112,7 +106,6 @@ public class ActivityPlaceDetails extends RootActivity {
         		super.handleMessage(msg);
 		}
 	};
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -128,17 +121,20 @@ public class ActivityPlaceDetails extends RootActivity {
 		Bundle bundle = getIntent().getExtras();
 		if (bundle != null) {
 			selectedVenue = (VenueSmart) bundle.getParcelable("venueSmart");
-			//foursquareId = bundle.getString("foursquare_id");
-			//data = bundle.getDoubleArray("coords");
+            // foursquareId = bundle.getString("foursquare_id");
+            // data = bundle.getDoubleArray("coords");
 		}
 
 		// On item list click
 		listHereNow.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
 				if (AppCAP.isLoggedIn()) {
-					Intent intent = new Intent(ActivityPlaceDetails.this, ActivityUserDetails.class);
-					intent.putExtra("mapuserobject", arrayUsersHereNow.get(position));
+                    Intent intent = new Intent(ActivityPlaceDetails.this,
+                            ActivityUserDetails.class);
+                    intent.putExtra("mapuserobject",
+                            arrayUsersHereNow.get(position));
 					intent.putExtra("from_act", "list");
 					startActivity(intent);
 				} else {
@@ -149,10 +145,13 @@ public class ActivityPlaceDetails extends RootActivity {
 
 		listWereHere.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
 				if (AppCAP.isLoggedIn()) {
-					Intent intent = new Intent(ActivityPlaceDetails.this, ActivityUserDetails.class);
-					intent.putExtra("mapuserobject", arrayUsersWereHere.get(position));
+                    Intent intent = new Intent(ActivityPlaceDetails.this,
+                            ActivityUserDetails.class);
+                    intent.putExtra("mapuserobject",
+                            arrayUsersWereHere.get(position));
 					intent.putExtra("from_act", "list");
 					startActivity(intent);
 				} else {
@@ -160,13 +159,54 @@ public class ActivityPlaceDetails extends RootActivity {
 				}
 			}
 		});
+        // Executor
+        exe = new Executor(ActivityPlaceDetails.this);
+        exe.setExecutorListener(new ExecutorInterface() {
+            @Override
+            public void onErrorReceived() {
+            }
 
+            @Override
+            public void onActionFinished(int action) {
+                result = exe.getResult();
+
+                switch (action) {
+                case Executor.HANDLE_VENUE_CHAT:
+                    if (result != null && result.getObject() != null
+                            && (result.getObject() instanceof ArrayList<?>)) {
+                        ArrayList<Object> tempArray = (ArrayList<Object>) result
+                                .getObject();
+                        ((CustomFontView) findViewById(R.id.textview_chat_places_name)).setText(AppCAP
+                                .cleanResponseString(getLastEntry(tempArray)));
 	}
-	
+                    break;
+                }
+            }
+        });
+
+    }
+
+    private String getLastEntry(ArrayList<Object> chatArray) {
+        String lastEntry = "Loading Venue chat....";
+        if (chatArray.size() == 4) {
+            if (chatArray.get(3) instanceof ArrayList<?>) {
+                // Calculate number of users in chat
+                for (VenueChatEntry entry : (ArrayList<VenueChatEntry>) chatArray
+                        .get(3)) {
+                    if (entry.getSystemType() != null
+                            && !entry.getSystemType().equals("checkin")) {
+                        lastEntry = entry.getEntry();
+                    }
+                }
+            }
+        }
+        return lastEntry;
+    }
+
 	@Override
 	protected void onStart() {
 		if (Constants.debugLog)
-			Log.d("PlaceDetail","ActivityPlaceDetail.onStart()");
+            Log.d("PlaceDetail", "ActivityPlaceDetail.onStart()");
 		super.onStart();
 		UAirship.shared().getAnalytics().activityStarted(this);
 		CacheMgrService.startObservingAPICall("venuesWithCheckins",myCachedDataObserver);
@@ -179,7 +219,7 @@ public class ActivityPlaceDetails extends RootActivity {
 	@Override
 	public void onStop() {
 		if (Constants.debugLog)
-			Log.d("PlaceDetail","ActivityPlaceDetail.onStop()");
+            Log.d("PlaceDetail", "ActivityPlaceDetail.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
 
@@ -187,32 +227,47 @@ public class ActivityPlaceDetails extends RootActivity {
 		LocationDetectionStateMachine.stopObservingAutoCheckinTrigger(myAutoCheckinObserver);
 	}
 
-	private void fillData(ArrayList<UserSmart> arrayUsers, ArrayList<VenueSmart> arrayVenues) {
+    private void fillData(ArrayList<UserSmart> arrayUsers,
+            ArrayList<VenueSmart> arrayVenues) {
 		if (selectedVenue != null) {
-			
-			Log.d("PlaceDetails","fillData()");
 
-			((CustomFontView) findViewById(R.id.textview_phone_number)).setVisibility(!selectedVenue.getPhone().equals("") ? View.VISIBLE
+            Log.d("PlaceDetails", "fillData()");
+
+            ((CustomFontView) findViewById(R.id.textview_phone_number))
+                    .setVisibility(!selectedVenue.getPhone().equals("") ? View.VISIBLE
 					: View.GONE);
-			((CustomFontView) findViewById(R.id.textview_phone_number)).setText(PhoneNumberUtils.formatNumber(selectedVenue.getPhone()));
-			((CustomFontView) findViewById(R.id.textview_chat_name)).setText(AppCAP.cleanResponseString(selectedVenue.getName()));
-			((CustomFontView) findViewById(R.id.textview_place_name)).setText(AppCAP.cleanResponseString(selectedVenue.getName()));
-			((CustomFontView) findViewById(R.id.textview_place_address)).setText(AppCAP.cleanResponseString(selectedVenue.getAddress()));
-			((TextView) findViewById(R.id.textview_place_check_in)).setText("Check in to "
-					+ AppCAP.cleanResponseString(selectedVenue.getName()));
+            ((CustomFontView) findViewById(R.id.textview_phone_number))
+                    .setText(PhoneNumberUtils.formatNumber(selectedVenue
+                            .getPhone()));
+            ((CustomFontView) findViewById(R.id.textview_chat_name))
+                    .setText(AppCAP.cleanResponseString(selectedVenue.getName()));
+            ((CustomFontView) findViewById(R.id.textview_place_name))
+                    .setText(AppCAP.cleanResponseString(selectedVenue.getName()));
+            ((CustomFontView) findViewById(R.id.textview_place_address))
+                    .setText(AppCAP.cleanResponseString(selectedVenue
+                            .getAddress()));
+            if (((CustomFontView) findViewById(R.id.textview_chat_places_name))
+                    .getText().equals("Loading Venue chat...")) {
+                this.getLastChatentry(this.selectedVenue.getVenueId());
+            }
+            ((TextView) findViewById(R.id.textview_place_check_in))
+                    .setText("Check in to "
+                            + AppCAP.cleanResponseString(selectedVenue
+                                    .getName()));
 
 			// Try to load image
-			imageLoader.DisplayImage(selectedVenue.getPhotoURL(), (ImageView) findViewById(R.id.image_view),
+            imageLoader.DisplayImage(selectedVenue.getPhotoURL(),
+                    (ImageView) findViewById(R.id.image_view),
 					R.drawable.picture_coming_soon_rectangle, 200);
-			//Find the selected venue in the venue array and use the data from the Counter
-			//If the venue is not in the list keep using the data from the intent
+            // Find the selected venue in the venue array and use the data from
+            // the Counter
+            // If the venue is not in the list keep using the data from the
+            // intent
 			int selectedId = this.selectedVenue.getVenueId();
 			int testId = 0;
-			for(VenueSmart testVenue : arrayVenues)
-			{
+            for (VenueSmart testVenue : arrayVenues) {
 				testId = testVenue.getVenueId();
-				if(selectedId == testId)
-				{
+                if (selectedId == testId) {
 					this.selectedVenue = testVenue;
 					break;
 				}
@@ -223,22 +278,26 @@ public class ActivityPlaceDetails extends RootActivity {
 			arrayUsersHereNow.clear();
 			arrayUsersWereHere.clear();
 			for (CheckinData cd : arrayUsersInVenue) {
-				Log.d("PlaceDetail","Filling data: " + cd.toString());
+                Log.d("PlaceDetail", "Filling data: " + cd.toString());
 				if (cd.getCheckedIn() == 1) {
 					// user is here now
-					if(cd.getCheckedIn()==1)
-					{
-						arrayUsersHereNow.add(getUserById(cd.getUserId(), arrayUsers));
+                    if (cd.getCheckedIn() == 1) {
+                        arrayUsersHereNow.add(getUserById(cd.getUserId(),
+                                arrayUsers));
 					}
 				} else {
 					// users were here
-					arrayUsersWereHere.add(getUserById(cd.getUserId(), arrayUsers));
+                    arrayUsersWereHere.add(getUserById(cd.getUserId(),
+                            arrayUsers));
 				}
 
 				// Check if I am checked in or not
-				if (AppCAP.getLoggedInUserId() == cd.getUserId() && cd.getCheckedIn() == 1) {
-					((TextView) findViewById(R.id.textview_place_check_in)).setText("Check out of "
-							+ AppCAP.cleanResponseString(selectedVenue.getName()));
+                if (AppCAP.getLoggedInUserId() == cd.getUserId()
+                        && cd.getCheckedIn() == 1) {
+                    ((TextView) findViewById(R.id.textview_place_check_in))
+                            .setText("Check out of "
+                                    + AppCAP.cleanResponseString(selectedVenue
+                                            .getName()));
 					amICheckedIn = true;
 				}
 			}
@@ -246,15 +305,17 @@ public class ActivityPlaceDetails extends RootActivity {
 			// Create adapters and populate Lists
 			if (arrayUsersHereNow.isEmpty()) {
 				listHereNow.setVisibility(View.GONE);
-				((CustomFontView) findViewById(R.id.textview_here)).setVisibility(View.GONE);
+                ((CustomFontView) findViewById(R.id.textview_here))
+                        .setVisibility(View.GONE);
 			} else {
 				listHereNow.setVisibility(View.VISIBLE);
-				((CustomFontView) findViewById(R.id.textview_here)).setVisibility(View.VISIBLE);
-				if(initialLoadNow)
-				{
-					this.listHereNowAdapter = new MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersHereNow);
+                ((CustomFontView) findViewById(R.id.textview_here))
+                        .setVisibility(View.VISIBLE);
+                if (initialLoadNow) {
+                    this.listHereNowAdapter = new MyUserSmartAdapter(
+                            ActivityPlaceDetails.this, arrayUsersHereNow);
 					listHereNow.setAdapter(this.listHereNowAdapter);
-					
+
         				listHereNow.postDelayed(new Runnable() {
         					@Override
         					public void run() {
@@ -263,24 +324,24 @@ public class ActivityPlaceDetails extends RootActivity {
         				}, 400);
         				initialLoadNow = false;
         				Utils.animateListView(listHereNow);
-				}
-				else
-				{
-					//Update the listview with the new data
+                } else {
+                    // Update the listview with the new data
 					this.listHereNowAdapter.setNewData(arrayUsersHereNow);
 					this.listHereNowAdapter.notifyDataSetChanged();
 				}
 			}
 			if (arrayUsersWereHere.isEmpty()) {
 				listWereHere.setVisibility(View.GONE);
-				((CustomFontView) findViewById(R.id.textview_worked)).setVisibility(View.GONE);
+                ((CustomFontView) findViewById(R.id.textview_worked))
+                        .setVisibility(View.GONE);
 			} else {
-				listHereNow.setVisibility(View.VISIBLE);
-				((CustomFontView) findViewById(R.id.textview_worked)).setVisibility(View.VISIBLE);
+                listWereHere.setVisibility(View.VISIBLE);
+                ((CustomFontView) findViewById(R.id.textview_worked))
+                        .setVisibility(View.VISIBLE);
 
-				if(initialLoadWere)
-				{
-        				this.listWereHereAdapter = new MyUserSmartAdapter(ActivityPlaceDetails.this, arrayUsersWereHere);
+                if (initialLoadWere) {
+                    this.listWereHereAdapter = new MyUserSmartAdapter(
+                            ActivityPlaceDetails.this, arrayUsersWereHere);
         				listWereHere.setAdapter(this.listWereHereAdapter);
         				listWereHere.postDelayed(new Runnable() {
         					@Override
@@ -290,10 +351,8 @@ public class ActivityPlaceDetails extends RootActivity {
         				}, 400);
         				initialLoadWere = false;
         				Utils.animateListView(listWereHere);
-				}
-				else
-				{
-					//Update the listview with the new data
+                } else {
+                    // Update the listview with the new data
 					this.listWereHereAdapter.setNewData(arrayUsersWereHere);
 					this.listWereHereAdapter.notifyDataSetChanged();
 				}
@@ -304,19 +363,32 @@ public class ActivityPlaceDetails extends RootActivity {
 	}
 
 	public void onClickAddress(View v) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(ActivityPlaceDetails.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                ActivityPlaceDetails.this);
 		builder.setTitle("Directions");
-		builder.setMessage("Do you want directions to " + AppCAP.cleanResponseString(selectedVenue.getName())).setCancelable(false)
-				.setPositiveButton("Launch Map", new DialogInterface.OnClickListener() {
+        builder.setMessage(
+                "Do you want directions to "
+                        + AppCAP.cleanResponseString(selectedVenue.getName()))
+                .setCancelable(false)
+                .setPositiveButton("Launch Map",
+                        new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri
-								.parse("http://maps.google.com/maps?saddr=" + AppCAP.getUserCoordinates()[4] + ","
-										+ AppCAP.getUserCoordinates()[5] + "&daddr=" + selectedVenue.getLat()
-										+ "," + selectedVenue.getLng()));
+                                Intent intent = new Intent(
+                                        android.content.Intent.ACTION_VIEW,
+                                        Uri.parse("http://maps.google.com/maps?saddr="
+                                                + AppCAP.getUserCoordinates()[4]
+                                                + ","
+                                                + AppCAP.getUserCoordinates()[5]
+                                                + "&daddr="
+                                                + selectedVenue.getLat()
+                                                + ","
+                                                + selectedVenue.getLng()));
 						startActivity(intent);
 						dialog.cancel();
 					}
-				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();
 					}
@@ -325,22 +397,36 @@ public class ActivityPlaceDetails extends RootActivity {
 	}
 
 	public void onClickPhone(View v) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(ActivityPlaceDetails.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                ActivityPlaceDetails.this);
 		builder.setTitle("Call " + selectedVenue.getName() + "?");
-		builder.setMessage("" + PhoneNumberUtils.formatNumber(selectedVenue.getPhone())).setCancelable(false)
-				.setPositiveButton("Call", new DialogInterface.OnClickListener() {
+        builder.setMessage(
+                "" + PhoneNumberUtils.formatNumber(selectedVenue.getPhone()))
+                .setCancelable(false)
+                .setPositiveButton("Call",
+                        new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + selectedVenue.getPhone()));
+                                Intent intent = new Intent(Intent.ACTION_CALL,
+                                        Uri.parse("tel:"
+                                                + selectedVenue.getPhone()));
 						startActivity(intent);
 						dialog.cancel();
 					}
-				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();
 					}
 				});
 		builder.create().show();
 	}
+
+    private String getLastChatentry(int venueId) {
+        // Get venue chat
+        exe.venueChat(venueId, "0", "", false, false);
+        return null;
+    }
 
 	private UserSmart getUserById(int userId, ArrayList<UserSmart>  arrayUsers) {
 		for (UserSmart us : arrayUsers) {
@@ -367,14 +453,14 @@ public class ActivityPlaceDetails extends RootActivity {
 				arrayUsersHereNow.clear();
 				arrayUsersWereHere.clear();
 				amICheckedIn = false;
-				
+
 				// Restart the activity so user lists load correctly
 				Intent intent = getIntent();
 				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 				finish();
-				overridePendingTransition(0,0);
+                overridePendingTransition(0, 0);
 				startActivity(intent);
-				
+
 			}
 		});
 
@@ -383,16 +469,21 @@ public class ActivityPlaceDetails extends RootActivity {
 				menu.onClickCheckIn(v);
 			} else if (selectedVenue != null) {
 				Venue venue = new Venue();
-				venue.setAddress(AppCAP.cleanResponseString(selectedVenue.getAddress()));
-				venue.setCity(AppCAP.cleanResponseString(selectedVenue.getCity()));
+                venue.setAddress(AppCAP.cleanResponseString(selectedVenue
+                        .getAddress()));
+                venue.setCity(AppCAP.cleanResponseString(selectedVenue
+                        .getCity()));
 				venue.setFoursquareId(selectedVenue.getFoursquareId());
-				venue.setName(AppCAP.cleanResponseString(selectedVenue.getName()));
+                venue.setName(AppCAP.cleanResponseString(selectedVenue
+                        .getName()));
 				venue.setLat(selectedVenue.getLat());
 				venue.setLng(selectedVenue.getLng());
-				venue.setState(AppCAP.cleanResponseString(selectedVenue.getState()));
+                venue.setState(AppCAP.cleanResponseString(selectedVenue
+                        .getState()));
 
-				Intent intent = new Intent(ActivityPlaceDetails.this, ActivityCheckIn.class);
-				//intent.putExtra("venue", venue);
+                Intent intent = new Intent(ActivityPlaceDetails.this,
+                        ActivityCheckIn.class);
+                // intent.putExtra("venue", venue);
 				intent.putExtra("venue", this.selectedVenue);
 				startActivity(intent);
 			}
@@ -407,8 +498,7 @@ public class ActivityPlaceDetails extends RootActivity {
 		if (arrayUsersHereNow.size() > 0) {
 			arrayUsersHereNow.clear();
 		}
-		if (arrayUsersWereHere.size() > 0)
-		{
+        if (arrayUsersWereHere.size() > 0) {
 			arrayUsersWereHere.clear();
 		}
 	}
@@ -428,15 +518,14 @@ public class ActivityPlaceDetails extends RootActivity {
 		super.onDestroy();
 	}
 
-	
-
 	public void onClickChat(View v) {
-		Intent intent = new Intent(ActivityPlaceDetails.this, ActivityPlaceChat.class);
+        Intent intent = new Intent(ActivityPlaceDetails.this,
+                ActivityPlaceChat.class);
 		intent.putExtra("venue_id", selectedVenue.getVenueId());
 		intent.putExtra("venue_name", selectedVenue.getName());
 		startActivity(intent);
 	}
-	
+
 	
 	
 	
@@ -470,13 +559,13 @@ public class ActivityPlaceDetails extends RootActivity {
 			if (data instanceof CachedDataContainer) {
 				CachedDataContainer counterdata = (CachedDataContainer) data;
 				DataHolder result = counterdata.getData();
-							
+
 				Object[] obj = (Object[]) result.getObject();
 				@SuppressWarnings("unchecked")
 				List<VenueSmart> listVenues = (List<VenueSmart>) obj[0];
 				@SuppressWarnings("unchecked")
 				List<UserSmart> listUsers = (List<UserSmart>) obj[1];
-				
+
 				ArrayList<VenueSmart> arrayVenues = new ArrayList<VenueSmart>(listVenues);
 				ArrayList<UserSmart> arrayUsers = new ArrayList<UserSmart>(listUsers);
 				
@@ -486,18 +575,16 @@ public class ActivityPlaceDetails extends RootActivity {
 				bundle.putParcelableArrayList("users", arrayUsers);
 				bundle.putParcelableArrayList("venues", arrayVenues);
 
+            message.setData(bundle);
 
-				message.setData(bundle);
-				
 				if (Constants.debugLog)
-					Log.d("PlaceDetail","ActivityPlaceDetail.update: Sending handler message...");
+                Log.d("PlaceDetail",
+                        "ActivityPlaceDetail.update: Sending handler message...");
 				mainThreadTaskHandler.sendMessage(message);
-				
-				
+
+        } else if (Constants.debugLog)
+            Log.d("PlaceDetail", "Error: Received unexpected data type: "
+                    + data.getClass().toString());
 			}
-			else
-				if (Constants.debugLog)
-					Log.d("PlaceDetail","Error: Received unexpected data type: " + data.getClass().toString());
-		}
 	}
 }

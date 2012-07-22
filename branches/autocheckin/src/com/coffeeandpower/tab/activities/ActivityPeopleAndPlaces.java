@@ -9,7 +9,6 @@ import java.util.Observer;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -53,7 +52,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_USER = 1;
-	
+
 	private static final String PLACES_SCREEN_TITLE = "Venues";
 	private static final String PEOPLE_SCREEN_TITLE = "People";
 
@@ -66,7 +65,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 	private HorizontalPagerModified pager;
 
-	//private DataHolder result;
+    // private DataHolder result;
 
 	private ArrayList<UserSmart> arrayUsers;
 	private ArrayList<VenueSmart> arrayVenues;
@@ -80,7 +79,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	private UserAndTabMenu menu;
 
 	private String type;
-	
+
 	private boolean initialLoad = true;
 
 	private MyCachedDataObserver myCachedDataObserver = new MyCachedDataObserver();
@@ -95,10 +94,9 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		public void handleMessage(Message msg) {
 
 			if (type.equals("people")) {
-				
+
 				arrayUsers = msg.getData().getParcelableArrayList("users");
-				
-				
+
 				// Sort users list
 				if (arrayUsers != null) {
 					Collections.sort(arrayUsers, new Comparator<UserSmart>() {
@@ -111,18 +109,16 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 						}
 					});
 				}
-				//Populate table view
+                // Populate table view
 				setPeopleList();
-			}
-			else
-			{
+            } else {
 				// pass message data along to venue update method
 				arrayVenues = msg.getData().getParcelableArrayList("venues");
-				setPlaceList();	
+                setPlaceList();
 			}
 
 			progress.dismiss();
-			
+
 			super.handleMessage(msg);
 		}
 	};
@@ -132,26 +128,27 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		// default view is People List
 		isPeopleList = true;
 	}
-	
-	
-	
+
+
+    
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (Constants.debugLog)
-			Log.d("ActivityPeopleAndPlaces","ActivityPeopleAndPlaces.onCreate()");
+            Log.d("ActivityPeopleAndPlaces",
+                    "ActivityPeopleAndPlaces.onCreate()");
 		setContentView(R.layout.tab_activity_people_and_places);
 
-		((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
+        ((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP
+                .getLoggedInUserNickname());
 
 		// Default View
 		pager = (HorizontalPagerModified) findViewById(R.id.pager);
 		pager.setCurrentScreen(SCREEN_USER, false);
 
 		initialLoad = true;
-		
-		
-		
+
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
 		progress.show();
@@ -159,23 +156,31 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		listView = (ListView) findViewById(R.id.list);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+            public void onItemClick(AdapterView<?> arg0, View arg1,
+                    int position, long arg3) {
 				if (isPeopleList) {
 					if (!AppCAP.isLoggedIn()) {
 						showDialog(DIALOG_MUST_BE_A_MEMBER);
 					} else {
-						Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityUserDetails.class);
-						intent.putExtra("mapuserobject", (UserSmart) adapterUsers.getItem(position));
+                        Intent intent = new Intent(
+                                ActivityPeopleAndPlaces.this,
+                                ActivityUserDetails.class);
+                        intent.putExtra("mapuserobject",
+                                (UserSmart) adapterUsers.getItem(position));
 						intent.putExtra("from_act", "list");
 						startActivity(intent);
 					}
 				} else {
-					Intent intent = new Intent(ActivityPeopleAndPlaces.this, ActivityPlaceDetails.class);
-					intent.putExtra("venueSmart", (VenueSmart) adapterPlaces.getItem(position));
-					//We are sending the whole place object so we won't need the 4sqId separately
-					//intent.putExtra("foursquare_id", arrayVenues.get(position).getFoursquareId());
-					//I don't know what data is, but I don't think we will need
-					//intent.putExtra("coords", data);
+                    Intent intent = new Intent(ActivityPeopleAndPlaces.this,
+                            ActivityPlaceDetails.class);
+                    intent.putExtra("venueSmart",
+                            (VenueSmart) adapterPlaces.getItem(position));
+                    // We are sending the whole place object so we won't need
+                    // the 4sqId separately
+                    // intent.putExtra("foursquare_id",
+                    // arrayVenues.get(position).getFoursquareId());
+                    // I don't know what data is, but I don't think we will need
+                    // intent.putExtra("coords", data);
 					startActivity(intent);
 				}
 
@@ -203,15 +208,17 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			// Check is it People or Places List
 			type = extras.getString("type");
 			if (type.equals("people")) {
-				((RelativeLayout) findViewById(R.id.rel_people)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-				((ImageView) findViewById(R.id.imageview_people)).setImageResource(R.drawable.tab_people_pressed);
-				((TextView) findViewById(R.id.text_people)).setTextColor(Color.WHITE);
-				((CustomFontView) findViewById(R.id.textview_location_name)).setText(PEOPLE_SCREEN_TITLE);
+                ((RelativeLayout) findViewById(R.id.rel_people))
+                        .setBackgroundResource(R.drawable.bg_tabbar_selected);
+                ((ImageView) findViewById(R.id.imageview_people))
+                        .setImageResource(R.drawable.tab_people_pressed);
+                ((CustomFontView) findViewById(R.id.textview_location_name))
+                        .setText(PEOPLE_SCREEN_TITLE);
 			} else {
-				((RelativeLayout) findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-				((ImageView) findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
-				((TextView) findViewById(R.id.text_places)).setTextColor(Color.WHITE);
-				((CustomFontView) findViewById(R.id.textview_location_name)).setText(PLACES_SCREEN_TITLE);
+                ((RelativeLayout) findViewById(R.id.rel_places))
+                        .setBackgroundResource(R.drawable.bg_tabbar_selected);
+                ((CustomFontView) findViewById(R.id.textview_location_name))
+                        .setText(PLACES_SCREEN_TITLE);
 			}
 
 			// Check is it click from Activity or Balloon
@@ -233,12 +240,11 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 				}
 			}
 		} else {
-			Log.d("PeopleAndPlaces","Extras was null!");
+            Log.d("PeopleAndPlaces", "Extras was null!");
 		}
-		
-		
+
 	}   // end onCreate()
-	
+
 	
 
 	/**
@@ -247,65 +253,64 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	private void checkUserState() {
 		if (AppCAP.isUserCheckedIn()) {
 			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityPeopleAndPlaces.this,
-					R.anim.rotate_indefinitely));
+			//((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityPeopleAndPlaces.this,
+			//		R.anim.rotate_indefinitely));
 		} else {
 			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
-			((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
+			//((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
 		}
 	}
-
+	
 	private void setPeopleList() {
-		
-		if(initialLoad)
-		{
-			if (Constants.debugLog)
-				Log.d("ActivityPeopleAndPlaces","People List Initial Load");
-			adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this, arrayUsers, userLat, userLng);
-			listView.setAdapter(adapterUsers);
-			Utils.animateListView(listView);
-			initialLoad = false;
-		}
-		else
-		{
-			adapterUsers.setNewData(arrayUsers);
-			adapterUsers.notifyDataSetChanged();
-		}
 
-	}
+        if (initialLoad) {
+            if (Constants.debugLog)
+                Log.d("ActivityPeopleAndPlaces", "People List Initial Load");
+            adapterUsers = new MyUsersAdapter(ActivityPeopleAndPlaces.this,
+                    arrayUsers, userLat, userLng);
+            listView.setAdapter(adapterUsers);
+            Utils.animateListView(listView);
+            initialLoad = false;
+        } else {
+            adapterUsers.setNewData(arrayUsers);
+            adapterUsers.notifyDataSetChanged();
+        }
 
-	private void setPlaceList() {
-		isPeopleList = false;
-		((CustomFontView) findViewById(R.id.textview_location_name)).setText(PLACES_SCREEN_TITLE);
-		
-		if(initialLoad)
-		{
-			if (Constants.debugLog)
-				Log.d("ActivityPeopleAndPlaces","Place List Initial Load");
-			adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this, arrayVenues, userLat, userLng);
-			listView.setAdapter(adapterPlaces);
-			Utils.animateListView(listView);
-			initialLoad = false;
-		}
-		else
-		{
-			adapterPlaces.setNewData(arrayVenues);
-			adapterPlaces.notifyDataSetChanged();
-		}
-	}
+    }
+
+    private void setPlaceList() {
+        isPeopleList = false;
+        ((CustomFontView) findViewById(R.id.textview_location_name))
+                .setText(PLACES_SCREEN_TITLE);
+
+        if (initialLoad) {
+            if (Constants.debugLog)
+                Log.d("ActivityPeopleAndPlaces", "Place List Initial Load");
+            adapterPlaces = new MyPlacesAdapter(ActivityPeopleAndPlaces.this,
+                    arrayVenues, userLat, userLng);
+            listView.setAdapter(adapterPlaces);
+            Utils.animateListView(listView);
+            initialLoad = false;
+        } else {
+            adapterPlaces.setNewData(arrayVenues);
+            adapterPlaces.notifyDataSetChanged();
+        }
+    }
+
+
 
 	
 	
 	@Override
 	protected void onStart() {
-		
+
 		checkUserState();
-		
+
 		if (Constants.debugLog)
-			Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStart()");
+            Log.d("PeoplePlaces", "ActivityPeopleAndPlaces.onStart()");
 		super.onStart();
-		
-		//initialLoad = true;
+
+        // initialLoad = true;
 		UAirship.shared().getAnalytics().activityStarted(this);
 		
 		CacheMgrService.startObservingAPICall("venuesWithCheckins",myCachedDataObserver);
@@ -315,7 +320,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	@Override
 	public void onStop() {
 		if (Constants.debugLog)
-			Log.d("PeoplePlaces","ActivityPeopleAndPlaces.onStop()");
+            Log.d("PeoplePlaces", "ActivityPeopleAndPlaces.onStop()");
 		super.onStop();
 		UAirship.shared().getAnalytics().activityStopped(this);
 		CacheMgrService.stopObservingAPICall("venuesWithCheckins",myCachedDataObserver);
@@ -325,18 +330,21 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+
 		checkUserState();
 
 		if (AppCAP.shouldFinishActivities()) {
 			onBackPressed();
 		} else {
 			// Get Notification settings from shared prefs
-			((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP.getNotificationToggle());
-			((Button) findViewById(R.id.btn_from)).setText(AppCAP.getNotificationFrom());
+            ((ToggleButton) findViewById(R.id.toggle_checked_in))
+                    .setChecked(AppCAP.getNotificationToggle());
+            ((Button) findViewById(R.id.btn_from)).setText(AppCAP
+                    .getNotificationFrom());
 
 			// Check and Set Notification settings
-			menu.setOnNotificationSettingsListener((ToggleButton) findViewById(R.id.toggle_checked_in),
+            menu.setOnNotificationSettingsListener(
+                    (ToggleButton) findViewById(R.id.toggle_checked_in),
 					(Button) findViewById(R.id.btn_from), false);
 		}
 	}
@@ -375,15 +383,14 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	}
 
 	@Override
-	public void onClickWallet(View v) {
-		menu.onClickWallet(v);
+    public void onClickSettings(View v) {
+        menu.onClickSettings(v);
 
 	}
 
 	@Override
-	public void onClickSettings(View v) {
-		menu.onClickSettings(v);
-
+    public void onClickSupport(View v) {
+        menu.onClickSupport(v);
 	}
 
 	@Override
@@ -422,7 +429,7 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			showDialog(DIALOG_MUST_BE_A_MEMBER);
 		}
 	}
-	
+
 	
 	private class MyAutoCheckinTriggerObserver implements Observer {
 
@@ -453,13 +460,13 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			if (data instanceof CachedDataContainer) {
 				CachedDataContainer counterdata = (CachedDataContainer) data;
 				DataHolder venuesWithCheckins = counterdata.getData();
-							
+
 				Object[] obj = (Object[]) venuesWithCheckins.getObject();
 				@SuppressWarnings("unchecked")
 				List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
 				@SuppressWarnings("unchecked")
 				List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
-				
+
 				Message message = new Message();
 				Bundle bundle = new Bundle();
 				bundle.putCharSequence("type", counterdata.type);
@@ -469,22 +476,22 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 					bundle.putParcelableArrayList("venues", new ArrayList<VenueSmart>(arrayVenues));
 				}
 				message.setData(bundle);
-				
+
 				if (Constants.debugLog)
-					Log.d("PeoplePlaces","ActivityPeopleAndPlaces.update: Sending handler message...");
+                Log.d("PeoplePlaces",
+                        "ActivityPeopleAndPlaces.update: Sending handler message...");
 
 				mainThreadTaskhandler.sendMessage(message);
-				
-				
-			}
-			else
-				if (Constants.debugLog)
-					Log.d("PeoplePlaces","Error: Received unexpected data type: " + data.getClass().toString());
+
+        } 
+		else if (Constants.debugLog)
+            Log.d("PeoplePlaces", "Error: Received unexpected data type: "
+                    + data.getClass().toString());
+
 		}
 	}
 	
 	
 	
-
 
 }

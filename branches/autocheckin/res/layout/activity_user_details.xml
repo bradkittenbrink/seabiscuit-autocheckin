@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -46,7 +45,7 @@
             <com.google.android.maps.MapView
                 android:id="@+id/mapview_user_details"
                 android:layout_width="fill_parent"
-                android:layout_height="300dip"
+                android:layout_height="350dp"
                 android:apiKey="@string/GOOGLE_MAPS_API_KEY" />
 
             <LinearLayout
@@ -427,7 +426,7 @@
                         android:layout_toRightOf="@+id/dummy_joined"
                         android:textColor="#338585"
                         android:textSize="18dip" />
-                    
+
                     <com.coffeeandpower.views.CustomFontView
                         android:id="@+id/dummy_sponsored"
                         android:layout_width="wrap_content"
@@ -439,14 +438,14 @@
                         android:textColor="#444444"
                         android:textSize="18dip"
                         android:textStyle="bold" />
-                    
+
                     <com.coffeeandpower.views.CustomFontView
                         android:id="@+id/textview_sponsor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
                         android:layout_below="@+id/dummy_view_78"
                         android:layout_marginRight="10dip"
-                        android:layout_alignParentRight="true"
                         android:textColor="#338585"
                         android:textSize="18dip" />
 
@@ -739,15 +738,6 @@
             android:layout_below="@+id/imagebutton_chat"
             android:background="@drawable/btn_black_love_overlay"
             android:onClick="onClickSendProp" />
-
-        <ImageButton
-            android:id="@+id/imagebutton_paid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imagebutton_thumb"
-            android:layout_marginBottom="100dp"
-            android:background="@drawable/btn_black_paid"
-            android:onClick="onClickPaid" />
     </RelativeLayout>
 
     <!--
@@ -758,7 +748,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/check_in"
-        android:onClick="onClickCheckIn" />
+        android:onClick="onClickCheckIn" />
     -->
 
 </RelativeLayout>

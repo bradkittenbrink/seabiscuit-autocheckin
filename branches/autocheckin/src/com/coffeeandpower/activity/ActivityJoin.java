@@ -48,12 +48,15 @@ public class ActivityJoin extends RootActivity {
 			switch (msg.what) {
 
 			case AppCAP.HTTP_ERROR:
-				new CustomDialog(ActivityJoin.this, "Error", "Internet connection error").show();
+                new CustomDialog(ActivityJoin.this, "Error",
+                        "Internet connection error").show();
 				break;
 
 			case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:
 				if (result != null) {
-					new CustomDialog(ActivityJoin.this, "Error Creating Account", result.getResponseMessage()).show();
+                    new CustomDialog(ActivityJoin.this,
+                            "Error Creating Account",
+                            result.getResponseMessage()).show();
 				}
 				break;
 			}
@@ -99,13 +102,15 @@ public class ActivityJoin extends RootActivity {
 
 		boolean condition = true;
 
-		if (!userName.matches("[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}")) {
+        if (!userName
+                .matches("[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}")) {
 			textViewEmailError.setVisibility(View.VISIBLE);
 			condition = false;
 		}
 
 		if (password.length() < 5) {
-			textViewPassError.setText("Your password must be more than 5 characters.");
+            textViewPassError
+                    .setText("Your password must be more than 5 characters.");
 			textViewPassError.setVisibility(View.VISIBLE);
 			condition = false;
 		}
@@ -123,7 +128,8 @@ public class ActivityJoin extends RootActivity {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						result = AppCAP.getConnection().signup(userName, password, nickName);
+                        result = AppCAP.getConnection().signup(userName,
+                                password, nickName);
 						if (result.getHandlerCode() == AppCAP.HTTP_ERROR) {
 							handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 						} else {

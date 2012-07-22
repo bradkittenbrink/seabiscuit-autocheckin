@@ -3,9 +3,6 @@ package com.coffeeandpower.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
@@ -26,14 +23,6 @@ public class ActivityLoginPage extends RootActivity {
 		setContentView(R.layout.activity_main_login);
 
 		AppCAP.setShouldFinishActivities(false);
-
-		// Continue session...
-		if (!AppCAP.getUserLinkedInID().equals("")) {
-			((TextView) findViewById(R.id.text_connect)).setVisibility(View.GONE);
-			((ImageButton) findViewById(R.id.btn_linked_in)).setVisibility(View.GONE);
-			((Button) findViewById(R.id.btn_later)).setVisibility(View.GONE);
-			connectLinkedIn();
-		}
 
 		// Start loging in process from Contacts Activity
 		if (AppCAP.isStartingLoginPageFromContacts()) {
@@ -73,14 +62,16 @@ public class ActivityLoginPage extends RootActivity {
 	 */
 	private void connectLinkedIn() {
 		lastAuthorize = new LinkedIn();
-		lastAuthorize.initialize((String) getResources().getText(R.string.LINKED_IN_API_KEY),
-				(String) getResources().getText(R.string.LINKED_IN_API_SEC));
+        lastAuthorize.initialize(
+                (String) getResources().getText(R.string.linkedInApiKey),
+                (String) getResources().getText(R.string.linkedInApiSec));
 		if (AppCAP.getUserLinkedInID().equals("")) {
-			new Thread(new OAuthAuthorizeAction(lastAuthorize, new ActivityUtils.JoinProgressHandler(this), null), 
-					"ActivityLoginPage.connectLinkedIn.OAuthAuthorizeAction").start();
+            new Thread(new OAuthAuthorizeAction(lastAuthorize,
+                    new ActivityUtils.JoinProgressHandler(this), null)).start();
 		} else {
-			new Thread(new LoginAction(lastAuthorize, new ActivityUtils.LoginProgressHandler(this), null),
-					"ActivityLoginPage.connectLinkedIn.LoginAction").start();
+            new Thread(new LoginAction(lastAuthorize,
+                    new ActivityUtils.LoginProgressHandler(this), null))
+                    .start();
 		}
 	}
 
@@ -96,16 +87,21 @@ public class ActivityLoginPage extends RootActivity {
 
 		if (lastAuthorize.verify(verifier)) {
 			// the service provider
-			new Thread(new OAuthSignUpAction(lastAuthorize,
+            new Thread(
+                    new OAuthSignUpAction(
+                            lastAuthorize,
 			// the progress handler for this action
-					new ActivityUtils.JoinProgressHandler(this), new LoginAction(lastAuthorize,
-							new ActivityUtils.LoginProgressHandler(this), null)),
-							"ActivityLoginPage.connectLinkedIn.OAuthSignUpAction").start();
+                            new ActivityUtils.JoinProgressHandler(this),
+                            new LoginAction(
+                                    lastAuthorize,
+                                    new ActivityUtils.LoginProgressHandler(this),
+                                    null))).start();
 		}
 	}
 
 	public class OAuthAuthorizeAction extends ActivityUtils.Action {
-		public OAuthAuthorizeAction(OAuthService service_, ActivityUtils.ProgressHandler handler_, Runnable next_) {
+        public OAuthAuthorizeAction(OAuthService service_,
+                ActivityUtils.ProgressHandler handler_, Runnable next_) {
 			service = service_;
 			handler = handler_;
 			action = next_;
@@ -122,7 +118,8 @@ public class ActivityLoginPage extends RootActivity {
 	}
 
 	public class OAuthSignUpAction extends ActivityUtils.Action {
-		public OAuthSignUpAction(OAuthService service_, ActivityUtils.ProgressHandler handler_, Runnable next_) {
+        public OAuthSignUpAction(OAuthService service_,
+                ActivityUtils.ProgressHandler handler_, Runnable next_) {
 			service = service_;
 			handler = handler_;
 			action = next_;
@@ -136,7 +133,8 @@ public class ActivityLoginPage extends RootActivity {
 			handler.setResult(result);
 			if (result != null) {
 				handler.sendEmptyMessage(result.getHandlerCode());
-				if (result.getHandlerCode() == AppCAP.HTTP_REQUEST_SUCCEEDED && action != null)
+                if (result.getHandlerCode() == AppCAP.HTTP_REQUEST_SUCCEEDED
+                        && action != null)
 					new Thread(action, "ActivityLoginPage.connectLinkedIn.OAuthSignUpAction").start();
 			} else {
 				handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
@@ -145,7 +143,8 @@ public class ActivityLoginPage extends RootActivity {
 	}
 
 	public class LoginAction extends ActivityUtils.Action {
-		public LoginAction(OAuthService service_, ActivityUtils.ProgressHandler handler_, Runnable next_) {
+        public LoginAction(OAuthService service_,
+                ActivityUtils.ProgressHandler handler_, Runnable next_) {
 			service = service_;
 			handler = handler_;
 			action = next_;
@@ -155,7 +154,8 @@ public class ActivityLoginPage extends RootActivity {
 		public void run() {
 			// proceed to login
 			if (!lastAuthorize.isConnected())
-				lastAuthorize.reconnect(AppCAP.getUserLinkedInToken(), AppCAP.getUserLinkedInTokenSecret());
+                lastAuthorize.reconnect(AppCAP.getUserLinkedInToken(),
+                        AppCAP.getUserLinkedInTokenSecret());
 			service.getUserId();
 			result = AppCAP.getConnection().loginViaOAuthService(service);
 			if (result != null) {

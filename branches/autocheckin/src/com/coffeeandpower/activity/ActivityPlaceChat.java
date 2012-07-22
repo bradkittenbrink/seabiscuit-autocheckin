@@ -21,112 +21,114 @@ import com.coffeeandpower.views.CustomFontView;
 
 public class ActivityPlaceChat extends RootActivity {
 
-	private ListView list;
+    private ListView list;
+    private DataHolder result;
+    private Executor exe;
 
-	private DataHolder result;
+    private int venueId = 0;
+    private String lastChatIDString = "0";
 
-	private Executor exe;
+    @Override
+    protected void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
+        setContentView(R.layout.activity_places_chat);
 
-	private int venueId;
-	private String lastChatIDString;
+        // Get data from intent
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            venueId = extras.getInt("venue_id");
 
-	{
-		venueId = 0;
-		lastChatIDString = "0";
-	}
+            ((CustomFontView) findViewById(R.id.textview_places_chat_name))
+                    .setText(extras.getString("venue_name"));
+        }
 
-	@Override
-	protected void onCreate(Bundle icicle) {
-		super.onCreate(icicle);
-		setContentView(R.layout.activity_places_chat);
+        // Executor
+        exe = new Executor(ActivityPlaceChat.this);
+        exe.setExecutorListener(new ExecutorInterface() {
+            @Override
+            public void onErrorReceived() {
+                // onBackPressed();
+            }
 
-		// Get data from intent
-		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			venueId = extras.getInt("venue_id");
+            @Override
+            public void onActionFinished(int action) {
+                result = exe.getResult();
 
-			((CustomFontView) findViewById(R.id.textview_places_chat_name)).setText(extras.getString("venue_name"));
-		}
+                switch (action) {
+                case Executor.HANDLE_VENUE_CHAT:
+                    if (result != null && result.getObject() != null
+                            && (result.getObject() instanceof ArrayList<?>)) {
+                        ArrayList<Object> tempArray = (ArrayList<Object>) result
+                                .getObject();
+                        populateList(tempArray);
+                    }
+                    break;
+                case Executor.HANDLE_SEND_VENUE_CHAT:
+                    break;
+                }
+            }
+        });
 
-		// Executor
-		exe = new Executor(ActivityPlaceChat.this);
-		exe.setExecutorListener(new ExecutorInterface() {
-			@Override
-			public void onErrorReceived() {
-				// onBackPressed();
-			}
+        // ListView with chat entries
+        list = (ListView) findViewById(R.id.listview_places_chat);
+        list.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+        list.setStackFromBottom(true);
+        list.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View v, int position,
+                    long arg3) {
 
-			@Override
-			public void onActionFinished(int action) {
-				result = exe.getResult();
+            }
+        });
+    }
 
-				switch (action) {
-				case Executor.HANDLE_VENUE_CHAT:
-					if (result != null && result.getObject() != null && (result.getObject() instanceof ArrayList<?>)) {
-						ArrayList<Object> tempArray = (ArrayList<Object>) result.getObject();
-						populateList(tempArray);
-					}
-					break;
-				case Executor.HANDLE_SEND_VENUE_CHAT:
-					break;
-				}
-			}
-		});
+    @SuppressWarnings("unchecked")
+    private void populateList(ArrayList<Object> chatArray) {
+        if (chatArray.size() == 4) {
+            if (chatArray.get(3) instanceof ArrayList<?>) {
+                list.setAdapter(new MyPlaceChatAdapter(this,
+                        (ArrayList<VenueChatEntry>) chatArray.get(3)));
 
-		// ListView with chat entries
-		list = (ListView) findViewById(R.id.listview_places_chat);
-		list.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
-		list.setStackFromBottom(true);
-		list.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                // Calculate number of users in chat
+                HashSet<String> usersIDs = new HashSet<String>();
+                for (VenueChatEntry entry : (ArrayList<VenueChatEntry>) chatArray
+                        .get(3)) {
+                    if (entry.getSystemType() != null
+                            && !entry.getSystemType().equals("checkin"))
+                        usersIDs.add(entry.getUserId());
 
-			}
-		});
-	}
+                }
+                ((CustomFontView) findViewById(R.id.textview_chat_count))
+                        .setText(usersIDs.size() == 0 ? "" : usersIDs.size()
+                                + "");
+            }
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	private void populateList(ArrayList<Object> chatArray) {
-		if (chatArray.size() == 4) {
-			if (chatArray.get(3) instanceof ArrayList<?>) {
-				list.setAdapter(new MyPlaceChatAdapter(this, (ArrayList<VenueChatEntry>) chatArray.get(3)));
+    public void onClickSend(View v) {
+        EditText editText = (EditText) findViewById(R.id.edittext_places_chat);
+        String input = editText.getText().toString();
 
-				// Calculate number of users in chat
-				HashSet<String> usersIDs = new HashSet<String>();
-				for (VenueChatEntry entry : (ArrayList<VenueChatEntry>) chatArray.get(3)) {
-					if (entry.getSystemType() != null && !entry.getSystemType().equals("checkin"))
-						usersIDs.add(entry.getUserId());
+        if (input != null && input.length() > 0) {
+            exe.venueChat(venueId, "0", input, true, true);
+        }
+    }
 
-				}
-				((CustomFontView) findViewById(R.id.textview_chat_count)).setText(usersIDs.size() == 0 ? "" : usersIDs.size() + "");
-			}
-		}
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-	public void onClickSend(View v) {
-		EditText editText = (EditText) findViewById(R.id.edittext_places_chat);
-		String input = editText.getText().toString();
+        // Get venue chat
+        exe.venueChat(venueId, lastChatIDString, "", false, true);
+    }
 
-		if (input != null && input.length() > 0) {
-			exe.venueChat(venueId, "0", input, true); // "0" ???
-		}
-	}
+    public void onClickBack(View v) {
+        onBackPressed();
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		// Get venue chat
-		exe.venueChat(venueId, lastChatIDString, "", false);
-	}
-
-	public void onClickBack(View v) {
-		onBackPressed();
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
 }

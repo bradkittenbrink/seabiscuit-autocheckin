@@ -59,7 +59,7 @@ public class Executor {
 	ExecutorInterface exeInter = new ExecutorInterface() {
 		@Override
 		public void onActionFinished(int action) {
-			Log.d("Executor","onActionFinished...");
+            Log.d("Executor", "onActionFinished...");
 		}
 
 		@Override
@@ -81,13 +81,14 @@ public class Executor {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 
-			Log.d("Executor","handleMessage()");
-			
+            Log.d("Executor", "handleMessage()");
+
 			progress.dismiss();
 
 			if (msg.what == AppCAP.HTTP_ERROR) {
 				exeInter.onErrorReceived();
-				new CustomDialog(context, "Error", result.getResponseMessage()).show();
+                new CustomDialog(context, "Error", result.getResponseMessage())
+                        .show();
 			} else {
 				exeInter.onActionFinished(msg.what);
 			}
@@ -111,7 +112,8 @@ public class Executor {
 		},"Executor.getResumeForUserId").start();
 	}
 
-	public synchronized void sendReview(final UserResume userResume, final String review) {
+    public synchronized void sendReview(final UserResume userResume,
+            final String review) {
 		progress.setMessage("Sending...");
 		progress.show();
 		new Thread(new Runnable() {
@@ -123,7 +125,8 @@ public class Executor {
 		},"Executor.sendReview").start();
 	}
 
-	public synchronized void getVenuesAndUsersWithCheckinsInBoundsDuringInterval(final double[] coords, boolean withProgress) {
+    public synchronized void getVenuesAndUsersWithCheckinsInBoundsDuringInterval(
+            final double[] coords, boolean withProgress) {
 		if (withProgress) {
 			progress.setMessage("Loading...");
 			progress.show();
@@ -131,7 +134,9 @@ public class Executor {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				result = AppCAP.getConnection().getVenuesAndUsersWithCheckinsInBoundsDuringInterval(coords, 7);
+                result = AppCAP.getConnection()
+                        .getVenuesAndUsersWithCheckinsInBoundsDuringInterval(
+                                coords, 7);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		},"Executor.getVenuesAndUsersWithCheckinsInBoundsDuringInterval").start();
@@ -149,13 +154,15 @@ public class Executor {
 		},"Executor.getUserData").start();
 	}
 
-	public synchronized void getVenuesCloseToLocation(final GeoPoint gp, final int number) {
+    public synchronized void getVenuesCloseToLocation(final GeoPoint gp,
+            final int number) {
 		progress.setMessage("Loading nearby places...");
 		progress.show();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				result = AppCAP.getConnection().getVenuesCloseToLocation(gp, number);
+                result = AppCAP.getConnection().getVenuesCloseToLocation(gp,
+                        number);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		},"Executor.getVenuesCloseToLocation").start();
@@ -179,7 +186,8 @@ public class Executor {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				result = AppCAP.getConnection().addPlace(name, AppCAP.getUserCoordinates());
+                result = AppCAP.getConnection().addPlace(name,
+                        AppCAP.getUserCoordinates());
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		},"Executor.addPlace").start();
@@ -209,25 +217,29 @@ public class Executor {
 		},"Executor.getOneOnOneChatHistory").start();
 	}
 
-	public synchronized void sendOneOnOneChatMessage(final int userId, final String mess) {
+    public synchronized void sendOneOnOneChatMessage(final int userId,
+            final String mess) {
 		progress.setMessage("Loading...");
 		// progress.show();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				result = AppCAP.getConnection().sendOneOnOneChatMessage(userId, mess);
+                result = AppCAP.getConnection().sendOneOnOneChatMessage(userId,
+                        mess);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		},"Executor.sendOneOnOneChatMessage").start();
 	}
 
-	public synchronized void getUsersCheckedInAtFoursquareID(final String venueId) {
+    public synchronized void getUsersCheckedInAtFoursquareID(
+            final String venueId) {
 		progress.setMessage("Loading...");
 		progress.show();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				result = AppCAP.getConnection().getUsersCheckedInAtFoursquareID(venueId);
+                result = AppCAP.getConnection()
+                        .getUsersCheckedInAtFoursquareID(venueId);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		},"Executor.getUsersCheckedInAtFoursquareID").start();
@@ -293,51 +305,57 @@ public class Executor {
 		},"Executor.checkIn").start();
 	}
 
-	public synchronized void enterInvitationCode(final String invitationCode, final double lat, final double lng) {
+    public synchronized void enterInvitationCode(final String invitationCode,
+            final double lat, final double lng) {
 		progress.setMessage("Checking...");
 		progress.show();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				result = AppCAP.getConnection().enterInvitationCode(invitationCode, lat, lng);
+                result = AppCAP.getConnection().enterInvitationCode(
+                        invitationCode, lat, lng);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		},"Executor.enterInvitationCode").start();
 	}
-	
-	public synchronized void getInvitationCode(final double[] latLong)
-	{
+
+    public synchronized void getInvitationCode(final double[] latLong) {
 		progress.setMessage("Generating Code...");
 		progress.show();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				result = AppCAP.getConnection().getInvitationCodeForLocation(latLong[0], latLong[1]);
+                result = AppCAP.getConnection().getInvitationCodeForLocation(
+                        latLong[0], latLong[1]);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		},"Executor.getInvitationCode").start();		
 		
 	}
 
-	public synchronized void saveUserJobCategory(final String selectedMajorJob, final String selectedMinorJob) {
+    public synchronized void saveUserJobCategory(final String selectedMajorJob,
+            final String selectedMinorJob) {
 		progress.setMessage("Uploading...");
 		progress.show();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				result = AppCAP.getConnection().saveUserJobCategory(selectedMajorJob, selectedMinorJob);
+                result = AppCAP.getConnection().saveUserJobCategory(
+                        selectedMajorJob, selectedMinorJob);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		},"Executor.saveUserJobCategory").start();
 	}
 
-	public synchronized void setUserProfileData(final UserSmart user, final boolean isEmailChanged) {
+    public synchronized void setUserProfileData(final UserSmart user,
+            final boolean isEmailChanged) {
 		progress.setMessage("Uploading...");
 		progress.show();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				result = AppCAP.getConnection().setUserProfileData(user, isEmailChanged);
+                result = AppCAP.getConnection().setUserProfileData(user,
+                        isEmailChanged);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		},"Executor.setUserProfileData").start();
@@ -377,13 +395,18 @@ public class Executor {
 	 * @param venueId
 	 * @param lastChatIDString
 	 */
-	public synchronized void venueChat(final int venueId, final String lastChatIDString, final String message, final boolean isSend) {
+    public synchronized void venueChat(final int venueId,
+            final String lastChatIDString, final String message,
+            final boolean isSend, boolean withProgress) {
+        if (withProgress) {
 		progress.setMessage(isSend ? "Sending..." : "Loading...");
 		progress.show();
+        }
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				result = AppCAP.getConnection().venueChatForVenueWithID(venueId, lastChatIDString, message, isSend);
+                result = AppCAP.getConnection().venueChatForVenueWithID(
+                        venueId, lastChatIDString, message, isSend);
 				handler.sendEmptyMessage(result.getHandlerCode());
 			}
 		},"Executor.venueChat").start();

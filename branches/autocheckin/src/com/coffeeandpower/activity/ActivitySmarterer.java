@@ -19,118 +19,121 @@ import com.coffeeandpower.RootActivity;
 
 public class ActivitySmarterer extends RootActivity {
 
-	private static final String SMARTERER_KEY = "3f883e6fc3d54834ac93c3bfe6f33553";
-	private static final String SMARTERER_SECRET = "ea670a5ca21c7d54d4e17972059b4f07";
-	private static final String SMARTERER_CALLBACK_URL = "candp://smarterer";
+    private static final String SMARTERER_KEY = "3f883e6fc3d54834ac93c3bfe6f33553";
+    private static final String SMARTERER_SECRET = "ea670a5ca21c7d54d4e17972059b4f07";
+    private static final String SMARTERER_CALLBACK_URL = "candp://smarterer";
 
-	private ProgressDialog progress;
+    private ProgressDialog progress;
+    private WebView webView;
 
-	private WebView webView;
+    private String code = ""; // Code for getting credentials
 
-	private String code;
+    private boolean haveCode;
+    private boolean haveToken;
 
-	private boolean haveCode;
-	private boolean haveToken;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_smarterer);
 
-	{
-		// Code for getting credentials
-		code = "";
-	}
+        progress = new ProgressDialog(this);
+        progress.setMessage("Loading...");
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_smarterer);
+        webView = (WebView) findViewById(R.id.web_view);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setPluginsEnabled(true);
+        webSettings.setLoadsImagesAutomatically(true);
+        webSettings.setSupportZoom(false);
 
-		progress = new ProgressDialog(this);
-		progress.setMessage("Loading...");
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                progress.dismiss();
+                if (Constants.debugLog)
+                    Log.d("LOG", "URL: " + url);
 
-		webView = (WebView) findViewById(R.id.web_view);
-		WebSettings webSettings = webView.getSettings();
-		webSettings.setJavaScriptEnabled(true);
-		webSettings.setPluginsEnabled(true);
-		webSettings.setLoadsImagesAutomatically(true);
-		webSettings.setSupportZoom(false);
+                if (haveCode && !haveToken) {
+                    haveToken = true;
+                    webView.loadUrl("https://smarterer.com/oauth/access_token?client_id="
+                            + SMARTERER_KEY
+                            + "&client_secret="
+                            + SMARTERER_SECRET
+                            + "&grant_type=authorization_code&code=" + code);
+                }
+            }
 
-		webView.setWebViewClient(new WebViewClient() {
-			@Override
-			public void onPageFinished(WebView view, String url) {
-				super.onPageFinished(view, url);
-				progress.dismiss();
-				if (Constants.debugLog)
-					Log.d("LOG", "URL: " + url);
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                if (Constants.debugLog)
+                    Log.d("LOG", "URL started: " + url);
+                progress.show();
 
-				if (haveCode && !haveToken) {
-					haveToken = true;
-					webView.loadUrl("https://smarterer.com/oauth/access_token?client_id=" + SMARTERER_KEY + "&client_secret="
-							+ SMARTERER_SECRET + "&grant_type=authorization_code&code=" + code);
-				}
-			}
+                if (url.contains("code=") && !haveCode) {
+                    code = url.substring(url.indexOf("code=") + 5);
+                    if (code != null && code.length() > 0) {
+                        haveCode = true;
+                    }
+                }
+            }
 
-			@Override
-			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				super.onPageStarted(view, url, favicon);
-				if (Constants.debugLog)
-					Log.d("LOG", "URL started: " + url);
-				progress.show();
+            @Override
+            public void onReceivedError(WebView view, int errorCode,
+                    String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                if (Constants.debugLog)
+                    Log.d("LOG", "onReceivedError: " + errorCode + ":"
+                            + description);
+            }
 
-				if (url.contains("code=") && !haveCode) {
-					code = url.substring(url.indexOf("code=") + 5);
-					if (code != null && code.length() > 0) {
-						haveCode = true;
-					}
-				}
-			}
+            @Override
+            public void onReceivedSslError(WebView view,
+                    SslErrorHandler handler, SslError error) {
+                super.onReceivedSslError(view, handler, error);
+                handler.proceed();
+                if (Constants.debugLog)
+                    Log.d("LOG",
+                            "onReceivedSslError: " + error.getPrimaryError());
+            }
 
-			@Override
-			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-				super.onReceivedError(view, errorCode, description, failingUrl);
-				if (Constants.debugLog)
-					Log.d("LOG", "onReceivedError: " + errorCode + ":" + description);
-			}
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return false;
+            }
+        });
 
-			@Override
-			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-				super.onReceivedSslError(view, handler, error);
-				handler.proceed();
-				if (Constants.debugLog)
-					Log.d("LOG", "onReceivedSslError: " + error.getPrimaryError());
-			}
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onJsAlert(WebView view, String url, String message,
+                    JsResult result) {
+                if (Constants.debugLog)
+                    Log.e("LOG", "JSAlert" + message);
+                return true;
+            }
+        });
+        webView.loadUrl("https://smarterer.com/oauth/authorize?client_id="
+                + SMARTERER_KEY + "&callback_url=" + SMARTERER_CALLBACK_URL);
+        // webView.loadUrl("http://www.google.com");
+    }
 
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				return false;
-			}
-		});
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
-		webView.setWebChromeClient(new WebChromeClient() {
-			@Override
-			public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-				if (Constants.debugLog)
-					Log.e("LOG", "JSAlert" + message);
-				return true;
-			}
-		});
-		webView.loadUrl("https://smarterer.com/oauth/authorize?client_id=" + SMARTERER_KEY + "&callback_url=" + SMARTERER_CALLBACK_URL);
-		// webView.loadUrl("http://www.google.com");
-	}
+    public void onClickBack(View v) {
+        onBackPressed();
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
-	public void onClickBack(View v) {
-		onBackPressed();
-	}
-
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

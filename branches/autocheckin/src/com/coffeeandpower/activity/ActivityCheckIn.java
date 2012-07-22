@@ -1,12 +1,9 @@
 package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-
-import org.apache.http.NameValuePair;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,7 +15,6 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,13 +30,11 @@ import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserShort;
 import com.coffeeandpower.cont.UserSmart;
-import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
-import com.coffeeandpower.tab.activities.ActivityContacts;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.Utils;
@@ -51,7 +45,6 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
-import com.urbanairship.UAirship;
 
 public class ActivityCheckIn extends RootActivity implements Observer {
 
@@ -77,27 +70,29 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	
 	private Context myContext;
 
-	private int checkInDuration;
+    private int checkInDuration = 1; // default 1 hour checkin duration, slider
+                                     // sets other values
 
 	private DataHolder result;
-	
-	//TODO
-	//Eliminate these and make them local variables
+
+    // TODO
+    // Eliminate these and make them local variables
 	ArrayList<UserSmart> usersArray;
-	//This needs to be a member variable due to click callback
+    // This needs to be a member variable due to click callback
 	ArrayList<UserShort> checkedInUsers;
 
 	private Executor exe;
-	
-	// Scheduler - create a custom message handler for use in passing userdata data from background API call to main thread
+
+    // Scheduler - create a custom message handler for use in passing userdata
+    // data from background API call to main thread
 	protected Handler taskHandler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
 			usersArray = msg.getData().getParcelableArrayList("users");
-			//FIXME
-			//For now we are going to convert from UserSmart to UserShort
-			//Eventually UserShort should just be eliminated
+            // FIXME
+            // For now we are going to convert from UserSmart to UserShort
+            // Eventually UserShort should just be eliminated
 			checkedInUsers = convertUserSmart2UserShort(usersArray);
 			populateUsersIfExist();
 			
@@ -108,12 +103,6 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 			super.handleMessage(msg);
 		}
 	};
-	
-	{
-		checkInDuration = 1; // default 1 hour checkin duration, slider
-				     // sets
-				     // other values
-	}
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -124,7 +113,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.activity_check_in);
-		
+
 		usersArray = new ArrayList<UserSmart>();
 		checkedInUsers = new ArrayList<UserShort>();
 
@@ -141,10 +130,9 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 
 			@Override
 			public void onActionFinished(int action) {
-				actionFinished(action);				
+                actionFinished(action);
 			}
 		});
-		
 
 		// Get Data from Intent
 		Bundle extras = getIntent().getExtras();
@@ -165,7 +153,8 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		layoutForInflate = (LinearLayout) findViewById(R.id.inflate_users);
 		layoutPopUp = (LinearLayout) findViewById(R.id.layout_popup_info);
 		mapView = (MapView) findViewById(R.id.imageview_mapview);
-		Drawable drawable = this.getResources().getDrawable(R.drawable.map_marker_iphone);
+        Drawable drawable = this.getResources().getDrawable(
+                R.drawable.map_marker_iphone);
 		itemizedoverlay = new MyItemizedOverlay2(drawable);
 
 		// Views states
@@ -182,9 +171,13 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		mapController.setZoom(18);
 
 		// Navigate map to location from intent data
-		GeoPoint point = new GeoPoint((int) (venue.getLat() * 1E6), (int) (venue.getLng() * 1E6));
-		GeoPoint pointForCenter = new GeoPoint(point.getLatitudeE6() + Utils.getScreenDependentItemSize(Utils.MAP_VER_OFFSET_FROM_CENTER),
-				point.getLongitudeE6() - Utils.getScreenDependentItemSize(Utils.MAP_HOR_OFFSET_FROM_CENTER));
+        GeoPoint point = new GeoPoint((int) (venue.getLat() * 1E6),
+                (int) (venue.getLng() * 1E6));
+        GeoPoint pointForCenter = new GeoPoint(
+                point.getLatitudeE6()
+                        + Utils.getScreenDependentItemSize(Utils.MAP_VER_OFFSET_FROM_CENTER),
+                point.getLongitudeE6()
+                        - Utils.getScreenDependentItemSize(Utils.MAP_HOR_OFFSET_FROM_CENTER));
 		mapController.animateTo(pointForCenter);
 		createMarker(point);
 
@@ -206,11 +199,11 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 			}
 		});
 	}
-	
+
 	@Override
 	protected void onStart() {
 		if (Constants.debugLog)
-			Log.d("CheckIn","ActivityCheckIn.onStart()");
+            Log.d("CheckIn", "ActivityCheckIn.onStart()");
 		super.onStart();
 
 		//UAirship.shared().getAnalytics().activityStarted(this);
@@ -220,7 +213,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	@Override
 	public void onStop() {
 		if (Constants.debugLog)
-			Log.d("CheckIn","ActivityCheckIn.onStop()");
+            Log.d("CheckIn", "ActivityCheckIn.onStop()");
 		super.onStop();
 
 		//UAirship.shared().getAnalytics().activityStopped(this);
@@ -247,13 +240,16 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	 */
 	public void onClickCheckIn(View v) {
 		final int checkInTime = (int) (System.currentTimeMillis() / 1000);
-		final int checkOutTime = checkInTime + checkInDuration * 3600;
-		
-		//FIXME
-		//The Venue and VenueSmart classes still need to be unified, this is designed for Venue,
-		//but is being passed in as a VenueSmart
-		//((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-		//((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityCheckIn.this,
+        final int checkOutTime = checkInDuration;
+
+        // FIXME
+        // The Venue and VenueSmart classes still need to be unified, this is
+        // designed for Venue,
+        // but is being passed in as a VenueSmart
+        // ((TextView)
+        // findViewById(R.id.textview_check_in)).setText("Check Out");
+        // ((ImageView)
+        // findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityCheckIn.this,
 		//		R.anim.rotate_indefinitely));
 		
 		// If user has not already selected this venue for auto checkin, 
@@ -304,25 +300,28 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	
 	private ArrayList<UserShort> convertUserSmart2UserShort(ArrayList<UserSmart> userList) {
 		ArrayList<UserShort> shortUsers = new ArrayList<UserShort>();
-		for (CheckinData currCheckedIn : venue.getArrayCheckins())
-		{
+        for (CheckinData currCheckedIn : venue.getArrayCheckins()) {
 			for (UserSmart currSmartUser : userList) {
-				if(currCheckedIn.getUserId() == currSmartUser.getUserId())
-				{
-					if(currCheckedIn.getCheckedIn() == 1)
-					{
-						//(int id, String nickName, String statusText, String about, String joinDate, String imageURL, String hourlyBilingRate)
-						
-						shortUsers.add(new UserShort(currSmartUser.getUserId() , currSmartUser.getNickName(), currSmartUser.getStatusText(), "About Me",
-					"Join Date", currSmartUser.getFileName(), "NA"));
+                if (currCheckedIn.getUserId() == currSmartUser.getUserId()) {
+                    if (currCheckedIn.getCheckedIn() == 1) {
+                        // (int id, String nickName, String statusText, String
+                        // about, String joinDate, String imageURL, String
+                        // hourlyBilingRate)
+
+                        shortUsers
+                                .add(new UserShort(currSmartUser.getUserId(),
+                                        currSmartUser.getNickName(),
+                                        currSmartUser.getStatusText(),
+                                        "About Me", "Join Date", currSmartUser
+                                                .getFileName(), "NA"));
 					}
 					break;
 				}
 			}
-			
+
 		}
-		
-		return shortUsers;		
+
+        return shortUsers;
 	}
 
 	private void populateUsersIfExist() {
@@ -334,10 +333,12 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 				ImageLoader imageLoader = new ImageLoader(this);
 
 				// Set text on first view
-				((TextView) layoutPopUp.getChildAt(0)).setText(checkedInUsers.get(0).getNickName());
+                ((TextView) layoutPopUp.getChildAt(0)).setText(checkedInUsers
+                        .get(0).getNickName());
 				String status = checkedInUsers.get(0).getStatusText();
 				status = status.length() < 1 ? "No status set..." : status;
-				((TextView) layoutPopUp.getChildAt(1)).setText(AppCAP.cleanResponseString(status));
+                ((TextView) layoutPopUp.getChildAt(1)).setText(AppCAP
+                        .cleanResponseString(status));
 
 				for (int i = 0; i < checkedInUsers.size(); i++) {
 
@@ -347,16 +348,22 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 					image.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							((TextView) layoutPopUp.getChildAt(0)).setText(checkedInUsers.get((Integer) v.getTag())
-									.getNickName());
+                            ((TextView) layoutPopUp.getChildAt(0))
+                                    .setText(checkedInUsers.get(
+                                            (Integer) v.getTag()).getNickName());
 
-							String status = checkedInUsers.get((Integer) v.getTag()).getStatusText();
-							status = status.length() < 1 ? "No status set..." : status;
-							((TextView) layoutPopUp.getChildAt(1)).setText(AppCAP.cleanResponseString(status));
+                            String status = checkedInUsers.get(
+                                    (Integer) v.getTag()).getStatusText();
+                            status = status.length() < 1 ? "No status set..."
+                                    : status;
+                            ((TextView) layoutPopUp.getChildAt(1))
+                                    .setText(AppCAP.cleanResponseString(status));
 						}
 					});
 
-					imageLoader.DisplayImage(checkedInUsers.get(i).getImageURL(), image, R.drawable.default_avatar50, 70);
+                    imageLoader.DisplayImage(checkedInUsers.get(i)
+                            .getImageURL(), image, R.drawable.default_avatar50,
+                            70);
 					layoutForInflate.addView(image);
 
 				}
@@ -391,7 +398,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	protected void onDestroy() {
 		super.onDestroy();
 	}
-	
+
 	@Override
 	public void update(Observable observable, Object data) {
 		/*
@@ -401,24 +408,24 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		if (data instanceof CachedDataContainer) {
 			CachedDataContainer counterdata = (CachedDataContainer) data;
 			DataHolder result = counterdata.getData();
-						
+
 			Object[] obj = (Object[]) result.getObject();
 			@SuppressWarnings("unchecked")
 			List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
-			
+
 			Message message = new Message();
 			Bundle bundle = new Bundle();
 			bundle.putCharSequence("type", counterdata.type);
 			bundle.putParcelableArrayList("users", new ArrayList<UserSmart>(arrayUsers));
 
 			message.setData(bundle);
-			
+
 			if (Constants.debugLog)
-				Log.d("CheckIn","ActivityCheckIn.update: Sending handler message...");
+                Log.d("CheckIn",
+                        "ActivityCheckIn.update: Sending handler message...");
 			taskHandler.sendMessage(message);
+        } else if (Constants.debugLog)
+            Log.d("CheckIn", "Error: Received unexpected data type: "
+                    + data.getClass().toString());
 		}
-		else
-			if (Constants.debugLog)
-				Log.d("CheckIn","Error: Received unexpected data type: " + data.getClass().toString());
-	}
 }

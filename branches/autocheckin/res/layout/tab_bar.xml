@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -27,11 +26,43 @@
         android:orientation="horizontal" >
 
         <RelativeLayout
+            android:id="@+id/rel_places"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:layout_weight="0.90"
+            android:background="@drawable/bg_tabbar_press"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onClickPlaces" >
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rel_feed"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="35px"
+            android:layout_marginTop="10dip"
+            android:layout_weight="0.85"
+            android:background="@drawable/bg_tabbar_press"
+            android:clickable="true"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/imageview_feed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/tab_feed_a" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/rel_map"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dip"
-            android:layout_weight="1"
+            android:layout_marginTop="10dip"
+            android:layout_weight="0.90"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
             android:gravity="center"
@@ -42,58 +73,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/tab_map_a" />
-
-            <TextView
-                android:id="@+id/text_map"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/imageview_map"
-                android:layout_centerHorizontal="true"
-                android:text="@string/tab_map" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rel_places"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="1dip"
-            android:layout_weight="1"
-            android:background="@drawable/bg_tabbar_press"
-            android:clickable="true"
-            android:gravity="center"
-            android:onClick="onClickPlaces" >
-
-            <ImageView
-                android:id="@+id/imageview_places"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:background="@drawable/tab_places_a" />
-
-            <TextView
-                android:id="@+id/text_places"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/imageview_places"
-                android:layout_centerHorizontal="true"
-                android:text="@string/tab_places" />
         </RelativeLayout>
-
-        <ImageView
-            android:layout_width="0dip"
-            android:layout_height="30dip"
-            android:layout_weight="1"
-            android:background="@drawable/tab_check_in"
-            android:gravity="center"
-            android:visibility="invisible" />
 
         <RelativeLayout
             android:id="@+id/rel_people"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dip"
-            android:layout_weight="1"
+            android:layout_marginTop="10dip"
+            android:layout_weight="0.90"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
             android:onClick="onClickPeople" >
@@ -104,22 +92,14 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/tab_people_a" />
-
-            <TextView
-                android:id="@+id/text_people"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/imageview_people"
-                android:layout_centerHorizontal="true"
-                android:text="@string/tab_people" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rel_log_in"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dip"
-            android:layout_weight="1"
+            android:layout_marginTop="10dip"
+            android:layout_weight="0.90"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
             android:onClick="onClickContacts"
@@ -132,22 +112,14 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/tab_login_a" />
-
-            <TextView
-                android:id="@+id/text_log_in"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/imageview_log_in"
-                android:layout_centerHorizontal="true"
-                android:text="@string/tab_log_in" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rel_contacts"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dip"
-            android:layout_weight="1"
+            android:layout_marginTop="10dip"
+            android:layout_weight="0.90"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
             android:onClick="onClickContacts"
@@ -159,14 +131,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/tab_contacts_a" />
-
-            <TextView
-                android:id="@+id/text_contacts"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/imageview_contacts"
-                android:layout_centerHorizontal="true"
-                android:text="@string/tab_contacts" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -174,32 +138,30 @@
         android:id="@+id/layout_check_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_centerHorizontal="false"
+        android:layout_marginLeft="7px"
+        android:layout_marginTop="5px"
         android:clickable="true"
         android:onClick="onClickCheckIn" >
-
-        <ImageView
-            android:id="@+id/imageview_check_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_tab_check_in_out"
-            android:clickable="true"
-            android:onClick="onClickCheckIn" />
 
         <TextView
             android:id="@+id/textview_check_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageview_check_in"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-15dip"
-            android:text="@string/tab_check_in" />
+            android:text="@string/tab_check_in"
+            android:visibility="invisible" />
 
         <ImageView
-            android:id="@+id/imageview_check_in_clock_hand"
+            android:id="@+id/imageview_check_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/check_in_clock_hand" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/tab_check_in_out"
+            android:clickable="true"
+            android:onClick="onClickCheckIn" />
     </RelativeLayout>
 
 </RelativeLayout>

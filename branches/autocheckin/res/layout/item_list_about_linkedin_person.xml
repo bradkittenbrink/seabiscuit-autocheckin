@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="150dp" >
+
+    <LinearLayout
+        android:id="@+id/gray_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <ImageView
+                android:id="@+id/imageview_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerVertical="true"
+                android:adjustViewBounds="true"
+                android:background="@drawable/default_avatar25"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <LinearLayout
+                android:id="@+id/layout_name"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_toRightOf="@+id/imageview_image"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingBottom="3dp"
+                android:paddingLeft="5dp"
+                android:paddingTop="3dp" >
+
+                <com.coffeeandpower.views.CustomFontView
+                    android:id="@+id/textview_persone_nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:singleLine="true"
+                    android:textColor="#ffdddddd"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+
+
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>
