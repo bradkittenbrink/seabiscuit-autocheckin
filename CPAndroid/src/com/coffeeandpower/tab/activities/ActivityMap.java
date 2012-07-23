@@ -8,6 +8,8 @@ import java.util.Observer;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -69,6 +71,12 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu,
     public static final int ACCOUNT_CHANGED = 1900;
 
     private UserAndTabMenu menu;
+    
+    private double[] pinScales = { 0.326 , // for 1 person
+            0.57, 0.74, 0.855, 0.932, 0.976, 
+            1.0 // for 7 or more people
+    };
+
 
     // Views
     private CustomFontView textNickName;
@@ -161,7 +169,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu,
         imageRefresh = (ImageView) findViewById(R.id.imagebutton_map_refresh_progress);
         myLocationOverlay = new MyLocationOverlay(this, mapView);
         Drawable drawable = this.getResources().getDrawable(
-                R.drawable.people_marker_turquoise_circle);
+                R.drawable.pin_checkedout);
         itemizedoverlay = new MyItemizedOverlay(drawable, mapView);
 
         // Views states
@@ -313,6 +321,17 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu,
             }
         }
     }
+    
+    private double getScaleFactor(int number) {       
+        if (number <= 0) {
+            return pinScales[0];
+        } else if (number >= pinScales.length) {
+            return pinScales[pinScales.length - 1];
+        } else {
+            return pinScales[number - 1];
+        }
+
+    }
 
     /**
      * Create point on Map with data from MapUserdata
@@ -325,6 +344,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu,
      */
     private void createMarker(GeoPoint point, VenueSmart currVenueSmart,
             int checkinsSum, String venueName, boolean isPin) {
+        Drawable drawable;
         if (currVenueSmart != null) {
             String checkStr = "";
             if (!isPin) {
@@ -351,6 +371,20 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu,
             if (isPin) {
                 overlayitem.setPin(true);
                 overlayitem.setMarker(getPinDrawable(checkinsSum, point));
+            } else {
+                if (currVenueSmart.getSpecialVenueType().compareTo("solar") == 0) {
+                    drawable = this.getResources().getDrawable(R.drawable.pin_solar);
+                } else {
+                    drawable = this.getResources().getDrawable(R.drawable.pin_checkedout);
+                }
+                Bitmap d = ((BitmapDrawable)drawable).getBitmap();
+                double scaleFactor = getScaleFactor(checkinsSum);
+                Bitmap bitmapOrig = Bitmap.createScaledBitmap(d, (int) (scaleFactor * drawable.getIntrinsicWidth()), 
+                        (int) (scaleFactor * drawable.getIntrinsicHeight()), false);
+                BitmapDrawable newDrawable = new BitmapDrawable(this.getResources(), bitmapOrig);
+                newDrawable.setBounds(-newDrawable.getIntrinsicWidth() / 2, -newDrawable.getIntrinsicHeight() , 
+                        newDrawable.getIntrinsicWidth() / 2, 0 );
+                overlayitem.setMarker(newDrawable);
             }
 
             itemizedoverlay.addOverlay(overlayitem);
