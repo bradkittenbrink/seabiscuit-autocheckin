@@ -98,8 +98,8 @@ public class LinkedInUsersAdapter extends BaseAdapter {
         // Display image
         if (AppCAP.isLoggedIn()) {
             holder.textNickName.setText(AppCAP.cleanResponseString(mudArray
-                    .get(position).getLastName() + " " + mudArray
-                    .get(position).getFirstName()));
+                    .get(position).getFirstName() + " " + mudArray
+                    .get(position).getLastName()));
             if (selectedArray.contains((Person) mudArray.get(position))) {
                 holder.gray_layout.setBackgroundResource(R.drawable.button_turquoise_a);
             } else {

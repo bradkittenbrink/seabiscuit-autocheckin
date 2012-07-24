@@ -2,6 +2,7 @@ package com.coffeeandpower.maps;
 
 import java.util.List;
 
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,7 +37,13 @@ public abstract class BalloonItemizedOverlay<Item extends MyOverlayItem>
         viewOffset = 0;
         mc = mapView.getController();
     }
-
+    
+    @Override
+    public void draw(Canvas canvas, MapView mapView, boolean shadow)
+    {
+        super.draw(canvas, mapView, false);
+    }
+    
     public void setBalloonBottomOffset(int pixels) {
         viewOffset = pixels;
     }

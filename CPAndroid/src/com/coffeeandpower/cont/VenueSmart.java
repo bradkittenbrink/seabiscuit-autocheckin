@@ -27,6 +27,7 @@ public class VenueSmart implements Parcelable, Comparable {
     private String phone;
     private String formattedPhone;
     private String lastChatEntry;
+    private String specialVenueType;
 
     private double lat;
     private double lng;
@@ -106,6 +107,7 @@ public class VenueSmart implements Parcelable, Comparable {
         this.phone = objVenue.optString("phone");
         this.formattedPhone = objVenue.optString("formatted_phone");
         this.lastChatEntry = objVenue.optString("lastChatEntry");
+        this.setSpecialVenueType(objVenue.optString("special_venue_type"));      
         this.lat = objVenue.optDouble("lat");
         this.lng = objVenue.optDouble("lng");
         this.arrayCheckins = arrayCheckins;
@@ -129,6 +131,7 @@ public class VenueSmart implements Parcelable, Comparable {
         this.phone = objVenue.optString("phone");
         this.formattedPhone = objVenue.optString("formatted_phone");
         this.lastChatEntry = objVenue.optString("lastChatEntry");
+        this.setSpecialVenueType(objVenue.optString("special_venue_type"));      
         this.lat = objVenue.optDouble("lat");
         this.lng = objVenue.optDouble("lng");
     }
@@ -402,6 +405,14 @@ public class VenueSmart implements Parcelable, Comparable {
 
         // Return less than if other obj is not a VenueSmart
         return -1;
+    }
+
+    public String getSpecialVenueType() {
+        return specialVenueType;
+    }
+
+    public void setSpecialVenueType(String specialVenueType) {
+        this.specialVenueType = specialVenueType;
     }
 
 }

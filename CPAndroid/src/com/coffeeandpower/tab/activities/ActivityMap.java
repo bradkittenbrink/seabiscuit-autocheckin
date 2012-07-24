@@ -7,6 +7,8 @@ import java.util.Observer;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -74,12 +76,22 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	private CustomFontView textNickName;
 	private HorizontalPagerModified pager;
 	private ImageView imageRefresh;
+    
+    private double[] pinScales = { 0.326 , // for 1 person
+            0.57, 0.74, 0.855, 0.932, 0.976, 
+            1.0 // for 7 or more people
+    };
 
 	// Map items
 	private MapView mapView;
 	private MapController mapController;
 	private MyLocationOverlay myLocationOverlay;
 	private MyItemizedOverlay itemizedoverlay;
+
+    // Views
+    private CustomFontView textNickName;
+    private HorizontalPagerModified pager;
+    private ImageView imageRefresh;
 
 	private ProgressDialog progress;
 
@@ -182,7 +194,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		imageRefresh = (ImageView) findViewById(R.id.imagebutton_map_refresh_progress);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
         Drawable drawable = this.getResources().getDrawable(
-                R.drawable.people_marker_turquoise_circle);
+                R.drawable.pin_checkedout);
 		itemizedoverlay = new MyItemizedOverlay(drawable, mapView);
 
 		// Views states
@@ -331,6 +343,15 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	protected void onPause() {
 		super.onPause();
 	}
+    
+    private double getScaleFactor(int number) {       
+        if (number <= 0) {
+            return pinScales[0];
+        } else if (number >= pinScales.length) {
+            return pinScales[pinScales.length - 1];
+        } else {
+            return pinScales[number - 1];
+        }
 
 	@Override
 	protected void onDestroy() {
@@ -406,11 +427,23 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	 * @param venueName
 	 * @param isList
 	 */
+    }
+
+    /**
+     * Create point on Map with data from MapUserdata
+     * 
+     * @param point
+     * @param foursquareIdKey
+     * @param checkinsSum
+     * @param venueName
+     * @param isList
+     */
     private void createMarker(GeoPoint point, VenueSmart currVenueSmart,
             int checkinsSum, String venueName, boolean isPin) {
-		if (currVenueSmart != null) {
-			String checkStr = "";
-			if (!isPin) {
+        Drawable drawable;
+        if (currVenueSmart != null) {
+            String checkStr = "";
+            if (!isPin) {
                 checkStr = checkinsSum == 1 ? " checkin in the last week"
                         : " checkins in the last week";
 			} else {
@@ -430,11 +463,25 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
                         .getMyLocation().getLongitudeE6());
 			}
 
-			// Pin or marker
-			if (isPin) {
-				overlayitem.setPin(true);
-				overlayitem.setMarker(getPinDrawable(checkinsSum, point));
-			}
+            // Pin or marker
+            if (isPin) {
+                overlayitem.setPin(true);
+                overlayitem.setMarker(getPinDrawable(checkinsSum, point));
+            } else {
+                if (currVenueSmart.getSpecialVenueType().compareTo("solar") == 0) {
+                    drawable = this.getResources().getDrawable(R.drawable.pin_solar);
+                } else {
+                    drawable = this.getResources().getDrawable(R.drawable.pin_checkedout);
+                }
+                Bitmap d = ((BitmapDrawable)drawable).getBitmap();
+                double scaleFactor = getScaleFactor(checkinsSum);
+                Bitmap bitmapOrig = Bitmap.createScaledBitmap(d, (int) (scaleFactor * drawable.getIntrinsicWidth()), 
+                        (int) (scaleFactor * drawable.getIntrinsicHeight()), false);
+                BitmapDrawable newDrawable = new BitmapDrawable(this.getResources(), bitmapOrig);
+                newDrawable.setBounds(-newDrawable.getIntrinsicWidth() / 2, -newDrawable.getIntrinsicHeight() , 
+                        newDrawable.getIntrinsicWidth() / 2, 0 );
+                overlayitem.setMarker(newDrawable);
+            }
 
 			itemizedoverlay.addOverlay(overlayitem);
 		}
