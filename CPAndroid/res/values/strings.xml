@@ -9,7 +9,9 @@
     <!--
     staging
     <string name="linkedInApiKey">4xkfzpnvuc72</string>
-    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+
+
     -->
 
 
@@ -87,6 +89,7 @@
     <string name="tab_places">Places</string>
     <string name="tab_people">People</string>
     <string name="tab_log_in">Log In</string>
+    <string name="notifications_label">Notifications</string>
     <string name="tab_contacts">Contacts</string>
     <string name="tab_check_in">Check In</string>
     <string name="user_menu_support">Support</string>
@@ -111,5 +114,6 @@ Once signed up, you may sponsor other users with the \'Invite\' button in the ap
 Welcome!
 	]]></string>
    	<string name="googleMapsApiKey">0N2B-_20GlM_H0LiHavOsRcF1VIqEQmyxijXZ3w</string>
-   	<string name="map_distance_far">Far far away</string>
+    <string name="map_distance_far">Far far away</string>
+
 </resources>

@@ -45,6 +45,8 @@ import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyFavouritePlacesAdapter;
+import com.coffeeandpower.cache.CacheMgrService;
+import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
 import com.coffeeandpower.cont.Listing;
@@ -55,7 +57,6 @@ import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.cont.Work;
-import com.coffeeandpower.datatiming.CounterData;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
 import com.coffeeandpower.maps.PinBlackDrawable;
@@ -71,79 +72,79 @@ import com.urbanairship.UAirship;
 
 public class ActivityUserDetails extends RootActivity implements Observer {
 
-    private static final int DIALOG_SEND_PROP = 0;
-    private static final int DIALOG_SEND_F2F_INVITE = 1;
+	private static final int DIALOG_SEND_PROP = 0;
+	private static final int DIALOG_SEND_F2F_INVITE = 1;
     private static final int MAPVIEW_HEIGHT = 350;
 
-    private UserSmart mud;
+	private UserSmart mud;
 
-    // Map items
-    private MapView mapView;
-    private MapController mapController;
-    private MyItemizedOverlay2 itemizedoverlay;
+	// Map items
+	private MapView mapView;
+	private MapController mapController;
+	private MyItemizedOverlay2 itemizedoverlay;
 
-    private ImageView imageProfile;
+	private ImageView imageProfile;
 
-    private ListView favPlacesList;
+	private ListView favPlacesList;
 
-    private DataHolder result;
-    private ImageLoader imageLoader;
+	private DataHolder result;
+	private ImageLoader imageLoader;
 
-    private Executor exe;
+	private Executor exe;
 
-    private UserResume userResumeData;
+	private UserResume userResumeData;
 
-    private ArrayList<Venue> favoritePlaces;
-    private ArrayList<VenueSmart> arraySmartVenues;
+	private ArrayList<Venue> favoritePlaces;
+	private ArrayList<VenueSmart> arraySmartVenues;
 
     // Scheduler - create a custom message handler for use in passing venue data
     // from background API call to main thread
-    protected Handler taskHandler = new Handler() {
+	protected Handler taskHandler = new Handler() {
 
-        // handleMessage - on the main thread
-        @Override
-        public void handleMessage(Message msg) {
-            // pass message data along to venue update method
-            arraySmartVenues = msg.getData().getParcelableArrayList("venues");
-            super.handleMessage(msg);
-        }
-    };
+		// handleMessage - on the main thread
+		@Override
+		public void handleMessage(Message msg) {
+				// pass message data along to venue update method
+			arraySmartVenues = msg.getData().getParcelableArrayList("venues");
+			super.handleMessage(msg);
+		}
+	};
 
-    @Override
-    protected void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.activity_user_details);
+	@Override
+	protected void onCreate(Bundle icicle) {
+		super.onCreate(icicle);
+		setContentView(R.layout.activity_user_details);
 
-        // Executor
-        exe = new Executor(ActivityUserDetails.this);
-        exe.setExecutorListener(new ExecutorInterface() {
-            @Override
-            public void onErrorReceived() {
-                errorReceived();
-            }
+		// Executor
+		exe = new Executor(ActivityUserDetails.this);
+		exe.setExecutorListener(new ExecutorInterface() {
+			@Override
+			public void onErrorReceived() {
+				errorReceived();
+			}
 
-            @Override
-            public void onActionFinished(int action) {
-                actionFinished(action);
-            }
-        });
+			@Override
+			public void onActionFinished(int action) {
+				actionFinished(action);
+			}
+		});
 
-        // Image Loader
-        imageLoader = new ImageLoader(ActivityUserDetails.this);
+		// Image Loader
+		imageLoader = new ImageLoader(ActivityUserDetails.this);
 
-        // Views
-        favPlacesList = (ListView) findViewById(R.id.listview_favorite_places);
-        favPlacesList.setOnItemClickListener(new OnItemClickListener() {
-            @Override
+		// Views
+		favPlacesList = (ListView) findViewById(R.id.listview_favorite_places);
+		favPlacesList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
             public void onItemClick(AdapterView<?> arg0, View v, int position,
                     long arg3) {
                 Intent intent = new Intent(ActivityUserDetails.this,
                         ActivityPlaceDetails.class);
-                Venue currVenue = favoritePlaces.get(position);
+				Venue currVenue = favoritePlaces.get(position);
                 // intent.putExtra("foursquare_id", currVenue);
                 // FIXME
                 // We need to eliminate the Venue class eventually
-                ArrayList<CheckinData> arrayCheckins = new ArrayList<VenueSmart.CheckinData>();
+				ArrayList<CheckinData> arrayCheckins = new ArrayList<VenueSmart.CheckinData>();
                 VenueSmart currSmartVenue = new VenueSmart(currVenue
                         .getVenueId(), currVenue.getName(), currVenue
                         .getAddress(), currVenue.getCity(),
@@ -153,52 +154,52 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                                 .getPhotoUrl(), currVenue.getPhone(), currVenue
                                 .getPhone(), "", currVenue.getLat(), currVenue
                                 .getLng(), arrayCheckins);
-                intent.putExtra("venueSmart", currSmartVenue);
+				intent.putExtra("venueSmart", currSmartVenue);
                 if (arraySmartVenues != null) {
-                    boolean venueFound = false;
+					boolean venueFound = false;
                     for (VenueSmart testSmartVenue : arraySmartVenues) {
                         if (testSmartVenue.getVenueId() == currVenue
                                 .getVenueId()) {
-                            intent.putExtra("venueSmart", testSmartVenue);
-                            venueFound = true;
-                            break;
-                        }
-                    }
+							intent.putExtra("venueSmart", testSmartVenue);
+							venueFound = true;
+							break;
+						}
+					}
                     // FIXME
                     // If we don't find the venue we need to pull it from http
-                }
-                intent.putExtra("coords", AppCAP.getUserCoordinates());
-                startActivity(intent);
-            }
-        });
+				}
+				intent.putExtra("coords", AppCAP.getUserCoordinates());
+				startActivity(intent);
+			}
+		});
 
-        mapView = (MapView) findViewById(R.id.mapview_user_details);
-        imageProfile = (ImageView) findViewById(R.id.imagebutton_user_face);
+		mapView = (MapView) findViewById(R.id.mapview_user_details);
+		imageProfile = (ImageView) findViewById(R.id.imagebutton_user_face);
 
-        // Get data from intent
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
+		// Get data from intent
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
 
             // Not used so being removed
-            String foursquareId = extras.getString("mapuserdata");
-            String fromAct = extras.getString("from_act");
+			String foursquareId = extras.getString("mapuserdata");
+			String fromAct = extras.getString("from_act");
 
-            if (fromAct != null) {
-                if (fromAct.equals("list")) {
-                    // From list
-                    mud = (UserSmart) extras.getParcelable("mapuserobject");
-                }
-            }
-        }
+			if (fromAct != null) {
+				if (fromAct.equals("list")) {
+					// From list
+					mud = (UserSmart) extras.getParcelable("mapuserobject");
+				}
+			}
+		}
 
-        // Set MapView
-        mapView.setClickable(false);
-        mapView.setEnabled(false);
-        mapController = mapView.getController();
-        mapController.setZoom(18);
+		// Set MapView
+		mapView.setClickable(false);
+		mapView.setEnabled(false);
+		mapController = mapView.getController();
+		mapController.setZoom(18);
 
-        // Navigate map to location from intent data
-        if (mud != null) {
+		// Navigate map to location from intent data
+		if (mud != null) {
             GeoPoint point = new GeoPoint((int) (mud.getLat() * 1E6),
                     (int) (mud.getLng() * 1E6));
 
@@ -216,7 +217,7 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                     - height);
             GeoPoint pointForCenter = mapView.getProjection().fromPixels(p.x,
                     p.y);
-            mapController.animateTo(pointForCenter);
+			mapController.animateTo(pointForCenter);
 
             String distanceStr = RootActivity.getDistanceBetween(
                     AppCAP.getUserCoordinates()[4],
@@ -225,75 +226,75 @@ public class ActivityUserDetails extends RootActivity implements Observer {
 
             String distanceAway = distanceStr.contains("away") ? distanceStr
                     : distanceStr + " away";
-            itemizedoverlay = new MyItemizedOverlay2(getPinDrawable(
+			itemizedoverlay = new MyItemizedOverlay2(getPinDrawable(
                     distanceAway, point));
-            createMarker(point);
-        }
+			createMarker(point);
+		}
 
-        // Set Views states
-        if (mud != null) {
+		// Set Views states
+		if (mud != null) {
             ((CustomFontView) findViewById(R.id.textview_user_name))
                     .setText(mud.getNickName());
             ((TextView) findViewById(R.id.textview_user_status)).setText(AppCAP
                     .cleanResponseString(mud.getStatusText()) != null ? (AppCAP
                     .cleanResponseString(mud.getStatusText()).equals("") ? ""
                     : "\"" + AppCAP.cleanResponseString(mud.getStatusText())
-                            + "\"") : "");
+							+ "\"") : "");
             ((CustomFontView) findViewById(R.id.textview_nick_name))
                     .setText(mud.getNickName());
 
-            // If current user looking at own page, hide "plus"
-            // button
-            if (mud.getUserId() == AppCAP.getLoggedInUserId()) {
+			// If current user looking at own page, hide "plus"
+			// button
+			if (mud.getUserId() == AppCAP.getLoggedInUserId()) {
                 ((ImageButton) findViewById(R.id.imagebutton_plus))
                         .setVisibility(View.GONE);
                 ((RelativeLayout) findViewById(R.id.rel_buttons))
                         .setVisibility(View.GONE);
-            }
+			}
 
-        }
+		}
 
-        // Load user resume data
-        if (mud != null) {
-            exe.getResumeForUserId(mud.getUserId());
-        }
+		// Load user resume data
+		if (mud != null) {
+			exe.getResumeForUserId(mud.getUserId());
+		}
 
     } // end onCreate()
 
-    @Override
-    protected void onStart() {
-        if (Constants.debugLog)
+	@Override
+	protected void onStart() {
+		if (Constants.debugLog)
             Log.d("UserDetails", "ActivityUserDetails.onStart()");
-        super.onStart();
+		super.onStart();
         // initialLoad = true;
-        UAirship.shared().getAnalytics().activityStarted(this);
+		UAirship.shared().getAnalytics().activityStarted(this);
+		
+		CacheMgrService.startObservingAPICall("venuesWithCheckins",this);	
+	}
 
-        AppCAP.getCounter().getCachedDataForAPICall("venuesWithCheckins", this);
-    }
-
-    @Override
-    public void onStop() {
-        if (Constants.debugLog)
+	@Override
+	public void onStop() {
+		if (Constants.debugLog)
             Log.d("UserDetails", "ActivityUserDetails.onStop()");
-        super.onStop();
-        UAirship.shared().getAnalytics().activityStopped(this);
+		super.onStop();
+		UAirship.shared().getAnalytics().activityStopped(this);
 
-        AppCAP.getCounter().stoppedObservingAPICall("venuesWithCheckins", this);
-    }
+		CacheMgrService.stopObservingAPICall("venuesWithCheckins",this);
+	}
 
-    private Drawable getPinDrawable(String text, GeoPoint gp) {
-        PinBlackDrawable icon = new PinBlackDrawable(this, text);
+	private Drawable getPinDrawable(String text, GeoPoint gp) {
+		PinBlackDrawable icon = new PinBlackDrawable(this, text);
         icon.setBounds(0, -icon.getIntrinsicHeight(), icon.getIntrinsicWidth(),
                 0);
-        return icon;
-    }
+		return icon;
+	}
 
-    /**
-     * Update users data in UI, from favoritePlaces and userResumeData
-     */
-    private void updateUserDataInUI() {
-        if (userResumeData != null) {
-            // Load profile picture
+	/**
+	 * Update users data in UI, from favoritePlaces and userResumeData
+	 */
+	private void updateUserDataInUI() {
+		if (userResumeData != null) {
+			// Load profile picture
             imageLoader.DisplayImage(userResumeData.getUrlPhoto(),
                     imageProfile, R.drawable.default_avatar50, 70);
 
@@ -305,7 +306,7 @@ public class ActivityUserDetails extends RootActivity implements Observer {
             ((TextView) findViewById(R.id.textview_sponsor))
                     .setText(userResumeData.getJoinSponsor());
 
-            // Was EARNED now it's HOURS
+			// Was EARNED now it's HOURS
             ((TextView) findViewById(R.id.textview_earned))
                     .setText(userResumeData.getTotalHours() + "");
             ((TextView) findViewById(R.id.textview_love))
@@ -317,7 +318,7 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                     .cleanResponseString(userResumeData
                             .getCheckInData_Address()));
 
-            if (isUserHereNow(userResumeData)) {
+			if (isUserHereNow(userResumeData)) {
                 ((CustomFontView) findViewById(R.id.box_title))
                         .setText("Checked in ...");
                 ((LinearLayout) findViewById(R.id.layout_available))
@@ -327,31 +328,31 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                 ((TextView) findViewById(R.id.textview_minutes))
                         .setText(getAvailableMins(userResumeData));
 
-                if (userResumeData.getCheckInData_usersHere() > 1) {
+				if (userResumeData.getCheckInData_usersHere() > 1) {
                     ((LinearLayout) findViewById(R.id.layout_others_at_venue))
                             .setVisibility(View.VISIBLE);
-                    ((TextView) findViewById(R.id.textview_others_here_now))
-                            .setText(userResumeData.getCheckInData_usersHere() == 2 ? "1 other here now"
+					((TextView) findViewById(R.id.textview_others_here_now))
+							.setText(userResumeData.getCheckInData_usersHere() == 2 ? "1 other here now"
                                     : (userResumeData
                                             .getCheckInData_usersHere() - 1)
                                             + " others here now");
-                }
+				}
 
-            } else {
+			} else {
                 ((CustomFontView) findViewById(R.id.box_title))
                         .setText("Was checked in ...");
 
-                if (userResumeData.getCheckInData_usersHere() > 0) {
+				if (userResumeData.getCheckInData_usersHere() > 0) {
                     ((LinearLayout) findViewById(R.id.layout_others_at_venue))
                             .setVisibility(View.VISIBLE);
-                    ((TextView) findViewById(R.id.textview_others_here_now))
+					((TextView) findViewById(R.id.textview_others_here_now))
                             .setText(userResumeData.getCheckInData_usersHere() == 1 ? "1 other here now"
                                     : userResumeData.getCheckInData_usersHere()
                                             + " others here now");
-                }
-            }
+				}
+			}
 
-            // Check for Summary info
+			// Check for Summary info
             if (userResumeData.getBio() != null
                     && !userResumeData.getBio().contains("null")
                     && !userResumeData.getBio().equals("")) {
@@ -361,25 +362,25 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                         .setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.text_summary))
                         .setVisibility(View.VISIBLE);
-            }
+			}
 
-            // Chech if user is verified for LinkedIn and Facebook
-            if (userResumeData.getVerifiedLinkedIn().matches("1")) {
+			// Chech if user is verified for LinkedIn and Facebook
+			if (userResumeData.getVerifiedLinkedIn().matches("1")) {
                 ((LinearLayout) findViewById(R.id.layout_verified_linked_in))
                         .setVisibility(View.VISIBLE);
-            }
-            if (userResumeData.getVerifiedFacebook().matches("1")) {
+			}
+			if (userResumeData.getVerifiedFacebook().matches("1")) {
                 ((LinearLayout) findViewById(R.id.layout_verified_facebook))
                         .setVisibility(View.VISIBLE);
-            }
+			}
 
-            // Check if user have Education Data
-            if (!userResumeData.getEducation().isEmpty()) {
+			// Check if user have Education Data
+			if (!userResumeData.getEducation().isEmpty()) {
                 ((LinearLayout) findViewById(R.id.layout_edu_review))
                         .setVisibility(View.VISIBLE);
 
-                for (Education edu : userResumeData.getEducation()) {
-                    LayoutInflater inflater = getLayoutInflater();
+				for (Education edu : userResumeData.getEducation()) {
+					LayoutInflater inflater = getLayoutInflater();
                     View view = inflater.inflate(R.layout.review_education,
                             null);
 
@@ -403,17 +404,17 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                             .setText(concentration);
                     ((LinearLayout) findViewById(R.id.edu_inflate))
                             .addView(view);
-                }
-            }
+				}
+			}
 
-            // Check if user have Work Data
-            if (!userResumeData.getWork().isEmpty()) {
+			// Check if user have Work Data
+			if (!userResumeData.getWork().isEmpty()) {
                 ((LinearLayout) findViewById(R.id.layout_work_review))
                         .setVisibility(View.VISIBLE);
 
-                for (Work work : userResumeData.getWork()) {
-                    LayoutInflater inflater = getLayoutInflater();
-                    View view = inflater.inflate(R.layout.review_work, null);
+				for (Work work : userResumeData.getWork()) {
+					LayoutInflater inflater = getLayoutInflater();
+					View view = inflater.inflate(R.layout.review_work, null);
 
                     String title = work.getTitle().contains("null") ? "" : work
                             .getTitle();
@@ -424,7 +425,7 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                     String company = work.getCompany().contains("null") ? ""
                             : work.getCompany();
 
-                    if (!title.equals(""))
+					if (!title.equals(""))
                         ((TextView) view.findViewById(R.id.textview_job_title))
                                 .setText(title + " at " + company);
 
@@ -432,25 +433,25 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                             .setText("(" + startDate + " - " + endDate + ")");
                     ((LinearLayout) findViewById(R.id.work_inflate))
                             .addView(view);
-                }
-            }
+				}
+			}
 
-            // Check if user has Reviews
-            if (userResumeData.getReviewsTotal() > 0) {
+			// Check if user has Reviews
+			if (userResumeData.getReviewsTotal() > 0) {
                 ((LinearLayout) findViewById(R.id.layout_reviews))
                         .setVisibility(View.VISIBLE);
 
-                // Check if we have love review
-                if (!userResumeData.getReviewsLoveReceived().equals("0")) {
+				// Check if we have love review
+				if (!userResumeData.getReviewsLoveReceived().equals("0")) {
                     ((LinearLayout) findViewById(R.id.love_inflate))
                             .setVisibility(View.VISIBLE);
-                }
+				}
 
-                // Find all love reviews
-                for (Review review : userResumeData.getReviews()) {
-                    if (review.getIsLove().equals("1")) {
-                        LayoutInflater inflater = getLayoutInflater();
-                        View v = inflater.inflate(R.layout.review_props, null);
+				// Find all love reviews
+				for (Review review : userResumeData.getReviews()) {
+					if (review.getIsLove().equals("1")) {
+						LayoutInflater inflater = getLayoutInflater();
+						View v = inflater.inflate(R.layout.review_props, null);
 
                         ((TextView) v.findViewById(R.id.textview_review_love))
                                 .setText("from "
@@ -462,14 +463,14 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                                 .setVisibility(View.GONE);
                         ((LinearLayout) findViewById(R.id.love_inflate))
                                 .addView(v);
-                    }
-                }
+					}
+				}
 
-                // Find other reviews
-                for (Review review : userResumeData.getReviews()) {
-                    if (!review.getIsLove().equals("1")) {
-                        LayoutInflater inflater = getLayoutInflater();
-                        View v = inflater.inflate(R.layout.review_props, null);
+				// Find other reviews
+				for (Review review : userResumeData.getReviews()) {
+					if (!review.getIsLove().equals("1")) {
+						LayoutInflater inflater = getLayoutInflater();
+						View v = inflater.inflate(R.layout.review_props, null);
 
                         ((TextView) v.findViewById(R.id.textview_review_love))
                                 .setText(AppCAP.cleanResponseString(review
@@ -480,18 +481,18 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                                 .setVisibility(View.GONE);
                         ((LinearLayout) findViewById(R.id.love_inflate))
                                 .addView(v);
-                    }
-                }
-            }
+					}
+				}
+			}
 
-            // Check Listings as Agent
-            if (!userResumeData.getAgentListings().isEmpty()) {
+			// Check Listings as Agent
+			if (!userResumeData.getAgentListings().isEmpty()) {
                 ((LinearLayout) findViewById(R.id.layout_listings_agent))
                         .setVisibility(View.VISIBLE);
 
-                for (Listing l : userResumeData.getAgentListings()) {
-                    LayoutInflater inflater = getLayoutInflater();
-                    View v = inflater.inflate(R.layout.review_listing, null);
+				for (Listing l : userResumeData.getAgentListings()) {
+					LayoutInflater inflater = getLayoutInflater();
+					View v = inflater.inflate(R.layout.review_listing, null);
                     ((TextView) v.findViewById(R.id.textview_listing))
                             .setText(AppCAP.cleanResponseString(l.getListing()));
                     ((TextView) v.findViewById(R.id.text_price)).setText("$"
@@ -499,17 +500,17 @@ public class ActivityUserDetails extends RootActivity implements Observer {
 
                     ((LinearLayout) findViewById(R.id.agent_inflate))
                             .addView(v);
-                }
-            }
+				}
+			}
 
-            // Check Listings as Client
-            if (!userResumeData.getClienListings().isEmpty()) {
+			// Check Listings as Client
+			if (!userResumeData.getClienListings().isEmpty()) {
                 ((LinearLayout) findViewById(R.id.layout_listings_client))
                         .setVisibility(View.VISIBLE);
 
-                for (Listing l : userResumeData.getClienListings()) {
-                    LayoutInflater inflater = getLayoutInflater();
-                    View v = inflater.inflate(R.layout.review_listing, null);
+				for (Listing l : userResumeData.getClienListings()) {
+					LayoutInflater inflater = getLayoutInflater();
+					View v = inflater.inflate(R.layout.review_listing, null);
                     ((TextView) v.findViewById(R.id.textview_listing))
                             .setText(AppCAP.cleanResponseString(l.getListing()));
                     ((TextView) v.findViewById(R.id.text_price)).setText("$"
@@ -517,197 +518,197 @@ public class ActivityUserDetails extends RootActivity implements Observer {
 
                     ((LinearLayout) findViewById(R.id.client_inflate))
                             .addView(v);
-                }
-            }
+				}
+			}
 
-        }
+		}
 
-        // List view with venues
-        if (favoritePlaces != null) {
+		// List view with venues
+		if (favoritePlaces != null) {
             MyFavouritePlacesAdapter adapter = new MyFavouritePlacesAdapter(
                     this, favoritePlaces);
-            favPlacesList.setAdapter(adapter);
-            favPlacesList.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Utils.setListViewHeightBasedOnChildren(favPlacesList);
-                }
-            }, 400);
+			favPlacesList.setAdapter(adapter);
+			favPlacesList.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					Utils.setListViewHeightBasedOnChildren(favPlacesList);
+				}
+			}, 400);
 
-        }
+		}
 
-        // Scroll to the top of the page
-        ((ScrollView) findViewById(R.id.scroll)).post(new Runnable() {
-            @Override
-            public void run() {
+		// Scroll to the top of the page
+		((ScrollView) findViewById(R.id.scroll)).post(new Runnable() {
+			@Override
+			public void run() {
                 ((ScrollView) findViewById(R.id.scroll))
                         .fullScroll(ScrollView.FOCUS_UP);
-            }
-        });
-    }
+			}
+		});
+	}
 
-    private void createMarker(GeoPoint point) {
-        OverlayItem overlayitem = new OverlayItem(point, "", "");
-        itemizedoverlay.addOverlay(overlayitem);
-        if (itemizedoverlay.size() > 0) {
-            mapView.getOverlays().add(itemizedoverlay);
-        }
-    }
+	private void createMarker(GeoPoint point) {
+		OverlayItem overlayitem = new OverlayItem(point, "", "");
+		itemizedoverlay.addOverlay(overlayitem);
+		if (itemizedoverlay.size() > 0) {
+			mapView.getOverlays().add(itemizedoverlay);
+		}
+	}
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
 
-    private boolean animFlag = true;
+	private boolean animFlag = true;
 
-    public void onClickPlus(View v) {
-        startButtonsAnim(v, animFlag);
-        animFlag = !animFlag;
-    }
+	public void onClickPlus(View v) {
+		startButtonsAnim(v, animFlag);
+		animFlag = !animFlag;
+	}
 
-    private void animateView(RelativeLayout v) {
-        AnimationSet set = new AnimationSet(true);
-        Animation animation = new AlphaAnimation(0.0f, 1.0f);
-        animation.setDuration(400);
-        set.addAnimation(animation);
+	private void animateView(RelativeLayout v) {
+		AnimationSet set = new AnimationSet(true);
+		Animation animation = new AlphaAnimation(0.0f, 1.0f);
+		animation.setDuration(400);
+		set.addAnimation(animation);
 
         animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
                 Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                3.0f, Animation.RELATIVE_TO_SELF, 0.0f);
-        animation.setDuration(300);
-        set.addAnimation(animation);
+				3.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+		animation.setDuration(300);
+		set.addAnimation(animation);
 
         LayoutAnimationController controller = new LayoutAnimationController(
                 set, 0.0f);
-        v.setLayoutAnimation(controller);
-    }
+		v.setLayoutAnimation(controller);
+	}
 
-    private void startButtonsAnim(View v, boolean isPlus) {
-        if (isPlus) {
+	private void startButtonsAnim(View v, boolean isPlus) {
+		if (isPlus) {
             ((RelativeLayout) findViewById(R.id.rel_buttons))
                     .setVisibility(View.VISIBLE);
-            animateView((RelativeLayout) findViewById(R.id.rel_buttons));
+			animateView((RelativeLayout) findViewById(R.id.rel_buttons));
 
-            // Plus
+			// Plus
             Animation anim = new RotateAnimation(360.0f, 0.0f,
                     v.getWidth() / 2, v.getHeight() / 2);
-            anim.setDuration(700);
-            anim.setRepeatCount(0);
-            anim.setRepeatMode(Animation.REVERSE);
-            anim.setFillAfter(true);
-            v.setAnimation(anim);
-            v.setBackgroundResource(R.drawable.go_menu_button_minus);
+			anim.setDuration(700);
+			anim.setRepeatCount(0);
+			anim.setRepeatMode(Animation.REVERSE);
+			anim.setFillAfter(true);
+			v.setAnimation(anim);
+			v.setBackgroundResource(R.drawable.go_menu_button_minus);
 
-        } else {
+		} else {
             ((RelativeLayout) findViewById(R.id.rel_buttons))
                     .setVisibility(View.GONE);
 
-            // Plus
+			// Plus
             Animation anim = new RotateAnimation(0.0f, 360.0f,
                     v.getWidth() / 2, v.getHeight() / 2);
-            anim.setDuration(700);
-            anim.setRepeatCount(0);
-            anim.setRepeatMode(Animation.REVERSE);
-            anim.setFillAfter(true);
-            v.setAnimation(anim);
-            v.setBackgroundResource(R.drawable.go_button_iphone);
+			anim.setDuration(700);
+			anim.setRepeatCount(0);
+			anim.setRepeatMode(Animation.REVERSE);
+			anim.setFillAfter(true);
+			v.setAnimation(anim);
+			v.setBackgroundResource(R.drawable.go_button_iphone);
 
-        }
-    }
+		}
+	}
 
-    /**
-     * Get String with number of available minutes od checked in user
-     * 
-     * @param ur
-     * @return
-     */
-    private String getAvailableMins(UserResume ur) {
+	/**
+	 * Get String with number of available minutes od checked in user
+	 * 
+	 * @param ur
+	 * @return
+	 */
+	private String getAvailableMins(UserResume ur) {
         Calendar checkoutCal = Calendar
                 .getInstance(TimeZone.getTimeZone("GMT"));
-        long checkout = Long.parseLong(ur.getCheckInData_checkOut());
-        int mins = (int) ((checkout - (checkoutCal.getTimeInMillis() / 1000)) / 60);
+		long checkout = Long.parseLong(ur.getCheckInData_checkOut());
+		int mins = (int) ((checkout - (checkoutCal.getTimeInMillis() / 1000)) / 60);
 
-        if (mins <= 60)
-            return mins == 1 ? mins + " min" : mins + " mins";
-        else
+		if (mins <= 60)
+			return mins == 1 ? mins + " min" : mins + " mins";
+		else
             return ((mins / 60) == 1 ? "1 hour " : (mins / 60) + " hours ")
                     + ((mins % 60) == 1 ? "1 min" : (mins % 60) + " mins");
 
-    }
+	}
 
-    /**
-     * Check if I am checked in here
-     */
-    public static boolean isUserHereNow(UserResume ur) {
+	/**
+	 * Check if I am checked in here
+	 */
+	public static boolean isUserHereNow(UserResume ur) {
         Calendar checkoutCal = Calendar
                 .getInstance(TimeZone.getTimeZone("GMT"));
-        long checkout = Long.parseLong(ur.getCheckInData_checkOut());
+		long checkout = Long.parseLong(ur.getCheckInData_checkOut());
 
-        return checkout > checkoutCal.getTimeInMillis() / 1000;
-    }
+		return checkout > checkoutCal.getTimeInMillis() / 1000;
+	}
 
-    public void onClickChat(View v) {
+	public void onClickChat(View v) {
         startActivity(new Intent(ActivityUserDetails.this, ActivityChat.class)
                 .putExtra("user_id", userResumeData.getCheckInData_userId())
-                .putExtra("nick_name", userResumeData.getNickName()));
-    }
+				.putExtra("nick_name", userResumeData.getNickName()));
+	}
 
-    public void onClickPaid(View v) {
+	public void onClickPaid(View v) {
 
-    }
+	}
 
-    public void onClickSendContact(View v) {
-        showDialog(DIALOG_SEND_F2F_INVITE);
-    }
+	public void onClickSendContact(View v) {
+		showDialog(DIALOG_SEND_F2F_INVITE);
+	}
 
-    public void onClickSendProp(View v) {
-        showDialog(DIALOG_SEND_PROP);
-    }
+	public void onClickSendProp(View v) {
+		showDialog(DIALOG_SEND_PROP);
+	}
 
-    public void onClickBack(View v) {
-        onBackPressed();
-    }
+	public void onClickBack(View v) {
+		onBackPressed();
+	}
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
 
-    }
+	}
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 
-    }
+	}
 
-    @Override
-    protected boolean isRouteDisplayed() {
+	@Override
+	protected boolean isRouteDisplayed() {
 
-        return false;
-    }
+		return false;
+	}
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
+	@Override
+	protected Dialog onCreateDialog(int id) {
 
-        final Dialog dialog = new Dialog(ActivityUserDetails.this);
+		final Dialog dialog = new Dialog(ActivityUserDetails.this);
 
-        switch (id) {
+		switch (id) {
 
-        case DIALOG_SEND_PROP:
-            dialog.setContentView(R.layout.dialog_send_love);
-            dialog.setTitle(R.string.activity_user_details_sendlove);
+		case DIALOG_SEND_PROP:
+			dialog.setContentView(R.layout.dialog_send_love);
+			dialog.setTitle(R.string.activity_user_details_sendlove);
 
             dialog.getWindow().setSoftInputMode(
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
             ((Button) dialog.findViewById(R.id.btn_send))
                     .setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+				@Override
+				public void onClick(View v) {
                             if (((EditText) dialog
                                     .findViewById(R.id.edit_review)).getText()
                                     .toString().length() > 0) {
-                                dialog.dismiss();
+						dialog.dismiss();
                                 exe.sendReview(
                                         userResumeData,
                                         ((EditText) dialog
@@ -719,26 +720,26 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                                         "You recognized "
                                                 + userResumeData.getNickName(),
                                         Toast.LENGTH_SHORT).show();
-                                onClickPlus(findViewById(R.id.imagebutton_plus));
-                            } else {
-                                dialog.dismiss();
+						onClickPlus(findViewById(R.id.imagebutton_plus));
+					} else {
+						dialog.dismiss();
                                 Toast.makeText(ActivityUserDetails.this,
                                         "Review can't be empty!",
                                         Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+					}
+				}
+			});
 
             ((Button) dialog.findViewById(R.id.btn_cancel))
                     .setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                        }
-                    });
-            break;
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+				}
+			});
+			break;
 
-        case DIALOG_SEND_F2F_INVITE:
+		case DIALOG_SEND_F2F_INVITE:
             AlertDialog.Builder builder = new AlertDialog.Builder(
                     ActivityUserDetails.this);
             builder.setMessage("Request to exchange contact info?")
@@ -747,82 +748,82 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                         int id) {
-                                    exe.sendFriendRequest(mud.getUserId());
-                                    dialog.cancel();
-                                }
+							exe.sendFriendRequest(mud.getUserId());
+							dialog.cancel();
+						}
                             })
                     .setNegativeButton("Cancel",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                         int id) {
-                                    dialog.cancel();
-                                }
-                            });
-            return builder.create();
-        }
+							dialog.cancel();
+						}
+					});
+			return builder.create();
+		}
 
-        return dialog;
-    }
+		return dialog;
+	}
 
-    public void actionFinished(int action) {
-        result = exe.getResult();
+	public void actionFinished(int action) {
+		result = exe.getResult();
 
-        switch (action) {
+		switch (action) {
 
-        case Executor.HANDLE_GET_USER_RESUME:
-            if (result != null && result.getObject() != null) {
-                if (result.getObject() instanceof UserResume) {
-                    userResumeData = (UserResume) result.getObject();
-                    favoritePlaces = userResumeData.getFavoritePlaces();
-                    updateUserDataInUI();
-                }
-            }
+		case Executor.HANDLE_GET_USER_RESUME:
+			if (result != null && result.getObject() != null) {
+				if (result.getObject() instanceof UserResume) {
+					userResumeData = (UserResume) result.getObject();
+					favoritePlaces = userResumeData.getFavoritePlaces();
+					updateUserDataInUI();
+				}
+			}
 
-            break;
+			break;
 
-        case Executor.HANDLE_SEND_FRIEND_REQUEST:
-            String message = result.getResponseCode() == 0 ? "Contact Request Sent."
-                    : (result.getResponseCode() == 4 ? "We've resent your request.\nThe password is: "
+		case Executor.HANDLE_SEND_FRIEND_REQUEST:
+			String message = result.getResponseCode() == 0 ? "Contact Request Sent."
+					: (result.getResponseCode() == 4 ? "We've resent your request.\nThe password is: "
                             + result.getResponseMessage()
                             : (result.getResponseCode() == 6 ? "Request already sent"
-                                    : result.getResponseMessage()));
+							: result.getResponseMessage()));
 
             Toast.makeText(ActivityUserDetails.this, message, Toast.LENGTH_LONG)
                     .show();
-            break;
-        }
-    }
+			break;
+		}
+	}
 
-    public void errorReceived() {
-    }
+	public void errorReceived() {
+	}
 
-    @Override
-    public void update(Observable observable, Object data) {
-        /*
-         * verify that the data is really of type CounterData, and log the
-         * details
-         */
-        if (data instanceof CounterData) {
-            CounterData counterdata = (CounterData) data;
-            DataHolder venuesWithCheckins = counterdata.getData();
+	@Override
+	public void update(Observable observable, Object data) {
+		/*
+		 * verify that the data is really of type CounterData, and log the
+		 * details
+		 */
+		if (data instanceof CachedDataContainer) {
+			CachedDataContainer counterdata = (CachedDataContainer) data;
+			DataHolder venuesWithCheckins = counterdata.getData();
 
-            Object[] obj = (Object[]) venuesWithCheckins.getObject();
-            @SuppressWarnings("unchecked")
-            ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			Object[] obj = (Object[]) venuesWithCheckins.getObject();
+			@SuppressWarnings("unchecked")
+			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
 
-            Message message = new Message();
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("venues", arrayVenues);
-            message.setData(bundle);
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putParcelableArrayList("venues", arrayVenues);
+			message.setData(bundle);
 
-            if (Constants.debugLog)
+			if (Constants.debugLog)
                 Log.d("UserDetails",
                         "ActivityUserDetails.update: Sending handler message...");
-            taskHandler.sendMessage(message);
+			taskHandler.sendMessage(message);
 
         } else if (Constants.debugLog)
             Log.d("UserDetails", "Error: Received unexpected data type: "
                     + data.getClass().toString());
-    }
+		}
 
 }

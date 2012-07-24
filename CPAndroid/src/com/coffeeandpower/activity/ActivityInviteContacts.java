@@ -1,51 +1,31 @@
 package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.adapters.LinkedInUsersAdapter;
-import com.coffeeandpower.adapters.MyUsersAdapter;
-import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.cont.UserSmart;
-import com.coffeeandpower.datatiming.CounterData;
-/*import com.coffeeandpower.inter.TabMenu;
-import com.coffeeandpower.inter.UserMenu;
-import com.coffeeandpower.utils.UserAndTabMenu;
-import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;*/
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.google.code.linkedinapi.schema.Person;
-import com.urbanairship.UAirship;
 
 public class ActivityInviteContacts extends RootActivity  {
 

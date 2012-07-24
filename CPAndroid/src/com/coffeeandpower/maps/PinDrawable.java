@@ -57,7 +57,8 @@ public class PinDrawable extends Drawable {
 
         textBound = new Rect();
         paintText.getTextBounds(number, 0, number.length(), textBound);
-        bitmapPin = BitmapFactory.decodeResource(context.getResources(), R.drawable.pin_checkedin_no_shadow); 
+        bitmapPin = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.pin_checkedin);
     };
 
     @Override

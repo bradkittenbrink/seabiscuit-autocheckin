@@ -5,23 +5,30 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import org.json.JSONObject;
-
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.coffeeandpower.cont.UserSmart;
-import com.coffeeandpower.datatiming.Counter;
+import com.coffeeandpower.cache.CacheMgrService;
+import com.coffeeandpower.location.LocationDetectionService;
+import com.coffeeandpower.location.venueWifiSignature;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.code.linkedinapi.schema.Connections;
 import com.google.code.linkedinapi.schema.Person;
 import com.urbanairship.UAirship;
@@ -30,125 +37,147 @@ import com.urbanairship.push.PushPreferences;
 
 public class AppCAP extends Application {
 
-    // How to generate a map key for debug
-    // 1. Use keytool to get MD5 for your debug app:
+	// How to generate a map key for debug
+	// 1. Use keytool to get MD5 for your debug app:
     // - e.g. c:\Program Files\Java\jre6\bin\keytool -list -alias
     // androiddebugkey -keystore c:\Users\<username>\.android\debug.keystore
-    // - debug keystore password is: android
+	//    - debug keystore password is: android
     // 2. Go to this URL:
     // https://developers.google.com/maps/documentation/android/maps-api-signup?hl=en-US
-    // 3. Enter the MD5 from keytool
+	// 3. Enter the MD5 from keytool
     // 4. Once you have your key, replace the property android:apiKey in
     // res/layout/tab_activity_map.xml
 
-    // Google maps api key for debug Kep:
-    // 0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q
-    // Google maps api key for debug Tengai home:
-    // 0PV0Dp_6Dj6M_WBuUrThj9-fW3btGy9kxl83wgQ
-    // Map key for andrewa debug:
-    // 08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA
-    // Google maps key for debug Andres:
-    // 0N2B-_20GlM_H0LiHavOsRcF1VIqEQmyxijXZ3w
+	// Google maps api key for debug Kep:
+	//   0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q
+	// Google maps api key for debug Tengai home:
+	//   0PV0Dp_6Dj6M_WBuUrThj9-fW3btGy9kxl83wgQ
+	// Map key for andrewa debug:
+	//   08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA (home)
+	//   08WpTLaphEjlZ7KvkG-v0IgrMqC8ASbgH39t5hg (laptop)
+	// Google maps key for debug Andres:
+	//  0N2B-_20GlM_H0LiHavOsRcF1VIqEQmyxijXZ3w
 
-    public static final String TAG = "CoffeeAndPower";
+	public static final String TAG = "CoffeeAndPower";
 
-    private static final String TAG_USER_EMAIL = "tag_user_email";
-    private static final String TAG_USER_EMAIL_PASSWORD = "tag_user_email_password";
-    private static final String TAG_USER_ENTERED_INVITE_CODE = "entered_invite_code";
-    private static final String TAG_USER_LAST_VENUE_CHECKIN_ID = "tag_user_last_venue_checkin_id";
-    private static final String TAG_USER_LINKEDIN_TOKEN = "tag_user_linkedin_token";
-    private static final String TAG_USER_LINKEDIN_TOKEN_SECRET = "tag_user_linkedin_token_secret";
-    private static final String TAG_USER_LINKEDIN_ID = "tag_user_linkedin_id";
-    private static final String TAG_USER_PHOT_URL = "tag_user_photo_url";
-    private static final String TAG_USER_PHOT_LARGE_URL = "tag_user_photo_large_url";
-    private static final String TAG_LOGGED_IN_USER_ID = "tag_logged_in_user_id";
-    private static final String TAG_LOGGED_IN_USER_NICKNAME = "tag_logged_in_user_nickname";
-    private static final String TAG_USER_COORDINATES = "tag_user_coordinates";
-    private static final String TAG_IS_USER_CHECKED_IN = "tag_is_user_checked_in";
-    private static final String TAG_SHOULD_FINISH_ACTIVITY_MAP = "tag_sgould_finish_activity_map";
-    private static final String TAG_SHOULD_START_LOG_IN = "tag_sgould_start_log_in";
-    private static final String TAG_COOKIE_STRING = "tag_cookie_string";
-    private static final String TAG_METRIC_SYSTEM = "tag_metric_system";
-    private static final String TAG_PUSH_DISTANCE = "tag_push_distance";
-    private static final String TAG_START_LOGIN_PAGE_FROM_CONTACTS = "tag_start_login_page_from_contacts";
-    private static final String TAG_IS_LOGGED_IN = "tag_is_logged_in";
-    private static final String TAG_SCREEN_WIDTH = "tag_screen_width";
-    private static final String TAG_FIRST_START = "tag_first_start";
-    private static final String TAG_INFO_DIALOG = "tag_info_dialog";
+	private static final String TAG_USER_EMAIL = "tag_user_email";
+	private static final String TAG_USER_EMAIL_PASSWORD = "tag_user_email_password";
+	private static final String TAG_USER_ENTERED_INVITE_CODE = "entered_invite_code";
+	private static final String TAG_USER_LAST_VENUE_CHECKIN_ID = "tag_user_last_venue_checkin_id";
+	private static final String TAG_USER_LINKEDIN_TOKEN = "tag_user_linkedin_token";
+	private static final String TAG_USER_LINKEDIN_TOKEN_SECRET = "tag_user_linkedin_token_secret";
+	private static final String TAG_USER_LINKEDIN_ID = "tag_user_linkedin_id";
+	private static final String TAG_USER_PHOT_URL = "tag_user_photo_url";
+	private static final String TAG_USER_PHOT_LARGE_URL = "tag_user_photo_large_url";
+	private static final String TAG_LOGGED_IN_USER_ID = "tag_logged_in_user_id";
+	private static final String TAG_LOGGED_IN_USER_NICKNAME = "tag_logged_in_user_nickname";
+	private static final String TAG_USER_COORDINATES = "tag_user_coordinates";
+	private static final String TAG_IS_USER_CHECKED_IN = "tag_is_user_checked_in";
+	private static final String TAG_SHOULD_FINISH_ACTIVITY_MAP = "tag_sgould_finish_activity_map";
+	private static final String TAG_SHOULD_START_LOG_IN = "tag_sgould_start_log_in";
+	private static final String TAG_COOKIE_STRING = "tag_cookie_string";
+	private static final String TAG_METRIC_SYSTEM = "tag_metric_system";
+	private static final String TAG_PUSH_DISTANCE = "tag_push_distance";
+	private static final String TAG_START_LOGIN_PAGE_FROM_CONTACTS = "tag_start_login_page_from_contacts";
+	private static final String TAG_IS_LOGGED_IN = "tag_is_logged_in";
+	private static final String TAG_SCREEN_WIDTH = "tag_screen_width";
+	private static final String TAG_FIRST_START = "tag_first_start";
+	private static final String TAG_INFO_DIALOG = "tag_info_dialog";
+	
+	private static final String TAG_VENUES_WITH_USER_CHECKINS = "venuesWithUserCheckins";
+	private static final String TAG_VENUES_WITH_AUTO_CHECKINS = "venuesWithAutoCheckins";
+	private static final String TAG_VENUE_WIFI_SIGNATURES = "venueWifiSignatures";
 
-    // Notification settings
-    private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
-    private static final String TAG_NOTIFICATION_TOGGLE = "tag_notification_toggle";
+	// Notification settings
+	private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
+	private static final String TAG_NOTIFICATION_TOGGLE = "tag_notification_toggle";
 
+	//public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
     public static final String URL_FEEDBACK = "http://coffeeandpower.uservoice.com"; 
 
     public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
-    // production
+	// production
     // public static final String URL_WEB_SERVICE = "https://staging.candp.me/";
     // // staging
-    public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
-    public static final String FOURSQUARE_OAUTH = "BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4";
-    public static final String URL_FUNDS = "http://www.coffeeandpower.com/m/?ios#addFundsiPhone";
-    public static final String URL_LOGIN = "login.php";
-    public static final String URL_LOGOUT = "logout.php";
-    public static final String URL_SIGNUP = "signup.php";
-    public static final String URL_API = "api.php";
+	//public static final String URL_WEB_SERVICE = "http://dev.worklist.net/~andrewa/candpweb2/web/"; // staging
+	//public static final String URL_WEB_SERVICE = "http://dev.candp.me/~birarda/candpweb_7000/web/"; // staging
+	
+	public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
+	public static final String FOURSQUARE_OAUTH = "BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4";
+	public static final String URL_FUNDS = "http://www.coffeeandpower.com/m/?ios#addFundsiPhone";
+	public static final String URL_LOGIN = "login.php";
+	public static final String URL_LOGOUT = "logout.php";
+	public static final String URL_SIGNUP = "signup.php";
+	public static final String URL_API = "api.php";
     public static final String URL_TOS = "terms.php#termsTabContent";
 
-    // Activity codes
-    public static final int ACT_CHECK_IN = 1888;
-    public static final int ACT_QUIT = 1333;
+	// Activity codes
+	public static final int ACT_CHECK_IN = 1888;
+	public static final int ACT_QUIT = 1333;
 
-    // Http return codes
-    public static final int HTTP_ERROR = 1403;
-    public static final int HTTP_REQUEST_SUCCEEDED = 1404;
-    public static final int ERROR_SUCCEEDED_SHOW_MESS = 1407;
+	// Http return codes
+	public static final int HTTP_ERROR = 1403;
+	public static final int HTTP_REQUEST_SUCCEEDED = 1404;
+	public static final int ERROR_SUCCEEDED_SHOW_MESS = 1407;
 
-    // App wide observables
+	
+	private static Gson gsonConverter = new Gson();
+	
+	private static Context mapContext;
+	
+	// App wide observables
 
-    private static AppCAP instance;
+	private static AppCAP instance;
     private static Context context;
     private static int mapCenterLng;
     private static int mapCenterLat;
 
     private static Connections connections;
-    
+	
     private HttpUtil http;
 
-    private Counter timingCounter;
+	
+	// Service management
+	private static boolean locationDetectionServiceRunning = false;
+	
+	
+	//private Counter timingCounter;
 
-    public AppCAP() {
-        instance = this;
-    }
+	public AppCAP() {
+		instance = this;
+	}
 
-    /**
-     * 
-     * @category viewLifeCycle
-     */
-    @Override
-    public void onCreate() {
-
-        // You should not actually see any of the Log.d messages in onCreate() -
-        // don't know why
-        if (Constants.debugLog)
-            Log.d("Coffee", "AppCAP.onCreate(): ");
-
-        super.onCreate();
-
+	/**
+	 * 
+	 * @category viewLifeCycle
+	 */
+	@Override
+	public void onCreate() {
+		
+		// You may or may not see the onCreate messages in LogCat...
+		super.onCreate();
+		
+		// Start Urban Airship
+		UAirship.takeOff(this);
+		
+		// Detect whether we are on the main thread.  If so, do app init stuff
+		// onCreate will get triggered multiple times due to the UA process getting started
+		// so we only want to call the app init stuff on the main thread/process		
+		
+		if (getAppName().equalsIgnoreCase("com.coffeeandpower")) {
+			
+			Log.d("Coffee","Main process loading (onCreate)...");
+			
+			//getSharedPreferences().edit().putString(TAG_VENUES_WITH_AUTO_CHECKINS, null).commit();
+			//getSharedPreferences().edit().putString(TAG_VENUES_WITH_USER_CHECKINS, null).commit();
         AppCAP.context = getApplicationContext();
 
         this.http = new HttpUtil();
-
-        // Set up Urban Airship and push preferences
-        UAirship.takeOff(this);
+			
         PushPreferences prefs = PushManager.shared().getPreferences();
         prefs.setSoundEnabled(true);
         prefs.setVibrateEnabled(true);
 
-        // Create app timing Counter
-        if (Constants.debugLog)
-            Log.d("Coffee", "Creating counter...");
-        instance.timingCounter = new Counter(10, 1);
 
         PushManager.enablePush();
         PushManager.shared().setIntentReceiver(IntentReceiver.class);
@@ -172,238 +201,507 @@ public class AppCAP extends Application {
         } else {
             setMetricsSys(false);
         }
+		} else {
+			Log.d(TAG, "Starting process " + getAppName());
+		}
+	}
+	
+	
+	// called from onCreate of main activity (ActivityMap)
+	public static void mainActivityDidStart(Context context) {
+		
+		
+		mapContext = context;
+		
+		//context.startService(new Intent(context, CacheMgrService.class));
+		
+		enableAutoCheckin(context);
+				
+	}
 
-    }
+	// called from main activity on app exit
+	public static void applicationWillExit(Context context) {
+		
+		Log.d("AppCAP","Running app cleanup...");
+		
+		
+	        
+	        //ProximityManager.onStop(this);
+		Log.d("AppCAP","Disabling cache service...");
+	        //context.stopService(new Intent(context,CacheMgrService.class));
+		CacheMgrService.stop();
+	        
+	        Log.d("AppCAP","Disabling auto checkin...");
+	        disableAutoCheckin(context);
+	        
+	        try {
+	        	UAirship.land();
+	        }
+	        catch (Exception e) {
+	        	Log.d("AppCAP","ERROR: UAirship crash landed: " + e + ", " + e.getStackTrace());
+	        }
+	        
+	}
+	
+	public static boolean autoCheckinEnabled() {
+		return locationDetectionServiceRunning;
+	}
+	
+	public static void enableAutoCheckin(Context context) {
+		int[] currentAutoCheckinVenues = getVenuesWithAutoCheckins();
+		//If the list of autocheckins is non-zero in length then proceed.
+		//Otherwise we can keep the whole locationDetectionStateMachine off
+		if(currentAutoCheckinVenues.length > 0)
+		{
+			//If the service is already running don't start it.
+			//There should only be one
+        		if (!locationDetectionServiceRunning) {
+        			
+        			context.startService(new Intent(context, LocationDetectionService.class));
+        			locationDetectionServiceRunning = true;
+        		}
+		}
+	}
+	
+	
+	public static void disableAutoCheckin(Context context) {
+		if (locationDetectionServiceRunning) {
+			
+			context.stopService(new Intent(context,LocationDetectionService.class));
+			locationDetectionServiceRunning = false;
+		}
+	}
+	
+	
+	
+	public static void showToast(String msg) {
+		
+		Toast.makeText(mapContext, msg, Toast.LENGTH_LONG).show();
+		
+	}
+	
+	
+	
+	
+	/**
+	 * 
+	 * @category sharedResource
+	 */
+	public static HttpUtil getConnection() {
+		return instance.http;
+	}
+	
+	
+	/**
+	 * 
+	 * @category sharedResource
+	 */
+	/*public static Counter getCounter () {
+		return instance.timingCounter;
+	}*/
 
-    /**
-     * 
-     * @category sharedResource
-     */
-    public static HttpUtil getConnection() {
-        return instance.http;
-    }
+	/**
+	 * 
+	 * @category counter
+	 */
+	/*public static void startCounter(Context context) {
+		
+		Log.d("AppCAP","startCounter()");
+		
+		instance.timingCounter.start();
 
-    /**
-     * 
-     * @category sharedResource
-     */
-    public static Counter getCounter() {
-        return instance.timingCounter;
-    }
+		// Start passive location listener service
+		//context.startService(new Intent(context, LocationUpdateService.class));
+	}*/
+	
+	
 
-    /**
-     * 
-     * @category counter
-     */
-    public static void startCounter() {
-        instance.timingCounter.start();
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	private static SharedPreferences getSharedPreferences() {
+		return instance.getSharedPreferences(AppCAP.TAG, MODE_PRIVATE);
+	}
+	
+	
+	
+	
+	
+	
+	
+	/*
+	 * Add a Venue to the User Checkin List
+	 * @category localUserData
+	 */
+	public static boolean addVenueToUserCheckinList(int venueId) {
+		
+		int[] currentVenues = getVenuesWithUserCheckins();
+		int venueIdx = 0;
+		
+		// If the venue is already present, return false
+		while (venueIdx < currentVenues.length) {
+			if (currentVenues[venueIdx] == venueId)
+				return false;
+			venueIdx += 1;
+		}
+		
+		ArrayList<Integer> venueArray = new ArrayList<Integer>();
+		
+		venueIdx = 0;
+		
+		// Concat all venues together
+		while (venueIdx < currentVenues.length) {
+			venueArray.add(currentVenues[venueIdx]);
+			venueIdx += 1;
+		}
+		
+		// Save comma-separated string to preferences
+		venueArray.add(venueId);
+		
+		String newPrefValue = gsonConverter.toJson(venueArray);
+		
+		Log.d("GSON","Writing string to user checkins: " + newPrefValue);
+		
+		getSharedPreferences().edit().putString(TAG_VENUES_WITH_USER_CHECKINS, newPrefValue).commit();
+		return true;
+		
+	}
+	
+	
+	/*
+	 * Return list of venue IDs for which the user has selected Auto Checkin
+	 */
+	public static int[] getVenuesWithUserCheckins() {
+		
+		
+		//return getSharedPreferences().getStringSet("venuesWithUserCheckins",null);
+		String venueStrings = getSharedPreferences().getString(TAG_VENUES_WITH_USER_CHECKINS,null);
+		Log.d("GSON","Queried user checkins value: " + venueStrings);
+		
+		int[] returnArray = gsonConverter.fromJson(venueStrings,int[].class);
+		
+		if (returnArray != null)
+			return returnArray;
+		else
+			return new int[0];
+	}
+	
+	
+	
+	/*
+	 * Add a Venue to the Auto Checkin List
+	 * @category localUserData
+	 */
+	public static boolean enableAutoCheckinForVenue(int venueId) {
+		
+		int[] currentAutoCheckinVenues = getVenuesWithAutoCheckins();
+		int venueIdx = 0;
+		
+		// If the venue is already present, return - this should not happen and would be considered a bug
+		while (venueIdx < currentAutoCheckinVenues.length) {
+			if (currentAutoCheckinVenues[venueIdx] == venueId) {
+				Log.d(TAG,"WARNING: Tried to enable autocheckin for a venue already on the list...");
+				return false;
+			}
+			venueIdx += 1;
+		}
+		
+		ArrayList<Integer> venueArray = new ArrayList<Integer>();
+		
+		venueIdx = 0;
+		
+		
+		// Concat all venues together
+		while (venueIdx < currentAutoCheckinVenues.length) {
+			venueArray.add(currentAutoCheckinVenues[venueIdx]);
+			venueIdx += 1;
+		}
+		
+		// Save comma-separated string to preferences
+		venueArray.add(venueId);
+		String newPrefValue = gsonConverter.toJson(venueArray);
+		
+		Log.d("GSON","Updating auto checkins value: " + newPrefValue);
+		
+		getSharedPreferences().edit().putString(TAG_VENUES_WITH_AUTO_CHECKINS, newPrefValue).commit();
+		
+		
+		
+		return true;
+		
+	}
+	
+	
+	public static boolean disableAutoCheckinForVenue(int venueId) {
+		int[] currentAutoCheckinVenues = getVenuesWithAutoCheckins();
+		
+		
+		ArrayList<Integer> venueArray = new ArrayList<Integer>();
+		
+		
+		int venueIdx = 0;
+		
+		boolean venueFound = false;
+		
+		// Concat all venues together except target venue
+		while (venueIdx < currentAutoCheckinVenues.length) {
+			if (currentAutoCheckinVenues[venueIdx] != venueId) {
+				venueArray.add(currentAutoCheckinVenues[venueIdx]);
+			} else {
+				venueFound = true;
+			}
+			
+			venueIdx += 1;
+		}
+		
+		if (!venueFound) {
+			Log.d(TAG,"WARNING: Tried to disable autocheckin for a venue not on the list...");
+		}
+		
+		// Save json-encoded string
+		String newPrefValue = gsonConverter.toJson(venueArray);
+		
+		Log.d("GSON","Saving auto checkins value: " + newPrefValue);
+		
+		getSharedPreferences().edit().putString(TAG_VENUES_WITH_AUTO_CHECKINS, newPrefValue).commit();
+		return true;
+	}
+	
+	
+	/*
+	 * Return list of venue IDs for which the user has selected Auto Checkin
+	 */
+	public static int[] getVenuesWithAutoCheckins() {
+		
+		
+		String venueStrings = getSharedPreferences().getString(TAG_VENUES_WITH_AUTO_CHECKINS,null);
+		Log.d("GSON","Queried auto checkins value: " + venueStrings);
+		
+		int[] returnArray = gsonConverter.fromJson(venueStrings,int[].class);
+		
+		if (returnArray != null)
+			return returnArray;
+		else
+			return new int[0];
+		
+		
+		
+	}
+	
+	
+	public static boolean isVenueAutoCheckinEnabled(int venueId) {
+		int[] currentAutoCheckinVenues = getVenuesWithAutoCheckins();
+		int venueIdx = 0;
+		
+		// Concat all venues together except target venue
+		while (venueIdx < currentAutoCheckinVenues.length) {
+			if (currentAutoCheckinVenues[venueIdx] == venueId) 
+				return true;
+			venueIdx += 1;
+		}
+		
+		return false;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static boolean isFirstStart() {
+		return getSharedPreferences().getBoolean(TAG_FIRST_START, true);
+	}
 
-    }
-
-    /**
-     * 
-     * @category localUserData
-     */
-    private static SharedPreferences getSharedPreferences() {
-        return instance.getSharedPreferences(AppCAP.TAG, MODE_PRIVATE);
-    }
-
-    /**
-     * 
-     * @category localUserData
-     */
-    public static boolean isFirstStart() {
-        return getSharedPreferences().getBoolean(TAG_FIRST_START, true);
-    }
-
-    /**
-     * 
-     * @category setter
-     */
-    public static void setNotFirstStart() {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setNotFirstStart() {
         getSharedPreferences().edit().putBoolean(TAG_FIRST_START, false)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static boolean getEnteredInviteCode() {
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static boolean getEnteredInviteCode() {
         return getSharedPreferences().getBoolean(TAG_USER_ENTERED_INVITE_CODE,
                 false);
-    }
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setEnteredInviteCode() {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setEnteredInviteCode() {
         getSharedPreferences().edit()
                 .putBoolean(TAG_USER_ENTERED_INVITE_CODE, true).commit();
-    }
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static boolean shouldShowInfoDialog() {
-        return getSharedPreferences().getBoolean(TAG_INFO_DIALOG, true);
-    }
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static boolean shouldShowInfoDialog() {
+		return getSharedPreferences().getBoolean(TAG_INFO_DIALOG, true);
+	}
 
-    public static void dontShowInfoDialog() {
+	public static void dontShowInfoDialog() {
         getSharedPreferences().edit().putBoolean(TAG_INFO_DIALOG, false)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category globalSetting
-     */
-    public static boolean isMetrics() {
-        return getSharedPreferences().getBoolean(TAG_METRIC_SYSTEM, false);
-    }
+	/**
+	 * 
+	 * @category globalSetting
+	 */
+	public static boolean isMetrics() {
+		return getSharedPreferences().getBoolean(TAG_METRIC_SYSTEM, false);
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    private void setMetricsSys(boolean set) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	private void setMetricsSys(boolean set) {
         getSharedPreferences().edit().putBoolean(TAG_METRIC_SYSTEM, set)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static String getUserEmail() {
-        return getSharedPreferences().getString(TAG_USER_EMAIL, "");
-    }
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static String getUserEmail() {
+		return getSharedPreferences().getString(TAG_USER_EMAIL, "");
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setUserEmail(String email) {
-        getSharedPreferences().edit().putString(TAG_USER_EMAIL, email).commit();
-    }
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setUserEmail(String email) {
+		getSharedPreferences().edit().putString(TAG_USER_EMAIL, email).commit();
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static String getUserEmailPassword() {
-        return getSharedPreferences().getString(TAG_USER_EMAIL_PASSWORD, "");
-    }
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static String getUserEmailPassword() {
+		return getSharedPreferences().getString(TAG_USER_EMAIL_PASSWORD, "");
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setUserEmailPassword(String pass) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setUserEmailPassword(String pass) {
         getSharedPreferences().edit().putString(TAG_USER_EMAIL_PASSWORD, pass)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static int getUserLastCheckinVenueId() {
-        return getSharedPreferences().getInt(TAG_USER_LAST_VENUE_CHECKIN_ID, 0);
-    }
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static int getUserLastCheckinVenueId() {
+		return getSharedPreferences().getInt(TAG_USER_LAST_VENUE_CHECKIN_ID, 0);
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setUserLastCheckinVenueId(int venueId) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setUserLastCheckinVenueId(int venueId) {
         getSharedPreferences().edit().putInt(TAG_USER_EMAIL_PASSWORD, venueId)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category unknown
-     */
-    public static String cleanResponseString(String data) {
-        String retS = data;
-        data = Html.fromHtml(data).toString();
+	/**
+	 * 
+	 * @category unknown
+	 */
+	public static String cleanResponseString(String data) {
+		String retS = data;
+		data = Html.fromHtml(data).toString();
 
-        try {
-            retS = URLDecoder.decode(data, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+		try {
+			retS = URLDecoder.decode(data, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        return retS;
-    }
+			e.printStackTrace();
+		}
+		return retS;
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static String getLocalUserPhotoURL() {
-        return getSharedPreferences().getString(TAG_USER_PHOT_URL, "");
-    }
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static String getLocalUserPhotoURL() {
+		return getSharedPreferences().getString(TAG_USER_PHOT_URL, "");
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setLocalUserPhotoURL(String url) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setLocalUserPhotoURL(String url) {
         getSharedPreferences().edit().putString(TAG_USER_PHOT_URL, url)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setLocalUserPhotoLargeURL(String url) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setLocalUserPhotoLargeURL(String url) {
         getSharedPreferences().edit().putString(TAG_USER_PHOT_LARGE_URL, url)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static String getLocalUserPhotoLargeURL() {
-        return getSharedPreferences().getString(TAG_USER_PHOT_LARGE_URL, "");
-    }
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static String getLocalUserPhotoLargeURL() {
+		return getSharedPreferences().getString(TAG_USER_PHOT_LARGE_URL, "");
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static String setUserLinkedInToken() {
-        return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN, "");
-    }
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static String setUserLinkedInToken() {
+		return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN, "");
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static String setUserLinkedInTokenSecret() {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static String setUserLinkedInTokenSecret() {
         return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN_SECRET,
                 "");
-    }
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static String setUserLinkedInID() {
-        return getSharedPreferences().getString(TAG_USER_LINKEDIN_ID, "");
-    }
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static String setUserLinkedInID() {
+		return getSharedPreferences().getString(TAG_USER_LINKEDIN_ID, "");
+	}
 
-    /**
-     * 
-     * @category setter
-     */
+	/**
+	 * 
+	 * @category setter
+	 */
     public static void setUserLinkedInDetails(String token, String tokenSecret,
             String id) {
         getSharedPreferences().edit().putString(TAG_USER_LINKEDIN_ID, id)
@@ -413,87 +711,91 @@ public class AppCAP extends Application {
         getSharedPreferences().edit()
                 .putString(TAG_USER_LINKEDIN_TOKEN_SECRET, tokenSecret)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static String getUserLinkedInID() {
-        return getSharedPreferences().getString(TAG_USER_LINKEDIN_ID, "");
-    }
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static String getUserLinkedInID() {
+		return getSharedPreferences().getString(TAG_USER_LINKEDIN_ID, "");
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static String getUserLinkedInToken() {
-        return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN, "");
-    }
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static String getUserLinkedInToken() {
+		return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN, "");
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static String getUserLinkedInTokenSecret() {
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static String getUserLinkedInTokenSecret() {
         return getSharedPreferences().getString(TAG_USER_LINKEDIN_TOKEN_SECRET,
                 "");
-    }
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static void setLoggedInUserId(int userId) {
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static void setLoggedInUserId(int userId) {
 
-        // code will send user ID of zero on logout
-        // if nonzero (login), update the Urban Airship alias and enable push
-        // TODO: add user preferences to control whether to enable push
-        if (userId != 0) {
-            // Register userID as UAirship alias for server-side pushes
-            PushPreferences prefs = PushManager.shared().getPreferences();
-            prefs.setAlias(String.valueOf(userId));
-
-            PushManager.shared().setIntentReceiver(IntentReceiver.class);
-            PushManager.enablePush();
-        }
+		// code will send user ID of zero on logout
+		// if nonzero (login), update the Urban Airship alias and enable push
+		// TODO: add user preferences to control whether to enable push
+		if (userId != 0) {
+        		// Register userID as UAirship alias for server-side pushes
+        		PushPreferences prefs = PushManager.shared().getPreferences();
+        		prefs.setAlias(String.valueOf(userId));
+        		        		
+        		PushManager.shared().setIntentReceiver(IntentReceiver.class);
+        		PushManager.enablePush();
+		}
+		
+		// Save logged in user ID
+		getSharedPreferences().edit().putInt(TAG_LOGGED_IN_USER_ID, userId).commit();
+	
 
         // Save logged in user ID
         getSharedPreferences().edit().putInt(TAG_LOGGED_IN_USER_ID, userId)
                 .commit();
     }
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static int getLoggedInUserId() {
-        return getSharedPreferences().getInt(TAG_LOGGED_IN_USER_ID, 0);
-    }
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static int getLoggedInUserId() {
+		return getSharedPreferences().getInt(TAG_LOGGED_IN_USER_ID, 0);
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static String getLoggedInUserNickname() {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static String getLoggedInUserNickname() {
         return getSharedPreferences()
                 .getString(TAG_LOGGED_IN_USER_NICKNAME, "");
-    }
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static void setLoggedInUserNickname(String nickname) {
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static void setLoggedInUserNickname(String nickname) {
         getSharedPreferences().edit()
                 .putString(TAG_LOGGED_IN_USER_NICKNAME, nickname).commit();
-    }
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setUserCoordinates(double[] data) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setUserCoordinates(double[] data) {
         if (data[4] != 0 && data[5] != 0) {
             getSharedPreferences().edit()
                     .putFloat(TAG_USER_COORDINATES + "sw_lat", (float) data[0])
@@ -515,17 +817,17 @@ public class AppCAP extends Application {
                     .edit()
                     .putFloat(TAG_USER_COORDINATES + "user_lng",
                             (float) data[5]).commit();
-        }
-    }
+		}
+	}
 
-    /**
+	/**
      * data[0] = sw_lat; data[1] = sw_lng; data[2] = ne_lat; data[3] = ne_lng;
      * data[4] = user_lat; data[5] = user_lng;
      * 
-     * @category localUserData
-     */
-    public static double[] getUserCoordinates() {
-        double[] data = new double[6];
+	 * @category localUserData
+	 */
+	public static double[] getUserCoordinates() {
+		double[] data = new double[6];
         data[0] = (double) getSharedPreferences().getFloat(
                 TAG_USER_COORDINATES + "sw_lat", 0);
         data[1] = (double) getSharedPreferences().getFloat(
@@ -538,216 +840,237 @@ public class AppCAP extends Application {
                 TAG_USER_COORDINATES + "user_lat", 0);
         data[5] = (double) getSharedPreferences().getFloat(
                 TAG_USER_COORDINATES + "user_lng", 0);
-        return data;
-    }
+		return data;
+	}
 
-    /**
-     * data[0] = user_lat; data[1] = user_lng;
+	/**
+	 * data[0] = user_lat; data[1]) = user_lng;
      * 
-     * @category localUserData
-     */
-    public static double[] getUserLatLon() {
-        double[] data = new double[2];
+	 * @category localUserData
+	 */
+	public static double[] getUserLatLon() {
+		double[] data = new double[2];
         data[0] = (double) getSharedPreferences().getFloat(
                 TAG_USER_COORDINATES + "user_lat", 0);
         data[1] = (double) getSharedPreferences().getFloat(
                 TAG_USER_COORDINATES + "user_lng", 0);
-        return data;
-    }
+		return data;
+	}
 
-    /**
-     * 
-     * @category localUserData
-     */
-    public static boolean isUserCheckedIn() {
-        return getSharedPreferences().getBoolean(TAG_IS_USER_CHECKED_IN, false);
-    }
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static boolean isUserCheckedIn() {
+		return getSharedPreferences().getBoolean(TAG_IS_USER_CHECKED_IN, false);
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setUserCheckedIn(boolean set) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setUserCheckedIn(boolean set) {
         getSharedPreferences().edit().putBoolean(TAG_IS_USER_CHECKED_IN, set)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category unknown
-     */
-    public static boolean shouldFinishActivities() {
+	/**
+	 * 
+	 * @category unknown
+	 */
+	public static boolean shouldFinishActivities() {
         return getSharedPreferences().getBoolean(
                 TAG_SHOULD_FINISH_ACTIVITY_MAP, false);
-    }
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setShouldFinishActivities(boolean set) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setShouldFinishActivities(boolean set) {
         getSharedPreferences().edit()
                 .putBoolean(TAG_SHOULD_FINISH_ACTIVITY_MAP, set).commit();
-    }
+	}
 
-    /**
-     * 
-     * @category unknown
-     */
-    public static boolean shouldStartLogIn() {
+	/**
+	 * 
+	 * @category unknown
+	 */
+	public static boolean shouldStartLogIn() {
         return getSharedPreferences()
                 .getBoolean(TAG_SHOULD_START_LOG_IN, false);
-    }
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setShouldStartLogIn(boolean set) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setShouldStartLogIn(boolean set) {
         getSharedPreferences().edit().putBoolean(TAG_SHOULD_START_LOG_IN, set)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category unknown
-     */
-    public static boolean isStartingLoginPageFromContacts() {
+	/**
+	 * 
+	 * @category unknown
+	 */
+	public static boolean isStartingLoginPageFromContacts() {
         return getSharedPreferences().getBoolean(
                 TAG_START_LOGIN_PAGE_FROM_CONTACTS, false);
-    }
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setStartLoginPageFromContacts(boolean set) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setStartLoginPageFromContacts(boolean set) {
         getSharedPreferences().edit()
                 .putBoolean(TAG_START_LOGIN_PAGE_FROM_CONTACTS, set).commit();
-    }
+	}
 
-    /**
-     * 
-     * @category unknown
-     */
-    public static String getCookieString() {
-        return getSharedPreferences().getString(TAG_COOKIE_STRING, "");
-    }
+	/**
+	 * 
+	 * @category unknown
+	 */
+	public static String getCookieString() {
+		return getSharedPreferences().getString(TAG_COOKIE_STRING, "");
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setCookieString(String cookie) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setCookieString(String cookie) {
         getSharedPreferences().edit().putString(TAG_COOKIE_STRING, cookie)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setLoggedIn(boolean set) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setLoggedIn(boolean set) {
         getSharedPreferences().edit().putBoolean(TAG_IS_LOGGED_IN, set)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category localUserState
-     */
-    public static boolean isLoggedIn() {
-        return getSharedPreferences().getBoolean(TAG_IS_LOGGED_IN, false);
-    }
+	/**
+	 * 
+	 * @category localUserState
+	 */
+	public static boolean isLoggedIn() {
+		return getSharedPreferences().getBoolean(TAG_IS_LOGGED_IN, false);
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setPushDistance(String dist) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setPushDistance(String dist) {
         getSharedPreferences().edit().putString(TAG_PUSH_DISTANCE, dist)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category utility
-     */
-    public static String getPushDistance() {
-        return getSharedPreferences().getString(TAG_PUSH_DISTANCE, "city");
-    }
+	/**
+	 * 
+	 * @category utility
+	 */
+	public static String getPushDistance() {
+		return getSharedPreferences().getString(TAG_PUSH_DISTANCE, "city");
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setNotificationFrom(String from) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setNotificationFrom(String from) {
         getSharedPreferences().edit().putString(TAG_NOTIFICATION_FROM, from)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category setter
-     */
-    public static void setNotificationToggle(boolean res) {
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void setNotificationToggle(boolean res) {
         getSharedPreferences().edit().putBoolean(TAG_NOTIFICATION_TOGGLE, res)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category unknown
-     */
-    public static String getNotificationFrom() {
+	/**
+	 * 
+	 * @category unknown
+	 */
+	public static String getNotificationFrom() {
         return getSharedPreferences().getString(TAG_NOTIFICATION_FROM,
                 "in city");
-    }
+	}
 
-    /**
-     * 
-     * @category unknown
-     */
-    public static boolean getNotificationToggle() {
+	/**
+	 * 
+	 * @category unknown
+	 */
+	public static boolean getNotificationToggle() {
         return getSharedPreferences()
                 .getBoolean(TAG_NOTIFICATION_TOGGLE, false);
-    }
+	}
 
-    /**
-     * 
-     * @category utility
-     */
-    public static int getScreenWidth() {
-        return getSharedPreferences().getInt(TAG_SCREEN_WIDTH, 480);
-    }
+	/**
+	 * 
+	 * @category utility
+	 */
+	public static int getScreenWidth() {
+		return getSharedPreferences().getInt(TAG_SCREEN_WIDTH, 480);
+	}
 
-    /**
-     * 
-     * @category utility
-     */
-    public static void saveScreenWidth(int screenWidth) {
+	/**
+	 * 
+	 * @category utility
+	 */
+	public static void saveScreenWidth(int screenWidth) {
         getSharedPreferences().edit().putInt(TAG_SCREEN_WIDTH, screenWidth)
                 .commit();
-    }
+	}
 
-    /**
-     * 
-     * @category unknown
-     */
-    public static void logInFile(String data) {
-        try {
+	/**
+	 * 
+	 * @category unknown
+	 */
+	public static void logInFile(String data) {
+		try {
             FileOutputStream fOut = instance.openFileOutput("big_log.txt",
                     MODE_WORLD_READABLE);
-            OutputStreamWriter osw = new OutputStreamWriter(fOut);
-            osw.write(data);
-            osw.flush();
-            osw.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+			OutputStreamWriter osw = new OutputStreamWriter(fOut);
+			osw.write(data);
+			osw.flush();
+			osw.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void addAutoCheckinWifiSignature(venueWifiSignature currentSig)
+	{	
+		Gson gsonConverter =  new Gson();
+		Type listOfVenueWifiSigs = new TypeToken <ArrayList<venueWifiSignature>>(){}.getType();
+		
+		String jsonWifiSigs = getSharedPreferences().getString(TAG_VENUE_WIFI_SIGNATURES, "");
+		ArrayList<venueWifiSignature> ArrayOfSignatures = new ArrayList<venueWifiSignature>();
+		if(jsonWifiSigs.equals(""))
+		{
+			//No existing venues in autocheckin list
+		}
+		else
+		{
+			ArrayOfSignatures = gsonConverter.fromJson(jsonWifiSigs, listOfVenueWifiSigs);
+		}
+	}
 
     public static void setMapCenterCoordinates(int lngSpan, int latSpan) {
         mapCenterLng = lngSpan;
@@ -783,4 +1106,116 @@ public class AppCAP extends Application {
         }
         return listPersons;
     }
+    
+    
+    
+	
+	/**
+	 * 
+	 * @category setter
+	 */
+	public static void removeAutoCheckinWifiSignature(int venueId)
+	{	
+		venueWifiSignature currentSig = new venueWifiSignature();
+		currentSig.venueId = venueId;
+		Gson gsonConverter =  new Gson();
+		Type listOfVenueWifiSigs = new TypeToken <ArrayList<venueWifiSignature>>(){}.getType();
+		
+		String jsonWifiSigs = getSharedPreferences().getString(TAG_VENUE_WIFI_SIGNATURES, "");
+
+		ArrayList<venueWifiSignature> ArrayOfSignatures = gsonConverter.fromJson(jsonWifiSigs, listOfVenueWifiSigs);
+		if(ArrayOfSignatures.contains(currentSig))
+		{
+			ArrayOfSignatures.remove(currentSig);
+		}
+		 String outputString = gsonConverter.toJson(ArrayOfSignatures, listOfVenueWifiSigs);
+		getSharedPreferences().edit().putString(TAG_VENUE_WIFI_SIGNATURES, outputString).commit();
+		
+	}
+	
+	/**
+	 * 
+	 * @category localUserData
+	 */
+	public static ArrayList<venueWifiSignature> getAutoCheckinWifiSignatures()
+	{	
+		Gson gsonConverter =  new Gson();
+		Type listOfVenueWifiSigs = new TypeToken <ArrayList<venueWifiSignature>>(){}.getType();
+		
+		String jsonWifiSigs = getSharedPreferences().getString(TAG_VENUE_WIFI_SIGNATURES, "");
+
+		if(jsonWifiSigs == "")
+		{
+			return new ArrayList<venueWifiSignature>();
+		}
+		return gsonConverter.fromJson(jsonWifiSigs, listOfVenueWifiSigs);
+	}
+	/**
+	 * 
+	 * @category tempTestData
+	 */
+	/*
+	    public static ArrayList<venueWifiSignature> getAutoCheckinWifiSignatures()
+	    {
+			ArrayList<venueWifiSignature> arrayOfVenuesSigs = new ArrayList<venueWifiSignature>();
+			//Data for C&P
+			List<String> testBssids = Arrays.asList("98:fc:11:8f:8f:b0", "00:1c:b3:ff:8d:53", "f4:6d:04:6d:33:2e", "e0:91:f5:87:71:2b", "74:91:1a:50:eb:98","c4:3d:c7:8d:6b:f8");
+			ArrayList<MyScanResult> venueWifiNetworks = new ArrayList<MyScanResult>();
+			for(String currBssid:testBssids)
+			{
+				venueWifiNetworks.add(new MyScanResult(currBssid));
+			}
+			
+			venueWifiSignature testSignature = new venueWifiSignature();
+			testSignature.venueId = 23;
+			testSignature.addConnectedSSID("coffeeandpower");
+			testSignature.addWifiNetworkToSignature(venueWifiNetworks);
+			arrayOfVenuesSigs.add(testSignature);
+			
+			//This is a fake test list for Andrew's
+			testBssids = Arrays.asList("00:24:36:a4:f5:2d", "e4:83:99:07:c8:e0", "20:4e:7f:44:cd:dc", "1c:14:48:09:30:40", "c8:60:00:94:33:12", "30:46:9a:1c:63:5c");
+			ArrayList<MyScanResult> andrewWifiNetworks = new ArrayList<MyScanResult>();
+			for(String currBssid:testBssids)
+			{
+				andrewWifiNetworks.add(new MyScanResult(currBssid));
+			}
+			
+			venueWifiSignature andrewTestSignature = new venueWifiSignature();
+			andrewTestSignature.addConnectedSSID("veronica");
+			andrewTestSignature.addWifiNetworkToSignature(andrewWifiNetworks);
+			
+			arrayOfVenuesSigs.add(andrewTestSignature);
+			return arrayOfVenuesSigs;
+	    }
+	    */
+	    private String getAppName()
+	    {
+		int pID = android.os.Process.myPid();
+	        String processName = "";
+	        ActivityManager am = (ActivityManager)this.getSystemService(ACTIVITY_SERVICE);
+	        List<RunningAppProcessInfo> l = am.getRunningAppProcesses();
+	        Iterator<RunningAppProcessInfo> i = l.iterator();
+	        //PackageManager pm = this.getPackageManager();
+	        while(i.hasNext()) 
+	        {
+	              ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo)(i.next());
+	              try 
+	              { 
+	                  if(info.pid == pID)
+	                  {
+	                      //CharSequence c = pm.getApplicationLabel(pm.getApplicationInfo(info.processName, PackageManager.GET_META_DATA));
+	                      //Log.d("Process", "Id: "+ info.pid +" ProcessName: "+ info.processName +"  Label: "+c.toString());
+	                      //processName = c.toString();
+	                      processName = info.processName;
+	                  }
+	              }
+	              catch(Exception e) 
+	              {
+	                    //Log.d("Process", "Error>> :"+ e.toString());
+	              }
+	       }
+	        return processName;
+	    }
+
+
 }

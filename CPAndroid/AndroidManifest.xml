@@ -21,6 +21,8 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.coffeeandpower.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.BROADCAST_STICKY"/>
 
     <application
@@ -66,6 +68,14 @@
         <service
             android:name="com.urbanairship.push.PushService"
             android:process=":com.urbanairship.push.process" />
+        
+        <service
+            android:name=".cache.CacheMgrService" />
+        <service
+            android:name=".location.LocationDetectionService" />
+        
+        <receiver android:name=".location.PassiveLocationUpdateReceiver"
+            android:enabled="true" />
 
         <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
         <receiver android:name=".urbanairship.IntentReceiver" />
@@ -105,6 +115,12 @@
             android:windowSoftInputMode="stateAlwaysVisible" >
         </activity>
         <activity
+            android:name=".activity.ActivityNotifications"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="stateAlwaysVisible" >
+        </activity>
+        <activity
             android:name=".tab.activities.ActivityMap"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
@@ -121,6 +137,11 @@
         </activity>
         <activity
             android:name=".tab.activities.ActivityCheckInList"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name=".activity.ActivityAutoCheckinList"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
