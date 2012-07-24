@@ -170,7 +170,7 @@ public class LocationDetectionStateMachine {
 	//All state transitions are dataless, all data flows through
 	//member variables
 	private static void signatureCollectionSTATE(){
-		AppCAP.showToast("signatureCollectionSTATE");
+		//AppCAP.showToast("signatureCollectionSTATE");
 		Log.d(TAG,"signatureCollectionSTATE");
 		currentState = -1;
 		//This state is unique because the initial kickoff comes
@@ -179,25 +179,25 @@ public class LocationDetectionStateMachine {
 	}
 	
 	private static void passiveListeningSTATE(){
-		AppCAP.showToast("passiveListeningSTATE");
+		//AppCAP.showToast("passiveListeningSTATE");
 		Log.d(TAG, "passiveListeningSTATE");
 		currentState = 0;
 		startPassiveListenersINIT();
 	}
 	private static void locationBasedVerificationSTATE(){
-		AppCAP.showToast("locationBasedVerificationSTATE");
+		//AppCAP.showToast("locationBasedVerificationSTATE");
 		Log.d(TAG, "locationBasedVerificationSTATE");
 		currentState = 1;
 		commandGPSINIT();
 	}
 	private static void wifiBasedVerificationSTATE(){
-		AppCAP.showToast("wifiBasedVerificationSTATE");
+		//AppCAP.showToast("wifiBasedVerificationSTATE");
 		Log.d(TAG, "wifiBasedVerificationSTATE");
 		currentState = 2;
 		checkWifiSignatureINIT();
 	}
 	private static void venueStateTransitionSTATE(){
-		AppCAP.showToast("venueStateTransitionSTATE");
+		//AppCAP.showToast("venueStateTransitionSTATE");
 		Log.d(TAG, "venueStateTransitionSTATE");
 		currentState = 3;
 		transitionVenueCheckinINIT();

@@ -162,24 +162,24 @@ public class LocationFence {
         				Log.d("LocationFence","User is checked in");
                 			if(distance > fenceCheckoutRadiusMeters)
                 			{
-                				AppCAP.showToast("CO Fence Break: " + distance);
+                				//AppCAP.showToast("CO Fence Break: " + distance);
                 				Log.d("LocationFence","Fence break, user has left the venue");
                 				venuesWithFenceBreaks.add(currVenue);
                 			}
-                			else
-                				AppCAP.showToast("CO Distance: " + distance);
+                			//else
+                				//AppCAP.showToast("CO Distance: " + distance);
         			}
         			else
         			{
         				Log.d("LocationFence","User is checked out");
                 			if(distance < fenceCheckinRadiusMeters)
                 			{
-                				AppCAP.showToast("CI Fence Break: " + distance);
+                				//AppCAP.showToast("CI Fence Break: " + distance);
                 				Log.d("LocationFence","Fence break, has entered the venue");
                 				venuesWithFenceBreaks.add(currVenue);
                 			}
-                			else
-                				AppCAP.showToast("CI Distancek: " + distance);
+                			//else
+                				//AppCAP.showToast("CI Distance: " + distance);
         			}
         		}
         		return venuesWithFenceBreaks;

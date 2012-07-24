@@ -117,7 +117,7 @@ public class WifiStateBroadcastReceiver extends BroadcastReceiver implements Obs
           }
           else if(networkInfo.getState().equals(NetworkInfo.State.DISCONNECTED))
           {
-        	  AppCAP.showToast("Wifi Disconnected.");
+        	  //AppCAP.showToast("Wifi Disconnected.");
         	  
         	  if(AppCAP.isUserCheckedIn())
         	  {
