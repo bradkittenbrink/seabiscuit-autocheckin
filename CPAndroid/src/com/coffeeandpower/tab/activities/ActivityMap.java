@@ -88,10 +88,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	private MyLocationOverlay myLocationOverlay;
 	private MyItemizedOverlay itemizedoverlay;
 
-    // Views
-    private CustomFontView textNickName;
-    private HorizontalPagerModified pager;
-    private ImageView imageRefresh;
 
 	private ProgressDialog progress;
 
@@ -352,6 +348,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
         } else {
             return pinScales[number - 1];
         }
+    }
 
 	@Override
 	protected void onDestroy() {
@@ -418,16 +415,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	//====================================================================
 	
 
-	/**
-	 * Create point on Map with data from MapUserdata
-	 * 
-	 * @param point
-	 * @param foursquareIdKey
-	 * @param checkinsSum
-	 * @param venueName
-	 * @param isList
-	 */
-    }
 
     /**
      * Create point on Map with data from MapUserdata
