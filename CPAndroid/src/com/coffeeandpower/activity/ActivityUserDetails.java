@@ -2,6 +2,7 @@ package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.TimeZone;
@@ -809,11 +810,11 @@ public class ActivityUserDetails extends RootActivity implements Observer {
 
 			Object[] obj = (Object[]) venuesWithCheckins.getObject();
 			@SuppressWarnings("unchecked")
-			ArrayList<VenueSmart> arrayVenues = (ArrayList<VenueSmart>) obj[0];
+			List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
 
 			Message message = new Message();
 			Bundle bundle = new Bundle();
-			bundle.putParcelableArrayList("venues", arrayVenues);
+			bundle.putParcelableArrayList("venues", new ArrayList<VenueSmart>(arrayVenues));
 			message.setData(bundle);
 
 			if (Constants.debugLog)
