@@ -45,7 +45,7 @@
     <string name="activity_check_in_list_check">Check In</string>
     <string name="activity_check_in_check_in_at">CHECK IN AT...</string>
     <string name="activity_check_in_who">Who\'s here now?</string>
-    <string name="activity_check_in_what">What can you do, or what do you need?</string>
+    <string name="activity_check_in_what">What are you working on right now?</string>
     <string name="activity_check_in_optional">optional</string>
     <string name="activity_check_in_for_how_long">FOR HOW LONG?</string>
     <string name="activity_enter_invite_code_enter">Enter invite code from \nnearby C&amp;P user</string>

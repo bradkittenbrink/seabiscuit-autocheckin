@@ -269,20 +269,20 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 		if (AppCAP.shouldFinishActivities()) {
 			onBackPressed();
 		} else {
-			// Get Notification settings from shared prefs
-            ((ToggleButton) findViewById(R.id.toggle_checked_in))
-                    .setChecked(AppCAP.getNotificationToggle());
-            ((Button) findViewById(R.id.btn_from)).setText(AppCAP
-                    .getNotificationFrom());
-
-			// Check and Set Notification settings
-            menu.setOnNotificationSettingsListener(
-                    (ToggleButton) findViewById(R.id.toggle_checked_in),
-					(Button) findViewById(R.id.btn_from), false);
-
-			// Get contacts list
-			//FIXME
-			//exe.getContactsList();
+		    if (AppCAP.isLoggedIn()) {
+    			// Get Notification settings from shared prefs
+                ((ToggleButton) findViewById(R.id.toggle_checked_in))
+                        .setChecked(AppCAP.getNotificationToggle());
+                ((Button) findViewById(R.id.btn_from)).setText(AppCAP
+                        .getNotificationFrom());
+    
+    			// Check and Set Notification settings
+                menu.setOnNotificationSettingsListener(
+                        (ToggleButton) findViewById(R.id.toggle_checked_in),
+    					(Button) findViewById(R.id.btn_from), false);
+    	    } else {
+                progress.dismiss();
+    	    }
 		}
 	}
 
