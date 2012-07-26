@@ -73,7 +73,7 @@
     <string name="activity_user_details_rate">RATE:</string>
     <string name="activity_user_details_earned">EARNED:</string>
     <string name="activity_user_details_props">LOVE:</string>
-    <string name="activity_user_details_sendlove">Recognice user</string>
+    <string name="activity_user_details_sendlove">Recognize User</string>
     <string name="activity_user_details_often">Often works at...</string>
     <string name="activity_user_details_joined">Joined on</string>
     <string name="activity_user_details_sponsored">Sponsored by</string>

@@ -505,7 +505,10 @@ public class LocationDetectionStateMachine {
 		bundle.putCharSequence("type", "checkinCheckoutCOMPLETE");
 		message.setData(bundle);
 		
-		locationThreadTaskHandler.sendMessage(message);
+        if (locationThreadTaskHandler != null)
+            locationThreadTaskHandler.sendMessage(message);
+        else
+            Log.d(TAG,"WARNING: checkinCheckoutCOMPLETE  before State Machine init was called...");
 		
 	}
 	private static void checkinCheckoutCallback() {
