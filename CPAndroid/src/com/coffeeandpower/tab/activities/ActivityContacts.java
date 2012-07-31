@@ -16,12 +16,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
@@ -148,17 +146,6 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
             ((ImageView) findViewById(R.id.imageview_contacts))
                     .setImageResource(R.drawable.tab_contacts_pressed);
 
-			// Get Notification settings from shared prefs
-            ((ToggleButton) findViewById(R.id.toggle_checked_in))
-                    .setChecked(AppCAP.getNotificationToggle());
-            ((Button) findViewById(R.id.btn_from)).setText(AppCAP
-                    .getNotificationFrom());
-
-			// Check and Set Notification settings
-            menu.setOnNotificationSettingsListener(
-                    (ToggleButton) findViewById(R.id.toggle_checked_in),
-					(Button) findViewById(R.id.btn_from), false);
-
 			// Get contacts list
             // FIXME
             // We are eliminating all .exe's
@@ -269,20 +256,9 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 		if (AppCAP.shouldFinishActivities()) {
 			onBackPressed();
 		} else {
-		    if (AppCAP.isLoggedIn()) {
-    			// Get Notification settings from shared prefs
-                ((ToggleButton) findViewById(R.id.toggle_checked_in))
-                        .setChecked(AppCAP.getNotificationToggle());
-                ((Button) findViewById(R.id.btn_from)).setText(AppCAP
-                        .getNotificationFrom());
-    
-    			// Check and Set Notification settings
-                menu.setOnNotificationSettingsListener(
-                        (ToggleButton) findViewById(R.id.toggle_checked_in),
-    					(Button) findViewById(R.id.btn_from), false);
-    	    } else {
-                progress.dismiss();
-    	    }
+			if (!AppCAP.isLoggedIn()) {
+				progress.dismiss();
+			}
 		}
 	}
 

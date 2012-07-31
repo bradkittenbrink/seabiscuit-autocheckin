@@ -37,9 +37,14 @@
 	
 		        <ToggleButton
 		            android:id="@+id/toggleButtonMasterAutoCheckinToggle"
-		            android:layout_width="80dp"
-		            android:layout_height="wrap_content"/>
-        
+		            android:layout_width="95dip"
+		            android:layout_height="28dip"
+		            android:layout_marginLeft="5dip"
+		            android:layout_marginTop="5dip"
+		            android:background="@drawable/btn_on_off"
+		            android:textOff=""
+		            android:textOn="" />
+
     		</LinearLayout>
     		
             <!-- 

@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
@@ -181,12 +180,6 @@ public class ActivityInviteContacts extends RootActivity  {
 
         if (AppCAP.shouldFinishActivities()) {
             onBackPressed();
-        } else {
-            // Get Notification settings from shared prefs
-            ((ToggleButton) findViewById(R.id.toggle_checked_in))
-                    .setChecked(AppCAP.getNotificationToggle());
-            ((Button) findViewById(R.id.btn_from)).setText(AppCAP
-                    .getNotificationFrom());
         }
     }
 

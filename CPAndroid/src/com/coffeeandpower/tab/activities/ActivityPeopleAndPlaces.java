@@ -17,12 +17,10 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
@@ -335,17 +333,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 		if (AppCAP.shouldFinishActivities()) {
 			onBackPressed();
-		} else {
-			// Get Notification settings from shared prefs
-            ((ToggleButton) findViewById(R.id.toggle_checked_in))
-                    .setChecked(AppCAP.getNotificationToggle());
-            ((Button) findViewById(R.id.btn_from)).setText(AppCAP
-                    .getNotificationFrom());
-
-			// Check and Set Notification settings
-            menu.setOnNotificationSettingsListener(
-                    (ToggleButton) findViewById(R.id.toggle_checked_in),
-					(Button) findViewById(R.id.btn_from), false);
 		}
 	}
 

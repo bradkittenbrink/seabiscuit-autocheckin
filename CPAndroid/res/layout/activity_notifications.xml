@@ -18,7 +18,7 @@
 	    
 	    
 	    <TextView
-            android:text="Show me new Check Ins"
+            android:text="@string/user_menu_show"
             android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:paddingLeft="5dp"
@@ -35,7 +35,7 @@
 	        android:background="#333333" >
         
 	        <TextView
-	            android:text=" From"
+	            android:text="@string/from"
 	            android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 	            android:textColor="#ffffff"
@@ -44,11 +44,17 @@
 	            android:layout_gravity="center"
 	            android:gravity="left"    />
 
-	        <Spinner
-	            android:id="@+id/spinnerNotifyCheckinsFrom"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_weight="2" />
+	        <Button
+                android:id="@+id/btn_from"
+                android:layout_width="180dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="5dip"
+                android:background="@drawable/btn_drop_down"
+                android:gravity="left|center_vertical"
+                android:paddingLeft="10dip"
+                android:text="@string/user_menu_in_city"
+                android:textColor="#000000" />
         
     	</LinearLayout>
     	
@@ -70,9 +76,15 @@
 
 	        <ToggleButton
 	            android:id="@+id/toggleButtonOnlyWhenCheckedIn"
-	            android:layout_width="80dp"
-	            android:layout_height="wrap_content"/>
-        
+	            android:layout_width="95dip"
+	            android:layout_height="28dip"
+	            android:layout_below="@+id/dummy_view"
+	            android:layout_marginLeft="5dip"
+	            android:layout_marginTop="5dip"
+	            android:layout_toRightOf="@+id/dummy_text_1"
+	            android:background="@drawable/btn_on_off"
+	            android:textOff=""
+	            android:textOn="" />
     	</LinearLayout>
     	
 	    
@@ -95,8 +107,15 @@
 
 	        <ToggleButton
 	            android:id="@+id/toggleButtonQuietTime"
-	            android:layout_width="80dp"
-	            android:layout_height="wrap_content"/>
+	            android:layout_width="95dip"
+	            android:layout_height="28dip"
+	            android:layout_below="@+id/dummy_view"
+	            android:layout_marginLeft="5dip"
+	            android:layout_marginTop="5dip"
+	            android:layout_toRightOf="@+id/dummy_text_1"
+	            android:background="@drawable/btn_on_off"
+	            android:textOff=""
+	            android:textOn="" />
         
     	</LinearLayout>
     	
@@ -119,9 +138,16 @@
 
 	        <ToggleButton
 	            android:id="@+id/toggleButtonOneToOneChat"
-	            android:layout_width="80dp"
-	            android:layout_height="wrap_content" />
-        
+	            android:layout_width="95dip"
+	            android:layout_height="28dip"
+	            android:layout_below="@+id/dummy_view"
+	            android:layout_marginLeft="5dip"
+	            android:layout_marginTop="5dip"
+	            android:layout_toRightOf="@+id/dummy_text_1"
+	            android:background="@drawable/btn_on_off"
+	            android:textOff=""
+	            android:textOn="" />
+
     	</LinearLayout>
            
 

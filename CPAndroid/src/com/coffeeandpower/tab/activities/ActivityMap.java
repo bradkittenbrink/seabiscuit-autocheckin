@@ -20,11 +20,9 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
@@ -551,18 +549,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
         int lngSpan = pointCenterMap.getLongitudeE6();
         int latSpan = pointCenterMap.getLatitudeE6();
         AppCAP.setMapCenterCoordinates(lngSpan, latSpan);
-
-		// Get Notification settings from shared prefs
-        ((ToggleButton) findViewById(R.id.toggle_checked_in)).setChecked(AppCAP
-                .getNotificationToggle());
-        ((Button) findViewById(R.id.btn_from)).setText(AppCAP
-                .getNotificationFrom());
-
-		// Check and Set Notification settings
-        menu.setOnNotificationSettingsListener(
-                (ToggleButton) findViewById(R.id.toggle_checked_in),
-                (Button) findViewById(R.id.btn_from), true);
-
 	}
 
 	@Override
