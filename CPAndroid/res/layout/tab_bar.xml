@@ -46,7 +46,8 @@
             android:layout_weight="0.85"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
-            android:gravity="center" >
+            android:gravity="center"
+            android:onClick="onClickVenueFeeds"  >
 
             <ImageView
                 android:id="@+id/imageview_feed"

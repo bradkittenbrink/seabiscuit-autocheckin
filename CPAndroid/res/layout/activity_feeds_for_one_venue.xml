@@ -1,0 +1,131 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff" >
+
+    <RelativeLayout
+        android:id="@+id/dummy_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="45dip"
+        android:background="@drawable/header" >
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:background="@drawable/rounded_border"
+            android:onClick="onClickBack"
+            android:padding="8dip"
+            android:text="@string/back"
+            android:textColor="#ffffff" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_places_chat_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:textColor="#ffffff"
+            android:textSize="25dip" />
+
+        <ImageView
+            android:id="@+id/image_chat_people"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight=" 10dip"
+            android:background="@drawable/btn_number_of_people" />
+
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_chat_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/image_chat_people"
+            android:paddingTop="4dp"
+            android:textColor="#c46600"
+            android:textSize="22dip" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_places_chat"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dummy_layout"
+        android:paddingTop="5dip" >
+
+	   <ImageView
+			android:id="@+id/imageview_user_image"
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:layout_marginLeft="50dip"
+			android:adjustViewBounds="true"
+			android:layout_alignParentLeft="true"
+			android:background="@drawable/default_avatar25" 
+			android:focusable="false"/>
+	   <ImageView
+	        android:id="@+id/imageview_image_mask"
+	        android:layout_width="30dp"
+	        android:layout_height="30dp"
+		    android:layout_marginLeft="50dip"
+	        android:adjustViewBounds="true"
+	        android:layout_alignParentLeft="true"
+	        android:src="@drawable/user_image_mask" 
+	        android:focusable="false"/>
+        
+        <com.coffeeandpower.views.CustomFontView
+            android:id="@+id/textview_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageview_user_image"
+            android:singleLine="true"
+            android:textColor="#009c91"
+            android:text="@string/activityFeedsUpdateText"
+            android:textSize="25dip" />
+
+        <EditText
+            android:id="@+id/edittext_places_chat"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dip"
+            android:layout_marginRight="5dip"
+            android:layout_toRightOf="@+id/textview_update"
+            android:layout_toLeftOf="@+id/button_places_chate_send"
+            android:background="@null"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/button_places_chate_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dip"
+            android:background="@drawable/button_orange"
+            android:onClick="onClickSend"
+            android:padding="10dip"
+            android:text="@string/send"
+            android:textColor="#ffffff" />
+    </RelativeLayout>
+
+    
+    <ListView
+        android:id="@+id/listview_places_chat"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_places_chat"
+        android:layout_marginBottom="5dip"
+        android:cacheColorHint="#ffffff"
+        android:divider="#d0d0d0"
+        android:dividerHeight="1dip" >
+    </ListView>
+    
+    
+</RelativeLayout>

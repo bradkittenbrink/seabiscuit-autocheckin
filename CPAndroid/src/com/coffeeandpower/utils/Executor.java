@@ -43,6 +43,8 @@ public class Executor {
 	public static final int HANDLE_GET_USER_TRANSACTION_DATA = 1617;
 	public static final int HANDLE_VENUE_CHAT = 1618;
 	public static final int HANDLE_SEND_VENUE_CHAT = 1619;
+    public static final int HANDLE_VENUE_FEED = 1620;
+    public static final int HANDLE_SEND_VENUE_FEED = 1621;
 
 	private DataHolder result;
 
@@ -192,7 +194,7 @@ public class Executor {
 			}
 		},"Executor.addPlace").start();
 	}
-
+/**
 	public synchronized void getContactsList() {
 		progress.setMessage("Loading...");
 		progress.show();
@@ -204,7 +206,7 @@ public class Executor {
 			}
 		},"Executor.getContactsList").start();
 	}
-
+**/
 	public synchronized void getOneOnOneChatHistory(final int userId) {
 		progress.setMessage("Loading chat...");
 		progress.show();
@@ -276,6 +278,7 @@ public class Executor {
         						int newVenueId = json.optInt("venue_id");
         						if (newVenueId != 0) {
         							venueId = newVenueId;
+        							venue.setVenueId(venueId);
         						}
         					}
 					}
@@ -411,5 +414,32 @@ public class Executor {
 			}
 		},"Executor.venueChat").start();
 	}
+
+    /**
+     * Get/send venue feeds <br>
+     * getObject() instance of ArrayList <br>
+     * <br>
+     * [0]String lastId [1]String firstDate [2]String lastDate
+     * [3]ArrayList(VenueChatEntry)
+     * 
+     * @param venueId
+     * @param lastChatIDString
+     */
+    public synchronized void venueFeeds(final int venueId, final String venueName,
+            final String lastChatIDString, final String message,
+            final boolean isSend, boolean withProgress) {
+        if (withProgress) {
+            progress.setMessage(isSend ? "Sending..." : "Loading...");
+            progress.show();
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().venueFeedsForVenueWithID(
+                        venueId, venueName, lastChatIDString, message, isSend);
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.venueFeeds").start();
+    }
 
 }

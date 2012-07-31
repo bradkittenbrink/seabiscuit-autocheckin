@@ -39,8 +39,10 @@
     <string name="ok">Ok</string>
     <string name="done">Done</string>
     <string name="from">From</string>
+    <string name="activityFeedsUpdateText">Update:</string>
     <string name="activity_add_funds">Add Funds</string>
     <string name="activity_chat_name">Chat Name</string>
+    <string name="activity_venue_feeds_name">Venue Feeds</string>  
     <string name="activity_chat_type">Type to chat</string>
     <string name="activity_check_in_list_check">Check In</string>
     <string name="activity_check_in_check_in_at">CHECK IN AT...</string>
@@ -102,6 +104,7 @@
     <string name="user_menu_in_city">in city</string>
     <string name="user_menu_only">Only when I am\nchecked in</string>
     <string name="help_linked_in_invite_list">Click here to select LinkedIn contacts</string>
+    <string name="checked_out_confirmation">Are you sure you want to be checked out?</string>
     <string name="activity_invite_contacts_title">Invite LinkedIn Connections</string>
     <string name="activity_invite_confirm_header">%1$s is inviting you to Coffee &amp; Power</string>
     <string name="activity_invite_confirm_content">

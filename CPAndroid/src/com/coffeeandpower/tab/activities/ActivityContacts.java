@@ -313,11 +313,17 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 		onBackPressed();
 	}
 
-	@Override
-	public void onClickMap(View v) {
-		menu.onClickMap(v);
-		finish();
-	}
+    @Override
+    public void onClickMap(View v) {
+        menu.onClickMap(v);
+        finish();
+    }
+
+    @Override
+    public void onClickVenueFeeds(View v) {
+        menu.onClickVenueFeeds(v);
+        finish();
+    }
 	
 	@Override
 	public void onClickNotifications(View v) {

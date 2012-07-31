@@ -8,6 +8,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.google.android.maps.GeoPoint;
@@ -31,7 +32,8 @@ public class CacheMgrService extends Service {
 	
 	private static CachedNetworkData venuesWithCheckinsCache = new CachedNetworkData("venuesWithCheckins");
 	private static CachedNetworkData nearbyVenuesCache = new CachedNetworkData("nearbyVenues");
-	private static CachedNetworkData contactsListCache = new CachedNetworkData("contactsList");
+    private static CachedNetworkData contactsListCache = new CachedNetworkData("contactsList");
+    private static CachedNetworkData venueFeedsListCache = new CachedNetworkData("venueFeedsList");
 	
 	private static boolean isRunning = false;
 	
@@ -118,12 +120,18 @@ public class CacheMgrService extends Service {
 			nearbyVenuesCache.activate();
 			nearbyVenuesCache.addObserver(context);
 		}
-		else if (apicall.equals("contactsList")) {
-			if (Constants.debugLog)
-				Log.d(TAG,"Enabling contactsList API for " + context.toString());
-			contactsListCache.activate();
-			contactsListCache.addObserver(context);
-		}
+        else if (apicall.equals("contactsList")) {
+            if (Constants.debugLog)
+                Log.d(TAG,"Enabling contactsList API for " + context.toString());
+            contactsListCache.activate();
+            contactsListCache.addObserver(context);
+        }
+        else if (apicall.equals("venueFeedsList")) {
+            if (Constants.debugLog)
+                Log.d(TAG,"Enabling venueFeedsList API for " + context.toString());
+            venueFeedsListCache.activate();
+            venueFeedsListCache.addObserver(context);
+        }
 		else
 		{
 			if (Constants.debugLog)
@@ -160,12 +168,18 @@ public class CacheMgrService extends Service {
 			nearbyVenuesCache.activate();
 			nearbyVenuesCache.addObserver(context);
 		}
-		if (apicall1.equals("contactsList") || apicall2.equals("contactsList")) {
-			if (Constants.debugLog)
-				Log.d(TAG,"Enabling contactsList API for " + context.toString());
-			contactsListCache.activate();
-			nearbyVenuesCache.addObserver(context);
-		}
+        if (apicall1.equals("contactsList") || apicall2.equals("contactsList")) {
+            if (Constants.debugLog)
+                Log.d(TAG,"Enabling contactsList API for " + context.toString());
+            contactsListCache.activate();
+            contactsListCache.addObserver(context);
+        }
+        if (apicall1.equals("venueFeedsList") || apicall2.equals("venueFeedsList")) {
+            if (Constants.debugLog)
+                Log.d(TAG,"Enabling venueFeedsList API for " + context.toString());
+            venueFeedsListCache.activate();
+            venueFeedsListCache.addObserver(context);
+        }
 		
 		//The user is moving around the activities lets keep the data fresh
 		numberOfCalls = 0;
@@ -213,6 +227,16 @@ public class CacheMgrService extends Service {
 					Log.d(TAG,"Removed last observer from contactsList, deactivating.");
 			}
 		}
+        else if (apicall.equals("venueFeedsList")) {
+            if (Constants.debugLog)
+                Log.d(TAG,"Removing venueFeedsList observer for " + context.toString() + ".");
+            venueFeedsListCache.deleteObserver(context);
+            if (venueFeedsListCache.countObservers() == 0) {
+                venueFeedsListCache.deactivate();
+                if (Constants.debugLog)
+                    Log.d(TAG,"Removed last observer from venueFeedsList, deactivating.");
+            }
+        }
 	}
 	
 	
@@ -335,8 +359,7 @@ public class CacheMgrService extends Service {
                 			    // Determine if cached data should be sent or data needs to be refreshed
                 			    if (allowCachedDataThisRun && 
                 					    venuesWithCheckinsCache.hasData() && 
-                					    !refreshAllDataThisRun &&
-                					    venuesWithCheckinsCache.dataDistanceFrom(llArray) < DATA_DISTANCE_REFRESH_THRESHOLD) {
+                					    !refreshAllDataThisRun ) {
                 				    //if (Constants.debugLog)
                 					//	Log.d(TAG,"Sending cached data for venuesWithCheckins");
                 				    venuesWithCheckinsCache.sendCachedData();
@@ -374,29 +397,38 @@ public class CacheMgrService extends Service {
                                 		    apisCalledThisUpdate += 1;
                 			    }
                 		    }
-                		    
-                		 // Determine if contactsList should run
-                		    if (contactsListCache.isActive() || 
-                				    !contactsListCache.hasData() ||
-                				    refreshAllDataThisRun) {
-                			    
-                			    if (allowCachedDataThisRun && 
-                					    contactsListCache.hasData() && 
-                					    !refreshAllDataThisRun &&
-                        				    contactsListCache.dataDistanceFrom(llArray) > DATA_DISTANCE_REFRESH_THRESHOLD) {
-                				    //if (Constants.debugLog)
-                					//	Log.d(TAG,"Sending cached data for contactsList");
-                				    contactsListCache.sendCachedData();
-                				    cachedDataSentThisUpdate = true;
-                			    } else {
-                				    //if (Constants.debugLog)
-                					//	Log.d(TAG,"Refreshing contactsListCache...");
-                        			    contactsListCache.setNewData(AppCAP.getConnection().getContactsList(),new double[]{latForAPI,lonForAPI});
-                        			    //if (Constants.debugLog)
-                        				//	Log.d(TAG,"Called getContactsList, Received: " + contactsListCache.getData().getResponseMessage());
-                                		    apisCalledThisUpdate += 1;
-                			    }
-                		    }
+                            
+                         // Determine if contactsList should run
+                            if (contactsListCache.isActive() || 
+                                    !contactsListCache.hasData() ||
+                                    refreshAllDataThisRun) {
+                                
+                                if (allowCachedDataThisRun && 
+                                        contactsListCache.hasData() && 
+                                        !refreshAllDataThisRun &&
+                                        contactsListCache.dataDistanceFrom(llArray) > DATA_DISTANCE_REFRESH_THRESHOLD) {
+                                    contactsListCache.sendCachedData();
+                                    cachedDataSentThisUpdate = true;
+                                } else {
+                                    contactsListCache.setNewData(AppCAP.getConnection().getContactsList(),new double[]{latForAPI,lonForAPI});
+                                    apisCalledThisUpdate += 1;
+                                }
+                            }
+                            
+                         // Determine if contactsList should run
+                            if (venueFeedsListCache.isActive() || 
+                                    !venueFeedsListCache.hasData() ||
+                                    refreshAllDataThisRun) {
+                                
+                                if (venueFeedsListCache.hasData() && 
+                                        !refreshAllDataThisRun) {
+                                    venueFeedsListCache.sendCachedData();
+                                    cachedDataSentThisUpdate = true;
+                                } else {
+                                    venueFeedsListCache.setNewData(AppCAP.getConnection().getVenueFeedsList(),new double[]{latForAPI,lonForAPI});
+                                    apisCalledThisUpdate += 1;
+                                }
+                            }
                 		    
                 		    if (Constants.debugLog)
                 			    Log.d(TAG," - CacheMgr Periodic Timer Run Summary:");
@@ -407,8 +439,10 @@ public class CacheMgrService extends Service {
                 				    tempString += " venuesWithCheckins";
                 			    if (nearbyVenuesCache.hasData())
                 				    tempString += " nearbyVenues";
-                			    if (contactsListCache.hasData())
-                				    tempString += " contactsList";
+                                if (contactsListCache.hasData())
+                                    tempString += " contactsList";
+                                if (venueFeedsListCache.hasData())
+                                    tempString += " venueFeedsList";
                 			    
 						Log.d(TAG,tempString);
                 		    }
@@ -418,8 +452,10 @@ public class CacheMgrService extends Service {
                 				    tempString += " venuesWithCheckins";
                 			    if (nearbyVenuesCache.isActive())
                 				    tempString += " nearbyVenues";
-                			    if (contactsListCache.isActive())
-                				    tempString += " contactsList";
+                                if (contactsListCache.isActive())
+                                    tempString += " contactsList";
+                                if (venueFeedsListCache.isActive())
+                                    tempString += " venueFeedsList";
                 			    
 						Log.d(TAG,tempString);
 						
@@ -479,8 +515,10 @@ public class CacheMgrService extends Service {
 		//Stow the venue Id for the checkout later
 		//FIXME
 		//Test uninitialized case first
-		//AppCAP.setUserLastCheckinVenueId(checkedInVenue.getVenueId());
+		AppCAP.setUserLastCheckinVenueId(checkedInVenue.getVenueId());
 		
+		AppCAP.updateUserLastCheckinVenue(new VenueNameAndFeeds(checkedInVenue.getVenueId(), checkedInVenue.getName()));
+		resetVenueFeedsData(false);
 		//Venue Related
 		//We need to look at the list of venues with checkins and see if they checked into one of those venues
 		//If they checked into a venue without checkins, we need to add it to the venuesWithCheckinsCache
@@ -622,4 +660,11 @@ public class CacheMgrService extends Service {
 		
 	}
 
+	public  static void resetVenueFeedsData(Boolean withRefresh) {
+	    
+	    venueFeedsListCache.setNewData(AppCAP.getConnection().getVenueFeedsList(),new double[]{0,0});
+	    if (withRefresh == true) {
+	        refreshAllData();
+	    }
+	}
 }

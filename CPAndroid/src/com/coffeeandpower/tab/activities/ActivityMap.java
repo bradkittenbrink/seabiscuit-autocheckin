@@ -616,6 +616,12 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	public void onClickMap(View v) {
 		// menu.onClickMap(v);
 	}
+	
+    @Override
+    public void onClickVenueFeeds(View v) {
+        menu.onClickVenueFeeds(v);
+        finish();
+    }
 
 	@Override
 	public void onClickPlaces(View v) {

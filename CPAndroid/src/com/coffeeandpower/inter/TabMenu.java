@@ -6,6 +6,8 @@ public interface TabMenu {
 
     public void onClickMap(View v);
 
+    public void onClickVenueFeeds(View v);
+
     public void onClickPlaces(View v);
 
     public void onClickCheckIn(View v);

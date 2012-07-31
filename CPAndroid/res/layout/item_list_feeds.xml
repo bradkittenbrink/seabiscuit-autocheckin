@@ -1,0 +1,70 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" 
+    android:focusable="false"
+    android:descendantFocusability="blocksDescendants"
+     
+    android:onClick="onClickOpenVenueFeeds">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:focusable="false">
+    
+        <LinearLayout 
+            android:id="@+id/date_hour_area"
+            android:layout_width="50dip"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" 
+            android:layout_marginRight="2dip"
+            android:focusable="false">
+            <TextView
+                android:id="@+id/textview_feed_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dip"
+                android:layout_gravity="center_horizontal"
+                android:textSize="12sp" 
+                android:textColor="#2d2d2d"
+                android:focusable="false"/>
+            <TextView
+                android:id="@+id/textview_feed_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dip"
+                android:layout_gravity="center_horizontal"
+                android:textSize="12sp" 
+                android:textColor="#3d3d3d"
+                android:focusable="false"/>
+       </LinearLayout>
+       <ImageView
+             android:id="@+id/imageview_image"
+             android:layout_width="30dp"
+             android:layout_height="30dp"
+             android:adjustViewBounds="true"
+             android:layout_toRightOf="@id/date_hour_area"
+             android:background="@drawable/default_avatar25" 
+             android:focusable="false"/>
+       <ImageView
+             android:id="@+id/imageview_image_mask"
+             android:layout_width="30dp"
+             android:layout_height="30dp"
+             android:adjustViewBounds="true"
+             android:layout_toRightOf="@id/date_hour_area"
+             android:src="@drawable/user_image_mask" 
+             android:focusable="false"/>
+               
+        <TextView
+            android:id="@+id/textview_chat_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/imageview_image"
+            android:text=""  
+            android:textSize="18sp" 
+            android:textColor="#111111"
+            android:focusable="false"/>
+
+    </RelativeLayout>
+</LinearLayout>

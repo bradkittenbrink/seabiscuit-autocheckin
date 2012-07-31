@@ -30,7 +30,9 @@ import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.tab.activities.ActivityCheckInList;
 import com.coffeeandpower.tab.activities.ActivityContacts;
+import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
+import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.views.CustomDialog;
 
 public class UserAndTabMenu implements UserMenu, TabMenu {
@@ -137,11 +139,16 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 
 	};
 
-	@Override
-	public void onClickMap(View v) {
-		// Intent intent = new Intent(context, ActivityMap.class);
-		// context.startActivity(intent);
-	}
+    @Override
+    public void onClickMap(View v) {
+         Intent intent = new Intent(context, ActivityMap.class);
+         context.startActivity(intent);
+    }
+    @Override
+    public void onClickVenueFeeds(View v) {
+         Intent intent = new Intent(context, ActivityVenueFeeds.class);
+         context.startActivity(intent);
+    }
 
 	@Override
 	public void onClickPlaces(View v) {
@@ -166,7 +173,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 		if (AppCAP.isUserCheckedIn()) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(context);
 			builder.setTitle("Check Out");
-            builder.setMessage("Are you sure you want to be checked out?")
+            builder.setMessage(context.getResources().getString(R.string.checked_out_confirmation))
                     .setCancelable(false)
                     .setPositiveButton("Check Out",
                             new DialogInterface.OnClickListener() {

@@ -391,6 +391,11 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		menu.onClickMap(v);
 		finish();
 	}
+    @Override
+    public void onClickVenueFeeds(View v) {
+        menu.onClickVenueFeeds(v);
+        finish();
+    }
 
 	@Override
 	public void onClickContacts(View v) {

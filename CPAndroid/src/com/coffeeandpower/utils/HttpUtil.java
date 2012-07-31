@@ -58,6 +58,7 @@ import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.cont.ChatMessage;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
+import com.coffeeandpower.cont.Feed;
 import com.coffeeandpower.cont.Listing;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.Transaction;
@@ -67,6 +68,7 @@ import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.UserTransaction;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueChatEntry;
+import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.cont.Work;
@@ -2043,6 +2045,192 @@ public class HttpUtil {
 		}
 		return result;
 	}
+    /**
+     * Get contactw list
+     * 
+     * @return
+     */
+    public DataHolder getVenueFeedsList() {
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                "Internet connection error", null);
+        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
+                HttpVersion.HTTP_1_1);
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        if (AppCAP.getUserLastCheckinVenueIds().contentEquals("") == false) {
+            try {
+                params.add(new BasicNameValuePair("action", "getVenueFeedPreviews"));
+                params.add(new BasicNameValuePair("venue_IDs", "[" + AppCAP.getUserLastCheckinVenueIds() + "]"));
+                post.setEntity(new UrlEncodedFormEntity(params));
+    
+                // Execute HTTP Post Request
+                HttpResponse response = client.execute(post);
+                HttpEntity resEntity = response.getEntity();
+    
+                String responseString = EntityUtils.toString(resEntity);
+                if (Constants.enableApiJsonLogging)
+                    RootActivity.log("HttpUtil_getVenueFeedsList: " + responseString);
+                Log.d("HttpUtil", AppCAP.getUserLastCheckinVenueIds() + " getVenueFeedsList length..." + responseString);
+    
+                if (responseString != null) {
+                    JSONObject json = new JSONObject(responseString);
+                    JSONObject venueFeeds = json.optJSONObject("payload");
+                    ArrayList<VenueNameAndFeeds> VenueNameArray = new ArrayList<VenueNameAndFeeds>();
+                    ArrayList<VenueNameAndFeeds> listLastCheckedinVenues = AppCAP.getListLastCheckedinVenues();
+                    for(VenueNameAndFeeds currVenue : listLastCheckedinVenues) { 
+                        ArrayList<Feed> feedsArray = new ArrayList<Feed>();
+                        if (venueFeeds != null) {
+                            JSONArray feeds = venueFeeds.optJSONArray(String.valueOf(currVenue.getVenueId()));
+                            Log.d("HttpUtil", AppCAP.getUserLastCheckinVenueIds() + " venue ..." + feeds);
+                            
+                            if (feeds != null) {
+                                for (int m = 0; m < feeds.length(); m++) {
+        
+                                    JSONObject currFeed = feeds.optJSONObject(m);
+                                    if (currFeed != null && currFeed.optString("entry").contentEquals("") == false) {
+                                        try{
+                                            feedsArray.add(new Feed(currFeed));
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Log.d("HttpUtil", "Received exception " + e.getLocalizedMessage() + " from getVenueFeedsList API");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        VenueNameArray.add(new VenueNameAndFeeds( currVenue.getVenueId(), currVenue.getName(), feedsArray ));
+                    }
+                       
+                    result.setObject(Collections.unmodifiableList(VenueNameArray));
+                    result.setResponseMessage("HTTP 200 OK");
+                    return result;
+                }
+    
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                return result;
+    
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+                return result;
+    
+            } catch (IOException e) {
+                e.printStackTrace();
+                return result;
+    
+            } catch (JSONException e) {
+                e.printStackTrace();
+                result.setResponseMessage("JSON Parsing Error: " + e);
+                return result;
+            }
+        } else {
+            ArrayList<VenueNameAndFeeds> VenueNameArray = new ArrayList<VenueNameAndFeeds>();
+            result.setObject(Collections.unmodifiableList(VenueNameArray));
+            result.setResponseMessage("HTTP 200 OK");
+            return result;
+        }
+        return result;
+    }
+
+    /**
+     * Get or send venue feed
+     * 
+     * @param venueId
+     * @param lastChatIDString
+     * @return
+     */
+    public DataHolder venueFeedsForVenueWithID(int venueId, String venueName,
+            String lastChatIDString, String message, boolean isSend) {
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                "Internet connection error", null);
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        try {
+            if (isSend == false) {
+                params.add(new BasicNameValuePair("action", "getVenueFeed"));
+                params.add(new BasicNameValuePair("venue_id", Integer
+                        .toString(venueId)));
+                params.add(new BasicNameValuePair("last_id", lastChatIDString));
+            } else {
+                params.add(new BasicNameValuePair("action", "newPost"));
+                params.add(new BasicNameValuePair("venue_id", Integer
+                        .toString(venueId)));
+                params.add(new BasicNameValuePair("type", "update"));
+                params.add(new BasicNameValuePair("entry", message));
+            }
+            
+            post.setEntity(new UrlEncodedFormEntity(params));
+
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            String responseString = EntityUtils.toString(resEntity);
+            if (Constants.enableApiJsonLogging)
+                RootActivity.log("HttpUtil_VenueChatForVenueWithID: " + responseString);
+
+            if (responseString != null && responseString.trim().length() > 0) {
+                JSONObject json = new JSONObject(responseString);
+                if (json != null) {
+
+                    if (json.optBoolean("error")) {
+                        result.setHandlerCode(AppCAP.HTTP_ERROR);
+                        result.setResponseMessage(json.optString("message"));
+                    } else {
+                        JSONArray feeds = json.optJSONArray("payload");
+                        ArrayList<Feed> feedsArray = new ArrayList<Feed>();
+                        
+                        if (feeds != null) {
+                            for (int m = 0; m < feeds.length(); m++) {
+    
+                                JSONObject currFeed = feeds.optJSONObject(m);
+                                if (currFeed != null && currFeed.optString("entry").contentEquals("") == false) {
+                                    try{
+                                        feedsArray.add(new Feed(currFeed));
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Log.d("HttpUtil", "Received exception " + e.getLocalizedMessage() + " from getVenueFeedsList API");
+                                    }
+                                }
+                            }
+                        }
+                        VenueNameAndFeeds currVenue = new VenueNameAndFeeds( venueId, venueName, feedsArray );
+                                         
+                        result.setObject(currVenue);
+                        if (isSend == false) {
+                            result.setHandlerCode(Executor.HANDLE_VENUE_FEED);
+                        } else  {
+                            result.setHandlerCode(Executor.HANDLE_SEND_VENUE_FEED);
+                        }
+                        return result;
+                    }
+                }
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.setResponseMessage("JSON Parsing Error: " + e);
+            return result;
+        }
+        return result; 
+    }
 
 	/**
 	 * Get invitation code for specified location
@@ -2975,7 +3163,7 @@ public class HttpUtil {
         								}
         								catch (Exception e)
         								{
-        									Log.d("HttpUtil","Received exception " + e.getLocalizedMessage() + " from getNearestVenuesAndUsersWithCheckinsDuringInterval API");
+        									Log.d("HttpUtil", "Received exception " + e.getLocalizedMessage() + " from getNearestVenuesAndUsersWithCheckinsDuringInterval API");
         								}
 								}
 							}
@@ -3163,7 +3351,7 @@ public class HttpUtil {
         				}
         				catch (Exception e)
         				{
-        					Log.d("HttpUtil","Received exception " + e.getLocalizedMessage() + " from getUserData");
+        					Log.d("HttpUtil", "Received exception " + e.getLocalizedMessage() + " from getUserData");
         				}
 				}
 			}

@@ -11,18 +11,26 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.coffeeandpower.cache.CacheMgrService;
+import com.coffeeandpower.cont.Venue;
+import com.coffeeandpower.cont.VenueNameAndFeeds;
+import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.location.LocationDetectionService;
 import com.coffeeandpower.location.venueWifiSignature;
 import com.coffeeandpower.urbanairship.IntentReceiver;
@@ -86,7 +94,8 @@ public class AppCAP extends Application {
 	
 	private static final String TAG_VENUES_WITH_USER_CHECKINS = "venuesWithUserCheckins";
 	private static final String TAG_VENUES_WITH_AUTO_CHECKINS = "venuesWithAutoCheckins";
-	private static final String TAG_VENUE_WIFI_SIGNATURES = "venueWifiSignatures";
+    private static final String TAG_VENUE_WIFI_SIGNATURES = "venueWifiSignatures";
+    private static final String TAG_LAST_CHECKEDIN_VENUES = "listLastCheckedinVenues";
 
 	// Notification settings
 	private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
@@ -119,7 +128,9 @@ public class AppCAP extends Application {
 	public static final int HTTP_ERROR = 1403;
 	public static final int HTTP_REQUEST_SUCCEEDED = 1404;
 	public static final int ERROR_SUCCEEDED_SHOW_MESS = 1407;
-
+	
+    public static final int VIEW_HOLDER = 1;
+    public static final int VENUE_NAME_AND_FEEDS = 2;
 	
 	private static Gson gsonConverter = new Gson();
 	
@@ -136,6 +147,7 @@ public class AppCAP extends Application {
 	
     private HttpUtil http;
 
+    private static ArrayList<VenueNameAndFeeds> listLastCheckedinVenues;
 	
 	// Service management
 	private static boolean locationDetectionServiceRunning = false;
@@ -182,6 +194,7 @@ public class AppCAP extends Application {
         PushManager.enablePush();
         PushManager.shared().setIntentReceiver(IntentReceiver.class);
 
+        getUserLastCheckinVenue();
         if (Constants.debugLog)
             Log.d("LOG", "Found APID: " + prefs.getPushId());
 
@@ -617,7 +630,7 @@ public class AppCAP extends Application {
 	 * @category setter
 	 */
 	public static void setUserLastCheckinVenueId(int venueId) {
-        getSharedPreferences().edit().putInt(TAG_USER_EMAIL_PASSWORD, venueId)
+        getSharedPreferences().edit().putInt(TAG_USER_LAST_VENUE_CHECKIN_ID, venueId)
                 .commit();
 	}
 
@@ -1217,5 +1230,96 @@ public class AppCAP extends Application {
 	        return processName;
 	    }
 
+    public static void removeUserLastCheckinVenue(int venueId) {
+        for(VenueNameAndFeeds currVenue : listLastCheckedinVenues) {
+            if(currVenue.getVenueId() == venueId)
+            {
+                listLastCheckedinVenues.remove(currVenue);
+                break;
+            }
+        }
+        setUserLastCheckinVenue();
+    }
+
+    public static void updateUserLastCheckinVenue(VenueNameAndFeeds checkedInVenue) {
+        for(VenueNameAndFeeds currVenue : listLastCheckedinVenues) {
+            if(currVenue.getVenueId() == checkedInVenue.getVenueId())
+            {
+                listLastCheckedinVenues.remove(currVenue);
+                break;
+            }
+        }
+        ArrayList<VenueNameAndFeeds> newList = new ArrayList<VenueNameAndFeeds>();
+        newList.add(checkedInVenue);
+        newList.addAll(listLastCheckedinVenues);
+        listLastCheckedinVenues = newList;
+        setUserLastCheckinVenue();
+    }
+
+    public static String getUserLastCheckinVenueIds() {
+        String listIds = "";
+        for(VenueNameAndFeeds currVenue : listLastCheckedinVenues) {
+            if (listIds.contentEquals("") == false) {
+                listIds = listIds + ",";
+            }
+            listIds = listIds + String.valueOf(currVenue.getVenueId());
+        }
+        return listIds;
+    }
+
+    private static void setUserLastCheckinVenue() {
+        JSONArray mJSONArray = new JSONArray();
+        for(VenueNameAndFeeds currVenue : listLastCheckedinVenues) {
+            JSONObject jsonVenue;
+            jsonVenue = new JSONObject();
+            try {
+                jsonVenue.put("id", currVenue.getVenueId());
+                jsonVenue.put("name", currVenue.getName());
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            mJSONArray.put(jsonVenue);
+        }
+        getSharedPreferences().edit().putString(TAG_LAST_CHECKEDIN_VENUES, mJSONArray.toString()).commit();
+    }
+
+
+    public static ArrayList<VenueNameAndFeeds> getListLastCheckedinVenues() {
+        return listLastCheckedinVenues;
+    }
+
+    public static void setListLastCheckedinVenues(
+        ArrayList<VenueNameAndFeeds> listLastCheckedinVenues) {
+        AppCAP.listLastCheckedinVenues = listLastCheckedinVenues;
+    }
+
+    private static void getUserLastCheckinVenue() { 
+        String sListLastCheckedinVenues = getSharedPreferences().getString(TAG_LAST_CHECKEDIN_VENUES, "");
+        JSONArray venues = null;
+        try {
+            venues = new JSONArray(sListLastCheckedinVenues);
+        } catch (JSONException e) {
+        }
+        if (listLastCheckedinVenues != null){
+            listLastCheckedinVenues.clear();
+        } else {
+            listLastCheckedinVenues = new ArrayList<VenueNameAndFeeds>();
+        }
+        if (venues != null) {
+            for (int m = 0; m < venues.length(); m++) {
+
+                JSONObject venue = venues.optJSONObject(m);
+                if (venue != null) {
+                    try {
+                        listLastCheckedinVenues.add(new VenueNameAndFeeds(venue.getInt("id"), venue.getString("name")));
+                    } catch (JSONException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 
 }

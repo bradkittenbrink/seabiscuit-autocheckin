@@ -27,6 +27,8 @@ public class Counter {
             "nearbyVenues");
     private CachedNetworkData contactsListCache = new CachedNetworkData(
             "contactsList");
+    private CachedNetworkData venueFeedsListCache = new CachedNetworkData(
+            "venueFeedsList");
 
     private boolean isRunning = false;
 
@@ -71,6 +73,12 @@ public class Counter {
                         "Enabling contactsList API for " + context.toString());
             contactsListCache.activate();
             contactsListCache.addObserver(context);
+        } else if (apicall.equals("venueFeedsList")) {
+            if (Constants.debugLog)
+                Log.d("Counter",
+                        "Enabling venueFeedsList API for " + context.toString());
+            venueFeedsListCache.activate();
+            venueFeedsListCache.addObserver(context);
         } else {
             if (Constants.debugLog)
                 Log.d("Counter", "INVALID OPTION FOR OBSERVER REGISTRATION");
@@ -111,6 +119,13 @@ public class Counter {
                         "Enabling contactsList API for " + context.toString());
             contactsListCache.activate();
             contactsListCache.addObserver(context);
+        }
+        if (apicall1.equals("venueFeedsList") || apicall2.equals("venueFeedsList")) {
+            if (Constants.debugLog)
+                Log.d("Counter",
+                        "Enabling venueFeedsList API for " + context.toString());
+            venueFeedsListCache.activate();
+            venueFeedsListCache.addObserver(context);
         }
 
         // The user is moving around the activities lets keep the data fresh
@@ -158,6 +173,17 @@ public class Counter {
                 if (Constants.debugLog)
                     Log.d("Counter",
                             "Removed last observer from contactsList, deactivating.");
+            }
+        } else if (apicall.equals("venueFeedsList")) {
+            if (Constants.debugLog)
+                Log.d("Counter", "Removing venueFeedsList observer for "
+                        + context.toString() + ".");
+            venueFeedsListCache.deleteObserver(context);
+            if (venueFeedsListCache.countObservers() == 0) {
+                venueFeedsListCache.deactivate();
+                if (Constants.debugLog)
+                    Log.d("Counter",
+                            "Removed last observer from venueFeedsList, deactivating.");
             }
         }
     }
@@ -249,7 +275,9 @@ public class Counter {
                                             + " nearbyVenues: "
                                             + nearbyVenuesCache.hasData()
                                             + " contactsList: "
-                                            + contactsListCache.hasData());
+                                            + contactsListCache.hasData()
+                                            + " venueFeedsList: "
+                                            + venueFeedsListCache.hasData());
                         if (Constants.debugLog)
                             Log.d("Counter",
                                     " APIs Active: venuesWithCheckins: "
@@ -258,7 +286,9 @@ public class Counter {
                                             + " nearbyVenues: "
                                             + nearbyVenuesCache.isActive()
                                             + " contactsList: "
-                                            + contactsListCache.isActive());
+                                            + contactsListCache.isActive()
+                                            + " venueFeedsList: "
+                                            + venueFeedsListCache.isActive());
 
                         apisCalledThisUpdate = false;
                         cachedDataSentThisUpdate = false;
@@ -357,6 +387,35 @@ public class Counter {
                             }
                         }
 
+                        // Determine if venueFeedsList should run
+                        if (venueFeedsListCache.isActive()
+                                || !venueFeedsListCache.hasData()
+                                || refreshAllDataThisRun) {
+
+                            if (allowCachedDataThisRun
+                                    && venueFeedsListCache.hasData()
+                                    && !refreshAllDataThisRun) {
+                                if (Constants.debugLog)
+                                    Log.d("Counter",
+                                            "Sending cached data for venueFeedsList");
+                                venueFeedsListCache.sendCachedData();
+                                cachedDataSentThisUpdate = true;
+                            } else {
+                                if (Constants.debugLog)
+                                    Log.d("Counter",
+                                            "Refreshing venueFeedsList...");
+                                venueFeedsListCache.setNewData(AppCAP
+                                        .getConnection().getVenueFeedsList());
+                                if (Constants.debugLog)
+                                    Log.d("Counter",
+                                            "Called getVenueFeedsList, Received: "
+                                                    + venueFeedsListCache
+                                                            .getData()
+                                                            .getResponseMessage());
+                                apisCalledThisUpdate = true;
+                            }
+                        }
+
                         if (cachedDataSentThisUpdate) {
                             if (Constants.debugLog)
                                 Log.d("Counter",
@@ -403,7 +462,7 @@ public class Counter {
 
         }
     };
-
+/*
     public void checkInTrigger(VenueSmart checkedInVenue) {
 
         this.stop();
@@ -464,7 +523,7 @@ public class Counter {
         // After local cache is updated kickoff a refresh of all data via http
         this.refreshAllData();
     }
-
+*/
     public void checkOutTrigger() {
 
         this.stop();
