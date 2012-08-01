@@ -26,18 +26,18 @@ import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.google.code.linkedinapi.schema.Person;
 
-public class ActivityInviteContacts extends RootActivity  {
+public class ActivityInviteContacts extends RootActivity {
 
     private static final int SCREEN_USER = 1;
 
     private HorizontalPagerModified pager;
 
-    private LinkedInUsersAdapter adapterUsers; 
-    
+    private LinkedInUsersAdapter adapterUsers;
+
     private String inviteCodeText;
 
     private ListView listView;
-    
+
     private ProgressDialog progress;
 
     private ArrayList<Person> arrayUsers;
@@ -74,7 +74,6 @@ public class ActivityInviteContacts extends RootActivity  {
         progress.setMessage("Loading...");
         progress.show();
 
-
         if (AppCAP.isLoggedIn()) {
 
             // Get data from intent
@@ -82,15 +81,16 @@ public class ActivityInviteContacts extends RootActivity  {
             if (extras != null) {
                 inviteCodeText = extras.getString("inviteCodeText");
             }
-            
+
             this.arrayUsers = AppCAP.getUsersConnections();
             if (this.arraySelectedUsers != null) {
                 this.arraySelectedUsers.clear();
             }
             if (Constants.debugLog)
-                Log.d("ActivityInviteContacts", "Contacts List Initial Load"); 
-            adapterUsers = new LinkedInUsersAdapter(ActivityInviteContacts.this,
-                    this.arrayUsers, this.arraySelectedUsers);
+                Log.d("ActivityInviteContacts", "Contacts List Initial Load");
+            adapterUsers = new LinkedInUsersAdapter(
+                    ActivityInviteContacts.this, this.arrayUsers,
+                    this.arraySelectedUsers);
 
             // Display the list of users if the user is logged in
             listView = (ListView) findViewById(R.id.linkedin_users_listview);
@@ -104,18 +104,25 @@ public class ActivityInviteContacts extends RootActivity  {
                     if (!AppCAP.isLoggedIn()) {
                         showDialog(DIALOG_MUST_BE_A_MEMBER);
                     } else {
-                        if (arraySelectedUsers.contains((Person) adapterUsers.getItem(position))) {
-                            arraySelectedUsers.remove((Person) adapterUsers.getItem(position));
+                        if (arraySelectedUsers.contains((Person) adapterUsers
+                                .getItem(position))) {
+                            arraySelectedUsers.remove((Person) adapterUsers
+                                    .getItem(position));
                         } else {
-                            arraySelectedUsers.add((Person) adapterUsers.getItem(position));
+                            arraySelectedUsers.add((Person) adapterUsers
+                                    .getItem(position));
                         }
                         adapterUsers.notifyDataSetChanged();
                         if (arraySelectedUsers.isEmpty()) {
-                            ((Button) findViewById(R.id.btn_next)).setClickable(false);
-                            ((Button) findViewById(R.id.btn_next)).setBackgroundResource(0);
+                            ((Button) findViewById(R.id.btn_next))
+                                    .setClickable(false);
+                            ((Button) findViewById(R.id.btn_next))
+                                    .setBackgroundResource(0);
                         } else {
-                            ((Button) findViewById(R.id.btn_next)).setClickable(true);
-                            ((Button) findViewById(R.id.btn_next)).setBackgroundResource(R.drawable.button_turquoise_a);
+                            ((Button) findViewById(R.id.btn_next))
+                                    .setClickable(true);
+                            ((Button) findViewById(R.id.btn_next))
+                                    .setBackgroundResource(R.drawable.button_turquoise_a);
                         }
                     }
                 }
@@ -145,20 +152,22 @@ public class ActivityInviteContacts extends RootActivity  {
 
     public void onClickNext(View v) {
         ArrayList<String> arraySelectedUsersIds;
-        arraySelectedUsersIds = new ArrayList <String> ();
-        
-        for( Person person: arraySelectedUsers) {    
-            arraySelectedUsersIds.add(person.getId())  ;
+        arraySelectedUsersIds = new ArrayList<String>();
+
+        for (Person person : arraySelectedUsers) {
+            arraySelectedUsersIds.add(person.getId());
         }
         Intent intent = new Intent(this, ActivityInviteContactsConfirm.class);
         intent.putExtra("inviteCodeText", inviteCodeText);
-        intent.putStringArrayListExtra("arraySelectedUsersIds", arraySelectedUsersIds);
+        intent.putStringArrayListExtra("arraySelectedUsersIds",
+                arraySelectedUsersIds);
         startActivity(intent);
     }
 
     public void onClickBack(View v) {
         onBackPressed();
     }
+
     @Override
     protected void onStart() {
         if (Constants.debugLog)

@@ -234,7 +234,7 @@ public class ActivityUserDetails extends RootActivity implements Observer {
 
 		// Set Views states
 		if (mud != null) {
-            ((CustomFontView) findViewById(R.id.textview_user_name))
+            ((CustomFontView) findViewById(R.id.textview_tile))
                     .setText(mud.getNickName());
             ((TextView) findViewById(R.id.textview_user_status)).setText(AppCAP
                     .cleanResponseString(mud.getStatusText()) != null ? (AppCAP

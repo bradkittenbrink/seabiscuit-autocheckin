@@ -45,6 +45,12 @@ public class Executor {
 	public static final int HANDLE_SEND_VENUE_CHAT = 1619;
     public static final int HANDLE_VENUE_FEED = 1620;
     public static final int HANDLE_SEND_VENUE_FEED = 1621;
+    public static final int HANDLE_GET_SKILLS = 1622;
+    public static final int HANDLE_SET_SKILL = 1623;
+    public static final int HANDLE_GET_PROFILE_VISIBILITY = 1624;
+    public static final int HANDLE_SET_PROFILE_VISIBILITY = 1625;
+    public static final int HANDLE_ACCOUNT_DELETE_SUCCEEDED = 1626;
+    public static final int HANDLE_ACCOUNT_DELETE_FAILED = 1627;
 
 	private DataHolder result;
 
@@ -414,6 +420,19 @@ public class Executor {
 			}
 		},"Executor.venueChat").start();
 	}
+    
+    public synchronized void deleteAccount() {
+        progress.setMessage("Processing...");
+        progress.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().deleteUserAccount();
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }).start();
+    }
+
 
     /**
      * Get/send venue feeds <br>

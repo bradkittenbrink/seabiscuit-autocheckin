@@ -147,7 +147,6 @@ public class AppCAP extends Application {
 	
     private HttpUtil http;
 
-    private static ArrayList<VenueNameAndFeeds> listLastCheckedinVenues;
 	
 	// Service management
 	private static boolean locationDetectionServiceRunning = false;
@@ -194,7 +193,6 @@ public class AppCAP extends Application {
         PushManager.enablePush();
         PushManager.shared().setIntentReceiver(IntentReceiver.class);
 
-        getUserLastCheckinVenue();
         if (Constants.debugLog)
             Log.d("LOG", "Found APID: " + prefs.getPushId());
 

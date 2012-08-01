@@ -9,10 +9,12 @@ public class CustomFontView extends TextView {
 
     public CustomFontView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        Typeface font = Typeface.createFromAsset(context.getAssets(),
-                "LeagueGothic.otf");
-        this.setTypeface(font);
+        
+        if (!this.isInEditMode()) {
+            Typeface font = Typeface.createFromAsset(context.getAssets(),
+                    "LeagueGothic.otf");
+            this.setTypeface(font);
+        }
     }
 
 }

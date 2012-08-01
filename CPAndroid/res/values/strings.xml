@@ -23,7 +23,7 @@
     <string name="send">Send</string>
     <string name="cancel">Cancel</string>
     <string name="later">Later</string>
-    <string name="settings">Settings</string>
+    <string name="settings">Profile</string>
     <string name="other">other</string>
     <string name="password">Password</string>
     <string name="nickname">Nickname</string>
@@ -67,8 +67,11 @@
     <string name="activity_places_details_have">Have worked here...</string>
     <string name="activity_settings_invite">Invite</string>
     <string name="activity_settings_profile_photo">Profile Photo</string>
+    <string name="activity_settings_strongest_skill">My strongest skill is..</string>
     <string name="activity_settings_job_category">Job Category</string>
     <string name="activity_settings_smarterer">Smarterer Badges</string>
+    <string name="activity_settings_profile_visibility">Profile visibility</string>
+    <string name="activity_settings_profile_delete">Delete Account</string>
     <string name="activity_sign_in">Sign In</string>
     <string name="activity_sign_in_join">Join Coffee &amp; Power</string>
     <string name="activity_user_details_available">AVAILABLE FOR:</string>
@@ -116,6 +119,6 @@ This code is only good for 24 hours. If you accept this invitation, %1$s will be
 Once signed up, you may sponsor other users with the \'Invite\' button in the app settings page.<br/>
 Welcome!
 	]]></string>
-   	<string name="googleMapsApiKey">0N2B-_20GlM_H0LiHavOsRcF1VIqEQmyxijXZ3w</string>
+   	<string name="googleMapsApiKey">0N2B-_20GlM-0J9CB66oUTfUU4qrkYX84hx33LQ</string>
    	<string name="map_distance_far">Far far away</string>
 </resources>
