@@ -111,7 +111,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_getResumeForUserId: " + responseString);
+                RootActivity.log("HttpUtil_getResumeForUserId: "
+                        + responseString);
             AppCAP.logInFile(responseString);
 
             if (responseString != null) {
@@ -584,7 +585,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_getCheckInDataWithUserId: " + responseString);
+                RootActivity.log("HttpUtil_getCheckInDataWithUserId: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -689,7 +691,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_uploadUserProfilePhoto: " + responseString);
+                RootActivity.log("HttpUtil_uploadUserProfilePhoto: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -762,7 +765,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_sendOneOnOneChatMessage: " + responseString);
+                RootActivity.log("HttpUtil_sendOneOnOneChatMessage: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -899,7 +903,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_getOneOnOneChatHistory: " + responseString);
+                RootActivity.log("HttpUtil_getOneOnOneChatHistory: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -920,9 +925,9 @@ public class HttpUtil {
                                             .optInt("id"), objMess
                                             .optInt("user_id"), objMess
                                             .optString("entry_text"), objMess
-                                                    .optString("nickname"), objMess
-                                                    .optString("date"), objMess
-                                                    .optString("photo_url"), objMess
+                                            .optString("nickname"), objMess
+                                            .optString("date"), objMess
+                                            .optString("photo_url"), objMess
                                             .optInt("receiving_user_id"),
                                             objMess.optInt("offer_id")));
                                 }
@@ -992,7 +997,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_setUserProfileData: " + responseString);
+                RootActivity.log("HttpUtil_setUserProfileData: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -1064,7 +1070,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_setNotificationSettings: " + responseString);
+                RootActivity.log("HttpUtil_setNotificationSettings: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -1209,7 +1216,9 @@ public class HttpUtil {
             String responseString = EntityUtils.toString(resEntity);
             AppCAP.logInFile(responseString);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_getVenuesAndUsersWithCheckinsInBoundsDuringInterval: " + responseString);
+                RootActivity
+                        .log("HttpUtil_getVenuesAndUsersWithCheckinsInBoundsDuringInterval: "
+                                + responseString);
 
             if (responseString != null) {
 
@@ -1250,7 +1259,7 @@ public class HttpUtil {
                                                     try {
                                                         userId = Integer
                                                                 .parseInt(userIds
-                                                                .getString(y));
+                                                                        .getString(y));
                                                     } catch (NumberFormatException e) {
                                                     }
 
@@ -1395,7 +1404,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_getUsersCheckedIn: " + responseString);
+                RootActivity.log("HttpUtil_getUsersCheckedIn: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -1491,7 +1501,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_sendContactRequestToUserId: " + responseString);
+                RootActivity.log("HttpUtil_sendContactRequestToUserId: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -1499,7 +1510,7 @@ public class HttpUtil {
                 if (json != null) {
 
                     result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-                                                  // this
+                    // this
                     return result;
                 }
             }
@@ -1555,7 +1566,9 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_sendAcceptContactRequestFromUserId: " + responseString);
+                RootActivity
+                        .log("HttpUtil_sendAcceptContactRequestFromUserId: "
+                                + responseString);
 
             if (responseString != null) {
 
@@ -1563,7 +1576,7 @@ public class HttpUtil {
                 if (json != null) {
 
                     result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-                                                  // this
+                    // this
                     return result;
                 }
             }
@@ -1818,7 +1831,7 @@ public class HttpUtil {
                 if (json != null) {
 
                     result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-                                                  // this
+                    // this
                     return result;
                 }
             }
@@ -1882,7 +1895,7 @@ public class HttpUtil {
                 if (json != null) {
 
                     result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-                                                  // this
+                    // this
                     return result;
                 }
             }
@@ -1949,7 +1962,7 @@ public class HttpUtil {
                 if (json != null) {
 
                     result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-                                                  // this
+                    // this
                     return result;
                 }
             }
@@ -2011,16 +2024,18 @@ public class HttpUtil {
 
                         JSONObject currContact = contacts.optJSONObject(m);
                         if (currContact != null) {
-                            try{
+                            try {
                                 contactsArray.add(new UserSmart(currContact));
-                            }
-                            catch (Exception e)
-                            {
-                                Log.d("HttpUtil","Received exception " + e.getLocalizedMessage() + " from getContactList API");
+                            } catch (Exception e) {
+                                Log.d("HttpUtil",
+                                        "Received exception "
+                                                + e.getLocalizedMessage()
+                                                + " from getContactList API");
                             }
                         }
                     }
-                    result.setObject(Collections.unmodifiableList(contactsArray));
+                    result.setObject(Collections
+                            .unmodifiableList(contactsArray));
                     result.setResponseMessage("HTTP 200 OK");
                     return result;
                 }
@@ -2045,6 +2060,7 @@ public class HttpUtil {
         }
         return result;
     }
+
     /**
      * Get contactw list
      * 
@@ -2057,79 +2073,85 @@ public class HttpUtil {
                 HttpVersion.HTTP_1_1);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
-<<<<<<< .mine
-    /**
-     * Get invitation code for specified location
-     * 
-     * @param lat
-     * @param lng
-     * @return
-     */
-    public DataHolder getInvitationCodeForLocation(double lat, double lng) {
-=======
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         if (AppCAP.getUserLastCheckinVenueIds().contentEquals("") == false) {
             try {
-                params.add(new BasicNameValuePair("action", "getVenueFeedPreviews"));
-                params.add(new BasicNameValuePair("venue_IDs", "[" + AppCAP.getUserLastCheckinVenueIds() + "]"));
+                params.add(new BasicNameValuePair("action",
+                        "getVenueFeedPreviews"));
+                params.add(new BasicNameValuePair("venue_IDs", "["
+                        + AppCAP.getUserLastCheckinVenueIds() + "]"));
                 post.setEntity(new UrlEncodedFormEntity(params));
-    
+
                 // Execute HTTP Post Request
                 HttpResponse response = client.execute(post);
                 HttpEntity resEntity = response.getEntity();
-    
+
                 String responseString = EntityUtils.toString(resEntity);
                 if (Constants.enableApiJsonLogging)
-                    RootActivity.log("HttpUtil_getVenueFeedsList: " + responseString);
-                Log.d("HttpUtil", AppCAP.getUserLastCheckinVenueIds() + " getVenueFeedsList length..." + responseString);
-    
+                    RootActivity.log("HttpUtil_getVenueFeedsList: "
+                            + responseString);
+                Log.d("HttpUtil", AppCAP.getUserLastCheckinVenueIds()
+                        + " getVenueFeedsList length..." + responseString);
+
                 if (responseString != null) {
                     JSONObject json = new JSONObject(responseString);
                     JSONObject venueFeeds = json.optJSONObject("payload");
                     ArrayList<VenueNameAndFeeds> VenueNameArray = new ArrayList<VenueNameAndFeeds>();
-                    ArrayList<VenueNameAndFeeds> listLastCheckedinVenues = AppCAP.getListLastCheckedinVenues();
-                    for(VenueNameAndFeeds currVenue : listLastCheckedinVenues) { 
+                    ArrayList<VenueNameAndFeeds> listLastCheckedinVenues = AppCAP
+                            .getListLastCheckedinVenues();
+                    for (VenueNameAndFeeds currVenue : listLastCheckedinVenues) {
                         ArrayList<Feed> feedsArray = new ArrayList<Feed>();
                         if (venueFeeds != null) {
-                            JSONArray feeds = venueFeeds.optJSONArray(String.valueOf(currVenue.getVenueId()));
-                            Log.d("HttpUtil", AppCAP.getUserLastCheckinVenueIds() + " venue ..." + feeds);
-                            
+                            JSONArray feeds = venueFeeds.optJSONArray(String
+                                    .valueOf(currVenue.getVenueId()));
+                            Log.d("HttpUtil",
+                                    AppCAP.getUserLastCheckinVenueIds()
+                                            + " venue ..." + feeds);
+
                             if (feeds != null) {
                                 for (int m = 0; m < feeds.length(); m++) {
-        
-                                    JSONObject currFeed = feeds.optJSONObject(m);
-                                    if (currFeed != null && currFeed.optString("entry").contentEquals("") == false) {
-                                        try{
+
+                                    JSONObject currFeed = feeds
+                                            .optJSONObject(m);
+                                    if (currFeed != null
+                                            && currFeed.optString("entry")
+                                                    .contentEquals("") == false) {
+                                        try {
                                             feedsArray.add(new Feed(currFeed));
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            Log.d("HttpUtil", "Received exception " + e.getLocalizedMessage() + " from getVenueFeedsList API");
+                                        } catch (Exception e) {
+                                            Log.d("HttpUtil",
+                                                    "Received exception "
+                                                            + e.getLocalizedMessage()
+                                                            + " from getVenueFeedsList API");
                                         }
                                     }
                                 }
                             }
                         }
-                        VenueNameArray.add(new VenueNameAndFeeds( currVenue.getVenueId(), currVenue.getName(), feedsArray ));
+                        VenueNameArray
+                                .add(new VenueNameAndFeeds(currVenue
+                                        .getVenueId(), currVenue.getName(),
+                                        feedsArray));
                     }
-                       
-                    result.setObject(Collections.unmodifiableList(VenueNameArray));
+
+                    result.setObject(Collections
+                            .unmodifiableList(VenueNameArray));
                     result.setResponseMessage("HTTP 200 OK");
                     return result;
                 }
-    
+
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
                 return result;
-    
+
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
                 return result;
-    
+
             } catch (IOException e) {
                 e.printStackTrace();
                 return result;
-    
+
             } catch (JSONException e) {
                 e.printStackTrace();
                 result.setResponseMessage("JSON Parsing Error: " + e);
@@ -2172,7 +2194,7 @@ public class HttpUtil {
                 params.add(new BasicNameValuePair("type", "update"));
                 params.add(new BasicNameValuePair("entry", message));
             }
-            
+
             post.setEntity(new UrlEncodedFormEntity(params));
 
             // Execute HTTP Post Request
@@ -2181,7 +2203,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_VenueChatForVenueWithID: " + responseString);
+                RootActivity.log("HttpUtil_VenueChatForVenueWithID: "
+                        + responseString);
 
             if (responseString != null && responseString.trim().length() > 0) {
                 JSONObject json = new JSONObject(responseString);
@@ -2193,28 +2216,31 @@ public class HttpUtil {
                     } else {
                         JSONArray feeds = json.optJSONArray("payload");
                         ArrayList<Feed> feedsArray = new ArrayList<Feed>();
-                        
+
                         if (feeds != null) {
                             for (int m = 0; m < feeds.length(); m++) {
-    
+
                                 JSONObject currFeed = feeds.optJSONObject(m);
-                                if (currFeed != null && currFeed.optString("entry").contentEquals("") == false) {
-                                    try{
+                                if (currFeed != null
+                                        && currFeed.optString("entry")
+                                                .contentEquals("") == false) {
+                                    try {
                                         feedsArray.add(new Feed(currFeed));
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        Log.d("HttpUtil", "Received exception " + e.getLocalizedMessage() + " from getVenueFeedsList API");
+                                    } catch (Exception e) {
+                                        Log.d("HttpUtil", "Received exception "
+                                                + e.getLocalizedMessage()
+                                                + " from getVenueFeedsList API");
                                     }
                                 }
                             }
                         }
-                        VenueNameAndFeeds currVenue = new VenueNameAndFeeds( venueId, venueName, feedsArray );
-                                         
+                        VenueNameAndFeeds currVenue = new VenueNameAndFeeds(
+                                venueId, venueName, feedsArray);
+
                         result.setObject(currVenue);
                         if (isSend == false) {
                             result.setHandlerCode(Executor.HANDLE_VENUE_FEED);
-                        } else  {
+                        } else {
                             result.setHandlerCode(Executor.HANDLE_SEND_VENUE_FEED);
                         }
                         return result;
@@ -2239,18 +2265,17 @@ public class HttpUtil {
             result.setResponseMessage("JSON Parsing Error: " + e);
             return result;
         }
-        return result; 
+        return result;
     }
 
-	/**
-	 * Get invitation code for specified location
-	 * 
-	 * @param lat
-	 * @param lng
-	 * @return
-	 */
-	public DataHolder getInvitationCodeForLocation(double lat, double lng) {
->>>>>>> .r362
+    /**
+     * Get invitation code for specified location
+     * 
+     * @param lat
+     * @param lng
+     * @return
+     */
+    public DataHolder getInvitationCodeForLocation(double lat, double lng) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
@@ -2277,7 +2302,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_getInvitationCodeForLocation: " + responseString);
+                RootActivity.log("HttpUtil_getInvitationCodeForLocation: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -2285,7 +2311,7 @@ public class HttpUtil {
                 if (json != null) {
 
                     result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-                                                  // this
+                    // this
                     JSONObject payload = json.optJSONObject("payload");
                     if (payload != null) {
                         String code = payload.optString("code");
@@ -2353,7 +2379,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_enterInvitationCode: " + responseString);
+                RootActivity.log("HttpUtil_enterInvitationCode: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -2423,7 +2450,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_VenueChatForVenueWithID: " + responseString);
+                RootActivity.log("HttpUtil_VenueChatForVenueWithID: "
+                        + responseString);
 
             if (responseString != null && responseString.trim().length() > 0) {
                 JSONObject json = new JSONObject(responseString);
@@ -2482,7 +2510,7 @@ public class HttpUtil {
                                                         entryObj.optString("system_type"),
                                                         systemData_userId,
                                                         systemData_author,
-                                                systemData_fineName));
+                                                        systemData_fineName));
                                     }
                                 }
                             }
@@ -2599,7 +2627,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_saveUserMajorJobCategory: " + responseString);
+                RootActivity.log("HttpUtil_saveUserMajorJobCategory: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -2667,7 +2696,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_saveUserSmartererName: " + responseString);
+                RootActivity.log("HttpUtil_saveUserSmartererName: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -2675,7 +2705,7 @@ public class HttpUtil {
                 if (json != null) {
 
                     result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
-                                                  // this
+                    // this
                     return result;
                 }
             }
@@ -2765,7 +2795,8 @@ public class HttpUtil {
      * 
      * @return
      */
-    public DataHolder checkIn(VenueSmart venue, int checkInTime, int checkOutTime, String statusText, boolean isAutomatic) {
+    public DataHolder checkIn(VenueSmart venue, int checkInTime,
+            int checkOutTime, String statusText, boolean isAutomatic) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
@@ -2796,7 +2827,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("zip", venue.zip + ""));
             params.add(new BasicNameValuePair("phone", ""));
             params.add(new BasicNameValuePair("status", statusText + ""));
-            
+
             if (isAutomatic)
                 params.add(new BasicNameValuePair("is_automatic", "1"));
             else
@@ -2809,7 +2840,7 @@ public class HttpUtil {
             HttpEntity resEntity = response.getEntity();
 
             String responseString = EntityUtils.toString(resEntity);
-            
+
             if (Constants.enableApiJsonLogging)
                 RootActivity.log("HttpUtil_checkIn: " + responseString);
 
@@ -2821,7 +2852,7 @@ public class HttpUtil {
                     boolean res = json.optBoolean("error");
                     if (!res) {
                         result.setResponseMessage(responseString);
-                        
+
                         result.setHandlerCode(Executor.HANDLE_CHECK_IN);
                         return result;
                     }
@@ -2892,7 +2923,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_getVenuesInSWCoords " + responseString);
+                RootActivity.log("HttpUtil_getVenuesInSWCoords "
+                        + responseString);
 
             if (responseString != null) {
                 JSONObject json = new JSONObject(responseString);
@@ -2959,9 +2991,9 @@ public class HttpUtil {
      * Get venues near my location, uses Foursquare API
      * 
      * @param gp
-     *                GeoPoint with my coordinates
+     *            GeoPoint with my coordinates
      * @param number
-     *                of displayed venues
+     *            of displayed venues
      * @return
      */
     public DataHolder getVenuesCloseToLocation(GeoPoint gp, int number) {
@@ -2983,7 +3015,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_getVenuesCloseToLocation " + responseString);
+                RootActivity.log("HttpUtil_getVenuesCloseToLocation "
+                        + responseString);
 
             if (responseString != null) {
                 JSONObject json = new JSONObject(responseString);
@@ -3016,7 +3049,8 @@ public class HttpUtil {
                                 }
 
                                 result.setHandlerCode(Executor.HANDLE_VENUES_CLOSE_TO_LOCATION);
-                                result.setObject(Collections.unmodifiableList(venuesArray));
+                                result.setObject(Collections
+                                        .unmodifiableList(venuesArray));
                                 result.setResponseMessage("HTTP 200 OK");
                                 return result;
                             }
@@ -3077,8 +3111,9 @@ public class HttpUtil {
             HttpEntity resEntity = response.getEntity();
 
             String responseString = EntityUtils.toString(resEntity);
-            //RootActivity.log("HttpUtil_getNearestVenuesWithCheckinsToCoordinate: " + responseString);
-            //Check to see if we got a response from the network
+            // RootActivity.log("HttpUtil_getNearestVenuesWithCheckinsToCoordinate: "
+            // + responseString);
+            // Check to see if we got a response from the network
             if (responseString != null) {
 
                 JSONObject json = new JSONObject(responseString);
@@ -3122,7 +3157,7 @@ public class HttpUtil {
                                                     try {
                                                         userId = Integer
                                                                 .parseInt(userIds
-                                                                .getString(y));
+                                                                        .getString(y));
                                                     } catch (NumberFormatException e) {
                                                     }
 
@@ -3155,57 +3190,35 @@ public class HttpUtil {
                                         .optJSONObject(x);
                                 if (objUser != null
                                         && objUser.optInt("id") != 0) {
-                                    try{
-                                    UserSmart singleUserMap = new UserSmart(
-                                            objUser);
+                                    try {
+                                        UserSmart singleUserMap = new UserSmart(
+                                                objUser);
 
-<<<<<<< .mine
-                                            if (singleUserMap.getCheckedIn() == 1) {
-                                                if (!isFirstInList1) {
-                                                    singleUserMap.setFirstInList(true);
-                                                    isFirstInList1 = !isFirstInList1;
-                                                }
-                                            } else {
-                                                if (!isFirstInList0) {
-                                                    singleUserMap.setFirstInList(true);
-                                                    isFirstInList0 = !isFirstInList0;
-                                                }
+                                        if (singleUserMap.getCheckedIn() == 1) {
+                                            if (!isFirstInList1) {
+                                                singleUserMap
+                                                        .setFirstInList(true);
+                                                isFirstInList1 = !isFirstInList1;
                                             }
-                                            users.add(singleUserMap);
+                                        } else {
+                                            if (!isFirstInList0) {
+                                                singleUserMap
+                                                        .setFirstInList(true);
+                                                isFirstInList0 = !isFirstInList0;
+                                            }
                                         }
-                                        catch (Exception e)
-                                        {
-                                            Log.d("HttpUtil","Received exception " + e.getLocalizedMessage() + " from getNearestVenuesAndUsersWithCheckinsDuringInterval API");
-                                        }
+                                        users.add(singleUserMap);
+                                    } catch (Exception e) {
+                                        Log.d("HttpUtil",
+                                                "Received exception "
+                                                        + e.getLocalizedMessage()
+                                                        + " from getNearestVenuesAndUsersWithCheckinsDuringInterval API");
+                                    }
                                 }
                             }
                         }
-                        //Array Contacts
+                        // Array Contacts
                         ArrayList<UserSmart> contacts = new ArrayList<UserSmart>();
-=======
-        									if (singleUserMap.getCheckedIn() == 1) {
-        										if (!isFirstInList1) {
-        											singleUserMap.setFirstInList(true);
-        											isFirstInList1 = !isFirstInList1;
-        										}
-        									} else {
-        										if (!isFirstInList0) {
-        											singleUserMap.setFirstInList(true);
-        											isFirstInList0 = !isFirstInList0;
-        										}
-        									}
-        									users.add(singleUserMap);
-        								}
-        								catch (Exception e)
-        								{
-        									Log.d("HttpUtil", "Received exception " + e.getLocalizedMessage() + " from getNearestVenuesAndUsersWithCheckinsDuringInterval API");
-        								}
-								}
-							}
-						}
-						//Array Contacts
-						ArrayList<UserSmart> contacts = new ArrayList<UserSmart>();
->>>>>>> .r362
                         JSONArray arrayContacts = objPayload
                                 .optJSONArray("contacts");
                         if (arrayContacts != null) {
@@ -3226,8 +3239,9 @@ public class HttpUtil {
                                 }
                             }
                         }
-                        result.setObject(new Object[] { Collections.unmodifiableList(venues), 
-                                Collections.unmodifiableList(users), 
+                        result.setObject(new Object[] {
+                                Collections.unmodifiableList(venues),
+                                Collections.unmodifiableList(users),
                                 Collections.unmodifiableList(contacts) });
                     }
                     result.setHandlerCode(Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS);
@@ -3283,7 +3297,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_getUserTrasactionData: " + responseString);
+                RootActivity.log("HttpUtil_getUserTrasactionData: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -3378,35 +3393,19 @@ public class HttpUtil {
 
             if (responseString != null) {
 
-<<<<<<< .mine
                 JSONObject json = new JSONObject(responseString);
                 if (json != null) {
-                    try{
-                            result.setObject(new UserSmart(json));
-                            result.setHandlerCode(Executor.HANDLE_GET_USER_DATA);
-                            return result;
-                        }
-                        catch (Exception e)
-                        {
-                            Log.d("HttpUtil","Received exception " + e.getLocalizedMessage() + " from getUserData");
-                        }
+                    try {
+                        result.setObject(new UserSmart(json));
+                        result.setHandlerCode(Executor.HANDLE_GET_USER_DATA);
+                        return result;
+                    } catch (Exception e) {
+                        Log.d("HttpUtil",
+                                "Received exception " + e.getLocalizedMessage()
+                                        + " from getUserData");
+                    }
                 }
             }
-=======
-				JSONObject json = new JSONObject(responseString);
-				if (json != null) {
-					try{
-        					result.setObject(new UserSmart(json));
-        					result.setHandlerCode(Executor.HANDLE_GET_USER_DATA);
-        					return result;
-        				}
-        				catch (Exception e)
-        				{
-        					Log.d("HttpUtil", "Received exception " + e.getLocalizedMessage() + " from getUserData");
-        				}
-				}
-			}
->>>>>>> .r362
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -3454,7 +3453,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_getNotificationSettings: " + responseString);
+                RootActivity.log("HttpUtil_getNotificationSettings: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -3469,6 +3469,79 @@ public class HttpUtil {
                                 objPayload.optString("checked_in_only") });
                     }
                 }
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.setResponseMessage("JSON Parsing Error: " + e);
+            return result;
+        }
+        return result;
+    }
+
+    public DataHolder deleteUserAccount() {
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                "Internet connection error", null);
+
+        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
+                HttpVersion.HTTP_1_1);
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("action", "deleteAccount"));
+
+        try {
+            post.setEntity(new UrlEncodedFormEntity(params));
+
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            String responseString = EntityUtils.toString(resEntity);
+
+            // Save cookies to share session with WebView
+            client.getCookieStore().getCookies();
+            List<Cookie> cookies = client.getCookieStore().getCookies();
+            String cookieString = "";
+            for (int i = 0; i < cookies.size(); i++) {
+                Cookie cookie = cookies.get(i);
+                cookieString += cookie.getName() + "=" + cookie.getValue();// +"; domain="+cookie.getDomain();
+            }
+            AppCAP.setCookieString(cookieString);
+            if (Constants.debugLog)
+                Log.d("LOG", "Cookie: " + AppCAP.getCookieString());
+
+            if (responseString != null) {
+                RootActivity.log(responseString);
+
+                JSONObject json = new JSONObject(responseString);
+                if (json != null) {
+                    Boolean succeeded = json.optBoolean("succeeded");
+                    String mess = json.optString("message");
+                    result.setResponseMessage(mess);
+
+                    if (succeeded) {
+                        result.setHandlerCode(Executor.HANDLE_ACCOUNT_DELETE_SUCCEEDED);
+                    } else {
+                        result.setHandlerCode(Executor.HANDLE_ACCOUNT_DELETE_FAILED);
+                    }
+
+                    return result;
+                }
+            } else {
+                result.setHandlerCode(Executor.HANDLE_ACCOUNT_DELETE_FAILED);
             }
 
         } catch (UnsupportedEncodingException e) {
@@ -3531,7 +3604,9 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_signup: " + EntityUtils.toString(post.getEntity()) + ":" + responseString);
+                RootActivity.log("HttpUtil_signup: "
+                        + EntityUtils.toString(post.getEntity()) + ":"
+                        + responseString);
 
             if (responseString != null) {
 
@@ -3624,7 +3699,9 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_signup: " + EntityUtils.toString(post.getEntity()) + ":" + responseString);
+                RootActivity.log("HttpUtil_signup: "
+                        + EntityUtils.toString(post.getEntity()) + ":"
+                        + responseString);
 
             if (responseString != null) {
 
@@ -3703,7 +3780,9 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_login: " + EntityUtils.toString(post.getEntity()) + ":" + responseString);
+                RootActivity.log("HttpUtil_login: "
+                        + EntityUtils.toString(post.getEntity()) + ":"
+                        + responseString);
 
             if (responseString != null) {
 
@@ -3772,10 +3851,12 @@ public class HttpUtil {
 
         String serviceName = service.getServiceNameLogin();
         String serviceSignUp = service.getServiceNameSignUp();
-        //FIXME
-        //This will always crash if we don't have an internet connection or we don't have cached
-        //data for whatever reason
-        params.add(new BasicNameValuePair("signupNickname", service.getUserNickName()));
+        // FIXME
+        // This will always crash if we don't have an internet connection or we
+        // don't have cached
+        // data for whatever reason
+        params.add(new BasicNameValuePair("signupNickname", service
+                .getUserNickName()));
         params.add(new BasicNameValuePair("linkedin_id", service.getUserId()));
         params.add(new BasicNameValuePair("linkedin_connect", "1"));
         params.add(new BasicNameValuePair("signupUsername", service
@@ -3802,7 +3883,9 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_login: " + EntityUtils.toString(post.getEntity()) + ":" + responseString);
+                RootActivity.log("HttpUtil_login: "
+                        + EntityUtils.toString(post.getEntity()) + ":"
+                        + responseString);
 
             if (responseString != null) {
 
@@ -3822,12 +3905,12 @@ public class HttpUtil {
                                     .optString("entered_invite_code");
                             if (enteredInviteCode != null) {
                                 if (enteredInviteCode.equalsIgnoreCase("Y")) {
-                                     AppCAP.setEnteredInviteCode();
-                                 }
-                             }
-                         }
+                                    AppCAP.setEnteredInviteCode();
+                                }
+                            }
+                        }
 
-                     }
+                    }
                     result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
                     return result;
 
@@ -3856,80 +3939,6 @@ public class HttpUtil {
 
         }
 
-        return result;
-    }
-
-    public DataHolder deleteUserAccount() {
-        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
-        
-        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
-                HttpVersion.HTTP_1_1);
-        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
-
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("action", "deleteAccount"));
-
-        try {
-            post.setEntity(new UrlEncodedFormEntity(params));
-
-            // Execute HTTP Post Request
-            HttpResponse response = client.execute(post);
-            HttpEntity resEntity = response.getEntity();
-
-            String responseString = EntityUtils.toString(resEntity);
-
-            // Save cookies to share session with WebView
-            client.getCookieStore().getCookies();
-            List<Cookie> cookies = client.getCookieStore().getCookies();
-            String cookieString = "";
-            for (int i = 0; i < cookies.size(); i++) {
-                Cookie cookie = cookies.get(i);
-                cookieString += cookie.getName() + "=" + cookie.getValue();// +"; domain="+cookie.getDomain();
-            }
-            AppCAP.setCookieString(cookieString);
-            if (Constants.debugLog)
-                Log.d("LOG", "Cookie: " + AppCAP.getCookieString());
-
-            if (responseString != null) {
-                RootActivity.log(responseString);
-
-                JSONObject json = new JSONObject(responseString);
-                if (json != null) {
-                    Boolean succeeded = json.optBoolean("succeeded");
-                    String mess = json.optString("message");
-                    result.setResponseMessage(mess);
-                    
-                    if (succeeded) {
-                        result.setHandlerCode(Executor.HANDLE_ACCOUNT_DELETE_SUCCEEDED);
-                    } else {
-                        result.setHandlerCode(Executor.HANDLE_ACCOUNT_DELETE_FAILED);
-                    }
-
-                    return result;
-                }
-            } else {
-                result.setHandlerCode(Executor.HANDLE_ACCOUNT_DELETE_FAILED);
-            }
-            
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return result;
-
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-            return result;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return result;
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            result.setResponseMessage("JSON Parsing Error: " + e);
-            return result;
-        }
         return result;
     }
 
