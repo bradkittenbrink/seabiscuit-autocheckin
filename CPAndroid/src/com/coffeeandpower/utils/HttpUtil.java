@@ -805,26 +805,15 @@ public class HttpUtil {
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
 
-        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + "reviews.php");
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + "api.php");
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
 
         try {
-            params.add(new BasicNameValuePair("action", "makeMobileReview"));
+            params.add(new BasicNameValuePair("action", "sendLove"));
             params.add(new BasicNameValuePair("recipientID", URLEncoder.encode(
                     user.getCheckInData_userId() + "", "utf-8")));
             params.add(new BasicNameValuePair("reviewText", review + ""));
-            if (user.getLocationLat() != 0 && user.getLocationLng() != 0) {
-                params.add(new BasicNameValuePair("lat", URLEncoder.encode(
-                        user.getLocationLat() + "", "utf-8")));
-                params.add(new BasicNameValuePair("lng", URLEncoder.encode(
-                        user.getLocationLng() + "", "utf-8")));
-            }
-            if (ActivityUserDetails.isUserHereNow(user)) {
-                params.add(new BasicNameValuePair("foursquare", URLEncoder
-                        .encode(user.getCheckInData_foursquareId() + "",
-                                "utf-8")));
-            }
 
             post.setEntity(new UrlEncodedFormEntity(params));
 
