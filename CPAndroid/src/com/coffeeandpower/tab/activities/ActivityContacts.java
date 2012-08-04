@@ -8,18 +8,18 @@ import java.util.Observable;
 import java.util.Observer;
 
 import android.app.ProgressDialog;
+import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
@@ -31,11 +31,9 @@ import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
-import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
-import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
@@ -47,6 +45,8 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_USER = 1;
+	private static final int TAB_CHECKIN_MOVE_DISTANCE = 230;
+	private static final int TAB_CHECKIN_MOVE_DURATION = 800;
 
 	private HorizontalPagerModified pager;
 
@@ -78,10 +78,7 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 
 			String type = msg.getData().getString("type");
 			
-			if (type.equalsIgnoreCase("AutoCheckinTrigger")) {
-				// Update view
-				setupTabBar();
-			} else {
+			if (!type.equalsIgnoreCase("AutoCheckinTrigger")) {
         			// pass message data along to venue update method
             ArrayList<UserSmart> usersArray = msg.getData()
                     .getParcelableArrayList("contacts");
@@ -136,15 +133,10 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 			public void onCheckOut() {
 				if (Constants.debugLog)
                     Log.d("Contacts", "onCheckOut()");
-				setupTabBar();
 			}
 		});
 
 		if (AppCAP.isLoggedIn()) {
-            ((RelativeLayout) findViewById(R.id.rel_contacts))
-                    .setBackgroundResource(R.drawable.bg_tabbar_selected);
-            ((ImageView) findViewById(R.id.imageview_contacts))
-                    .setImageResource(R.drawable.tab_contacts_pressed);
 
 			// Get contacts list
             // FIXME
@@ -177,33 +169,9 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 
 		} else {
 			setContentView(R.layout.tab_activity_login);
-            ((RelativeLayout) findViewById(R.id.rel_log_in))
-                    .setBackgroundResource(R.drawable.bg_tabbar_selected);
-            ((ImageView) findViewById(R.id.imageview_log_in))
-                    .setImageResource(R.drawable.tab_login_pressed);
-
-			RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
-			RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);
-
-			if (r != null) {
-				r.setVisibility(View.VISIBLE);
-			}
-			if (r1 != null) {
-				r1.setVisibility(View.GONE);
-			}
 
 		}
 
-    }
-
-	private void setupTabBar() {
-		if (AppCAP.isUserCheckedIn()) {
-            ((TextView) findViewById(R.id.textview_check_in))
-                    .setText("Check Out");
-		} else {
-            ((TextView) findViewById(R.id.textview_check_in))
-                    .setText("Check In");
-		}
 	}
 
 	public void onClickLinkedIn(View v) {
@@ -215,8 +183,26 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 	public void onClickMenu(View v) {
 		if (pager.getCurrentScreen() == SCREEN_USER) {
 			pager.setCurrentScreen(SCREEN_SETTINGS, true);
+			((TabActivity) getParent()).getTabHost().getTabWidget()
+					.setVisibility(View.GONE);
+			TranslateAnimation moveLeftToRight = new TranslateAnimation(0,
+					TAB_CHECKIN_MOVE_DISTANCE, 0, 0);
+			moveLeftToRight.setDuration(TAB_CHECKIN_MOVE_DURATION);
+			moveLeftToRight.setFillAfter(true);
+			((TabActivity) getParent()).getTabHost()
+					.findViewById(R.id.imageview_check_in)
+					.setAnimation(moveLeftToRight);
 		} else {
 			pager.setCurrentScreen(SCREEN_USER, true);
+			((TabActivity) getParent()).getTabHost().getTabWidget()
+					.setVisibility(View.VISIBLE);
+			TranslateAnimation moveRightToLeft = new TranslateAnimation(
+					TAB_CHECKIN_MOVE_DISTANCE, 0, 0, 0);
+			moveRightToLeft.setDuration(TAB_CHECKIN_MOVE_DURATION);
+			moveRightToLeft.setFillAfter(true);
+			((TabActivity) getParent()).getTabHost()
+					.findViewById(R.id.imageview_check_in)
+					.setAnimation(moveRightToLeft);
 		}
 	}
 
@@ -226,7 +212,6 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
             Log.d("Contacts", "ActivityContacts.onStart()");
 		super.onStart();
 
-		setupTabBar();
 
         // If the user isn't logged in then we will displaying the login screen
         // not the list of contacts.

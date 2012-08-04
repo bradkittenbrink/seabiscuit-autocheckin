@@ -12,9 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
@@ -130,20 +128,6 @@ public class ActivityInviteContacts extends RootActivity {
 
         } else {
             setContentView(R.layout.tab_activity_login);
-            ((RelativeLayout) findViewById(R.id.rel_log_in))
-                    .setBackgroundResource(R.drawable.bg_tabbar_selected);
-            ((ImageView) findViewById(R.id.imageview_log_in))
-                    .setImageResource(R.drawable.tab_login_pressed);
-
-            RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
-            RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);
-
-            if (r != null) {
-                r.setVisibility(View.VISIBLE);
-            }
-            if (r1 != null) {
-                r1.setVisibility(View.GONE);
-            }
 
         }
         progress.dismiss();

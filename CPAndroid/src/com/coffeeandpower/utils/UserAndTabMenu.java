@@ -10,11 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
@@ -75,19 +71,9 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 		// If user is not logged in
 		if (!AppCAP.isLoggedIn()) {
 			View v = ((Activity) context).findViewById(R.id.btn_menu);
-            RelativeLayout r = (RelativeLayout) ((Activity) context)
-                    .findViewById(R.id.rel_log_in);
-            RelativeLayout r1 = (RelativeLayout) ((Activity) context)
-                    .findViewById(R.id.rel_contacts);
 
 			if (v != null) {
 				v.setVisibility(View.GONE);
-			}
-			if (r != null) {
-				r.setVisibility(View.VISIBLE);
-			}
-			if (r1 != null) {
-				r1.setVisibility(View.GONE);
 			}
 		}
 	}

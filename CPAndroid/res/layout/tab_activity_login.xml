@@ -32,9 +32,4 @@
         android:text="@string/tab_activity_login_connect"
         android:textSize="16sp" />
 
-    <include
-        android:id="@+id/tab_bar"
-        android:layout_alignParentBottom="true"
-        layout="@layout/tab_bar" />
-
 </RelativeLayout>

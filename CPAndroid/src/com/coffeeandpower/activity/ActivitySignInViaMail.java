@@ -13,7 +13,6 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.views.CustomDialog;
 
 /**
@@ -63,7 +62,7 @@ public class ActivitySignInViaMail extends RootActivity {
 				textViewErrorMsg.setVisibility(View.INVISIBLE);
 
                 Intent intent = new Intent(ActivitySignInViaMail.this,
-                        ActivityMap.class);
+                        ActivityMain.class);
 
 				// Get user data from login response
 

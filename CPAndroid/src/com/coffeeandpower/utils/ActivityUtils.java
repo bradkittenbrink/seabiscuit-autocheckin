@@ -7,9 +7,9 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.activity.ActivityMain;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.inter.OAuthService;
-import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.views.CustomDialog;
 
 public class ActivityUtils {
@@ -96,7 +96,7 @@ public class ActivityUtils {
 
             case AppCAP.HTTP_REQUEST_SUCCEEDED:
                 AppCAP.setLoggedIn(true);
-                Intent intent = new Intent(a, ActivityVenueFeeds.class);
+                Intent intent = new Intent(a, ActivityMain.class);
                 a.startActivity(intent);
                 a.finish();
                 break;

@@ -58,6 +58,20 @@
                     android:text="@string/app_name"
                     android:textColor="#ffffff"
                     android:textSize="25dip" />
+                
+                <Button
+                    android:id="@+id/btn_top_list"
+                    android:layout_width="41dip"
+                    android:layout_height="28dip"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginTop="10dip"
+                    android:background="@drawable/map_list_button"
+                    android:onClick="onClickShowListTab"
+                    android:text="@string/tab_list"
+                    android:textColor="#FFFFFF" />
+                
             </RelativeLayout>
 
             <RelativeLayout
@@ -106,10 +120,6 @@
                     android:background="@drawable/btn_map_locate"
                     android:onClick="onClickLocateMe" />
 
-                <include
-                    android:id="@+id/tab_bar"
-                    android:layout_alignParentBottom="true"
-                    layout="@layout/tab_bar" />
             </RelativeLayout>
         </LinearLayout>
     </com.coffeeandpower.views.HorizontalPagerModified>
