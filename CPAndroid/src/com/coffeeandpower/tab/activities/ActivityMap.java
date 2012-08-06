@@ -6,7 +6,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import android.app.ProgressDialog;
-import android.app.TabActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -21,8 +20,9 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
@@ -37,6 +37,7 @@ import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
+import com.coffeeandpower.location.LocationDetectionService;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.maps.BalloonItemizedOverlay;
 import com.coffeeandpower.maps.MyItemizedOverlay;
@@ -63,14 +64,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_MAP = 1;
-	private final String TAB_LIST_TAG = "List";
-	private final int TAB_MAP_INDEX = 2;
-    
+
 	private static final int ACTIVITY_ACCOUNT_SETTINGS = 1888;
 	public static final int ACCOUNT_CHANGED = 1900;
-	private static final int TAB_CHECKIN_MOVE_DISTANCE = 230;
-	private static final int TAB_CHECKIN_MOVE_DURATION = 800;
-	
 	
 	private UserAndTabMenu menu;
 
@@ -115,8 +111,10 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 			// Determine which message type is being sent
 			String type = msg.getData().getString("type");
 			
-			if (!type.equalsIgnoreCase("AutoCheckinTrigger")) {
-			 // if the message isn't an autocheckin trigger, assume its a cached data update
+			if (type.equalsIgnoreCase("AutoCheckinTrigger")) {
+				checkUserState();
+			}
+			else { // if the message isn't an autocheckin trigger, assume its a cached data update
         			// pass message data along to venue update method
             ArrayList<VenueSmart> venueArray = msg.getData()
                     .getParcelableArrayList("venues");
@@ -135,6 +133,21 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	//====================================================================
 	// Lifecycle Management
 	//====================================================================
+    
+    
+    /**
+     * Check if user is checked in or not
+     */
+    private void checkUserState() {
+        if (AppCAP.isUserCheckedIn()) {
+            ((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
+            //((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityMap.this,
+            //        R.anim.rotate_indefinitely));
+        } else {
+            ((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
+            //((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
+        }
+    }
 
 	@Override
 	protected void onCreate(Bundle icicle) {
@@ -186,6 +199,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		menu.setOnUserStateChanged(new OnUserStateChanged() {
 			@Override
 			public void onCheckOut() {
+				checkUserState();
 				refreshMapDataSet();
 			}
 
@@ -198,6 +212,11 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
                         ActivityLoginPage.class));
 			}
 		});
+
+        ((RelativeLayout) findViewById(R.id.rel_map))
+                .setBackgroundResource(R.drawable.bg_tabbar_selected);
+        ((ImageView) findViewById(R.id.imageview_map))
+                .setImageResource(R.drawable.tab_places_pressed);
 
 		// Set others
 		mapView.getOverlays().add(myLocationOverlay);
@@ -279,6 +298,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
             Log.d("ActivityMap",
                     "ActivityMap.onStart(): " + AppCAP.isUserCheckedIn());
 
+		checkUserState();
+
         if (AppCAP.isFirstStart() && AppCAP.getEnteredInviteCode() == false) {
             startActivity(new Intent(ActivityMap.this,
                     ActivityEnterInviteCode.class));
@@ -348,6 +369,7 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		if (Constants.debugLog)
 			Log.d(TAG,"ActivityMap.onStart()");
 		super.onStart();
+		checkUserState();
 		UAirship.shared().getAnalytics().activityStarted(this);
 		CacheMgrService.startObservingAPICall("venuesWithCheckins",myCachedDataObserver);
 		LocationDetectionStateMachine.startObservingAutoCheckinTrigger(myAutoCheckinObserver);
@@ -479,27 +501,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		}
 		if (pager.getCurrentScreen() == SCREEN_MAP) {
 			pager.setCurrentScreen(SCREEN_SETTINGS, true);
-			((TabActivity) getParent()).getTabHost().getTabWidget()
-					.setVisibility(View.GONE);
-			TranslateAnimation moveLeftToRight = new TranslateAnimation(0,
-					TAB_CHECKIN_MOVE_DISTANCE, 0, 0);
-			moveLeftToRight.setDuration(TAB_CHECKIN_MOVE_DURATION);
-			moveLeftToRight.setFillAfter(true);
-			((TabActivity) getParent()).getTabHost()
-					.findViewById(R.id.imageview_check_in)
-					.setAnimation(moveLeftToRight);
-
 		} else {
 			pager.setCurrentScreen(SCREEN_MAP, true);
-			((TabActivity) getParent()).getTabHost().getTabWidget()
-					.setVisibility(View.VISIBLE);
-			TranslateAnimation moveRightToLeft = new TranslateAnimation(
-					TAB_CHECKIN_MOVE_DISTANCE, 0, 0, 0);
-			moveRightToLeft.setDuration(TAB_CHECKIN_MOVE_DURATION);
-			moveRightToLeft.setFillAfter(true);
-			((TabActivity) getParent()).getTabHost()
-					.findViewById(R.id.imageview_check_in)
-					.setAnimation(moveRightToLeft);
 		}
 
 	}
@@ -527,6 +530,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	}
 
 	private void refreshMapDataSet() {
+		checkUserState();
+
         Animation anim = AnimationUtils
                 .loadAnimation(this, R.anim.refresh_anim);
 		imageRefresh.setAnimation(anim);
@@ -666,6 +671,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		menu.onClickLogout(v);
 	}
 
+  
+
+
 	private void actionFinished(int action) {
 		result = exe.getResult();
 
@@ -683,6 +691,17 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		}
 
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	private class MyAutoCheckinTriggerObserver implements Observer {
 
@@ -774,17 +793,11 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		if (itemizedoverlay.size() > 0) {
 			mapView.getOverlays().add(itemizedoverlay);
 		}
+		checkUserState();
 		mapView.invalidate();
 
 	}
-	
-    public void onClickShowListTab(View v) {
-        ((TabActivity) getParent()).getTabHost().setCurrentTabByTag(TAB_LIST_TAG);
-        ((TabActivity) getParent())
-            .getTabHost().getTabWidget()
-            .getChildTabViewAt(TAB_MAP_INDEX)
-            .setBackgroundResource(R.drawable.tab_pressed);
-    }
 
+   
 
 }

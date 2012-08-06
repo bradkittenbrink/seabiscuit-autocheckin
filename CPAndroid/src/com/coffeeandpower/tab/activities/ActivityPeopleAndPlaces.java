@@ -8,18 +8,19 @@ import java.util.Observable;
 import java.util.Observer;
 
 import android.app.ProgressDialog;
-import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.TranslateAnimation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
@@ -37,6 +38,7 @@ import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
+import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
@@ -48,9 +50,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 	private static final int SCREEN_SETTINGS = 0;
 	private static final int SCREEN_USER = 1;
-	private static final int TAB_CHECKIN_MOVE_DISTANCE = 230;
-	private static final int TAB_CHECKIN_MOVE_DURATION = 800;
-	private static final String TAB_MAP_TAG = "Map";
 
 	private static final String PLACES_SCREEN_TITLE = "Venues";
 	private static final String PEOPLE_SCREEN_TITLE = "People";
@@ -187,10 +186,12 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		});
 
 		// User and Tab Menu
+		checkUserState();
 		menu = new UserAndTabMenu(this);
 		menu.setOnUserStateChanged(new OnUserStateChanged() {
 			@Override
 			public void onCheckOut() {
+				checkUserState();
 			}
 
 			@Override
@@ -205,10 +206,15 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			// Check is it People or Places List
 			type = extras.getString("type");
 			if (type.equals("people")) {
+                ((RelativeLayout) findViewById(R.id.rel_people))
+                        .setBackgroundResource(R.drawable.bg_tabbar_selected);
+                ((ImageView) findViewById(R.id.imageview_people))
+                        .setImageResource(R.drawable.tab_people_pressed);
                 ((CustomFontView) findViewById(R.id.textview_location_name))
                         .setText(PEOPLE_SCREEN_TITLE);
-                ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
 			} else {
+                ((RelativeLayout) findViewById(R.id.rel_places))
+                        .setBackgroundResource(R.drawable.bg_tabbar_selected);
                 ((CustomFontView) findViewById(R.id.textview_location_name))
                         .setText(PLACES_SCREEN_TITLE);
 			}
@@ -237,6 +243,22 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 	}   // end onCreate()
 
+	
+
+	/**
+	 * Check if user is checked in or not
+	 */
+	private void checkUserState() {
+		if (AppCAP.isUserCheckedIn()) {
+			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
+			//((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityPeopleAndPlaces.this,
+			//		R.anim.rotate_indefinitely));
+		} else {
+			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
+			//((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
+		}
+	}
+	
 	private void setPeopleList() {
 
         if (initialLoad) {
@@ -280,6 +302,8 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	@Override
 	protected void onStart() {
 
+		checkUserState();
+
 		if (Constants.debugLog)
             Log.d("PeoplePlaces", "ActivityPeopleAndPlaces.onStart()");
 		super.onStart();
@@ -305,6 +329,8 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	protected void onResume() {
 		super.onResume();
 
+		checkUserState();
+
 		if (AppCAP.shouldFinishActivities()) {
 			onBackPressed();
 		}
@@ -313,27 +339,8 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	public void onClickMenu(View v) {
 		if (pager.getCurrentScreen() == SCREEN_USER) {
 			pager.setCurrentScreen(SCREEN_SETTINGS, true);
-			((TabActivity) getParent()).getTabHost().getTabWidget()
-					.setVisibility(View.GONE);
-			TranslateAnimation moveLeftToRight = new TranslateAnimation(0,
-					TAB_CHECKIN_MOVE_DISTANCE, 0, 0);
-			moveLeftToRight.setDuration(TAB_CHECKIN_MOVE_DURATION);
-			moveLeftToRight.setFillAfter(true);
-			((TabActivity) getParent()).getTabHost()
-					.findViewById(R.id.imageview_check_in)
-					.setAnimation(moveLeftToRight);
-
 		} else {
 			pager.setCurrentScreen(SCREEN_USER, true);
-			((TabActivity) getParent()).getTabHost().getTabWidget()
-					.setVisibility(View.VISIBLE);
-			TranslateAnimation moveRightToLeft = new TranslateAnimation(
-					TAB_CHECKIN_MOVE_DISTANCE, 0, 0, 0);
-			moveRightToLeft.setDuration(TAB_CHECKIN_MOVE_DURATION);
-			moveRightToLeft.setFillAfter(true);
-			((TabActivity) getParent()).getTabHost()
-					.findViewById(R.id.imageview_check_in)
-					.setAnimation(moveRightToLeft);
 		}
 	}
 
@@ -476,10 +483,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		}
 	}
 	
-    public void onClickShowMapTab(View v) {
-        ((TabActivity) getParent()).getTabHost().setCurrentTabByTag(TAB_MAP_TAG);
-    }
-
 	
 	
 

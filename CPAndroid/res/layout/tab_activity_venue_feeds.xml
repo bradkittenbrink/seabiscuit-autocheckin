@@ -70,6 +70,10 @@
                 android:layout_below="@+id/dummy_layout"
                 android:cacheColorHint="#00000000" />
 
+            <include
+                android:id="@+id/tab_bar"
+                android:layout_alignParentBottom="true"
+                layout="@layout/tab_bar" />
         </RelativeLayout>
     </com.coffeeandpower.views.HorizontalPagerModified>
 
