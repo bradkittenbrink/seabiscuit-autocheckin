@@ -100,11 +100,7 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
 
         holder.textMessage.setText(AppCAP.cleanResponseString(venueNameAndFeeds.get(
                 position).getName()));
-        if (position == 0) {
-            holder.removeButton.setVisibility(View.GONE);
-        } else {
-            holder.removeButton.setVisibility(View.VISIBLE);
-        }
+        holder.removeButton.setVisibility(View.VISIBLE);
         holder.removeButton.setTag(venueNameAndFeeds.get(position));
         convertView.setTag(R.id.venue_name_and_feeds, venueNameAndFeeds.get(position));
 

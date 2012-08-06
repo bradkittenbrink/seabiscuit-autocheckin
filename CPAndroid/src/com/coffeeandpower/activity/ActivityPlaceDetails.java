@@ -32,6 +32,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
 import com.coffeeandpower.cont.VenueChatEntry;
+import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.imageutil.ImageLoader;
@@ -160,47 +161,7 @@ public class ActivityPlaceDetails extends RootActivity {
 			}
 		});
         // Executor
-        exe = new Executor(ActivityPlaceDetails.this);
-        exe.setExecutorListener(new ExecutorInterface() {
-            @Override
-            public void onErrorReceived() {
-            }
 
-            @Override
-            public void onActionFinished(int action) {
-                result = exe.getResult();
-
-                switch (action) {
-                case Executor.HANDLE_VENUE_CHAT:
-                    if (result != null && result.getObject() != null
-                            && (result.getObject() instanceof ArrayList<?>)) {
-                        ArrayList<Object> tempArray = (ArrayList<Object>) result
-                                .getObject();
-                        ((CustomFontView) findViewById(R.id.textview_chat_places_name)).setText(AppCAP
-                                .cleanResponseString(getLastEntry(tempArray)));
-	}
-                    break;
-                }
-            }
-        });
-
-    }
-
-    private String getLastEntry(ArrayList<Object> chatArray) {
-        String lastEntry = "Loading Venue chat....";
-        if (chatArray.size() == 4) {
-            if (chatArray.get(3) instanceof ArrayList<?>) {
-                // Calculate number of users in chat
-                for (VenueChatEntry entry : (ArrayList<VenueChatEntry>) chatArray
-                        .get(3)) {
-                    if (entry.getSystemType() != null
-                            && !entry.getSystemType().equals("checkin")) {
-                        lastEntry = entry.getEntry();
-                    }
-                }
-            }
-        }
-        return lastEntry;
     }
 
 	@Override
@@ -246,10 +207,6 @@ public class ActivityPlaceDetails extends RootActivity {
             ((CustomFontView) findViewById(R.id.textview_place_address))
                     .setText(AppCAP.cleanResponseString(selectedVenue
                             .getAddress()));
-            if (((CustomFontView) findViewById(R.id.textview_chat_places_name))
-                    .getText().equals("Loading Venue chat...")) {
-                this.getLastChatentry(this.selectedVenue.getVenueId());
-            }
             ((TextView) findViewById(R.id.textview_place_check_in))
                     .setText("Check in to "
                             + AppCAP.cleanResponseString(selectedVenue
@@ -422,11 +379,6 @@ public class ActivityPlaceDetails extends RootActivity {
 		builder.create().show();
 	}
 
-    private String getLastChatentry(int venueId) {
-        // Get venue chat
-        exe.venueChat(venueId, "0", "", false, false);
-        return null;
-    }
 
 	private UserSmart getUserById(int userId, ArrayList<UserSmart>  arrayUsers) {
 		for (UserSmart us : arrayUsers) {
@@ -519,11 +471,14 @@ public class ActivityPlaceDetails extends RootActivity {
 	}
 
 	public void onClickChat(View v) {
+        AppCAP.updateUserLastCheckinVenue(new VenueNameAndFeeds(selectedVenue.getVenueId(), selectedVenue.getName()));
         Intent intent = new Intent(ActivityPlaceDetails.this,
-                ActivityPlaceChat.class);
+                ActivityFeedsForOneVenue.class);
 		intent.putExtra("venue_id", selectedVenue.getVenueId());
-		intent.putExtra("venue_name", selectedVenue.getName());
+        intent.putExtra("venue_name", selectedVenue.getName());
+        intent.putExtra("caller", "venue_chat");
 		startActivity(intent);
+		CacheMgrService.resetVenueFeedsData(true);
 	}
 
 	

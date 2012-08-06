@@ -1,12 +1,13 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="150dp" >
+    android:layout_height="150dp">
 
     <LinearLayout
         android:id="@+id/gray_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textview_days"
@@ -23,7 +24,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp" >
+            android:padding="10dp">
 
             <ImageView
                 android:id="@+id/imageview_image"
@@ -43,7 +44,7 @@
                 android:orientation="vertical"
                 android:paddingBottom="3dp"
                 android:paddingLeft="5dp"
-                android:paddingTop="3dp" >
+                android:paddingTop="3dp">
 
                 <com.coffeeandpower.views.CustomFontView
                     android:id="@+id/textview_persone_nickname"
@@ -79,7 +80,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="5dip"
                     android:orientation="horizontal"
-                    android:paddingTop="3dp" >
+                    android:paddingTop="3dp">
 
                     <TextView
                         android:id="@+id/textview_place"
@@ -96,12 +97,11 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="right"
                         android:singleLine="true"
                         android:textColor="#ffffffff"
                         android:textSize="13sp" />
-                    				
-                    </LinearLayout>
+
+                </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

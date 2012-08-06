@@ -1,25 +1,26 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#ffffff" >
+    android:background="#ffffff">
 
     <RelativeLayout
         android:id="@+id/dummy_layout"
         android:layout_width="fill_parent"
         android:layout_height="45dip"
-        android:background="@drawable/header" >
+        android:background="@drawable/header">
 
         <Button
-            android:id="@+id/btn_back"
+            android:id="@+id/btn_feed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dip"
             android:background="@drawable/rounded_border"
-            android:onClick="onClickBack"
+            android:onClick="onClickFeeds"
             android:padding="8dip"
-            android:text="@string/back"
+            android:text="@string/button_feeds"
             android:textColor="#ffffff" />
 
         <com.coffeeandpower.views.CustomFontView
@@ -57,27 +58,27 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/dummy_layout"
-        android:paddingTop="5dip" >
+        android:paddingTop="5dip">
 
-	   <ImageView
-			android:id="@+id/imageview_user_image"
-			android:layout_width="30dp"
-			android:layout_height="30dp"
-			android:layout_marginLeft="50dip"
-			android:adjustViewBounds="true"
-			android:layout_alignParentLeft="true"
-			android:background="@drawable/default_avatar25" 
-			android:focusable="false"/>
-	   <ImageView
-	        android:id="@+id/imageview_image_mask"
-	        android:layout_width="30dp"
-	        android:layout_height="30dp"
-		    android:layout_marginLeft="50dip"
-	        android:adjustViewBounds="true"
-	        android:layout_alignParentLeft="true"
-	        android:src="@drawable/user_image_mask" 
-	        android:focusable="false"/>
-        
+        <ImageView
+            android:id="@+id/imageview_user_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="50dip"
+            android:adjustViewBounds="true"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/default_avatar25"
+            android:focusable="false" />
+        <ImageView
+            android:id="@+id/imageview_image_mask"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="50dip"
+            android:adjustViewBounds="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/user_image_mask"
+            android:focusable="false" />
+
         <com.coffeeandpower.views.CustomFontView
             android:id="@+id/textview_update"
             android:layout_width="wrap_content"
@@ -115,7 +116,7 @@
             android:textColor="#ffffff" />
     </RelativeLayout>
 
-    
+
     <ListView
         android:id="@+id/listview_places_chat"
         android:layout_width="fill_parent"
@@ -124,8 +125,8 @@
         android:layout_marginBottom="5dip"
         android:cacheColorHint="#ffffff"
         android:divider="#d0d0d0"
-        android:dividerHeight="1dip" >
+        android:dividerHeight="1dip">
     </ListView>
-    
-    
+
+
 </RelativeLayout>

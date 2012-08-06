@@ -39,8 +39,6 @@ public class Executor {
     public static final int HANDLE_SET_USER_PROFILE_DATA = 1615;
     public static final int HANDLE_UPLOAD_USER_PROFILE_PHOTO = 1616;
     public static final int HANDLE_GET_USER_TRANSACTION_DATA = 1617;
-    public static final int HANDLE_VENUE_CHAT = 1618;
-    public static final int HANDLE_SEND_VENUE_CHAT = 1619;
     public static final int HANDLE_VENUE_FEED = 1620;
     public static final int HANDLE_SEND_VENUE_FEED = 1621;
     public static final int HANDLE_GET_SKILLS = 1622;
@@ -392,32 +390,6 @@ public class Executor {
         }, "Executor.getUserTransactionData").start();
     }
 
-    /**
-     * Get/send venue chat <br>
-     * getObject() instance of ArrayList <br>
-     * <br>
-     * [0]String lastId [1]String firstDate [2]String lastDate
-     * [3]ArrayList(VenueChatEntry)
-     * 
-     * @param venueId
-     * @param lastChatIDString
-     */
-    public synchronized void venueChat(final int venueId,
-            final String lastChatIDString, final String message,
-            final boolean isSend, boolean withProgress) {
-        if (withProgress) {
-            progress.setMessage(isSend ? "Sending..." : "Loading...");
-            progress.show();
-        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                result = AppCAP.getConnection().venueChatForVenueWithID(
-                        venueId, lastChatIDString, message, isSend);
-                handler.sendEmptyMessage(result.getHandlerCode());
-            }
-        }, "Executor.venueChat").start();
-    }
 
     public synchronized void deleteAccount() {
         progress.setMessage("Processing...");

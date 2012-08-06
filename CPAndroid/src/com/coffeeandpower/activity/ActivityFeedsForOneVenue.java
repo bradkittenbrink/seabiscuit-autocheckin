@@ -3,6 +3,7 @@ package com.coffeeandpower.activity;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,6 +23,7 @@ import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueChatEntry;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.imageutil.ImageLoader;
+import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.views.CustomFontView;
@@ -38,6 +40,7 @@ public class ActivityFeedsForOneVenue extends RootActivity {
     private String venueName = "";
     private String lastChatIDString = "0";
     private VenueNameAndFeeds venueNameAndFeeds;
+    private String caller;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -51,6 +54,7 @@ public class ActivityFeedsForOneVenue extends RootActivity {
         if (extras != null) {
             venueName = extras.getString("venue_name");
             venueId = extras.getInt("venue_id");
+            caller = extras.getString("caller");
 
             ((CustomFontView) findViewById(R.id.textview_places_chat_name))
                     .setText(venueName);
@@ -95,7 +99,7 @@ public class ActivityFeedsForOneVenue extends RootActivity {
 
         // ListView with chat entries
         list = (ListView) findViewById(R.id.listview_places_chat);
-        list.setStackFromBottom(true);
+//        list.setStackFromBottom(true);
         list.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position,
@@ -136,8 +140,13 @@ public class ActivityFeedsForOneVenue extends RootActivity {
         exe.venueFeeds(venueId, venueName, lastChatIDString, "", false, true);
     }
 
-    public void onClickBack(View v) {
-        onBackPressed();
+    public void onClickFeeds(View v) {
+        if (caller.contentEquals("feeds_list") == true) {
+            onBackPressed();
+        } else {
+            Intent intent = new Intent(this, ActivityVenueFeeds.class);
+            this.startActivity(intent);
+        }
     }
 
     @Override
