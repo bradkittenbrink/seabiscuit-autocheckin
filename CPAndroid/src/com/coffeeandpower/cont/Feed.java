@@ -152,6 +152,9 @@ public class Feed implements Parcelable {
 
 
     public void setAuthorPhotoUrl(String authorPhotoUrl) {
+        if (authorPhotoUrl.contentEquals("images/no_picture.jpg") == true) {
+            authorPhotoUrl = "";
+        }
         this.authorPhotoUrl = authorPhotoUrl;
     }
 

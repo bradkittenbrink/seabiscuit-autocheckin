@@ -197,13 +197,13 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
     }
 
 	private void setupTabBar() {
-		if (AppCAP.isUserCheckedIn()) {
+/*		if (AppCAP.isUserCheckedIn()) {
             ((TextView) findViewById(R.id.textview_check_in))
                     .setText("Check Out");
 		} else {
             ((TextView) findViewById(R.id.textview_check_in))
                     .setText("Check In");
-		}
+		}*/
 	}
 
 	public void onClickLinkedIn(View v) {
@@ -337,14 +337,23 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 		finish();
 	}
 
-	@Override
-	public void onClickCheckIn(View v) {
-		if (AppCAP.isLoggedIn()) {
-			menu.onClickCheckIn(v);
-		} else {
-			showDialog(DIALOG_MUST_BE_A_MEMBER);
-		}
-	}
+    @Override
+    public void onClickCheckIn(View v) {
+        if (AppCAP.isLoggedIn()) {
+            menu.onClickCheckIn(v);
+        } else {
+            showDialog(DIALOG_MUST_BE_A_MEMBER);
+        }
+    }
+
+    @Override
+    public void onClickCheckOut(View v) {
+        if (AppCAP.isLoggedIn()) {
+            menu.onClickCheckOut(v);
+        } else {
+            showDialog(DIALOG_MUST_BE_A_MEMBER);
+        }
+    }
 
 	@Override
 	public void onClickPeople(View v) {
@@ -473,7 +482,22 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
 				Log.d("Contacts","Error: Received unexpected data type: " + data.getClass().toString());
 		}
 	}
+
+    @Override
+    public void onClickMinus(View v) {
+        menu.onClickMinus(v);
+    }
+
+    @Override
+    public void onClickPlus(View v) {
+        menu.onClickPlus(v);
+    }
 	
+
+    @Override
+    public void onClickFeed(View v) { 
+        menu.onClickFeed(v);
+    }
 	
 
 }

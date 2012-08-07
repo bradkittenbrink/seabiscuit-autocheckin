@@ -13,4 +13,5 @@ public interface UserMenu {
     public void onClickSupport(View v);
 
 	public void onClickLogout(View v);
+
 }

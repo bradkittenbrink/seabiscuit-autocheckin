@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -19,6 +21,9 @@ import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
+import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.activity.ActivityFeedsForOneVenue;
+import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.cont.ChatMessage;
 import com.coffeeandpower.cont.Feed;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
@@ -29,13 +34,14 @@ public class MyFeedsAdapter extends BaseAdapter {
 
     private ArrayList<Feed> messages;
     private VenueNameAndFeeds venueNameAndFeeds;
-    private LayoutInflater inflater;
+    private LayoutInflater inflater; 
     public ImageLoader imageLoader;
-    private int localUserId;
+    private int localUserId; 
+    private Activity context; 
 
     public MyFeedsAdapter(Activity context, ArrayList<Feed> messages, VenueNameAndFeeds venueNameAndFeeds) {
-
-        this.inflater = context.getLayoutInflater();
+        this.context = context;
+        this.inflater = context.getLayoutInflater(); 
         this.imageLoader = new ImageLoader(context.getApplicationContext());
         this.localUserId = AppCAP.getLoggedInUserId();
         Log.d("MyFeedsAdapter", "messages length..." + messages.size());
@@ -43,7 +49,7 @@ public class MyFeedsAdapter extends BaseAdapter {
             this.messages = messages;
         } else {
             this.messages = new ArrayList<Feed>();
-        }
+        } 
         this.venueNameAndFeeds = venueNameAndFeeds; 
     }
 
@@ -78,7 +84,7 @@ public class MyFeedsAdapter extends BaseAdapter {
             this.textMessage = (TextView) convertView
                     .findViewById(R.id.textview_chat_message);
             this.profileImage = (ImageView) convertView
-                    .findViewById(R.id.imageview_image);
+                    .findViewById(R.id.imageview_image); 
         }
     }
 
@@ -115,16 +121,35 @@ public class MyFeedsAdapter extends BaseAdapter {
         if (AppCAP.isLoggedIn()) {
             imageLoader.DisplayImage(messages.get(position).getAuthorPhotoUrl(),
                     holder.profileImage, R.drawable.default_avatar50, 70);
+            holder.profileImage.setTag(messages.get(position).getAuthorId());
+            holder.profileImage.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!AppCAP.isLoggedIn()) {
+                        context.showDialog(RootActivity.DIALOG_MUST_BE_A_MEMBER);
+                    } else {
+                        int user_id = (Integer) v.getTag();
+                        Intent intent = new Intent(context,
+                                ActivityUserDetails.class);
+                        intent.putExtra("user_id", user_id);
+                        intent.putExtra("from_act", "user_id");
+                        context.startActivity(intent);
+                    }
+                }
+            });
+
         } else {
             imageLoader.DisplayImage("", holder.profileImage,
-                    R.drawable.default_avatar50_login, 70);
+                    R.drawable.default_avatar50_login, 70);  
         }
 
         return convertView;
     }
 
-    public void setNewData(ArrayList<Feed> messages2) {
+
+    public void setNewData(ArrayList<Feed> messages2, VenueNameAndFeeds venueNameAndFeeds2) {
         this.messages = messages2;
+        this.venueNameAndFeeds = venueNameAndFeeds2;
     }
 
 }

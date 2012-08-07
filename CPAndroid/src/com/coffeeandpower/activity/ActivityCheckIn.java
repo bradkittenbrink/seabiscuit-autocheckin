@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
@@ -36,8 +37,10 @@ import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
 import com.coffeeandpower.utils.Executor;
+import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.Utils;
+import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.CustomSeek;
 import com.coffeeandpower.views.CustomSeek.HoursChangeListener;
@@ -52,6 +55,8 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	private MapView mapView;
 	private MapController mapController;
 	private MyItemizedOverlay2 itemizedoverlay;
+
+    private ProgressDialog progress;
 
 	private VenueSmart venue;
 
@@ -68,7 +73,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 
 	private EditText statusEditText;
 	
-	private Context myContext;
+	private Context context;
 
     private int checkInDuration = 1; // default 1 hour checkin duration, slider
                                      // sets other values
@@ -117,7 +122,8 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		usersArray = new ArrayList<UserSmart>();
 		checkedInUsers = new ArrayList<UserShort>();
 
-		myContext = this;
+		context = this;
+        this.progress = new ProgressDialog(context);
 
 		// Executor
 		
@@ -233,14 +239,37 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		super.onResume();
 	}
 
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            progress.dismiss();
+
+            switch (msg.what) {
+            case AppCAP.HTTP_ERROR:
+                new CustomDialog(context, "Error", result.getResponseMessage())
+                        .show();
+                break;
+
+            case UserAndTabMenu.HANDLE_CHECK_OUT:
+                CacheMgrService.checkOutTrigger();
+                DoCheckIn();
+
+                break;
+
+
+            }
+        }
+
+    };
 	/**
 	 * Checkin me in venue
 	 * 
 	 * @param v
 	 */
 	public void onClickCheckIn(View v) {
-		final int checkInTime = (int) (System.currentTimeMillis() / 1000);
-        final int checkOutTime = checkInDuration;
 
         // FIXME
         // The Venue and VenueSmart classes still need to be unified, this is
@@ -251,7 +280,27 @@ public class ActivityCheckIn extends RootActivity implements Observer {
         // ((ImageView)
         // findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityCheckIn.this,
 		//		R.anim.rotate_indefinitely));
-		
+        if (AppCAP.isUserCheckedIn()) {
+            progress.setMessage(getResources().getString(R.string.message_checking_out));
+            progress.show();
+            AppCAP.setUserCheckedIn(false);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                            result = AppCAP.getConnection()
+                                    .checkOut();
+                            handler.sendEmptyMessage(result
+                                    .getHandlerCode());
+                }
+            },"ActivityCheckIn.onClickCheckIn").start();
+        } else {
+            DoCheckIn();
+        }
+    }
+
+    public void DoCheckIn() {
+        final int checkInTime = (int) (System.currentTimeMillis() / 1000);
+        final int checkOutTime = checkInDuration;
 		// If user has not already selected this venue for auto checkin, 
 		// Create Dialog to ask whether user wants to check in automatically at this venue
 		int[] venueList = AppCAP.getVenuesWithAutoCheckins();
@@ -272,7 +321,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
         			
         			 public void onClick(DialogInterface arg0, int arg1) {
         				 Log.d("CheckIn","User clicked YES");
-        				 exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),true,false,myContext);
+        				 exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),true,false,context);
         				 LocationDetectionStateMachine.manualCheckin(getApplicationContext(),new Handler(), venue);
         		 	 }
         		});
@@ -280,23 +329,18 @@ public class ActivityCheckIn extends RootActivity implements Observer {
         		       
                 		  public void onClick(DialogInterface arg0, int arg1) {
                 			  Log.d("CheckIn","User clicked NO");
-                			  exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false,myContext);
+                			  exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false,context);
                 		  }
         		});
         		myAlertDialog.show();
 		} else {
 			// If user already selected autocheckin, just check them in silently
-			exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false,myContext);
+			exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false,context);
 		}
 		
 		
 		
 	}
-	
-	
-	
-	
-	
 	
 	private ArrayList<UserShort> convertUserSmart2UserShort(ArrayList<UserSmart> userList) {
 		ArrayList<UserShort> shortUsers = new ArrayList<UserShort>();

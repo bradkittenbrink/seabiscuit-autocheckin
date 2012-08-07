@@ -111,10 +111,8 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 			// Determine which message type is being sent
 			String type = msg.getData().getString("type");
 			
-			if (type.equalsIgnoreCase("AutoCheckinTrigger")) {
-				checkUserState();
-			}
-			else { // if the message isn't an autocheckin trigger, assume its a cached data update
+			if (!type.equalsIgnoreCase("AutoCheckinTrigger")) {
+			 // if the message isn't an autocheckin trigger, assume its a cached data update
         			// pass message data along to venue update method
             ArrayList<VenueSmart> venueArray = msg.getData()
                     .getParcelableArrayList("venues");
@@ -134,21 +132,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	// Lifecycle Management
 	//====================================================================
     
-    
-    /**
-     * Check if user is checked in or not
-     */
-    private void checkUserState() {
-        if (AppCAP.isUserCheckedIn()) {
-            ((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-            //((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityMap.this,
-            //        R.anim.rotate_indefinitely));
-        } else {
-            ((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
-            //((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
-        }
-    }
-
 	@Override
 	protected void onCreate(Bundle icicle) {
 
@@ -199,7 +182,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		menu.setOnUserStateChanged(new OnUserStateChanged() {
 			@Override
 			public void onCheckOut() {
-				checkUserState();
 				refreshMapDataSet();
 			}
 
@@ -298,8 +280,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
             Log.d("ActivityMap",
                     "ActivityMap.onStart(): " + AppCAP.isUserCheckedIn());
 
-		checkUserState();
-
         if (AppCAP.isFirstStart() && AppCAP.getEnteredInviteCode() == false) {
             startActivity(new Intent(ActivityMap.this,
                     ActivityEnterInviteCode.class));
@@ -369,7 +349,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		if (Constants.debugLog)
 			Log.d(TAG,"ActivityMap.onStart()");
 		super.onStart();
-		checkUserState();
 		UAirship.shared().getAnalytics().activityStarted(this);
 		CacheMgrService.startObservingAPICall("venuesWithCheckins",myCachedDataObserver);
 		LocationDetectionStateMachine.startObservingAutoCheckinTrigger(myAutoCheckinObserver);
@@ -530,7 +509,6 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	}
 
 	private void refreshMapDataSet() {
-		checkUserState();
 
         Animation anim = AnimationUtils
                 .loadAnimation(this, R.anim.refresh_anim);
@@ -654,6 +632,15 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 			showDialog(DIALOG_MUST_BE_A_MEMBER);
 		}
 	}
+
+    @Override
+    public void onClickCheckOut(View v) {
+        if (AppCAP.isLoggedIn()) {
+            menu.onClickCheckOut(v);
+        } else {
+            showDialog(DIALOG_MUST_BE_A_MEMBER);
+        }
+    }
 
     @Override
     public void onClickSupport(View v) {
@@ -793,11 +780,24 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 		if (itemizedoverlay.size() > 0) {
 			mapView.getOverlays().add(itemizedoverlay);
 		}
-		checkUserState();
 		mapView.invalidate();
 
 	}
 
-   
+
+    @Override
+    public void onClickMinus(View v) {
+        menu.onClickMinus(v);
+    }
+
+    @Override
+    public void onClickPlus(View v) {
+        menu.onClickPlus(v);
+    }
+
+    @Override
+    public void onClickFeed(View v) { 
+        menu.onClickFeed(v);
+    }
 
 }

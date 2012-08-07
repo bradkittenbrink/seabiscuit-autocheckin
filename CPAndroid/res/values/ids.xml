@@ -1,4 +1,8 @@
 <resources>
-	<item type="id" name="holder_id"/>
-	<item type="id" name="venue_name_and_feeds"/>
+    <item
+        type="id"
+        name="holder_id" />
+    <item
+        type="id"
+        name="venue_name_and_feeds" />
 </resources>

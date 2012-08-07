@@ -3,15 +3,21 @@ package com.coffeeandpower.activity;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
@@ -19,10 +25,13 @@ import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyFeedsAdapter;
 import com.coffeeandpower.adapters.MyPlaceChatAdapter;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.Feed;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueChatEntry;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
+import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.imageutil.ImageLoader;
+import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
@@ -40,6 +49,7 @@ public class ActivityFeedsForOneVenue extends RootActivity {
     private String venueName = "";
     private String lastChatIDString = "0";
     private VenueNameAndFeeds venueNameAndFeeds;
+    private MyFeedsAdapter adapter;
     private String caller;
 
     @Override
@@ -99,14 +109,31 @@ public class ActivityFeedsForOneVenue extends RootActivity {
 
         // ListView with chat entries
         list = (ListView) findViewById(R.id.listview_places_chat);
-//        list.setStackFromBottom(true);
-        list.setOnItemClickListener(new OnItemClickListener() {
+        ((EditText) findViewById(R.id.edittext_places_chat)).setImeOptions(EditorInfo.IME_ACTION_SEND);
+        ((EditText) findViewById(R.id.edittext_places_chat))
+        .setOnEditorActionListener(new OnEditorActionListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View v, int position,
-                    long arg3) {
+            public boolean onEditorAction(TextView v, int actionId,
+                    KeyEvent event) {
+ 
+                if (actionId == EditorInfo.IME_NULL && 
+                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER && 
+                        event.getAction() == KeyEvent.ACTION_DOWN) {
+                    String input = v.getText().toString();
+                    InputMethodManager inputManager = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE); 
 
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                               InputMethodManager.HIDE_NOT_ALWAYS);
+                    if (input != null && input.length() > 0) {
+                        exe.venueFeeds(venueId, venueName, "0", input, true, true);
+                    }
+                }
+                return false;
             }
         });
+
+
     }
 
     private void populateList(VenueNameAndFeeds venueNameAndFeeds) {
@@ -115,7 +142,7 @@ public class ActivityFeedsForOneVenue extends RootActivity {
             imageLoader.DisplayImage(AppCAP.getLocalUserPhotoURL(),
                     userProfileImage, R.drawable.default_avatar25, 70);
         }
-        MyFeedsAdapter adapter = new MyFeedsAdapter(this, venueNameAndFeeds.getFeedsArray(), venueNameAndFeeds);            
+        adapter = new MyFeedsAdapter(this, venueNameAndFeeds.getFeedsArray(), venueNameAndFeeds);            
         list.setAdapter(adapter);
     }
 
@@ -125,8 +152,13 @@ public class ActivityFeedsForOneVenue extends RootActivity {
 
     public void onClickSend(View v) {
         EditText editText = (EditText) findViewById(R.id.edittext_places_chat);
-        String input = editText.getText().toString();
+        String input = editText.getText().toString(); 
 
+        InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE); 
+
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                   InputMethodManager.HIDE_NOT_ALWAYS);
         if (input != null && input.length() > 0) {
             exe.venueFeeds(venueId, venueName, "0", input, true, true);
         }

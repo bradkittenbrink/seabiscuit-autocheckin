@@ -1,61 +1,62 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" 
-    android:onClick="onClickOpenVenueFeeds" 
+    android:orientation="vertical"
+    android:onClick="onClickOpenVenueFeeds"
     android:background="#FFFFFF">
-    <LinearLayout 
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" 
+        android:orientation="vertical"
         android:layout_margin="6dip"
         android:paddingLeft="5dip"
         android:paddingRight="5dip"
-        android:paddingTop="10dip"
-        android:paddingBottom="10dip"
+        android:paddingTop="1dip"
+        android:paddingBottom="1dip"
         android:background="@drawable/rounded_border_venue_feeds">
-        
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/textview_venue_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:focusable="false"
-                    android:text=""
-                    android:textColor="#009c91"
-                    android:textSize="20dip" />
-    
-                <TextView
-                    android:id="@+id/textview_last_checkedin_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dip"
-                    android:gravity="left"
-                    android:focusable="false"
-                    android:textSize="12sp" />
-                <Button
-                    android:id="@+id/btn_remove"
-                    android:layout_width="28dip"
-                    android:layout_height="28dip"
-                    android:layout_marginLeft="10dip"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/close"
-                    android:focusable="false"
-                    android:onClick="onClickRemove" />
+            <TextView
+                android:id="@+id/textview_venue_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:focusable="false"
+                android:text=""
+                android:textColor="#009c91"
+                android:textSize="20dip" />
+
+            <TextView
+                android:id="@+id/textview_last_checkedin_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dip"
+                android:gravity="left"
+                android:focusable="false"
+                android:textSize="12sp" />
+            <Button
+                android:id="@+id/btn_remove"
+                android:layout_width="28dip"
+                android:layout_height="28dip"
+                android:layout_marginLeft="10dip"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/close"
+                android:focusable="false"
+                android:onClick="onClickRemove" />
         </RelativeLayout>
-        <ListView
-             android:id="@+id/item_venue_feeds_listview"
-             android:layout_width="fill_parent"
-             android:layout_height="0dp"
-             android:layout_weight="1"
-             android:cacheColorHint="#00000000"
-             android:divider="#4a4a4a"
-             android:focusable="false"
-             android:dividerHeight="1dip" />
+        <LinearLayout
+            android:id="@+id/item_venue_feeds_listview"
+            android:layout_width="fill_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#00000000"
+            android:divider="#dddddd"
+            android:focusable="false"
+            android:dividerHeight="4dip" />
     </LinearLayout>
 
 </LinearLayout>

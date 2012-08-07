@@ -28,61 +28,77 @@
 
         <!-- SECOND VIEW -->
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:background="#2d2d2d"
-            android:orientation="vertical" >
+            android:layout_height="fill_parent" >
 
             <RelativeLayout
-                android:id="@+id/dummy_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="45dip"
-                android:background="@drawable/header" >
-
-                <Button
-                    android:id="@+id/btn_menu"
-                    android:layout_width="41dip"
-                    android:layout_height="28dip"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dip"
-                    android:background="@drawable/btn_settings"
-                    android:onClick="onClickMenu" />
-
-                <com.coffeeandpower.views.CustomFontView
-                    android:id="@+id/textview_contact_list"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:text="@string/tab_activity_contacts_contact"
-                    android:textColor="#ffffff"
-                    android:textSize="25dip" />
-            </RelativeLayout>
-
-            <ImageView
-                android:id="@+id/contacts_blank_slate_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:background="@drawable/contacts_blank_slate" />
-
-            <ListView
-                android:id="@+id/contacts_listview"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_above="@+id/tab_bar"
-                android:layout_below="@+id/dummy_layout"
-                android:cacheColorHint="#00000000"
-                android:divider="#4a4a4a"
-                android:dividerHeight="1dip" />
+                android:background="#2d2d2d"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="#2d2d2d"
+                    android:orientation="vertical" >
+
+                    <RelativeLayout
+                        android:id="@+id/dummy_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="45dip"
+                        android:background="@drawable/header" >
+
+                        <Button
+                            android:id="@+id/btn_menu"
+                            android:layout_width="41dip"
+                            android:layout_height="28dip"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dip"
+                            android:background="@drawable/btn_settings"
+                            android:onClick="onClickMenu" />
+
+                        <com.coffeeandpower.views.CustomFontView
+                            android:id="@+id/textview_contact_list"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/tab_activity_contacts_contact"
+                            android:textColor="#ffffff"
+                            android:textSize="25dip" />
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/contacts_blank_slate_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/contacts_blank_slate" />
+
+                    <ListView
+                        android:id="@+id/contacts_listview"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_above="@+id/tab_bar"
+                        android:layout_below="@+id/dummy_layout"
+                        android:cacheColorHint="#00000000"
+                        android:divider="#4a4a4a"
+                        android:dividerHeight="1dip" />
+
+                    <include
+                        android:id="@+id/tab_bar"
+                        android:layout_alignParentBottom="true"
+                        layout="@layout/tab_bar" />
+                </RelativeLayout>
+            </RelativeLayout>
 
             <include
-                android:id="@+id/tab_bar"
-                android:layout_alignParentBottom="true"
-                layout="@layout/tab_bar" />
-        </RelativeLayout>
+                android:id="@+id/vertical_bar"
+                layout="@layout/vertical_bar" />
+        </FrameLayout>
     </com.coffeeandpower.views.HorizontalPagerModified>
 
 </RelativeLayout>

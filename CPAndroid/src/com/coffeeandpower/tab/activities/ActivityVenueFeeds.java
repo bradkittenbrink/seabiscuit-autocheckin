@@ -118,7 +118,6 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
         });
 
         if (AppCAP.isLoggedIn()) {
-            // Display the list of users if the user is logged in
             listView = (ListView) findViewById(R.id.venue_feeds_listview);
 
         } else {
@@ -136,28 +135,8 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
     public void onClickMenu(View v) {
         if (pager.getCurrentScreen() == SCREEN_USER) {
             pager.setCurrentScreen(SCREEN_SETTINGS, true);
-            ((TabActivity) getParent()).getTabHost().getTabWidget()
-                .setVisibility(View.GONE);
-            TranslateAnimation moveLeftToRight = new TranslateAnimation(0,
-                    TAB_CHECKIN_MOVE_DISTANCE, 0, 0);
-            moveLeftToRight.setDuration(TAB_CHECKIN_MOVE_DURATION);
-            moveLeftToRight.setFillAfter(true);
-            ((TabActivity) getParent()).getTabHost()
-                .findViewById(R.id.imageview_check_in)
-                .setAnimation(moveLeftToRight);
-            
         } else {
             pager.setCurrentScreen(SCREEN_USER, true);
-            ((TabActivity) getParent()).getTabHost().getTabWidget()
-                .setVisibility(View.VISIBLE);
-            TranslateAnimation moveRightToLeft = new TranslateAnimation(
-                    TAB_CHECKIN_MOVE_DISTANCE, 0, 0, 0);
-            moveRightToLeft.setDuration(TAB_CHECKIN_MOVE_DURATION);
-            moveRightToLeft.setFillAfter(true);
-            ((TabActivity) getParent()).getTabHost()
-                .findViewById(R.id.imageview_check_in)
-                .setAnimation(moveRightToLeft);
-
         }
     }
 
@@ -271,6 +250,15 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
     }
 
     @Override
+    public void onClickCheckOut(View v) {
+        if (AppCAP.isLoggedIn()) {
+            menu.onClickCheckOut(v);
+        } else {
+            showDialog(DIALOG_MUST_BE_A_MEMBER);
+        }
+    }
+
+    @Override
     public void onClickPeople(View v) {
         menu.onClickPeople(v);
         finish();
@@ -328,7 +316,6 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
         } else {
             adapterFeeds.setNewData(arrayFeeds);
             adapterFeeds.notifyDataSetChanged();
-            listView.setSelection(0);
         }
 
         if (Constants.debugLog)
@@ -406,7 +393,21 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
                 Log.d("venueFeeds", "Error: Received unexpected data type: " + data.getClass().toString());
         }
     }
-    
-    
+
+    @Override
+    public void onClickMinus(View v) {
+        menu.onClickMinus(v);
+    }
+
+    @Override
+    public void onClickPlus(View v) {
+        menu.onClickPlus(v);
+    }
+
+    @Override
+    public void onClickFeed(View v) { 
+        menu.onClickFeed(v);
+    }
+
 
 }

@@ -111,6 +111,7 @@ public class ActivityUserDetails extends RootActivity implements Observer {
             super.handleMessage(msg);
         }
     };
+    private int user_id = 0;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -190,6 +191,9 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                 if (fromAct.equals("list")) {
                     // From list
                     mud = (UserSmart) extras.getParcelable("mapuserobject");
+                } else if (fromAct.equals("user_id")) {
+                    // From list
+                    user_id = (int) extras.getInt("user_id");
                 }
             }
         }
@@ -259,6 +263,8 @@ public class ActivityUserDetails extends RootActivity implements Observer {
         // Load user resume data
         if (mud != null) {
             exe.getResumeForUserId(mud.getUserId());
+        } else if (user_id != 0) {
+            exe.getResumeForUserId(user_id);
         }
 
     } // end onCreate()

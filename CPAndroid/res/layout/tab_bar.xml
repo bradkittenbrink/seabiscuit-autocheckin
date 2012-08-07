@@ -7,7 +7,7 @@
         android:id="@+id/view_1"
         android:layout_width="fill_parent"
         android:layout_height="1dip"
-        android:layout_marginTop="25dip"
+        android:layout_marginTop="1dip"
         android:background="#000000" />
 
     <View
@@ -18,7 +18,7 @@
         android:background="#424242" />
 
     <LinearLayout
-        android:id="@+id/tab_bar"
+        android:id="@+id/tab_bar_h"
         android:layout_width="match_parent"
         android:layout_height="60dip"
         android:layout_below="@+id/view_2"
@@ -135,34 +135,5 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_check_in"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="false"
-        android:layout_marginLeft="7px"
-        android:layout_marginTop="5px"
-        android:clickable="true"
-        android:onClick="onClickCheckIn" >
-
-        <TextView
-            android:id="@+id/textview_check_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="-15dip"
-            android:text="@string/tab_check_in"
-            android:visibility="invisible" />
-
-        <ImageView
-            android:id="@+id/imageview_check_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/tab_check_in_out"
-            android:clickable="true"
-            android:onClick="onClickCheckIn" />
-    </RelativeLayout>
 
 </RelativeLayout>

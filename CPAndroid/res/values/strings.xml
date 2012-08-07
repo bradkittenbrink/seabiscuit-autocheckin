@@ -17,6 +17,9 @@
     <string name="next">Next</string>
     <string name="send">Send</string>
     <string name="cancel">Cancel</string>
+    <string name="choose_one">Choose one</string>
+    <string name="post_to_feed">Post to Feed</string>
+    <string name="checkin">Checkin</string>
     <string name="later">Later</string>
     <string name="settings">Profile</string>
     <string name="other">other</string>
@@ -112,9 +115,14 @@
     <string name="help_linked_in_invite_list">Click here to select LinkedIn contacts</string>
     <string name="checked_out_confirmation">Are you sure you want to be checked out?
     </string>
+    <string name="checked_out_confirmation_with_venue_name">Do you want to leave %1$s?
+        You can always go back
+        later!
+    </string>
     <string name="activity_invite_contacts_title">Invite LinkedIn Connections</string>
     <string name="activity_invite_confirm_header">%1$s is inviting you to Coffee &amp; Power
     </string>
+    <string name="message_checking_out">"Checking out..."</string>
     <string name="activity_invite_confirm_content">
 <![CDATA[
         Hi! %1$s is inviting you to join Coffee &amp; Power, the mobile work network.<br/>

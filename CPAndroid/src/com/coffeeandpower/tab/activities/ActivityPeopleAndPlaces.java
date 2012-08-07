@@ -185,13 +185,10 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			}
 		});
 
-		// User and Tab Menu
-		checkUserState();
 		menu = new UserAndTabMenu(this);
 		menu.setOnUserStateChanged(new OnUserStateChanged() {
 			@Override
 			public void onCheckOut() {
-				checkUserState();
 			}
 
 			@Override
@@ -245,19 +242,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 
 	
 
-	/**
-	 * Check if user is checked in or not
-	 */
-	private void checkUserState() {
-		if (AppCAP.isUserCheckedIn()) {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check Out");
-			//((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).setAnimation(AnimationUtils.loadAnimation(ActivityPeopleAndPlaces.this,
-			//		R.anim.rotate_indefinitely));
-		} else {
-			((TextView) findViewById(R.id.textview_check_in)).setText("Check In");
-			//((ImageView) findViewById(R.id.imageview_check_in_clock_hand)).clearAnimation();
-		}
-	}
 	
 	private void setPeopleList() {
 
@@ -302,8 +286,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	@Override
 	protected void onStart() {
 
-		checkUserState();
-
 		if (Constants.debugLog)
             Log.d("PeoplePlaces", "ActivityPeopleAndPlaces.onStart()");
 		super.onStart();
@@ -328,8 +310,6 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		checkUserState();
 
 		if (AppCAP.shouldFinishActivities()) {
 			onBackPressed();
@@ -422,6 +402,15 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		}
 	}
 
+    @Override
+    public void onClickCheckOut(View v) {
+        if (AppCAP.isLoggedIn()) {
+            menu.onClickCheckOut(v);
+        } else {
+            showDialog(DIALOG_MUST_BE_A_MEMBER);
+        }
+    }
+
 	
 	private class MyAutoCheckinTriggerObserver implements Observer {
 
@@ -483,7 +472,20 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		}
 	}
 	
-	
-	
+
+    @Override
+    public void onClickMinus(View v) {
+        menu.onClickMinus(v);
+    }
+
+    @Override
+    public void onClickPlus(View v) {
+        menu.onClickPlus(v);
+    }
+
+    @Override
+    public void onClickFeed(View v) { 
+        menu.onClickFeed(v);
+    }
 
 }

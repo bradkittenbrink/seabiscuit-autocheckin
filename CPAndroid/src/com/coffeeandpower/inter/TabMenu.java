@@ -12,7 +12,16 @@ public interface TabMenu {
 
     public void onClickCheckIn(View v);
 
+    public void onClickCheckOut(View v);
+
     public void onClickPeople(View v);
 
     public void onClickContacts(View v);
+
+    public void onClickMinus(View v);
+
+    public void onClickPlus(View v);
+
+    public void onClickFeed(View v);
+
 }
