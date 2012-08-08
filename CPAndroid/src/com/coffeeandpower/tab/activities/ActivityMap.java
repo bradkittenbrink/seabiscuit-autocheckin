@@ -195,9 +195,9 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 			}
 		});
 
-        ((RelativeLayout) findViewById(R.id.rel_map))
+        ((RelativeLayout) findViewById(R.id.rel_places))
                 .setBackgroundResource(R.drawable.bg_tabbar_selected);
-        ((ImageView) findViewById(R.id.imageview_map))
+        ((ImageView) findViewById(R.id.imageview_places))
                 .setImageResource(R.drawable.tab_places_pressed);
 
 		// Set others

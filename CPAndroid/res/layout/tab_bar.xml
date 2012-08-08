@@ -26,7 +26,7 @@
         android:orientation="horizontal" >
 
         <RelativeLayout
-            android:id="@+id/rel_places"
+            android:id="@+id/rel_map"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
@@ -34,8 +34,7 @@
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
             android:gravity="center"
-            android:onClick="onClickPlaces" >
-        </RelativeLayout>
+            android:onClick="onClickMap" />
 
         <RelativeLayout
             android:id="@+id/rel_feed"
@@ -59,7 +58,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/rel_map"
+            android:id="@+id/rel_places"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
@@ -67,10 +66,10 @@
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
             android:gravity="center"
-            android:onClick="onClickMap" >
+            android:onClick="onClickPlaces" >
 
             <ImageView
-                android:id="@+id/imageview_map"
+                android:id="@+id/imageview_places"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"

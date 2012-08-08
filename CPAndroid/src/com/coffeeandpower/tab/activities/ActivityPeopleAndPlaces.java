@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -203,17 +204,21 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 			// Check is it People or Places List
 			type = extras.getString("type");
 			if (type.equals("people")) {
-                ((RelativeLayout) findViewById(R.id.rel_people))
-                        .setBackgroundResource(R.drawable.bg_tabbar_selected);
-                ((ImageView) findViewById(R.id.imageview_people))
-                        .setImageResource(R.drawable.tab_people_pressed);
-                ((CustomFontView) findViewById(R.id.textview_location_name))
-                        .setText(PEOPLE_SCREEN_TITLE);
+				((RelativeLayout) findViewById(R.id.rel_people))
+						.setBackgroundResource(R.drawable.bg_tabbar_selected);
+				((ImageView) findViewById(R.id.imageview_people))
+						.setImageResource(R.drawable.tab_people_pressed);
+				((CustomFontView) findViewById(R.id.textview_location_name))
+						.setText(PEOPLE_SCREEN_TITLE);
+				((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
+
 			} else {
-                ((RelativeLayout) findViewById(R.id.rel_places))
-                        .setBackgroundResource(R.drawable.bg_tabbar_selected);
-                ((CustomFontView) findViewById(R.id.textview_location_name))
-                        .setText(PLACES_SCREEN_TITLE);
+				((RelativeLayout) findViewById(R.id.rel_places))
+						.setBackgroundResource(R.drawable.bg_tabbar_selected);
+				((ImageView) findViewById(R.id.imageview_places))
+						.setImageResource(R.drawable.tab_places_pressed);
+				((CustomFontView) findViewById(R.id.textview_location_name))
+						.setText(PLACES_SCREEN_TITLE);
 			}
 
 			// Check is it click from Activity or Balloon
