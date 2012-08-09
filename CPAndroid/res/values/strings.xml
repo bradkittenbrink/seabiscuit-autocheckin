@@ -72,7 +72,8 @@
     <string name="activity_settings_invite">Invite</string>
     <string name="activity_settings_profile_photo">Profile Photo</string>
     <string name="activity_settings_strongest_skill">My strongest skill is..</string>
-    <string name="activity_settings_job_category">Job Category</string>
+    <string name="activity_settings_job_category_lbl">Job Categories</string>
+    <string name="activity_settings_job_category">Other/Other</string>
     <string name="activity_settings_smarterer">Smarterer Badges</string>
     <string name="activity_settings_profile_visibility">Profile visibility</string>
     <string name="activity_settings_profile_delete">Delete Account</string>

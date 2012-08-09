@@ -91,7 +91,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="@string/activity_settings_job_category"
+                        android:text="@string/activity_settings_job_category_lbl"
                         android:textColor="#666"
                         android:textSize="19sp" />
                     

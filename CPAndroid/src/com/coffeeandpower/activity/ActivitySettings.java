@@ -210,7 +210,7 @@ public class ActivitySettings extends RootActivity {
                 switch (actionId) {
                 case EditorInfo.IME_ACTION_SEND:
                     if (loggedUser != null) {
-                        //loggedUser.setUserName(textEmail.getText().toString());
+                        loggedUser.setUsername(textEmail.getText().toString());
                         exe.setUserProfileData(loggedUser, true);
                     }
                     break;
@@ -273,9 +273,42 @@ public class ActivitySettings extends RootActivity {
     private void useUserData() {
         // Set views
         if (loggedUser != null) {
+            imageLoader.DisplayImage(loggedUser.getPhoto(),
+                    imageProfilePhoto, R.drawable.default_avatar25, 400);
+
+            class LoadPhotoThread implements Runnable {
+                public Activity activity;
+                public RelativeLayout layout;
+                public String url;
+
+                @Override
+                public void run() {
+                    Bitmap b = imageLoader.getBitmap(url);
+                    final Bitmap background = ImageLoader.FastBlur(b, 4);
+                    b.recycle();
+
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (background != null) {
+                                layout.setBackgroundDrawable(new BitmapDrawable(
+                                        background));
+                            }
+                        }
+                    });
+                }
+            }
+
+            LoadPhotoThread t = new LoadPhotoThread();
+            t.activity = this;
+            t.layout = backgroundPhoto;
+            t.url = loggedUser.getPhoto();
+            new Thread(t).start();
+            
+            
             title.setText(getResources().getString(R.string.settings));
             textNickName.setText(loggedUser.getNickName());
-            //textEmail.setText(loggedUser.getUserName());
+            textEmail.setText(loggedUser.getUsername());
             
             String jobCategories = "";
             
