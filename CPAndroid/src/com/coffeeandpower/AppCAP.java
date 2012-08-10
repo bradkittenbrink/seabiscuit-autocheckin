@@ -98,7 +98,6 @@ public class AppCAP extends Application {
     private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
     private static final String TAG_NOTIFICATION_TOGGLE = "tag_notification_toggle";
 
-    // public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
     public static final String URL_FEEDBACK = "http://coffeeandpower.uservoice.com";
 
     public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
@@ -107,8 +106,6 @@ public class AppCAP extends Application {
     // // staging
     // public static final String URL_WEB_SERVICE =
     // "http://dev.worklist.net/~andrewa/candpweb2/web/"; // staging
-    // public static final String URL_WEB_SERVICE =
-    // "http://dev.candp.me/~birarda/candpweb_7000/web/"; // staging
 
     public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
     public static final String FOURSQUARE_OAUTH = "BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4";

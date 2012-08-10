@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -53,19 +54,26 @@ public class ActivityEnterInviteCode extends Activity {
             // sequence or the settings view so we will always just show the
             // later button to handle
             // both cases
+            
+            ImageButton btn_linked_in_invite_list = (ImageButton) findViewById(R.id.btn_linked_in_invite_list);
+            btn_linked_in_invite_list.setVisibility(View.GONE);
             Button settingsBtn = ((Button) findViewById(R.id.settings_btn));
             settingsBtn.setVisibility(View.GONE);
             Button laterBtn = ((Button) findViewById(R.id.later_btn));
             laterBtn.setVisibility(View.VISIBLE);
-            instructionsTextView
-                    .setText("Enter invite code from nearby C&P user");
+            
+            TextView instructions_invite_text = (TextView) findViewById(R.id.instructions_invite_text);
+            instructions_invite_text.setText("If another C&P user has given you an invite code, type it in above");
+            instructionsTextView.setText("");
             ((EditText) findViewById(R.id.edit_text))
                     .setOnEditorActionListener(new OnEditorActionListener() {
                         @Override
                         public boolean onEditorAction(TextView v, int actionId,
                                 KeyEvent event) {
 
-                            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                            if (actionId == EditorInfo.IME_NULL && 
+                                    event.getKeyCode() == KeyEvent.KEYCODE_ENTER && 
+                                    event.getAction() == KeyEvent.ACTION_DOWN) {
                                 exe.enterInvitationCode(
                                         ((EditText) findViewById(R.id.edit_text))
                                                 .getText().toString(), AppCAP

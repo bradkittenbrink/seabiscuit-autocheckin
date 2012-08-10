@@ -6,13 +6,15 @@
     <!-- Linked In -->
 
 
-    <!-- staging <string name="linkedInApiKey">4xkfzpnvuc72</string> <string 
-        name="linkedInApiSec">mxgFhH1i1PbPlWjq</string> -->
+    <!-- staging 
+    <string name="linkedInApiKey">4xkfzpnvuc72</string>
+    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+-->
 
 
     <!-- production -->
-    <string name="linkedInApiKey">5tk2ex0mnjqk</string>
-    <string name="linkedInApiSec">9JIH0rUiSbvJuHI2</string>
+    <string name="linkedInApiKey">5tk2ex0mnjqk</string> 
+    <string name="linkedInApiSec">9JIH0rUiSbvJuHI2</string> 
     <string name="back">Back</string>
     <string name="next">Next</string>
     <string name="send">Send</string>

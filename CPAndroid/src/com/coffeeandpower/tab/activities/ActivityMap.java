@@ -280,35 +280,15 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
             Log.d("ActivityMap",
                     "ActivityMap.onStart(): " + AppCAP.isUserCheckedIn());
 
-        if (AppCAP.isFirstStart() && AppCAP.getEnteredInviteCode() == false) {
+		if (AppCAP.shouldFinishActivities()) {
             startActivity(new Intent(ActivityMap.this,
-                    ActivityEnterInviteCode.class));
-        } else if (AppCAP.shouldShowInfoDialog()
-                && AppCAP.getEnteredInviteCode() == false) {
-            CustomDialog cd = new CustomDialog(
-                    ActivityMap.this,
-					"Coffee & Power requires an invite for full membership but you have 30 days of full access to try us out.",
-					"If you get an invite from another C&P user you can enter it anytime by going to the Account page/Enter invite code tab.");
-			cd.setOnClickListener(new ClickListener() {
-				@Override
-				public void onClick() {
-					AppCAP.dontShowInfoDialog();
-					myLocationOverlay.enableMyLocation();
-					refreshMapDataSet();
-				}
-			});
-			cd.show();
+                    ActivityLoginPage.class));
+			onBackPressed();
 		} else {
-			if (AppCAP.shouldFinishActivities()) {
-                startActivity(new Intent(ActivityMap.this,
-                        ActivityLoginPage.class));
-				onBackPressed();
-			} else {
-				myLocationOverlay.enableMyLocation();
+			myLocationOverlay.enableMyLocation();
 
-				// Refresh Data
-				refreshMapDataSet();
-			}
+			// Refresh Data
+			refreshMapDataSet();
 		}
 	}
 	

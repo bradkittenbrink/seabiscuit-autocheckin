@@ -2644,6 +2644,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("phone", ""));
             params.add(new BasicNameValuePair("status", statusText + ""));
 
+            params.add(new BasicNameValuePair("is_virtual", "0")); 
             if (isAutomatic)
                 params.add(new BasicNameValuePair("is_automatic", "1"));
             else
@@ -2690,6 +2691,7 @@ public class HttpUtil {
         } catch (JSONException e) {
             e.printStackTrace();
             result.setResponseMessage("JSON Parsing Error: " + e);
+            result.setHandlerCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
             return result;
         }
 

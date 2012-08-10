@@ -347,17 +347,12 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         ImageView imageview_button_update = (ImageView) ((Activity) context)
                 .findViewById(R.id.imageview_button_update);
 
-        if (AppCAP.isUserCheckedIn()) {
-            imageview_button_update.setVisibility(View.VISIBLE);
-        } else {
-            imageview_button_update.setVisibility(View.GONE);
-        }
         layout_action_menu.setVisibility(View.VISIBLE);
-        TranslateAnimation animation = new TranslateAnimation(0, 0, 200, -90);   
-        animation.setDuration(1000);
+        TranslateAnimation animation = new TranslateAnimation(0, 0, 200, -100);   
+        animation.setDuration(700);
         animation.setFillEnabled(true);
         animation.setFillAfter(true);
-        ButtonAnimationListener listener=new ButtonAnimationListener(layout_action_menu, 90,((Activity) context));
+        ButtonAnimationListener listener=new ButtonAnimationListener(layout_action_menu, 100,((Activity) context));
         animation.setAnimationListener(listener);
         
         layout_action_menu.startAnimation(animation);        
@@ -389,7 +384,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         LinearLayout layout_action_menu = (LinearLayout) ((Activity) context)
                 .findViewById(R.id.layout_action_menu);  
         TranslateAnimation animation = new TranslateAnimation(0, 0, 0, 340); 
-        animation.setDuration(1000);
+        animation.setDuration(700);
         animation.setFillAfter(true);
         ButtonAnimationListener listener=new ButtonAnimationListener(layout_action_menu, 0,((Activity) context));
         animation.setAnimationListener(listener);
@@ -469,6 +464,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
                 Intent intent = new Intent((Activity) context, ActivityFeedsForOneVenue.class);
                 intent.putExtra("venue_id", tmpVenue.getVenueId());
                 intent.putExtra("venue_name", tmpVenue.getName());
+                intent.putExtra("caller", "pen_button");
                 context.startActivity(intent);
             }
         } else {

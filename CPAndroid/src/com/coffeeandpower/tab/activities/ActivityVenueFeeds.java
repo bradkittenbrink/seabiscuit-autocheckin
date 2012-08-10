@@ -24,6 +24,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivityFeedsForOneVenue;
 import com.coffeeandpower.adapters.MyVenueFeedsAdapter;
 import com.coffeeandpower.cache.CacheMgrService;
@@ -37,8 +38,10 @@ import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
+import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
+import com.coffeeandpower.views.CustomDialog.ClickListener;
 import com.urbanairship.UAirship;
 
 public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMenu {
@@ -89,6 +92,8 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab_activity_venue_feeds);
+        ((RelativeLayout) findViewById(R.id.rel_feed)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+        ((ImageView) findViewById(R.id.imageview_feed)).setImageResource(R.drawable.tab_feed_pressed);
 
         ((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
 
@@ -176,6 +181,21 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
         } else {
             if (!AppCAP.isLoggedIn()) {
                 progress.dismiss();
+            }
+            
+            if (AppCAP.shouldShowInfoDialog()
+                    && AppCAP.getEnteredInviteCode() == false) {
+                CustomDialog cd = new CustomDialog(
+                        ActivityVenueFeeds.this,
+                        "Coffee & Power requires an invite for full membership but you have 30 days of full access to try us out.",
+                        "If you get an invite from another C&P user you can enter it anytime by going to the Account page/Enter invite code tab.");
+                cd.setOnClickListener(new ClickListener() {
+                    @Override
+                    public void onClick() {
+                        AppCAP.dontShowInfoDialog();
+                    }
+                });
+                cd.show();
             }
         }
     }
@@ -266,6 +286,8 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
 
     @Override
     public void onClickContacts(View v) {
+        menu.onClickContacts(v);
+        finish();
     }
 
     public void onClickOpenVenueFeeds(View v) {

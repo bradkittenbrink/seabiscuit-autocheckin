@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.coffeeandpower"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0">
 
     <uses-sdk android:minSdkVersion="8" />
 
@@ -21,22 +22,22 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.coffeeandpower.permission.C2D_MESSAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.BROADCAST_STICKY"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
 
     <application
         android:name=".AppCAP"
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name">
         <uses-library
             android:name="com.google.android.maps"
-            android:required="true" >
+            android:required="true">
         </uses-library>
 
         <!-- REQUIRED -->
-        <receiver android:name="com.urbanairship.CoreReceiver" >
+        <receiver android:name="com.urbanairship.CoreReceiver">
 
             <!-- REQUIRED IntentFilter - For Helium and Hybrid -->
             <intent-filter>
@@ -48,7 +49,7 @@
         <!-- REQUIRED for C2DM and Hybrid -->
         <receiver
             android:name="com.urbanairship.push.c2dm.C2DMPushReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
 
             <!-- Receive the actual message -->
             <intent-filter>
@@ -68,16 +69,16 @@
         <service
             android:name="com.urbanairship.push.PushService"
             android:process=":com.urbanairship.push.process" />
-        
-        <service
-            android:name=".cache.CacheMgrService" />
-        <service
-            android:name=".location.LocationDetectionService" />
-        
-        <receiver android:name=".location.PassiveLocationUpdateReceiver"
+
+        <service android:name=".cache.CacheMgrService" />
+        <service android:name=".location.LocationDetectionService" />
+
+        <receiver
+            android:name=".location.PassiveLocationUpdateReceiver"
             android:enabled="true" />
 
-        <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
+        <!-- OPTIONAL, if you want to receive push, push opened and registration 
+            completed intents -->
         <receiver android:name=".urbanairship.IntentReceiver" />
 
         <activity
@@ -85,7 +86,7 @@
             android:label="@string/app_name"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -106,137 +107,137 @@
             android:name=".activity.ActivitySignInViaMail"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="stateAlwaysVisible" >
+            android:windowSoftInputMode="stateAlwaysVisible">
         </activity>
         <activity
             android:name=".activity.ActivityJoin"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="stateAlwaysVisible" >
+            android:windowSoftInputMode="stateAlwaysVisible">
         </activity>
         <activity
             android:name=".activity.ActivityNotifications"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="stateAlwaysVisible" >
+            android:windowSoftInputMode="stateAlwaysVisible">
         </activity>
         <activity
             android:name=".tab.activities.ActivityMap"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".tab.activities.ActivityVenueFeeds"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".tab.activities.ActivityPeopleAndPlaces"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".tab.activities.ActivityContacts"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".tab.activities.ActivityCheckInList"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivityAutoCheckinList"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivityCheckIn"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" >
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
         <activity
             android:name=".activity.ActivitySupport"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivitySettings"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivityUserDetails"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivityPlaceDetails"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivityChat"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="stateVisible|adjustPan" >
+            android:windowSoftInputMode="stateVisible|adjustPan">
         </activity>
         <activity
             android:name=".activity.ActivityFeedsForOneVenue"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="stateVisible|adjustPan" >
+            android:windowSoftInputMode="stateVisible|adjustPan">
         </activity>
         <activity
             android:name=".activity.ActivityWallet"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivityAddFunds"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivityJobCategory"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivityEnterInviteCode"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivitySmarterer"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivityPlaceChat"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivitySupportTOS"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivitySupportFeedback"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivityInviteContacts"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.ActivityInviteContactsConfirm"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
     </application>
 

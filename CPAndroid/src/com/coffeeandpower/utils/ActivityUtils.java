@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.inter.OAuthService;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
@@ -96,9 +97,17 @@ public class ActivityUtils {
 
             case AppCAP.HTTP_REQUEST_SUCCEEDED:
                 AppCAP.setLoggedIn(true);
-                Intent intent = new Intent(a, ActivityVenueFeeds.class);
-                a.startActivity(intent);
-                a.finish();
+                if (AppCAP.getUserEmail().contentEquals("") ||
+                        AppCAP.getUserEmail().contains("@linkedin.com")) {
+                    Intent intent = new Intent(a, ActivitySettings.class);
+                    intent.putExtra("email_required", "yes");
+                    a.startActivity(intent);
+                    a.finish();
+                } else {
+                    Intent intent = new Intent(a, ActivityVenueFeeds.class);
+                    a.startActivity(intent);
+                    a.finish();
+                }
                 break;
             }
         }

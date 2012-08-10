@@ -304,8 +304,8 @@ public class Executor {
                     // is currently any code to verify that the checkin was
                     // successful
                     LocationDetectionStateMachine.checkinCheckoutCOMPLETE();
-                    handler.sendEmptyMessage(result.getHandlerCode());
                 }
+                handler.sendEmptyMessage(result.getHandlerCode());
             }
         }, "Executor.checkIn").start();
     }

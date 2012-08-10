@@ -430,6 +430,13 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 			AppCAP.setUserCheckedIn(true);
 			ActivityCheckIn.this.finish();
 			break;
+        case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:
+            if (result != null) {
+                new CustomDialog(ActivityCheckIn.this,
+                        "Error Checkin",
+                        result.getResponseMessage()).show();
+            }
+            break;
 
 		}
 	}

@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.coffeeandpower.AppCAP;
@@ -38,6 +39,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.tab.activities.ActivityMap;
+import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.GraphicUtils;
@@ -66,6 +68,7 @@ public class ActivitySettings extends RootActivity {
     private Executor exe;
     private ImageLoader imageLoader;
     private boolean isUserDataChanged = false;
+    private String email_required = "";
 
     private void errorReceived() {
 
@@ -131,6 +134,11 @@ public class ActivitySettings extends RootActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        // Get data from intent
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            email_required = extras.getString("email_required");
+        }
         // Executor
         exe = new Executor(ActivitySettings.this);
         exe.setExecutorListener(new ExecutorInterface() {
@@ -187,15 +195,14 @@ public class ActivitySettings extends RootActivity {
             public boolean onEditorAction(TextView v, int actionId,
                     KeyEvent event) {
 
-                switch (actionId) {
-                case EditorInfo.IME_ACTION_SEND:
-
+                if ((actionId == EditorInfo.IME_ACTION_SEND) || (actionId == EditorInfo.IME_NULL && 
+                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER && 
+                        event.getAction() == KeyEvent.ACTION_DOWN)) {
                     if (loggedUser != null) {
                         loggedUser.setNickName(textNickName.getText()
                                 .toString());
                         exe.setUserProfileData(loggedUser, false);
                     }
-                    break;
                 }
                 return false;
             }
@@ -206,17 +213,13 @@ public class ActivitySettings extends RootActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId,
                     KeyEvent event) {
-
-                switch (actionId) {
-                case EditorInfo.IME_ACTION_SEND:
+                if ((actionId == EditorInfo.IME_ACTION_SEND) || (actionId == EditorInfo.IME_NULL && 
+                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER && 
+                        event.getAction() == KeyEvent.ACTION_DOWN)) {
                     if (loggedUser != null) {
                         loggedUser.setUsername(textEmail.getText().toString());
                         exe.setUserProfileData(loggedUser, true);
                     }
-                    break;
-
-                default:
-                    break;
                 }
                 return false;
             }
@@ -303,7 +306,7 @@ public class ActivitySettings extends RootActivity {
             t.activity = this;
             t.layout = backgroundPhoto;
             t.url = loggedUser.getPhoto();
-            new Thread(t).start();
+//            new Thread(t).start();
             
             
             title.setText(getResources().getString(R.string.settings));
@@ -372,6 +375,10 @@ public class ActivitySettings extends RootActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (email_required.contentEquals("yes")) {
+            Toast.makeText(ActivitySettings.this, "Please enter your email and save your settings!",
+                Toast.LENGTH_LONG).show();
+        }
     }
 
     private Uri imageUri;
@@ -457,7 +464,14 @@ public class ActivitySettings extends RootActivity {
         if (isUserDataChanged) {
             setResult(ActivityMap.ACCOUNT_CHANGED);
         }
-        super.onBackPressed();
+        if (email_required.contentEquals("yes")) {
+            Intent intent = new Intent(ActivitySettings.this, ActivityVenueFeeds.class);
+            ActivitySettings.this.startActivity(intent);
+            ActivitySettings.this.finish();
+            
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

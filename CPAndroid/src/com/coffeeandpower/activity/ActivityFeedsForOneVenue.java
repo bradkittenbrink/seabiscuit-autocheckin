@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -74,6 +75,24 @@ public class ActivityFeedsForOneVenue extends RootActivity {
             view.setVisibility(View.GONE);
         } else {
             view.setVisibility(View.VISIBLE);
+        }
+        if (caller.contentEquals("pen_button")) {
+            EditText editText = (EditText) findViewById(R.id.edittext_places_chat);
+            InputMethodManager inputManager = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE); 
+            if (inputManager != null && editText != null) {
+                inputManager.hideSoftInputFromWindow(editText.getWindowToken(),
+                       InputMethodManager.SHOW_FORCED);
+            }
+        } else {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+            EditText editText = (EditText) findViewById(R.id.edittext_places_chat);
+            InputMethodManager inputManager = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE); 
+            if (inputManager != null && editText != null) {
+                inputManager.hideSoftInputFromWindow(editText.getWindowToken(),
+                       InputMethodManager.HIDE_NOT_ALWAYS);
+            }
         }
         
         // Executor
