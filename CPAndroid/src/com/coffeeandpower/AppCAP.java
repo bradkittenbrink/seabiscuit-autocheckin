@@ -101,12 +101,12 @@ public class AppCAP extends Application {
     // public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
     public static final String URL_FEEDBACK = "http://coffeeandpower.uservoice.com";
 
-    //public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
+    public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
     // production
     // public static final String URL_WEB_SERVICE = "https://staging.candp.me/";
     // // staging
-    public static final String URL_WEB_SERVICE =
-     "http://dev.worklist.net/~andres/candpweb2/web/"; // staging
+    //public static final String URL_WEB_SERVICE =
+    // "http://dev.worklist.net/~andres/candpweb2/web/"; // staging
     // public static final String URL_WEB_SERVICE =
     // "http://dev.worklist.net/~andrewa/candpweb2/web/"; // staging
 
