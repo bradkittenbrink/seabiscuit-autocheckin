@@ -973,8 +973,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("nickname", user.getNickName()
                     + ""));
             if (isEmailChanged) {
-                params.add(new BasicNameValuePair("email", URLEncoder.encode(
-                        user.getNickName() + "", "utf-8")));
+                params.add(new BasicNameValuePair("email", user.getUsername()));
             }
             post.setEntity(new UrlEncodedFormEntity(params));
 

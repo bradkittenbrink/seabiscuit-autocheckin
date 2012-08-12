@@ -186,9 +186,6 @@ public class ActivitySettings extends RootActivity {
         // Get logged user
         exe.getUserData();
 
-        // Load profile image if exist
-        loadProfilePhoto();
-
         // Change Nick Name
         textNickName.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
@@ -202,6 +199,7 @@ public class ActivitySettings extends RootActivity {
                         loggedUser.setNickName(textNickName.getText()
                                 .toString());
                         exe.setUserProfileData(loggedUser, false);
+                        AppCAP.setLoggedInUserNickname(textNickName.getText().toString());
                     }
                 }
                 return false;
@@ -219,6 +217,7 @@ public class ActivitySettings extends RootActivity {
                     if (loggedUser != null) {
                         loggedUser.setUsername(textEmail.getText().toString());
                         exe.setUserProfileData(loggedUser, true);
+                        AppCAP.setLoggedInUserEmail(textEmail.getText().toString());
                     }
                 }
                 return false;
@@ -274,41 +273,49 @@ public class ActivitySettings extends RootActivity {
      * Use user data in GUI
      */
     private void useUserData() {
-        // Set views
-        if (loggedUser != null) {
-            imageLoader.DisplayImage(loggedUser.getPhoto(),
-                    imageProfilePhoto, R.drawable.default_avatar25, 400);
+        String photo = loggedUser.getPhotoLarge();
+        if (photo == null) {
+            photo = loggedUser.getPhoto();
+        }
 
-            class LoadPhotoThread implements Runnable {
-                public Activity activity;
-                public RelativeLayout layout;
-                public String url;
-
-                @Override
-                public void run() {
-                    Bitmap b = imageLoader.getBitmap(url);
-                    final Bitmap background = ImageLoader.FastBlur(b, 4);
-                    b.recycle();
-
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (background != null) {
-                                layout.setBackgroundDrawable(new BitmapDrawable(
-                                        background));
-                            }
+        if (photo != null) {
+            // Set views
+            if (loggedUser != null) {
+                imageLoader.DisplayImage(photo, imageProfilePhoto,
+                        R.drawable.default_avatar25, 400);
+    
+                class LoadPhotoThread implements Runnable {
+                    public Activity activity;
+                    public RelativeLayout layout;
+                    public String url;
+    
+                    @Override
+                    public void run() {
+                        Bitmap b = imageLoader.getBitmap(url);
+                        if (b != null) {
+                            final Bitmap background = ImageLoader.FastBlur(b, 4);
+                            b.recycle();
+        
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (background != null) {
+                                        layout.setBackgroundDrawable(new BitmapDrawable(
+                                                background));
+                                    }
+                                }
+                            });
                         }
-                    });
+                    }
                 }
+    
+                LoadPhotoThread t = new LoadPhotoThread();
+                t.activity = this;
+                t.layout = backgroundPhoto;
+                t.url = photo;
+                new Thread(t).start();
             }
 
-            LoadPhotoThread t = new LoadPhotoThread();
-            t.activity = this;
-            t.layout = backgroundPhoto;
-            t.url = loggedUser.getPhoto();
-//            new Thread(t).start();
-            
-            
             title.setText(getResources().getString(R.string.settings));
             textNickName.setText(loggedUser.getNickName());
             textEmail.setText(loggedUser.getUsername());
@@ -322,9 +329,10 @@ public class ActivitySettings extends RootActivity {
                 if (jobCategories.compareTo("") != 0) {
                     jobCategories = jobCategories + ", ";
                 }
-                jobCategories = jobCategories + loggedUser.getMinorJobCategory(); 
+                jobCategories = jobCategories
+                        + loggedUser.getMinorJobCategory();
             }
-            
+
             if (jobCategories.compareTo("") != 0) {
                 jobCategory.setText(jobCategories);
             }

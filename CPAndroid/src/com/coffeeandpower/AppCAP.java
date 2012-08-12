@@ -98,12 +98,15 @@ public class AppCAP extends Application {
     private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
     private static final String TAG_NOTIFICATION_TOGGLE = "tag_notification_toggle";
 
+    // public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
     public static final String URL_FEEDBACK = "http://coffeeandpower.uservoice.com";
 
-    public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
+    //public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
     // production
     // public static final String URL_WEB_SERVICE = "https://staging.candp.me/";
     // // staging
+    public static final String URL_WEB_SERVICE =
+     "http://dev.worklist.net/~andres/candpweb2/web/"; // staging
     // public static final String URL_WEB_SERVICE =
     // "http://dev.worklist.net/~andrewa/candpweb2/web/"; // staging
 
@@ -781,6 +784,14 @@ public class AppCAP extends Application {
     public static void setLoggedInUserNickname(String nickname) {
         getSharedPreferences().edit()
                 .putString(TAG_LOGGED_IN_USER_NICKNAME, nickname).commit();
+    }
+    
+    public static int getLoggedInUserEmail() {
+        return getSharedPreferences().getInt(TAG_USER_EMAIL, 0);
+    }
+    
+    public static void setLoggedInUserEmail(String email) {
+        getSharedPreferences().edit().putString(TAG_USER_EMAIL, email).commit();
     }
 
     /**

@@ -14,7 +14,8 @@ public class UserSmart implements Parcelable {
     private String username;
     private String nickName;
     private String statusText;
-    private String photo; // ???
+    private String photo;
+    private String photoLarge;
     private String majorJobCategory;
     private String minorJobCategory;
     private String headLine;
@@ -58,6 +59,7 @@ public class UserSmart implements Parcelable {
         this.nickName = objUser.optString("nickname");
         this.statusText = objUser.optString("status_text");
         this.photo = objUser.optString("photo");
+        this.photoLarge = objUser.optString("photo_large");
         this.majorJobCategory = objUser.optString("major_job_category");
         this.minorJobCategory = objUser.optString("minor_job_category");
         this.headLine = objUser.optString("headline");
@@ -255,6 +257,10 @@ public class UserSmart implements Parcelable {
     public void setMet(boolean met) {
         this.met = met;
     }
+    
+    public String getPhotoLarge() {
+        return photoLarge;
+    }
 
     @Override
     public int describeContents() {
@@ -268,8 +274,10 @@ public class UserSmart implements Parcelable {
         out.writeInt(this.checkInId);
         out.writeInt(this.userId);
         out.writeString(this.nickName);
+        out.writeString(this.username);
         out.writeString(this.statusText);
         out.writeString(this.photo);
+        out.writeString(this.photoLarge);
         out.writeString(this.majorJobCategory);
         out.writeString(this.minorJobCategory);
         out.writeString(this.headLine);
@@ -297,8 +305,10 @@ public class UserSmart implements Parcelable {
         this.checkInId = in.readInt();
         this.userId = in.readInt();
         this.nickName = in.readString();
+        this.username = in.readString();
         this.statusText = in.readString();
         this.photo = in.readString();
+        this.photoLarge = in.readString();
         this.majorJobCategory = in.readString();
         this.minorJobCategory = in.readString();
         this.headLine = in.readString();
