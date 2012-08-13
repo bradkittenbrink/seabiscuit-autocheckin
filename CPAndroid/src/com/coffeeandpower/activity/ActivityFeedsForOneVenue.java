@@ -71,12 +71,14 @@ public class ActivityFeedsForOneVenue extends RootActivity {
                     .setText(venueName);
         }
         RelativeLayout view = (RelativeLayout) findViewById(R.id.layout_places_chat);
-        if (!AppCAP.isUserCheckedIn() ||  AppCAP.getUserLastCheckinVenueId() != venueId) {
-            view.setVisibility(View.GONE);
-        } else {
+        if (caller.contentEquals("postable_venues") == true ||
+                (AppCAP.isUserCheckedIn() &&  AppCAP.getUserLastCheckinVenueId() == venueId)) {
             view.setVisibility(View.VISIBLE);
+        } else {
+            view.setVisibility(View.GONE);
         }
-        if (caller.contentEquals("pen_button")) {
+        if (caller.contentEquals("pen_button") || 
+                caller.contentEquals("postable_venues")) {
             EditText editText = (EditText) findViewById(R.id.edittext_places_chat);
             InputMethodManager inputManager = (InputMethodManager)
                     getSystemService(Context.INPUT_METHOD_SERVICE); 

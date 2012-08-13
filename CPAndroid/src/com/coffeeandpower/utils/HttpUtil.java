@@ -2076,8 +2076,6 @@ public class HttpUtil {
                 if (Constants.enableApiJsonLogging)
                     RootActivity.log("HttpUtil_getVenueFeedsList: "
                             + responseString);
-                Log.d("HttpUtil", AppCAP.getUserLastCheckinVenueIds()
-                        + " getVenueFeedsList length..." + responseString);
 
                 if (responseString != null) {
                     JSONObject json = new JSONObject(responseString);
@@ -2229,6 +2227,90 @@ public class HttpUtil {
                         } else {
                             result.setHandlerCode(Executor.HANDLE_SEND_VENUE_FEED);
                         }
+                        return result;
+                    }
+                }
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.setResponseMessage("JSON Parsing Error: " + e);
+            return result;
+        }
+        return result;
+    }
+
+
+    /**
+     * Get or send venue feed
+     * 
+     * @param venueId
+     * @param lastChatIDString
+     * @return
+     */
+    public DataHolder postableVenues() {
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                "Internet connection error", null);
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        try {
+            params.add(new BasicNameValuePair("action", "getPostableFeedVenueIDs"));
+
+            post.setEntity(new UrlEncodedFormEntity(params));
+
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            String responseString = EntityUtils.toString(resEntity);
+            if (Constants.enableApiJsonLogging)
+                RootActivity.log("HttpUtil_postableVenues: "
+                        + responseString);
+
+            if (responseString != null && responseString.trim().length() > 0) {
+                JSONObject json = new JSONObject(responseString);
+                if (json != null) {
+
+                    if (json.optBoolean("error")) {
+                        result.setHandlerCode(AppCAP.HTTP_ERROR);
+                        result.setResponseMessage(json.optString("message"));
+                    } else {
+                        JSONArray venues = json.optJSONArray("payload");
+
+                        ArrayList<VenueNameAndFeeds> VenueNameArray = new ArrayList<VenueNameAndFeeds>();
+                        ArrayList<VenueNameAndFeeds> listLastCheckedinVenues = AppCAP
+                                .getListLastCheckedinVenues();
+                        if (venues != null) {
+                            for (int m = 0; m < venues.length(); m++) {
+
+                                int currVenueId = venues.optInt(m);
+                                for (VenueNameAndFeeds currVenue : listLastCheckedinVenues) {
+                                    if (currVenue.getVenueId() == currVenueId) {
+                                        VenueNameArray.add(currVenue);
+                                        break;
+                                    }
+                                    
+                                }
+
+                            }
+                        }
+
+                        result.setObject(VenueNameArray);
+                        result.setHandlerCode(Executor.HANDLE_GET_POSTABLE_VENUES);
                         return result;
                     }
                 }

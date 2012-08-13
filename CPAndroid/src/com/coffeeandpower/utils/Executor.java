@@ -47,6 +47,7 @@ public class Executor {
     public static final int HANDLE_SET_PROFILE_VISIBILITY = 1625;
     public static final int HANDLE_ACCOUNT_DELETE_SUCCEEDED = 1626;
     public static final int HANDLE_ACCOUNT_DELETE_FAILED = 1627;
+    public static final int HANDLE_GET_POSTABLE_VENUES = 1628;
 
     private DataHolder result;
 
@@ -404,6 +405,27 @@ public class Executor {
     }
 
     /**
+     * Get/send venue feeds <br>
+     * getObject() instance of ArrayList <br>
+     * <br>
+     * [0]String lastId [1]String firstDate [2]String lastDate
+     * [3]ArrayList(VenueChatEntry)
+     * 
+     * @param venueId
+     * @param lastChatIDString
+     */
+    public synchronized void postableVenues() {
+            progress.setMessage("Loading...");
+            progress.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().postableVenues();
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.postableVenues").start();
+    }
+   /**
      * Get/send venue feeds <br>
      * getObject() instance of ArrayList <br>
      * <br>

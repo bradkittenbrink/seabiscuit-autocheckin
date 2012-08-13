@@ -702,10 +702,10 @@ public class CacheMgrService extends Service {
 
     public static void resetVenueFeedsData(Boolean withRefresh) {
 
-        venueFeedsListCache.setNewData(AppCAP.getConnection()
-                .getVenueFeedsList(), new double[] { 0, 0 });
         if (withRefresh == true) {
             refreshAllData();
         }
+        venueFeedsListCache.setNewData(AppCAP.getConnection()
+                .getVenueFeedsList(), new double[] { 0, 0 });
     }
 }

@@ -6,7 +6,7 @@ public interface TabMenu {
 
     public void onClickMap(View v);
 
-    public void onClickVenueFeeds(View v);
+    public boolean onClickVenueFeeds(View v);
 
     public void onClickPlaces(View v);
 

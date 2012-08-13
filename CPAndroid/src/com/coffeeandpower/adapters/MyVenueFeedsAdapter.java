@@ -46,6 +46,7 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
 
     public MyVenueFeedsAdapter(Activity context, ArrayList<VenueNameAndFeeds> venueNameAndFeeds) {
         this.context = context;
+        if (context == null) return;
         this.inflater = context.getLayoutInflater();
         this.localUserId = AppCAP.getLoggedInUserId();
         this.imageLoader = new ImageLoader(context.getApplicationContext());
@@ -182,7 +183,7 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
                             ActivityUserDetails.class);
                     intent.putExtra("user_id", user_id);
                     intent.putExtra("from_act", "user_id");
-                    context.startActivity(intent);
+                    context.startActivity(intent);  
                 }
             }
         });

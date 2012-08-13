@@ -320,9 +320,11 @@ public class ActivityContacts extends RootActivity implements TabMenu, UserMenu 
     }
 
     @Override
-    public void onClickVenueFeeds(View v) {
-        menu.onClickVenueFeeds(v);
-        finish();
+    public boolean onClickVenueFeeds(View v) {
+        if (menu.onClickVenueFeeds(v)) {
+            finish();
+        }
+        return false;
     }
 	
 	@Override

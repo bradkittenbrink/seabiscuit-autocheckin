@@ -576,27 +576,29 @@ public class ActivityMap extends RootActivity implements TabMenu, UserMenu {
 	}
 	
     @Override
-    public void onClickVenueFeeds(View v) {
-        menu.onClickVenueFeeds(v);
-        finish();
+    public boolean onClickVenueFeeds(View v) {
+        if (menu.onClickVenueFeeds(v)) {
+            finish();
+        }
+        return false;
     }
 
 	@Override
 	public void onClickPlaces(View v) {
 		menu.onClickPlaces(v);
-		// finish();
+		finish();
 	}
 
 	@Override
 	public void onClickPeople(View v) {
 		menu.onClickPeople(v);
-		// finish();
+		finish();
 	}
 
 	@Override
 	public void onClickContacts(View v) {
 		menu.onClickContacts(v);
-		// finish();
+		finish();
 	}
 
 	@Override

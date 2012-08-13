@@ -32,6 +32,8 @@ import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Feed;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
+import com.coffeeandpower.fragments.FragmentPostableFeedVenue;
+import com.coffeeandpower.fragments.FragmentVenueFeeds;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
@@ -44,12 +46,20 @@ import com.coffeeandpower.views.HorizontalPagerModified;
 import com.coffeeandpower.views.CustomDialog.ClickListener;
 import com.urbanairship.UAirship;
 
-public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMenu {
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
+
+public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu, UserMenu {
 
     private static final int SCREEN_SETTINGS = 0;
     private static final int SCREEN_USER = 1;
     private static final int TAB_CHECKIN_MOVE_DISTANCE = 230;
     private static final int TAB_CHECKIN_MOVE_DURATION = 800;
+
+    public static final int DIALOG_MUST_BE_A_MEMBER = 30;
 
     private HorizontalPagerModified pager;
 
@@ -64,7 +74,6 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
 
     private boolean initialLoad = true;
 
-    private MyCachedDataObserver myCachedDataObserver = new MyCachedDataObserver();
     private MyAutoCheckinTriggerObserver myAutoCheckinObserver = new MyAutoCheckinTriggerObserver();
     
     // Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
@@ -75,18 +84,22 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
 
             String type = msg.getData().getString("type");
             
-            if (!type.equalsIgnoreCase("AutoCheckinTrigger")) {
-                    // pass message data along to venue update method
-                ArrayList<VenueNameAndFeeds> feedsArray = msg.getData()
-                    .getParcelableArrayList("venueFeeds"); 
-                updateVenueFeedsFromApiResult(feedsArray);
-
-                progress.dismiss();
+            if (type.equalsIgnoreCase("AutoCheckinTrigger")) {
+                // Update view
+                
             }
-
             super.handleMessage(msg);
         }
     };
+    private String  fragmentName = "FragmentVenueFeeds";
+    
+    public String getFragmentName() {
+        return fragmentName;
+    }
+
+    public void setFragmentName(String fragmentName) {
+        this.fragmentName = fragmentName;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,15 +109,19 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
         ((ImageView) findViewById(R.id.imageview_feed)).setImageResource(R.drawable.tab_feed_pressed);
 
         ((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
-
+        
+        // Get userId form intent
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            fragmentName  = bundle.getString("fragment");
+            if (fragmentName == null) {
+                fragmentName = "FragmentVenueFeeds";
+            }
+        }
+        
         // Horizontal Pager
         pager = (HorizontalPagerModified) findViewById(R.id.pager);
         pager.setCurrentScreen(SCREEN_USER, false);
-
-        progress = new ProgressDialog(this);
-        progress.setMessage("Loading...");
-        progress.show();
-
         // User and Tab Menu
         menu = new UserAndTabMenu(this);
         menu.setOnUserStateChanged(new OnUserStateChanged() {
@@ -121,16 +138,74 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
                     Log.d("Contacts", "onCheckOut()");
             }
         });
-
-        if (AppCAP.isLoggedIn()) {
-            listView = (ListView) findViewById(R.id.venue_feeds_listview);
-
+    }
+    
+    public void displayFragment(String fragmentName) {
+        Fragment newFragment;
+        this.fragmentName = fragmentName;
+        updateMenuOnFragmentchange();
+        // Create new fragment and transaction
+        if (fragmentName.contentEquals("FragmentPostableFeedVenue")) {
+            newFragment = new FragmentPostableFeedVenue();
         } else {
-            setContentView(R.layout.tab_activity_login);
+            CacheMgrService.resetVenueFeedsData(true);
+            newFragment = new FragmentVenueFeeds();
+        }
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        if (manager.findFragmentById(R.id.tab_fragment_area) == null) {
+            transaction.add(R.id.tab_fragment_area, newFragment);
+        } else {
+            transaction.replace(R.id.tab_fragment_area, newFragment);
+            transaction.addToBackStack(null);
         }
 
+        // Commit the transaction
+        transaction.commit(); 
+        
     }
+    
+    public void updateMenuOnFragmentchange() {
+        Fragment newFragment;
+        // Create new fragment and transaction
+        if (fragmentName.contentEquals("FragmentPostableFeedVenue")) {
+            if (findViewById(R.id.textview_contact_list) != null) {
+                ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(
+                        getResources().getString(R.string.message_choose_feed));
+            }
+            newFragment = new FragmentPostableFeedVenue();
+        } else {
+            if (findViewById(R.id.textview_contact_list) != null) {
+                ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(
+                        getResources().getString(R.string.message_active_feeds));
+            }
+            newFragment = new FragmentVenueFeeds();
+        }
+    }
+    private OnBackStackChangedListener getListener()
+    {
+        OnBackStackChangedListener result = new OnBackStackChangedListener()
+        {
+            public void onBackStackChanged() 
+            {                   
+                FragmentManager manager = getSupportFragmentManager();
 
+                if (manager != null)
+                {
+                    Fragment currFrag = (Fragment)manager.findFragmentById(R.id.tab_fragment_area);
+                    if (currFrag != null) {
+                        updateMenuOnFragmentchange();
+
+                    }
+                }                   
+            }
+        };
+
+        return result;
+    }
     public void onClickLinkedIn(View v) {
         AppCAP.setShouldFinishActivities(true);
         AppCAP.setStartLoginPageFromContacts(true);
@@ -155,7 +230,6 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
         // not the list of contacts.
         if (AppCAP.isLoggedIn()) {
             UAirship.shared().getAnalytics().activityStarted(this);
-            CacheMgrService.startObservingAPICall("venueFeedsList",myCachedDataObserver);
             LocationDetectionStateMachine.startObservingAutoCheckinTrigger(myAutoCheckinObserver);
         }
     }
@@ -167,7 +241,6 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
         super.onStop();
         if (AppCAP.isLoggedIn()) {
             UAirship.shared().getAnalytics().activityStopped(this);
-            CacheMgrService.stopObservingAPICall("venueFeeds",myCachedDataObserver);
             LocationDetectionStateMachine.stopObservingAutoCheckinTrigger(myAutoCheckinObserver);
         }
     }
@@ -179,10 +252,6 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
         if (AppCAP.shouldFinishActivities()) {
             onBackPressed();
         } else {
-            if (!AppCAP.isLoggedIn()) {
-                progress.dismiss();
-            }
-            
             if (AppCAP.shouldShowInfoDialog()
                     && AppCAP.getEnteredInviteCode() == false) {
                 CustomDialog cd = new CustomDialog(
@@ -197,8 +266,13 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
                 });
                 cd.show();
             }
+            this.displayFragment(fragmentName);
+
+            getSupportFragmentManager().addOnBackStackChangedListener(getListener());
         }
     }
+    
+    
 
     @Override
     public void onBackPressed() {
@@ -243,9 +317,11 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
     }
     
     @Override
-    public void onClickVenueFeeds(View v) {
-        menu.onClickVenueFeeds(v);
-        finish();
+    public boolean onClickVenueFeeds(View v) {
+        if (menu.onClickVenueFeeds(v)) {
+            finish();
+        }
+        return initialLoad;
     }
     
     @Override
@@ -307,44 +383,7 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
         // Restart the activity so user lists load correctly
         CacheMgrService.resetVenueFeedsData(true);
     }
-    
-    private void updateVenueFeedsFromApiResult(ArrayList<VenueNameAndFeeds> newFeedsArray) {
-        if (Constants.debugLog)
-            Log.d("venueFeeds", "updateVenueFeedsFromApiResult()");
-
-        // Populate table view
-        this.arrayFeeds = newFeedsArray;
-
-        if (initialLoad) {
-            adapterFeeds = new MyVenueFeedsAdapter(ActivityVenueFeeds.this,
-                    this.arrayFeeds);
-            listView.setAdapter(adapterFeeds);
-            // TODO Need to add listview listener here
-            listView.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> arg0, View arg1,
-                        int position, long arg3) {
-                        if (!AppCAP.isLoggedIn()) {
-                            showDialog(DIALOG_MUST_BE_A_MEMBER);
-                        } else {
-                            VenueNameAndFeeds venueNameAndFeeds = (VenueNameAndFeeds) adapterFeeds.getItem(position);
-                            openVenue(venueNameAndFeeds);                    
-                        }
-                }
-            });
-            //Utils.animateListView(listView);
-            listView.setSelection(0);
-            initialLoad = false;
-        } else {
-            adapterFeeds.setNewData(arrayFeeds);
-            adapterFeeds.notifyDataSetChanged();
-        }
-
-        if (Constants.debugLog)
-            Log.d("VenueFeeds", "Set local array with " + newFeedsArray.size()
-                    + " VenueFeeds.");
-    }
-    
+ 
     public void openVenue(VenueNameAndFeeds venueNameAndFeeds) {
         int venueId = venueNameAndFeeds.getVenueId();
         if (venueId != 0) {
@@ -357,7 +396,7 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
             startActivity(intent);
         }
     }
-    
+   
     private class MyAutoCheckinTriggerObserver implements Observer {
 
         @Override
@@ -375,46 +414,6 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
         }
         
     }
-    
-    private class MyCachedDataObserver implements Observer {
-        
-        @Override
-        public void update(Observable observable, Object data) {
-        /*
-         * verify that the data is really of type CounterData, and log the
-         * details
-         */
-        if (data instanceof CachedDataContainer) {
-            CachedDataContainer counterdata = (CachedDataContainer) data;
-            
-            DataHolder feeds = counterdata.getData();
-            //Object[] obj = (Object[]) contacts.getObject();
-            @SuppressWarnings("unchecked")
-            List<Feed> arrayFeeds = (List<Feed>) feeds.getObject();
-            
-            if (Constants.debugLog)
-                Log.d("Contacts", "Warning: API callback temporarily disabled...");
-            
-            ArrayList<Feed> mutableArrayContacts = new ArrayList<Feed>(arrayFeeds);
-                
-            Message message = new Message();
-            Bundle bundle = new Bundle();
-            bundle.putCharSequence("type", counterdata.type);
-            bundle.putParcelableArrayList("venueFeeds", mutableArrayContacts);
-            message.setData(bundle);
-            
-            if (Constants.debugLog)
-                Log.d("venueFeeds", "venueFeeds.update: Sending handler message with " + mutableArrayContacts.size() + " venueFeeds:");
-            
-            
-            
-            mainThreadTaskHandler.sendMessage(message);            
-        }
-        else
-            if (Constants.debugLog)
-                Log.d("venueFeeds", "Error: Received unexpected data type: " + data.getClass().toString());
-        }
-    }
 
     @Override
     public void onClickMinus(View v) {
@@ -428,7 +427,7 @@ public class ActivityVenueFeeds extends RootActivity implements TabMenu, UserMen
 
     @Override
     public void onClickFeed(View v) { 
-        menu.onClickFeed(v);
+        menu.onClickFeed(v, this);
     }
 
 

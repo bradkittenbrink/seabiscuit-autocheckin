@@ -377,9 +377,11 @@ public class ActivityPeopleAndPlaces extends RootActivity implements TabMenu, Us
 		finish();
 	}
     @Override
-    public void onClickVenueFeeds(View v) {
-        menu.onClickVenueFeeds(v);
-        finish();
+    public boolean onClickVenueFeeds(View v) {
+        if (menu.onClickVenueFeeds(v)) {
+            finish();
+        }
+        return initialLoad;
     }
 
 	@Override

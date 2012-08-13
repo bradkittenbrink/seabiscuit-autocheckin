@@ -1,9 +1,8 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_check_in"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@null">
+    android:background="@null" >
 
     <RelativeLayout
         android:id="@+id/layout_check_in2"
@@ -11,20 +10,19 @@
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="7dp"
-        android:background="@null">
+        android:background="@null" >
 
         <LinearLayout
             android:id="@+id/layout_action_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom"
+            android:layout_marginLeft="6dp"
             android:background="@drawable/bg_vertical_menu"
             android:orientation="vertical"
-            android:layout_marginLeft="6dp"
-            android:paddingLeft="2dp"
             android:paddingBottom="30dp"
-            android:visibility="gone">
+            android:paddingLeft="2dp"
+            android:visibility="gone" >
 
             <ImageView
                 android:id="@+id/imageview_button_question"
@@ -33,7 +31,6 @@
                 android:background="@drawable/action_menu_button_question_b" />
 
             <ImageView
-
                 android:id="@+id/imageview_button_checkin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,7 +54,7 @@
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
             android:background="@drawable/bg_tab_bar"
-            android:orientation="vertical">
+            android:orientation="vertical" >
         </LinearLayout>
 
         <RelativeLayout
@@ -67,7 +64,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="30dp"
             android:layout_marginLeft="6dp"
-            android:background="@null">
+            android:background="@null" >
 
             <ImageView
                 android:id="@+id/imageview_button_base"

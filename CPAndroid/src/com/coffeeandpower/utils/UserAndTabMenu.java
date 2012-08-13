@@ -9,6 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,6 +36,7 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.activity.ActivityChat;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivityFeedsForOneVenue;
+import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.activity.ActivityNotifications;
 import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.activity.ActivitySupport;
@@ -40,6 +44,7 @@ import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.fragments.FragmentPostableFeedVenue;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.tab.activities.ActivityCheckInList;
@@ -48,6 +53,7 @@ import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.views.CustomDialog;
+import com.coffeeandpower.views.CustomFontView;
 
 public class UserAndTabMenu implements UserMenu, TabMenu {
 
@@ -159,9 +165,15 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
          context.startActivity(intent);
     }
     @Override
-    public void onClickVenueFeeds(View v) {
-         Intent intent = new Intent(context, ActivityVenueFeeds.class);
-         context.startActivity(intent);
+    public boolean onClickVenueFeeds(View v) {
+        if (AppCAP.isLoggedIn()) {
+            Intent intent = new Intent(context, ActivityVenueFeeds.class);
+            context.startActivity(intent);
+            return true;
+        } else {
+            this.showDialogLogin();
+            return false;
+        }
     }
 
 	@Override
@@ -349,9 +361,9 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 
         layout_action_menu.setVisibility(View.VISIBLE);
         TranslateAnimation animation = new TranslateAnimation(0, 0, 200, -100);   
-        animation.setDuration(700);
+        animation.setDuration(400);
         animation.setFillEnabled(true);
-        animation.setFillAfter(true);
+        animation.setFillAfter(true);  
         ButtonAnimationListener listener=new ButtonAnimationListener(layout_action_menu, 100,((Activity) context));
         animation.setAnimationListener(listener);
         
@@ -372,7 +384,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
                     minus.setVisibility(View.VISIBLE);
                 }       
             }
-        }, 1000);
+        }, 400);
     }
 
     @Override
@@ -384,7 +396,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         LinearLayout layout_action_menu = (LinearLayout) ((Activity) context)
                 .findViewById(R.id.layout_action_menu);  
         TranslateAnimation animation = new TranslateAnimation(0, 0, 0, 340); 
-        animation.setDuration(700);
+        animation.setDuration(400);
         animation.setFillAfter(true);
         ButtonAnimationListener listener=new ButtonAnimationListener(layout_action_menu, 0,((Activity) context));
         animation.setAnimationListener(listener);
@@ -409,7 +421,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
                 }       
                 layout_action_menu.setVisibility(View.GONE);
             }
-        }, 1000);
+        }, 400);
     }
     
     public void hideVerticalMenu(View v) {
@@ -420,40 +432,79 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         }
     }
     
-    public void showDialogFeedActions() {
+    public void showDialogFeedActions(final FragmentActivity activity) {
+        if (!AppCAP.isLoggedIn()) {
+            showDialogLogin();
+        } else {
+            // custom dialog
+            final Dialog dialog = new Dialog(context);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.dialog_feed_actions);
+    
+            Button dialog_btn_checkin = (Button) dialog.findViewById(R.id.btn_checkin);
+            dialog_btn_checkin.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    onClickCheckIn(v);
+                }
+            });
+    
+            Button dialog_btn_post_to_feed = (Button) dialog.findViewById(R.id.btn_post_to_feed);
+            dialog_btn_post_to_feed.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    onClickPostToFeed(v, activity);
+                }
+            });
+    
+            Button dialog_btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+            dialog_btn_cancel.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+    
+            dialog.show();
+        }
+    }
+
+    private void showDialogLogin() {
         // custom dialog
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_feed_actions);
+        dialog.setContentView(R.layout.dialog_login);
 
-        Button dialog_btn_checkin = (Button) dialog.findViewById(R.id.btn_checkin);
-        dialog_btn_checkin.setOnClickListener(new OnClickListener() {
+        Button dialog_btn_login = (Button) dialog.findViewById(R.id.btn_login);
+        dialog_btn_login.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                onClickCheckIn(v);
+                Intent i = new Intent();
+                i.setClass(context, ActivityLoginPage.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(i);
             }
         });
 
-        Button dialog_btn_post_to_feed = (Button) dialog.findViewById(R.id.btn_post_to_feed);
-        dialog_btn_post_to_feed.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                onClickCheckIn(v);
-            }
-        });
 
-        Button dialog_btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
-        dialog_btn_cancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
 
         dialog.show();
     }
+
+    protected void onClickPostToFeed(View v, FragmentActivity activity) {
+        if (activity != null) {
+            ((ActivityVenueFeeds) activity).displayFragment("FragmentPostableFeedVenue");
+        } else {
+            // not yet supported in the other activity 
+            // will be fix when all will be done in fragments
+            Intent intent = new Intent((Activity) context, ActivityVenueFeeds.class);
+            intent.putExtra("fragment", "FragmentPostableFeedVenue");
+            context.startActivity(intent);
+        }
+     }
 
     @Override
     public void onClickFeed(View v) {
@@ -466,10 +517,31 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
                 intent.putExtra("venue_name", tmpVenue.getName());
                 intent.putExtra("caller", "pen_button");
                 context.startActivity(intent);
+            } else {
+                showDialogFeedActions(null);
             }
         } else {
             // it should never occur
-            showDialogFeedActions();
+            showDialogFeedActions(null);
         }
    }
+
+    public void onClickFeed(View v, FragmentActivity activity) {
+        hideVerticalMenu(v);
+        if (AppCAP.isUserCheckedIn()) {
+            VenueSmart tmpVenue = CacheMgrService.searchVenueInCache(AppCAP.getUserLastCheckinVenueId());         
+            if(tmpVenue != null) {
+                Intent intent = new Intent((Activity) context, ActivityFeedsForOneVenue.class);
+                intent.putExtra("venue_id", tmpVenue.getVenueId());
+                intent.putExtra("venue_name", tmpVenue.getName());
+                intent.putExtra("caller", "pen_button");
+                context.startActivity(intent);
+            } else {
+                showDialogFeedActions(activity);
+            }
+        } else {
+            // it should never occur
+            showDialogFeedActions(activity);
+        }
+    }
 }
