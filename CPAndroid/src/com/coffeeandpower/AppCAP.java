@@ -220,7 +220,7 @@ public class AppCAP extends Application {
         }
     }
 
-    // called from onCreate of main activity (ActivityMap)
+    // called from onCreate of main activity (FragmentMap)
     public static void mainActivityDidStart(Context context) {
 
         mapContext = context;

@@ -2073,9 +2073,6 @@ public class HttpUtil {
                 HttpEntity resEntity = response.getEntity();
 
                 String responseString = EntityUtils.toString(resEntity);
-                if (Constants.enableApiJsonLogging)
-                    RootActivity.log("HttpUtil_getVenueFeedsList: "
-                            + responseString);
 
                 if (responseString != null) {
                     JSONObject json = new JSONObject(responseString);
@@ -2088,9 +2085,6 @@ public class HttpUtil {
                         if (venueFeeds != null) {
                             JSONArray feeds = venueFeeds.optJSONArray(String
                                     .valueOf(currVenue.getVenueId()));
-                            Log.d("HttpUtil",
-                                    AppCAP.getUserLastCheckinVenueIds()
-                                            + " venue ..." + feeds);
 
                             if (feeds != null) {
                                 for (int m = 0; m < feeds.length(); m++) {

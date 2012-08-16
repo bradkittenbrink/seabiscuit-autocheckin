@@ -63,13 +63,73 @@
                         android:text="@string/message_active_feeds"
                         android:textColor="#ffffff"
                         android:textSize="25dip" />
+
+                    <Button
+                        android:id="@+id/btn_top_map"
+                        android:layout_width="41dip"
+                        android:layout_height="28dip"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dip"
+                        android:layout_marginTop="10dip"
+                        android:background="@drawable/map_list_button"
+                        android:onClick="onClickMap"
+                        android:text="@string/tab_map"
+                        android:textColor="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/btn_top_list"
+                        android:layout_width="41dip"
+                        android:layout_height="28dip"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dip"
+                        android:layout_marginTop="10dip"
+                        android:background="@drawable/map_list_button"
+                        android:onClick="onClickPlaces"
+                        android:text="@string/tab_list"
+                        android:textColor="#FFFFFF" />
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/tab_fragment_area"
+                    android:id="@+id/tab_fragment_area_feed"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_above="@+id/tab_bar"
+                    android:layout_below="@+id/dummy_layout" >
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/tab_fragment_area_postable_feed_venue"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/dummy_layout" >
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/tab_fragment_area_people"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/dummy_layout" >
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/tab_fragment_area_places"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/dummy_layout" >
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/tab_fragment_area_contacts"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/dummy_layout" >
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/tab_fragment_area_map"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_below="@+id/dummy_layout" >
                 </RelativeLayout>
 

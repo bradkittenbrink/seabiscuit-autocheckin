@@ -46,7 +46,7 @@ import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.urbanairship.UAirship;
 
-public class FragmentVenueFeeds extends Fragment implements TabMenu, UserMenu {
+public class FragmentVenueFeeds extends Fragment {
 
     private static final int SCREEN_SETTINGS = 0;
     private static final int SCREEN_USER = 1;
@@ -67,32 +67,40 @@ public class FragmentVenueFeeds extends Fragment implements TabMenu, UserMenu {
     private boolean initialLoad = true;
 
     private MyCachedDataObserver myCachedDataObserver = new MyCachedDataObserver();
-    
-    // Scheduler - create a custom message handler for use in passing venue data from background API call to main thread
+
+    // Scheduler - create a custom message handler for use in passing venue data
+    // from background API call to main thread
     protected Handler mainThreadTaskHandler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
 
-            String type = msg.getData().getString("type");
-            
-            
-            if (!type.equalsIgnoreCase("AutoCheckinTrigger")) {
+            if (listView != null && listView.isShown() == true) {
+                String type = msg.getData().getString("type");
+
+                if (!type.equalsIgnoreCase("AutoCheckinTrigger")) {
                     // pass message data along to venue update method
-                arrayFeeds = msg.getData()
-                    .getParcelableArrayList("venueFeeds"); 
-                updateVenueFeedsFromApiResult(arrayFeeds);
+                    arrayFeeds = msg.getData().getParcelableArrayList(
+                            "venueFeeds");
+                    updateVenueFeedsFromApiResult(arrayFeeds);
 
-                progress.dismiss();
+                    progress.dismiss();
+                }
             }
-
             super.handleMessage(msg);
         }
     };
+    private Bundle intentExtras;
+
+    public FragmentVenueFeeds(Bundle intentExtras) {
+        this.intentExtras = intentExtras;
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
         View mainView = null;
-        mainView = inflater.inflate(R.layout.tab_fragment_venue_feeds, null);   
+        mainView = inflater.inflate(R.layout.tab_fragment_venue_feeds, null);
         progress = new ProgressDialog(this.getActivity());
         if (AppCAP.isLoggedIn()) {
             progress.setMessage("Loading...");
@@ -100,49 +108,35 @@ public class FragmentVenueFeeds extends Fragment implements TabMenu, UserMenu {
             progress.setMessage("You must login to see the feeds ...");
         }
         progress.show();
-        return mainView;        
+        return mainView;
 
     }
 
-        @Override
-   public void onViewCreated(View view, Bundle savedInstanceState) {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
 
         if (AppCAP.isLoggedIn()) {
-            listView = (ListView) getView().findViewById(R.id.venue_feeds_listview);
+            listView = (ListView) getView().findViewById(
+                    R.id.venue_feeds_listview);
         }
         if (arrayFeeds != null) {
             initialLoad = true;
             ActivityVenueFeeds act = (ActivityVenueFeeds) getActivity();
-            act.setFragmentName("FragmentVenueFeeds");
-            act.updateMenuOnFragmentchange();
+            act.updateMenuOnFragmentchange(R.id.tab_fragment_area_feed);
+            act.setFragmentId(R.id.tab_fragment_area_feed);
         }
 
-    }
-
-    public void onClickLinkedIn(View v) {
-        AppCAP.setShouldFinishActivities(true);
-        AppCAP.setStartLoginPageFromContacts(true);
-        onBackPressed();
-    }
-
-    public void onClickMenu(View v) {
-        if (pager.getCurrentScreen() == SCREEN_USER) {
-            pager.setCurrentScreen(SCREEN_SETTINGS, true);
-        } else {
-            pager.setCurrentScreen(SCREEN_USER, true);
-        }
     }
 
     @Override
     public void onStart() {
         if (Constants.debugLog)
-            Log.d("Contacts", "ActivityContacts.onStart()");
+            Log.d("Contacts", "FragmentVenueFeeds.onStart()");
         super.onStart();
 
-        // If the user isn't logged in then we will displaying the login screen
-        // not the list of contacts.
         if (AppCAP.isLoggedIn()) {
-            CacheMgrService.startObservingAPICall("venueFeedsList",myCachedDataObserver);
+            CacheMgrService.startObservingAPICall("venueFeedsList",
+                    myCachedDataObserver);
         }
     }
 
@@ -152,7 +146,8 @@ public class FragmentVenueFeeds extends Fragment implements TabMenu, UserMenu {
             Log.d("venueFeeds", "ActivityvenueFeeds.onStop()");
         super.onStop();
         if (AppCAP.isLoggedIn()) {
-            CacheMgrService.stopObservingAPICall("venueFeeds",myCachedDataObserver);
+            CacheMgrService.stopObservingAPICall("venueFeeds",
+                    myCachedDataObserver);
         }
     }
 
@@ -167,124 +162,48 @@ public class FragmentVenueFeeds extends Fragment implements TabMenu, UserMenu {
         }
     }
 
-   
-    public void onBackPressed() {
-        getActivity().onBackPressed();
-    }
-
     @Override
     public void onPause() {
         super.onPause();
     }
+
     @Override
-    public void onHiddenChanged (boolean hidden) {
+    public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
     }
 
-    @Override
-    public void onClickEnterInviteCode(View v) {
-        menu.onClickEnterInviteCode(v);
-    }
-
-    @Override
-    public void onClickSettings(View v) {
-        menu.onClickSettings(v);
-    }
-
-    @Override
-    public void onClickSupport(View v) {
-        menu.onClickSupport(v);
-    }
-
-    @Override
-    public void onClickLogout(View v) {
-        menu.onClickLogout(v);
-        onBackPressed();
-    }
-
-    @Override
-    public void onClickMap(View v) {
-        menu.onClickMap(v);
-        getActivity().finish();
-    }
-    
-    @Override
-    public boolean onClickVenueFeeds(View v) {
-        if (menu.onClickVenueFeeds(v)) {
-            getActivity().finish();
-        }
-        return initialLoad;
-    }
-    
-    @Override
-    public void onClickNotifications(View v) {
-        menu.onClickNotifications(v);
-        
-    }
-
-    @Override
-    public void onClickPlaces(View v) {
-        menu.onClickPlaces(v);
-        getActivity().finish();
-    }
-
-    @Override
-    public void onClickCheckIn(View v) {
-        if (AppCAP.isLoggedIn()) {
-            menu.onClickCheckIn(v);
-        } else {
-            getActivity().showDialog(RootActivity.DIALOG_MUST_BE_A_MEMBER);
-        }
-    }
-
-    @Override
-    public void onClickCheckOut(View v) {
-        if (AppCAP.isLoggedIn()) {
-            menu.onClickCheckOut(v);
-        } else {
-            getActivity().showDialog(RootActivity.DIALOG_MUST_BE_A_MEMBER);
-        }
-    }
-
-    @Override
-    public void onClickPeople(View v) {
-        menu.onClickPeople(v);
-        getActivity().finish();
-    }
-
-    @Override
-    public void onClickContacts(View v) {
-    }
-
     public void onClickOpenVenueFeeds(View v) {
-        VenueNameAndFeeds venueNameAndFeeds = (VenueNameAndFeeds) v.getTag(R.id.venue_name_and_feeds);
+        VenueNameAndFeeds venueNameAndFeeds = (VenueNameAndFeeds) v
+                .getTag(R.id.venue_name_and_feeds);
         if (venueNameAndFeeds != null) {
-            openVenue(venueNameAndFeeds);     
+            openVenue(venueNameAndFeeds);
         }
     }
 
     public void onClickRemove(View v) {
-        AppCAP.removeUserLastCheckinVenue(((VenueNameAndFeeds) v.getTag()).getVenueId());
+        AppCAP.removeUserLastCheckinVenue(((VenueNameAndFeeds) v.getTag())
+                .getVenueId());
         refresh();
     }
-    
+
     public void refresh() {
-    
+
         // Restart the activity so user lists load correctly
         CacheMgrService.resetVenueFeedsData(true);
     }
-    
-    private void updateVenueFeedsFromApiResult(ArrayList<VenueNameAndFeeds> newFeedsArray) {
+
+    private void updateVenueFeedsFromApiResult(
+            ArrayList<VenueNameAndFeeds> newFeedsArray) {
         if (Constants.debugLog)
             Log.d("venueFeeds", "updateVenueFeedsFromApiResult()");
         if (AppCAP.isLoggedIn()) {
-    
+
             // Populate table view
             this.arrayFeeds = newFeedsArray;
         } else {
             this.arrayFeeds = new ArrayList<VenueNameAndFeeds>();
         }
-    
+
         if (initialLoad && listView != null) {
             adapterFeeds = new MyVenueFeedsAdapter(getActivity(),
                     this.arrayFeeds);
@@ -293,13 +212,15 @@ public class FragmentVenueFeeds extends Fragment implements TabMenu, UserMenu {
             listView.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> arg0, View arg1,
-                        int position, long arg3) { 
-                        if (!AppCAP.isLoggedIn()) {
-                            getActivity().showDialog(RootActivity.DIALOG_MUST_BE_A_MEMBER); 
-                        } else {
-                            VenueNameAndFeeds venueNameAndFeeds = (VenueNameAndFeeds) adapterFeeds.getItem(position);
-                            openVenue(venueNameAndFeeds);                    
-                        }
+                        int position, long arg3) {
+                    if (!AppCAP.isLoggedIn()) {
+                        getActivity().showDialog(
+                                RootActivity.DIALOG_MUST_BE_A_MEMBER);
+                    } else {
+                        VenueNameAndFeeds venueNameAndFeeds = (VenueNameAndFeeds) adapterFeeds
+                                .getItem(position);
+                        openVenue(venueNameAndFeeds);
+                    }
                 }
             });
             listView.setSelection(0);
@@ -312,73 +233,60 @@ public class FragmentVenueFeeds extends Fragment implements TabMenu, UserMenu {
             Log.d("VenueFeeds", "Set local array with " + newFeedsArray.size()
                     + " VenueFeeds.");
     }
-    
+
     public void openVenue(VenueNameAndFeeds venueNameAndFeeds) {
         int venueId = venueNameAndFeeds.getVenueId();
         if (venueId != 0) {
             String venue_name = venueNameAndFeeds.getName();
             Intent intent = new Intent(getActivity().getApplicationContext(),
-                ActivityFeedsForOneVenue.class);
+                    ActivityFeedsForOneVenue.class);
             intent.putExtra("venue_id", venueId);
             intent.putExtra("venue_name", venue_name);
             intent.putExtra("caller", "feeds_list");
             startActivity(intent);
         }
     }
-    
+
     private class MyCachedDataObserver implements Observer {
-        
+
         @Override
         public void update(Observable observable, Object data) {
-        /*
-         * verify that the data is really of type CounterData, and log the
-         * details
-         */
-        if (data instanceof CachedDataContainer) {
-            CachedDataContainer counterdata = (CachedDataContainer) data;
-            
-            DataHolder feeds = counterdata.getData();
-            @SuppressWarnings("unchecked")
-            List<Feed> arrayFeeds = (List<Feed>) feeds.getObject();
-            
-            if (Constants.debugLog)
-                Log.d("Contacts", "Warning: API callback temporarily disabled...");
-            
-            ArrayList<Feed> mutableArrayContacts = new ArrayList<Feed>(arrayFeeds);
-                
-            Message message = new Message();
-            Bundle bundle = new Bundle();
-            bundle.putCharSequence("type", counterdata.type);
-            bundle.putParcelableArrayList("venueFeeds", mutableArrayContacts);
-            message.setData(bundle);
-            
-            if (Constants.debugLog)
-                Log.d("venueFeeds", "venueFeeds.update: Sending handler message with " + mutableArrayContacts.size() + " venueFeeds:");
-            
-            
-            
-            mainThreadTaskHandler.sendMessage(message);            
+            /*
+             * verify that the data is really of type CounterData, and log the
+             * details
+             */
+            if (data instanceof CachedDataContainer) {
+                CachedDataContainer counterdata = (CachedDataContainer) data;
+
+                DataHolder feeds = counterdata.getData();
+                @SuppressWarnings("unchecked")
+                List<Feed> arrayFeeds = (List<Feed>) feeds.getObject();
+
+                if (Constants.debugLog)
+                    Log.d("Contacts",
+                            "Warning: API callback temporarily disabled...");
+
+                ArrayList<Feed> mutableArrayContacts = new ArrayList<Feed>(
+                        arrayFeeds);
+
+                Message message = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putCharSequence("type", counterdata.type);
+                bundle.putParcelableArrayList("venueFeeds",
+                        mutableArrayContacts);
+                message.setData(bundle);
+
+                if (Constants.debugLog)
+                    Log.d("venueFeeds",
+                            "venueFeeds.update: Sending handler message with "
+                                    + mutableArrayContacts.size()
+                                    + " venueFeeds:");
+
+                mainThreadTaskHandler.sendMessage(message);
+            } else if (Constants.debugLog)
+                Log.d("venueFeeds", "Error: Received unexpected data type: "
+                        + data.getClass().toString());
         }
-        else
-            if (Constants.debugLog)
-                Log.d("venueFeeds", "Error: Received unexpected data type: " + data.getClass().toString());
-        }
     }
-
-    @Override
-    public void onClickMinus(View v) {
-        menu.onClickMinus(v);
-    }
-
-    @Override
-    public void onClickPlus(View v) {
-        menu.onClickPlus(v);
-    }
-
-    @Override
-    public void onClickFeed(View v) { 
-        menu.onClickFeed(v, getActivity());
-    }
-
 
 }

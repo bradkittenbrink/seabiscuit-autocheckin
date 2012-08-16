@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="7dp"
+        android:layout_marginLeft="2dp"
         android:background="@null" >
 
         <LinearLayout
@@ -20,28 +20,28 @@
             android:layout_marginLeft="6dp"
             android:background="@drawable/bg_vertical_menu"
             android:orientation="vertical"
-            android:paddingBottom="30dp"
-            android:paddingLeft="2dp"
+            android:paddingBottom="46dp"
+            android:paddingLeft="12dp"
             android:visibility="gone" >
 
             <ImageView
                 android:id="@+id/imageview_button_question"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@drawable/action_menu_button_question_b" />
 
             <ImageView
                 android:id="@+id/imageview_button_checkin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@drawable/action_menu_button_checkin_b"
                 android:clickable="true"
                 android:onClick="onClickCheckIn" />
 
             <ImageView
                 android:id="@+id/imageview_button_update"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@drawable/action_menu_button_update_b"
                 android:clickable="true"
                 android:onClick="onClickFeed" />
@@ -50,7 +50,7 @@
         <LinearLayout
             android:id="@+id/tab_bar_h"
             android:layout_width="80dp"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
             android:background="@drawable/bg_tab_bar"
@@ -62,14 +62,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="7dp"
             android:layout_marginLeft="6dp"
             android:background="@null" >
 
             <ImageView
                 android:id="@+id/imageview_button_base"
-                android:layout_width="67dp"
-                android:layout_height="67dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_gravity="bottom"
@@ -77,8 +77,8 @@
 
             <ImageView
                 android:id="@+id/imageview_button_plus"
-                android:layout_width="67dp"
-                android:layout_height="67dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:background="@drawable/action_menu_button_plus_b"
@@ -87,8 +87,8 @@
 
             <ImageView
                 android:id="@+id/imageview_button_minus"
-                android:layout_width="67dp"
-                android:layout_height="67dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:background="@drawable/action_menu_button_minus_b"

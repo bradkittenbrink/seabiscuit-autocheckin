@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
@@ -15,25 +14,20 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
-import com.coffeeandpower.activity.ActivityChat;
+import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivityFeedsForOneVenue;
 import com.coffeeandpower.activity.ActivityLoginPage;
@@ -42,18 +36,12 @@ import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.activity.ActivitySupport;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.fragments.FragmentPostableFeedVenue;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.tab.activities.ActivityCheckInList;
-import com.coffeeandpower.tab.activities.ActivityContacts;
-import com.coffeeandpower.tab.activities.ActivityMap;
-import com.coffeeandpower.tab.activities.ActivityPeopleAndPlaces;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.views.CustomDialog;
-import com.coffeeandpower.views.CustomFontView;
 
 public class UserAndTabMenu implements UserMenu, TabMenu {
 
@@ -65,7 +53,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 	private ToggleButton toggle;
 	private Button btnFrom;
 
-    private Context context;
+    private RootActivity context;
 	private DataHolder result;
 	private DataHolder resultNotificationSettings;
 
@@ -88,7 +76,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 		this.userState = userState;
 	}
 
-	public UserAndTabMenu(Context context) {
+	public UserAndTabMenu(RootActivity context) {
 		this.context = context;
 		this.progress = new ProgressDialog(context);
 
@@ -161,14 +149,14 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 
     @Override
     public void onClickMap(View v) {
-         Intent intent = new Intent(context, ActivityMap.class);
-         context.startActivity(intent);
+        ((RootActivity) context).startSmartActivity(new Intent(), "ActivityMap");
     }
+    
     @Override
     public boolean onClickVenueFeeds(View v) {
         if (AppCAP.isLoggedIn()) {
             Intent intent = new Intent(context, ActivityVenueFeeds.class);
-            context.startActivity(intent);
+            ((RootActivity) context).startSmartActivity(intent, "ActivityVenueFeeds");
             return true;
         } else {
             this.showDialogLogin();
@@ -181,7 +169,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 		double[] data = new double[6];
 		data = AppCAP.getUserCoordinates();
 
-		Intent intent = new Intent(context, ActivityPeopleAndPlaces.class);
+		Intent intent = new Intent(context, ActivityVenueFeeds.class);
 		intent.putExtra("sw_lat", data[0]);
 		intent.putExtra("sw_lng", data[1]);
 		intent.putExtra("ne_lat", data[2]);
@@ -190,7 +178,8 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 		intent.putExtra("user_lng", data[5]);
 		intent.putExtra("from", "from_tab");
 		intent.putExtra("type", "place");
-		context.startActivity(intent);
+        intent.putExtra("fragment", "FragmentPlaces");
+        ((RootActivity) context).startSmartActivity(intent, "ActivityPeopleAndPlaces");
 
 	}
 
@@ -211,8 +200,8 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 			Intent intent = new Intent(context, ActivityCheckInList.class);
 			context.startActivity(intent);
 		} else {
-            Intent intent = new Intent(context, ActivityMap.class);
-            context.startActivity(intent);		
+	        ((RootActivity) context).startSmartActivity(new Intent(), "ActivityMap");
+
             Intent intent2 = new Intent(context, ActivityCheckInList.class);
             context.startActivity(intent2);
 		}
@@ -264,8 +253,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
                 Intent intent = new Intent(context, ActivityCheckInList.class);
                 context.startActivity(intent);
             } else {
-                Intent intent = new Intent(context, ActivityMap.class);
-                context.startActivity(intent);      
+                ((RootActivity) context).startSmartActivity(new Intent(), "ActivityMap");
                 Intent intent2 = new Intent(context, ActivityCheckInList.class);
                 context.startActivity(intent2);
             }
@@ -296,7 +284,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 		double[] data = new double[6];
 		data = AppCAP.getUserCoordinates();
 
-		Intent intent = new Intent(context, ActivityPeopleAndPlaces.class);
+		Intent intent = new Intent(context, ActivityVenueFeeds.class);
 		intent.putExtra("sw_lat", data[0]);
 		intent.putExtra("sw_lng", data[1]);
 		intent.putExtra("ne_lat", data[2]);
@@ -305,13 +293,15 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 		intent.putExtra("user_lng", data[5]);
 		intent.putExtra("from", "from_tab");
 		intent.putExtra("type", "people");
-		context.startActivity(intent);
+        intent.putExtra("fragment", "FragmentPeople");
+        ((RootActivity) context).startSmartActivity(intent, "ActivityPeopleAndPlaces");
 	}
 
 	@Override
 	public void onClickContacts(View v) {
-		Intent intent = new Intent(context, ActivityContacts.class);
-		context.startActivity(intent);
+		Intent intent = new Intent(context, ActivityVenueFeeds.class);
+        intent.putExtra("fragment", "FragmentContacts");
+        ((RootActivity) context).startSmartActivity(intent, "ActivityContacts");
 	}
 
 	@Override
@@ -360,11 +350,11 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
                 .findViewById(R.id.imageview_button_update);
 
         layout_action_menu.setVisibility(View.VISIBLE);
-        TranslateAnimation animation = new TranslateAnimation(0, 0, 200, -100);   
+        TranslateAnimation animation = new TranslateAnimation(0, 0, 170, -60);   
         animation.setDuration(400);
         animation.setFillEnabled(true);
-        animation.setFillAfter(true);  
-        ButtonAnimationListener listener=new ButtonAnimationListener(layout_action_menu, 100,((Activity) context));
+        animation.setFillAfter(true);
+        ButtonAnimationListener listener=new ButtonAnimationListener(layout_action_menu, 56,((Activity) context));
         animation.setAnimationListener(listener);
         
         layout_action_menu.startAnimation(animation);        
@@ -496,7 +486,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 
     protected void onClickPostToFeed(View v, FragmentActivity activity) {
         if (activity != null) {
-            ((ActivityVenueFeeds) activity).displayFragment("FragmentPostableFeedVenue");
+            ((ActivityVenueFeeds) activity).displayFragment(R.id.tab_fragment_area_postable_feed_venue);
         } else {
             // not yet supported in the other activity 
             // will be fix when all will be done in fragments

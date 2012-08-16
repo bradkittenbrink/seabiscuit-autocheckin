@@ -71,7 +71,7 @@
             android:gravity="center"
             android:text="@string/activity_enter_invite_linkedin"
             android:textSize="18sp" />
-        
+
         <ImageButton
             android:id="@+id/btn_linked_in_invite_list"
             android:layout_width="wrap_content"
@@ -81,7 +81,7 @@
             android:background="@drawable/linkedin_invite"
             android:contentDescription="@string/help_linked_in_invite_list"
             android:onClick="onClickLinkedInInviteList" />
-        
+
         <Button
             android:id="@+id/later_btn"
             android:layout_width="wrap_content"
@@ -89,7 +89,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dip"
             android:background="@drawable/button_turquoise"
-            android:onClick="onClickBack"
+            android:onClick="onClickLater"
             android:paddingBottom="10dip"
             android:paddingLeft="20dip"
             android:paddingRight="20dip"
@@ -97,7 +97,6 @@
             android:text="@string/later"
             android:textColor="#ffffff"
             android:visibility="invisible" />
-
     </LinearLayout>
 
 </RelativeLayout>

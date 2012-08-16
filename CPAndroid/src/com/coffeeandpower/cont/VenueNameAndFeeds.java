@@ -48,7 +48,6 @@ public class VenueNameAndFeeds  implements Parcelable  {
     }
 
     public ArrayList<Feed> getFeedsArray() {
-        Log.d("VenueNameAndFeeds", this.name + " getFeedsArray length..." + this.feedsArray.size());
         return feedsArray;
     }
 

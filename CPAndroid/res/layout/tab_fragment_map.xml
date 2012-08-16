@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#2d2d2d"
+    android:orientation="vertical" >
+
+    <com.google.android.maps.MapView
+        android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:apiKey="@string/GOOGLE_MAPS_API_KEY"
+        android:clickable="true" />
+
+    <!-- 08WpTLaphEjlVeOsrM0kfBODmF3ieB49C4lEHJA -->
+
+    <RelativeLayout
+        android:id="@+id/rel_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="5dp" >
+
+        <ImageButton
+            android:layout_width="40dip"
+            android:layout_height="41dip"
+            android:layout_centerInParent="true"
+            android:background="@drawable/btn_map_refresh"
+            android:clickable="true"
+            android:onClick="onClickRefresh" />
+
+        <ImageView
+            android:id="@+id/imagebutton_map_refresh_progress"
+            android:layout_width="24dip"
+            android:layout_height="24dip"
+            android:layout_centerInParent="true"
+            android:src="@drawable/map_refresh_progress_arrow" />
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/map_btn_locate"
+        android:layout_width="40dip"
+        android:layout_height="41dip"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/rel_refresh"
+        android:background="@drawable/btn_map_locate"
+        android:onClick="onClickLocateMe" />
+
+</RelativeLayout>

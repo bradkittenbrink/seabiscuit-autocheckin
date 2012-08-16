@@ -9,8 +9,6 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.inter.OAuthService;
 import com.coffeeandpower.linkedin.LinkedIn;
-import com.coffeeandpower.tab.activities.ActivityMap;
-import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.utils.ActivityUtils;
 
 public class ActivityLoginPage extends RootActivity {
@@ -48,8 +46,7 @@ public class ActivityLoginPage extends RootActivity {
 	public void onClickLater(View v) {
 		AppCAP.setLoggedIn(false);
 		AppCAP.setShouldFinishActivities(false);
-		startActivity(new Intent(ActivityLoginPage.this, ActivityMap.class));
-		onBackPressed();
+        startSmartActivity(new Intent(), "ActivityMap");
 	}
 
 	@Override

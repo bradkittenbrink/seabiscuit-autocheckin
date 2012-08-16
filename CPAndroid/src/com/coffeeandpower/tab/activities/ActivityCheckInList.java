@@ -107,7 +107,7 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 
                     if (initialLoad) {
                         if (Constants.debugLog)
-                            Log.d("ActivityPeopleAndPlaces",
+                            Log.d("ActivityCheckInList",
                                     "Place List Initial Load");
                         adapter = new MyVenuesAdapter(ActivityCheckInList.this,
                                 venueArray);

@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
@@ -13,10 +14,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.coffeeandpower.activity.ActivityLoginPage;
-import com.coffeeandpower.tab.activities.ActivityMap;
-import com.google.android.maps.MapActivity;
+import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 
-public class RootActivity extends MapActivity {
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+
+public class RootActivity extends FragmentActivity {
 
     public static final int DIALOG_MUST_BE_A_MEMBER = 30;
 
@@ -155,11 +158,10 @@ public class RootActivity extends MapActivity {
                                         int id) {
                                     Activity a = alert.getOwnerActivity();
                                     if (a != null) {
-
-                                        if (a.getClass() == ActivityMap.class) {
-                                            AppCAP.setShouldStartLogIn(true);
-                                        }
-                                        AppCAP.setShouldFinishActivities(true);
+                                        Intent i = new Intent();
+                                        i.setClass(a, ActivityLoginPage.class);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        a.startActivity(i);
                                         a.finish();
                                     }
                                     dialog.cancel();
@@ -185,6 +187,30 @@ public class RootActivity extends MapActivity {
 
     @Override
     protected boolean isRouteDisplayed() {
+        return false;
+    }
+    
+    public String getResStr(int id) {
+        return getResources().getString(id);
+    }
+    
+    public boolean startSmartActivity(Intent intent, String activityName) {
+        if (activityName == "ActivityMap") {
+            intent.putExtra("fragment", R.id.tab_fragment_area_map);
+            intent.setClass(RootActivity.this, ActivityVenueFeeds.class);
+            startActivity(intent);
+            return true;
+        } else if (activityName == "ActivityPeopleAndPlaces") {
+            intent.putExtra("fragment", R.id.tab_fragment_area_places);
+            intent.setClass(RootActivity.this, ActivityVenueFeeds.class);
+            startActivity(intent);
+            return true;
+        } else if (activityName == "ActivityContacts") {
+            intent.putExtra("fragment", R.id.tab_fragment_area_contacts);
+            intent.setClass(RootActivity.this, ActivityVenueFeeds.class);
+            startActivity(intent);
+            return true;
+        }
         return false;
     }
 

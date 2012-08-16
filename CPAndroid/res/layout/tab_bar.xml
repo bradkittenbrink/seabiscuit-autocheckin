@@ -20,7 +20,7 @@
     <LinearLayout
         android:id="@+id/tab_bar_h"
         android:layout_width="match_parent"
-        android:layout_height="60dip"
+        android:layout_height="40dip"
         android:layout_below="@+id/view_2"
         android:background="@drawable/bg_tab_bar"
         android:orientation="horizontal" >
@@ -29,7 +29,7 @@
             android:id="@+id/rel_map"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dip"
+            android:layout_marginTop="2dip"
             android:layout_weight="0.90"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
@@ -41,12 +41,12 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_marginLeft="35px"
-            android:layout_marginTop="10dip"
+            android:layout_marginTop="2dip"
             android:layout_weight="0.85"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
             android:gravity="center"
-            android:onClick="onClickVenueFeeds"  >
+            android:onClick="onClickVenueFeeds" >
 
             <ImageView
                 android:id="@+id/imageview_feed"
@@ -61,7 +61,7 @@
             android:id="@+id/rel_places"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dip"
+            android:layout_marginTop="2dip"
             android:layout_weight="0.90"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
@@ -80,7 +80,7 @@
             android:id="@+id/rel_people"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dip"
+            android:layout_marginTop="2dip"
             android:layout_weight="0.90"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
@@ -98,7 +98,7 @@
             android:id="@+id/rel_log_in"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dip"
+            android:layout_marginTop="2dip"
             android:layout_weight="0.90"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
@@ -118,7 +118,7 @@
             android:id="@+id/rel_contacts"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dip"
+            android:layout_marginTop="2dip"
             android:layout_weight="0.90"
             android:background="@drawable/bg_tabbar_press"
             android:clickable="true"
@@ -133,6 +133,5 @@
                 android:background="@drawable/tab_contacts_a" />
         </RelativeLayout>
     </LinearLayout>
-
 
 </RelativeLayout>

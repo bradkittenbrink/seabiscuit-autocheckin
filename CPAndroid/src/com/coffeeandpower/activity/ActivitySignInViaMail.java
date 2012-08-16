@@ -13,7 +13,6 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.views.CustomDialog;
 
 /**
@@ -62,14 +61,7 @@ public class ActivitySignInViaMail extends RootActivity {
 			case AppCAP.HTTP_REQUEST_SUCCEEDED:
 				textViewErrorMsg.setVisibility(View.INVISIBLE);
 
-                Intent intent = new Intent(ActivitySignInViaMail.this,
-                        ActivityMap.class);
-
-				// Get user data from login response
-
-				// User user = (User) result.getObject();
-				// intent.putExtra("user", user);
-				startActivity(intent);
+				startSmartActivity(new Intent(), "ActivityMap");
 				finish();
 
 				break;

@@ -19,7 +19,6 @@ import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.linkedin.LinkedIn;
-import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.views.CustomFontView;
 
 public class ActivityInviteContactsConfirm extends RootActivity {
@@ -71,7 +70,8 @@ public class ActivityInviteContactsConfirm extends RootActivity {
                     messageContent);
             AppCAP.setShouldFinishActivities(false);
             this.finish();
-            startActivity(new Intent(ActivityInviteContactsConfirm.this, ActivityMap.class));
+            startSmartActivity(new Intent(), "ActivityMap");
+            
         } else {
             showDialog(DIALOG_MUST_BE_A_MEMBER);
         }

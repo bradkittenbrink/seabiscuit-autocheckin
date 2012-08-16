@@ -9,7 +9,7 @@
     <!--
     staging
     <string name="linkedInApiKey">4xkfzpnvuc72</string> <string 
-        name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+        name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
     -->
 
 
@@ -122,6 +122,10 @@
     <string name="message_checking_out">"Checking out..."</string>
     <string name="message_choose_feed">"Choose Feed"</string>
     <string name="message_active_feeds">"Active Feeds"</string>
+    <string name="people_screen_title">People</string>
+    <string name="places_screen_title">Venues</string>
+    <string name="map_screen_title">Map</string>
+    <string name="contacts_screen_title">Contacts</string>
     <string name="activity_invite_confirm_content">
 <![CDATA[
         Hi! %1$s is inviting you to join Coffee &amp; Power, the mobile work network.<br/>

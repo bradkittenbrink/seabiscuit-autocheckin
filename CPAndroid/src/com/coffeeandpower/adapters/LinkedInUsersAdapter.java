@@ -80,7 +80,7 @@ public class LinkedInUsersAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (Constants.debugLog)
-            Log.d("MyUsersAdapter",
+            Log.d("LinkedinUsersAdapter",
                     "getView for "
                             + AppCAP.cleanResponseString(mudArray.get(position)
                                     .getFirstName()) + ", image: "

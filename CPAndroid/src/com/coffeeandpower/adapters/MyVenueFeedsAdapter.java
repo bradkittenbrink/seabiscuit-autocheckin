@@ -169,8 +169,11 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
     textMessage.setText(AppCAP.cleanResponseString(message.getEntryText()));
     // Display image
     if (AppCAP.isLoggedIn()) {
-        imageLoader.DisplayImage(message.getAuthorPhotoUrl(),
-                profileImage, R.drawable.default_avatar50, 70);
+        String imageUrl = message.getAuthorPhotoUrl();
+        if (imageUrl.contentEquals("") == false) {
+            imageLoader.DisplayImage(message.getAuthorPhotoUrl(),
+                    profileImage, R.drawable.default_avatar50, 70);
+        }
         profileImage.setTag(message.getAuthorId());
         profileImage.setOnClickListener(new OnClickListener() {
             @Override

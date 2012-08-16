@@ -37,8 +37,8 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.fragments.FragmentMap;
 import com.coffeeandpower.imageutil.ImageLoader;
-import com.coffeeandpower.tab.activities.ActivityMap;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
@@ -470,7 +470,7 @@ public class ActivitySettings extends RootActivity {
     @Override
     public void onBackPressed() {
         if (isUserDataChanged) {
-            setResult(ActivityMap.ACCOUNT_CHANGED);
+            setResult(FragmentMap.ACCOUNT_CHANGED);
         }
         if (email_required.contentEquals("yes")) {
             Intent intent = new Intent(ActivitySettings.this, ActivityVenueFeeds.class);

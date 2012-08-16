@@ -7,6 +7,7 @@ import java.util.Observer;
 
 import android.app.ProgressDialog;
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -32,6 +34,9 @@ import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Feed;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
+import com.coffeeandpower.fragments.FragmentContacts;
+import com.coffeeandpower.fragments.FragmentMap;
+import com.coffeeandpower.fragments.FragmentPeopleAndPlaces;
 import com.coffeeandpower.fragments.FragmentPostableFeedVenue;
 import com.coffeeandpower.fragments.FragmentVenueFeeds;
 import com.coffeeandpower.inter.TabMenu;
@@ -47,12 +52,11 @@ import com.coffeeandpower.views.CustomDialog.ClickListener;
 import com.urbanairship.UAirship;
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 
-public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu, UserMenu {
+public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, UserMenu {
 
     private static final int SCREEN_SETTINGS = 0;
     private static final int SCREEN_USER = 1;
@@ -73,6 +77,7 @@ public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu,
     private ArrayList<VenueNameAndFeeds> arrayFeeds;
 
     private boolean initialLoad = true;
+    private Bundle intentExtras;
 
     private MyAutoCheckinTriggerObserver myAutoCheckinObserver = new MyAutoCheckinTriggerObserver();
     
@@ -91,31 +96,29 @@ public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu,
             super.handleMessage(msg);
         }
     };
-    private String  fragmentName = "FragmentVenueFeeds";
+    private int  fragment_id = R.id.tab_fragment_area_feed;
     
-    public String getFragmentName() {
-        return fragmentName;
+    public int getFragmentId() {
+        return fragment_id;
     }
-
-    public void setFragmentName(String fragmentName) {
-        this.fragmentName = fragmentName;
+    
+    public void setFragmentId(int fragment_id) {
+        this.fragment_id = fragment_id;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab_activity_venue_feeds);
-        ((RelativeLayout) findViewById(R.id.rel_feed)).setBackgroundResource(R.drawable.bg_tabbar_selected);
-        ((ImageView) findViewById(R.id.imageview_feed)).setImageResource(R.drawable.tab_feed_pressed);
 
         ((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
         
         // Get userId form intent
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            fragmentName  = bundle.getString("fragment");
-            if (fragmentName == null) {
-                fragmentName = "FragmentVenueFeeds";
+        intentExtras = getIntent().getExtras();
+        if (intentExtras != null) {
+            fragment_id  = intentExtras.getInt("fragment");
+            if (fragment_id == 0) {
+                fragment_id = R.id.tab_fragment_area_feed;
             }
         }
         
@@ -140,51 +143,188 @@ public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu,
         });
     }
     
-    public void displayFragment(String fragmentName) {
+    public void displayFragment(int fragment_id) {
         Fragment newFragment;
-        this.fragmentName = fragmentName;
-        updateMenuOnFragmentchange();
-        // Create new fragment and transaction
-        if (fragmentName.contentEquals("FragmentPostableFeedVenue")) {
-            newFragment = new FragmentPostableFeedVenue();
-        } else {
-            CacheMgrService.resetVenueFeedsData(true);
-            newFragment = new FragmentVenueFeeds();
+        int hide_fragment_id = 0;
+        if (this.fragment_id != fragment_id) {
+            hide_fragment_id = this.fragment_id;
         }
+        updateMenuOnFragmentchange(fragment_id);
+        this.fragment_id = fragment_id;
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         
         // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        if (manager.findFragmentById(R.id.tab_fragment_area) == null) {
-            transaction.add(R.id.tab_fragment_area, newFragment);
+        // and add the transaction to the back stack 
+        Fragment fragment = manager.findFragmentById(fragment_id);
+        if (fragment == null) {
+            // Create new fragment and transaction
+          if (fragment_id == R.id.tab_fragment_area_postable_feed_venue) {
+              newFragment = new FragmentPostableFeedVenue(this.intentExtras);
+          } else if (fragment_id == R.id.tab_fragment_area_contacts) { 
+              newFragment = new FragmentContacts(this.intentExtras);
+          } else if (fragment_id == R.id.tab_fragment_area_map) { 
+              newFragment = new FragmentMap(this.intentExtras);
+          } else if (fragment_id == R.id.tab_fragment_area_people) {
+              if (intentExtras.getInt("fragment") == 0) {
+                  intentExtras.putInt("fragment", R.id.tab_fragment_area_people);
+              }
+              newFragment = new FragmentPeopleAndPlaces(this.intentExtras);
+          } else if (fragment_id == R.id.tab_fragment_area_places) {
+              if (intentExtras.getInt("fragment") == 0) {
+                  intentExtras.putInt("fragment", R.id.tab_fragment_area_places);
+              }
+              newFragment = new FragmentPeopleAndPlaces(this.intentExtras);
+          } else {
+              CacheMgrService.resetVenueFeedsData(true);
+              newFragment = new FragmentVenueFeeds(this.intentExtras);
+          }
+            transaction.add(fragment_id, newFragment);
         } else {
-            transaction.replace(R.id.tab_fragment_area, newFragment);
-            transaction.addToBackStack(null);
+            transaction.show(fragment);
         }
-
+        if (hide_fragment_id != 0) {
+            Fragment hide_fragment = manager.findFragmentById(hide_fragment_id);
+            if (hide_fragment != null) {
+                transaction.hide(hide_fragment);
+            }
+        }
         // Commit the transaction
         transaction.commit(); 
         
     }
     
-    public void updateMenuOnFragmentchange() {
-        Fragment newFragment;
+    public void switchTabBackground(int onRelativeLayout) {
+        if (onRelativeLayout == R.id.rel_feed) {
+            ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
+            ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
+            ((RelativeLayout) findViewById(R.id.rel_feed)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+            ((ImageView) findViewById(R.id.imageview_feed)).setImageResource(R.drawable.tab_feed_pressed);
+        } else {
+            ((RelativeLayout) findViewById(R.id.rel_feed)).setBackgroundResource(R.drawable.bg_tabbar_press);
+            ((ImageView) findViewById(R.id.imageview_feed)).setImageResource(R.drawable.tab_feed_a);
+        }
+        if (onRelativeLayout == R.id.rel_people) {
+            ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
+            ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
+            ((RelativeLayout) findViewById(R.id.rel_people)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+            ((ImageView) findViewById(R.id.imageview_people)).setImageResource(R.drawable.tab_people_pressed);
+        } else {
+            ((RelativeLayout) findViewById(R.id.rel_people)).setBackgroundResource(R.drawable.bg_tabbar_press);
+            ((ImageView) findViewById(R.id.imageview_people)).setImageResource(R.drawable.tab_people_a);
+        }
+        if (onRelativeLayout == R.id.rel_places) {
+            ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.VISIBLE);
+            ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
+            ((RelativeLayout) findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+            ((ImageView) findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
+        } else {
+            if (onRelativeLayout == R.id.rel_map) {
+                ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
+                ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.VISIBLE);
+                ((RelativeLayout) findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+                ((ImageView) findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
+            } else {
+                ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
+                ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
+                ((RelativeLayout) findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_press);
+                ((ImageView) findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_a);
+            }
+        }
+        if (onRelativeLayout == R.id.rel_contacts) {
+            ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
+            ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
+            if (AppCAP.isLoggedIn()) {
+                ((RelativeLayout) findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+                ((ImageView) findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_pressed);
+            } else {
+                ((RelativeLayout) findViewById(R.id.rel_log_in)).setBackgroundResource(R.drawable.bg_tabbar_selected);
+                ((ImageView) findViewById(R.id.imageview_log_in)).setImageResource(R.drawable.tab_login_pressed);
+            }
+        } else {
+            RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
+            RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);
+
+            if (AppCAP.isLoggedIn()) {
+                ((RelativeLayout) findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_press);
+                ((ImageView) findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_a);
+                if (r != null) {
+                    r.setVisibility(View.GONE);
+                }
+                if (r1 != null) {
+                    r1.setVisibility(View.VISIBLE);
+                }
+            } else {
+                ((RelativeLayout) findViewById(R.id.rel_log_in)).setBackgroundResource(R.drawable.bg_tabbar_press);
+                ((ImageView) findViewById(R.id.imageview_log_in)).setImageResource(R.drawable.tab_login_a);
+                if (r != null) {
+                    r.setVisibility(View.VISIBLE);
+                }
+                if (r1 != null) {
+                    r1.setVisibility(View.GONE);
+                }
+            }
+        }
+    }
+    
+    public void updateMenuOnFragmentchange(int next_fragment_id) {
+        ((RelativeLayout) findViewById(next_fragment_id)).setVisibility(View.VISIBLE);
+        if (fragment_id != 0 && fragment_id != next_fragment_id) {
+            ((RelativeLayout) findViewById(fragment_id)).setVisibility(View.GONE);
+        }
         // Create new fragment and transaction
-        if (fragmentName.contentEquals("FragmentPostableFeedVenue")) {
+        if (next_fragment_id == R.id.tab_fragment_area_postable_feed_venue) {
+            switchTabBackground(R.id.rel_feed);
             if (findViewById(R.id.textview_contact_list) != null) {
                 ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(
-                        getResources().getString(R.string.message_choose_feed));
+                        getResStr(R.string.message_choose_feed));
             }
-            newFragment = new FragmentPostableFeedVenue();
+        } else if (next_fragment_id == R.id.tab_fragment_area_people) {
+            switchTabBackground(R.id.rel_people);
+            ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(getResStr(R.string.people_screen_title));
+        } else if (next_fragment_id == R.id.tab_fragment_area_places) {
+            switchTabBackground(R.id.rel_places);
+            ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(getResStr(R.string.places_screen_title));
+        } else if (next_fragment_id == R.id.tab_fragment_area_map) {
+            switchTabBackground(R.id.rel_map);
+            ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(getResStr(R.string.map_screen_title));
+        } else if (next_fragment_id == R.id.tab_fragment_area_contacts) {
+            switchTabBackground(R.id.rel_contacts);
+            ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(getResStr(R.string.contacts_screen_title));
         } else {
+            switchTabBackground(R.id.rel_feed);
             if (findViewById(R.id.textview_contact_list) != null) {
                 ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(
                         getResources().getString(R.string.message_active_feeds));
             }
-            newFragment = new FragmentVenueFeeds();
         }
     }
+    
+
+    public void onClickRefresh(View v) {
+        FragmentManager manager = getSupportFragmentManager();
+
+        if (manager != null)
+        {
+            FragmentMap currFrag = (FragmentMap)manager.findFragmentById(R.id.tab_fragment_area_map);
+            if (currFrag != null) {        
+                currFrag.onClickRefresh(v);
+            }
+        }
+    }
+    public void onClickLocateMe(View v) {
+        FragmentManager manager = getSupportFragmentManager();
+
+        if (manager != null)
+        {
+            FragmentMap currFrag = (FragmentMap)manager.findFragmentById(R.id.tab_fragment_area_map);
+            if (currFrag != null) {        
+                currFrag.onClickLocateMe(v);
+            }
+        }
+    }
+   
+    
     private OnBackStackChangedListener getListener()
     {
         OnBackStackChangedListener result = new OnBackStackChangedListener()
@@ -195,12 +335,12 @@ public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu,
 
                 if (manager != null)
                 {
+/*                    
                     Fragment currFrag = (Fragment)manager.findFragmentById(R.id.tab_fragment_area);
                     if (currFrag != null) {
-                        updateMenuOnFragmentchange();
-
-                    }
-                }                   
+                    updateMenuOnFragmentchange(fragment_id);
+                    }*/
+                }                 
             }
         };
 
@@ -223,7 +363,7 @@ public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu,
     @Override
     protected void onStart() {
         if (Constants.debugLog)
-            Log.d("Contacts", "ActivityContacts.onStart()");
+            Log.d("Contacts", "ActivityVenueFeeds.onStart()");
         super.onStart();
 
         // If the user isn't logged in then we will displaying the login screen
@@ -266,7 +406,7 @@ public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu,
                 });
                 cd.show();
             }
-            this.displayFragment(fragmentName);
+            this.displayFragment(fragment_id);
 
             getSupportFragmentManager().addOnBackStackChangedListener(getListener());
         }
@@ -276,7 +416,11 @@ public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu,
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (fragment_id == R.id.tab_fragment_area_postable_feed_venue) {
+            displayFragment(R.id.tab_fragment_area_feed);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -312,14 +456,12 @@ public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu,
 
     @Override
     public void onClickMap(View v) {
-        menu.onClickMap(v);
-        finish();
+        displayFragment(R.id.tab_fragment_area_map);
     }
     
     @Override
     public boolean onClickVenueFeeds(View v) {
         if (menu.onClickVenueFeeds(v)) {
-            finish();
         }
         return initialLoad;
     }
@@ -333,7 +475,6 @@ public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu,
     @Override
     public void onClickPlaces(View v) {
         menu.onClickPlaces(v);
-        finish();
     }
 
     @Override
@@ -357,13 +498,13 @@ public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu,
     @Override
     public void onClickPeople(View v) {
         menu.onClickPeople(v);
-        finish();
+//        finish();
     }
 
     @Override
     public void onClickContacts(View v) {
         menu.onClickContacts(v);
-        finish();
+//        finish();
     }
 
     public void onClickOpenVenueFeeds(View v) {
@@ -428,6 +569,35 @@ public class ActivityVenueFeeds extends FragmentActivity   implements   TabMenu,
     @Override
     public void onClickFeed(View v) { 
         menu.onClickFeed(v, this);
+    }
+    
+    @Override
+    public boolean startSmartActivity(Intent intent, String activityName) {
+        if (activityName == "ActivityMap") {
+            this.intentExtras = intent.getExtras();
+            displayFragment(R.id.tab_fragment_area_map);
+            return true;
+        } else if (activityName == "ActivityVenueFeeds") {
+            this.intentExtras = intent.getExtras();
+            displayFragment(R.id.tab_fragment_area_feed);
+            return true;
+        } else if (activityName == "ActivityContacts") {
+            this.intentExtras = intent.getExtras();
+            displayFragment(R.id.tab_fragment_area_contacts);
+            return true;
+        } else if (activityName == "ActivityPeopleAndPlaces") {
+            this.intentExtras = intent.getExtras();
+            String type = intent.getStringExtra("type");
+            if (type.equals("people")) {
+                displayFragment(R.id.tab_fragment_area_people);
+            } else {
+                displayFragment(R.id.tab_fragment_area_places);
+            }
+            return true;
+        } else {
+            super.startSmartActivity(intent, activityName);
+        }
+        return false;
     }
 
 

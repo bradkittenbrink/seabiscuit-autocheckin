@@ -50,7 +50,7 @@ import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.urbanairship.UAirship; 
 
-public class FragmentPostableFeedVenue extends Fragment implements TabMenu, UserMenu {
+public class FragmentPostableFeedVenue extends Fragment {
 
     private static final int SCREEN_SETTINGS = 0;
     private static final int SCREEN_USER = 1;
@@ -65,6 +65,11 @@ public class FragmentPostableFeedVenue extends Fragment implements TabMenu, User
     private Executor exe;
     protected DataHolder result;
     private MyPostableVenuesAdapter adapter;
+    private Bundle intentExtras;
+
+    public FragmentPostableFeedVenue(Bundle intentExtras) {
+        this.intentExtras = intentExtras;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -84,8 +89,8 @@ public class FragmentPostableFeedVenue extends Fragment implements TabMenu, User
         @Override
    public void onViewCreated(View view, Bundle savedInstanceState) {
         ActivityVenueFeeds act = (ActivityVenueFeeds) getActivity();
-        act.setFragmentName("FragmentPostableFeedVenue");
-        act.updateMenuOnFragmentchange();
+        act.updateMenuOnFragmentchange(R.id.tab_fragment_area_postable_feed_venue);
+        act.setFragmentId(R.id.tab_fragment_area_postable_feed_venue); 
         if (AppCAP.isLoggedIn()) {
             listView = (ListView) getView().findViewById(R.id.venue_feeds_listview);
             // Executor
@@ -120,12 +125,6 @@ public class FragmentPostableFeedVenue extends Fragment implements TabMenu, User
             progress.dismiss();
         }
 
-    public void onClickLinkedIn(View v) {
-        AppCAP.setShouldFinishActivities(true);
-        AppCAP.setStartLoginPageFromContacts(true);
-        onBackPressed();
-    }
-
     public void onClickMenu(View v) {
         if (pager.getCurrentScreen() == SCREEN_USER) {
             pager.setCurrentScreen(SCREEN_SETTINGS, true);
@@ -137,7 +136,7 @@ public class FragmentPostableFeedVenue extends Fragment implements TabMenu, User
     @Override
     public void onStart() {
         if (Constants.debugLog)
-            Log.d("Contacts", "ActivityContacts.onStart()");
+            Log.d("Contacts", "FragmentPostableFeedVenue.onStart()");
         super.onStart();
 
     }
@@ -145,7 +144,7 @@ public class FragmentPostableFeedVenue extends Fragment implements TabMenu, User
     @Override
     public void onStop() {
         if (Constants.debugLog)
-            Log.d("venueFeeds", "ActivityvenueFeeds.onStop()");
+            Log.d("venueFeeds", "FragmentPostableFeedVenue.onStop()");
         super.onStop();
     }
 
@@ -162,89 +161,11 @@ public class FragmentPostableFeedVenue extends Fragment implements TabMenu, User
         }
     }
 
-   
-    public void onBackPressed() {
-        getActivity().onBackPressed();
-    }
-
     @Override
     public void onPause() {
         super.onPause();
     }
-    @Override
-    public void onClickEnterInviteCode(View v) {
-        menu.onClickEnterInviteCode(v);
-    }
 
-    @Override
-    public void onClickSettings(View v) {
-        menu.onClickSettings(v);
-    }
-
-    @Override
-    public void onClickSupport(View v) {
-        menu.onClickSupport(v);
-    }
-
-    @Override
-    public void onClickLogout(View v) {
-        menu.onClickLogout(v);
-        onBackPressed();
-    }
-
-    @Override
-    public void onClickMap(View v) {
-        menu.onClickMap(v);
-        getActivity().finish();
-    }
-    
-    @Override
-    public boolean onClickVenueFeeds(View v) {
-        if (menu.onClickVenueFeeds(v)) {
-            getActivity().finish();
-        }
-        return false;
-    }
-    
-    @Override
-    public void onClickNotifications(View v) {
-        menu.onClickNotifications(v);
-        
-    }
-
-    @Override
-    public void onClickPlaces(View v) {
-        menu.onClickPlaces(v);
-        getActivity().finish();
-    }
-
-    @Override
-    public void onClickCheckIn(View v) {
-        if (AppCAP.isLoggedIn()) {
-            menu.onClickCheckIn(v);
-        } else {
-            getActivity().showDialog(RootActivity.DIALOG_MUST_BE_A_MEMBER);
-        }
-    }
-
-    @Override
-    public void onClickCheckOut(View v) {
-        if (AppCAP.isLoggedIn()) {
-            menu.onClickCheckOut(v);
-        } else {
-            getActivity().showDialog(RootActivity.DIALOG_MUST_BE_A_MEMBER);
-        }
-    }
-
-    @Override
-    public void onClickPeople(View v) {
-        menu.onClickPeople(v);
-        getActivity().finish();
-    }
-
-    @Override
-    public void onClickContacts(View v) {
-    }
 
     public void onClickOpenVenueFeeds(View v) {
         VenueNameAndFeeds venueNameAndFeeds = (VenueNameAndFeeds) v.getTag(R.id.venue_name_and_feeds);
@@ -278,20 +199,5 @@ public class FragmentPostableFeedVenue extends Fragment implements TabMenu, User
         }
     }
     
-    @Override
-    public void onClickMinus(View v) {
-        menu.onClickMinus(v);
-    }
-
-    @Override
-    public void onClickPlus(View v) {
-        menu.onClickPlus(v);
-    }
-
-    @Override
-    public void onClickFeed(View v) { 
-        menu.onClickFeed(v);
-    }
-
 
 }
