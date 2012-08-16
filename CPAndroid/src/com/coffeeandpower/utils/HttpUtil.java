@@ -12,7 +12,9 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -1748,7 +1750,7 @@ public class HttpUtil {
                                                         .optString("country"),
                                                 "", "", "", checkinsCount,
                                                 usersCount, tipCount,
-                                                hereNowCount, "", "", "", 0));
+                                                hereNowCount, "", "", "", 0, 0));
 
                                     }
                                 }
@@ -2046,6 +2048,142 @@ public class HttpUtil {
         }
         return result;
     }
+    public DataHolder getNearestVenueFeedsList() {
+        Log.d("HttpUtil", "---------------------getNearestVenueFeedsList------------");
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                "Internet connection error", null);
+        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
+                HttpVersion.HTTP_1_1);
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        
+        try {
+            params.add(new BasicNameValuePair("action", "getNearestVenuesWithActiveFeeds"));
+            params.add(new BasicNameValuePair("lat", URLEncoder.encode(AppCAP.getUserCoordinates()[4] + "", "utf-8")));
+            params.add(new BasicNameValuePair("lng", URLEncoder.encode(AppCAP.getUserCoordinates()[5] + "", "utf-8")));
+            post.setEntity(new UrlEncodedFormEntity(params));
+
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            String responseString = EntityUtils.toString(resEntity);
+            if (Constants.enableApiJsonLogging)
+                RootActivity.log("HttpUtil_getNearestVenuesWithActiveFeeds: "
+                        + responseString);
+
+            if (responseString != null) {
+                JSONObject json = new JSONObject(responseString);
+                ArrayList<Venue> venuesArray = new ArrayList<Venue>();
+                JSONObject payload = json.optJSONObject("payload");
+                if (payload != null) {
+
+                    JSONArray venues = payload.optJSONArray("venues");
+                    if (venues != null) {
+                        for (int m = 0; m < venues.length(); m++) {
+                            
+                            JSONObject venue = venues.optJSONObject(m);
+                            
+                            if (venue != null) {
+                                venuesArray.add(new Venue(venue));
+                            }
+                        }
+                        
+                    }
+                }
+                
+                Collections.sort(venuesArray, new Comparator<Venue>() {
+                    public int compare(Venue v1, Venue v2) {
+                      return v2.getPosts_count() - v1.getPosts_count();
+                    }
+                });
+                ArrayList<Venue> threeVenuesArray = new ArrayList<Venue>();
+                String listIds = "";
+                for(int i=0; i<3; i++) {
+                    if (listIds.contentEquals("") == false) {
+                        listIds = listIds + ",";
+                    }
+                    listIds = listIds + String.valueOf(venuesArray.get(i).getVenueId());
+                    threeVenuesArray.add(venuesArray.get(i));
+                    
+                }
+                
+                params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("action", "getVenueFeedPreviews"));
+                params.add(new BasicNameValuePair("venue_IDs", "[" + listIds + "]"));
+                post.setEntity(new UrlEncodedFormEntity(params));
+
+                // Execute HTTP Post Request
+                HttpResponse response2 = client.execute(post);
+                HttpEntity resEntity2 = response2.getEntity();
+
+                String responseString2 = EntityUtils.toString(resEntity2);
+                if (Constants.enableApiJsonLogging)
+                    RootActivity.log("HttpUtil_getVenueFeedsList: " + responseString2);
+
+                if (responseString2 != null) {
+                    JSONObject json2 = new JSONObject(responseString2);
+                    JSONObject venueFeeds = json2.optJSONObject("payload");
+                    ArrayList<VenueNameAndFeeds> VenueNameArray = new ArrayList<VenueNameAndFeeds>();
+                    
+                    for (Venue currVenue : threeVenuesArray) {
+                        ArrayList<Feed> feedsArray = new ArrayList<Feed>();
+                        if (venueFeeds != null) {
+                            JSONArray feeds = venueFeeds.optJSONArray(String.valueOf(currVenue.getVenueId()));
+
+                            if (feeds != null) {
+                                for (int m = 0; m < feeds.length(); m++) {
+
+                                    JSONObject currFeed = feeds
+                                            .optJSONObject(m);
+                                    if (currFeed != null
+                                            && currFeed.optString("entry")
+                                                    .contentEquals("") == false) {
+                                        try {
+                                            feedsArray.add(new Feed(currFeed));
+                                        } catch (Exception e) {
+                                            Log.d("HttpUtil",
+                                                    "Received exception "
+                                                            + e.getLocalizedMessage()
+                                                            + " from getVenueFeedsList API");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        VenueNameArray
+                                .add(new VenueNameAndFeeds(currVenue
+                                        .getVenueId(), currVenue.getName(),
+                                        feedsArray));
+                    }
+
+                    result.setObject(Collections
+                            .unmodifiableList(VenueNameArray));
+                    result.setResponseMessage("HTTP 200 OK");
+                    return result;
+                }
+                
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.setResponseMessage("JSON Parsing Error: " + e);
+            return result;
+        }
+        return result;
+    }
 
     /**
      * Get contactw list
@@ -2059,6 +2197,8 @@ public class HttpUtil {
                 HttpVersion.HTTP_1_1);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
+        Log.d("HttpUtil", "getVenueFeedsList" +
+                AppCAP.getUserLastCheckinVenueIds());
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         if (AppCAP.getUserLastCheckinVenueIds().contentEquals("") == false) {
             try {
@@ -2135,13 +2275,9 @@ public class HttpUtil {
                 result.setResponseMessage("JSON Parsing Error: " + e);
                 return result;
             }
-        } else {
-            ArrayList<VenueNameAndFeeds> VenueNameArray = new ArrayList<VenueNameAndFeeds>();
-            result.setObject(Collections.unmodifiableList(VenueNameArray));
-            result.setResponseMessage("HTTP 200 OK");
-            return result;
-        }
-        return result;
+        } 
+        
+        return this.getNearestVenueFeedsList();
     }
 
     /**

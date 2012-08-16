@@ -36,21 +36,26 @@ public class Venue implements Serializable {
     private int usersCount;
     private int tipCount;
     private int hereNowCount;
+    private int posts_count;
+    
 
     /**
      * Create empty venue obj
      */
     public Venue() {
         this("", 0, "", "", "", 0, 0, 0, "", "", "", "", "", "", "", 0, 0, 0,
-                0, "", "", "", 0);
+                0, "", "", "", 0, 0);
     }
 
     public Venue(JSONObject venue) {
 
-        this.venueId = venue.optInt("id");
+        if(venue.optInt("id") != 0)
+            this.venueId = venue.optInt("id");
+        else 
+            this.venueId = venue.optInt("venue_id");
         this.name = venue.optString("name");
         this.foursquareId = venue.optString("foursquare_id");
-
+        this.posts_count = venue.optInt("posts_count");
         // Location
         // Object
         JSONObject locationObj = venue.optJSONObject("location");
@@ -65,6 +70,7 @@ public class Venue implements Serializable {
             this.city = locationObj.optString("city");
             this.state = locationObj.optString("state");
             this.country = locationObj.optString("country");
+            
 
         }
 
@@ -111,7 +117,7 @@ public class Venue implements Serializable {
             String categoryName, String categoryPluralName,
             String categoryShortName, int checkinsCount, int usersCount,
             int tipCount, int hereNowCount, String phone, String icon,
-            String photoUrl, int checkinTime) {
+            String photoUrl, int checkinTime, int posts_count) {
 
         this.foursquareId = foursquareId;
         this.venueId = venueId;
@@ -136,6 +142,7 @@ public class Venue implements Serializable {
         this.icon = icon;
         this.photoUrl = photoUrl;
         this.checkinTime = checkinTime;
+        this.posts_count = posts_count;
     }
 
     public String getIcon() {
@@ -180,6 +187,14 @@ public class Venue implements Serializable {
 
     public String getAddress() {
         return address;
+    }
+
+    public int getPosts_count() {
+        return posts_count;
+    }
+
+    public void setPosts_count(int posts_count) {
+        this.posts_count = posts_count;
     }
 
     public void setAddress(String address) {
