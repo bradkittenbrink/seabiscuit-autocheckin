@@ -174,10 +174,6 @@ public class FragmentPostableFeedVenue extends Fragment {
         }
     }
 
-    public void onClickRemove(View v) {
-        AppCAP.removeUserLastCheckinVenue(((VenueNameAndFeeds) v.getTag()).getVenueId());
-        refresh();
-    }
     
     public void refresh() {
     

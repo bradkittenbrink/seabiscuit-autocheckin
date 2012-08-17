@@ -48,16 +48,7 @@ import com.urbanairship.UAirship;
 
 public class FragmentVenueFeeds extends Fragment {
 
-    private static final int SCREEN_SETTINGS = 0;
-    private static final int SCREEN_USER = 1;
-    private static final int TAB_CHECKIN_MOVE_DISTANCE = 230;
-    private static final int TAB_CHECKIN_MOVE_DURATION = 800;
-
-    private HorizontalPagerModified pager;
-
     private MyVenueFeedsAdapter adapterFeeds;
-
-    private UserAndTabMenu menu;
 
     private ListView listView;
     private ProgressDialog progress;
@@ -94,6 +85,12 @@ public class FragmentVenueFeeds extends Fragment {
 
     public FragmentVenueFeeds(Bundle intentExtras) {
         this.intentExtras = intentExtras;
+    }
+    
+    public void startUpdate() {
+        if (!progress.isShowing()) {
+            progress.show();
+        }
     }
 
     @Override
@@ -133,7 +130,6 @@ public class FragmentVenueFeeds extends Fragment {
         if (Constants.debugLog)
             Log.d("Contacts", "FragmentVenueFeeds.onStart()");
         super.onStart();
-
         if (AppCAP.isLoggedIn()) {
             CacheMgrService.startObservingAPICall("venueFeedsList",
                     myCachedDataObserver);
@@ -155,6 +151,7 @@ public class FragmentVenueFeeds extends Fragment {
     public void onResume() {
         super.onResume();
 
+        startUpdate();
         if (!AppCAP.shouldFinishActivities()) {
             if (!AppCAP.isLoggedIn()) {
                 progress.dismiss();
@@ -178,12 +175,6 @@ public class FragmentVenueFeeds extends Fragment {
         if (venueNameAndFeeds != null) {
             openVenue(venueNameAndFeeds);
         }
-    }
-
-    public void onClickRemove(View v) {
-        AppCAP.removeUserLastCheckinVenue(((VenueNameAndFeeds) v.getTag())
-                .getVenueId());
-        refresh();
     }
 
     public void refresh() {

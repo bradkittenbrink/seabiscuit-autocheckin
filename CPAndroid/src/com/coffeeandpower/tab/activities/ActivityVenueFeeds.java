@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Context;
@@ -14,6 +15,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -182,6 +185,9 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             transaction.add(fragment_id, newFragment);
         } else {
             transaction.show(fragment);
+            if (fragment_id == R.id.tab_fragment_area_feed) {
+                onClickRefreshActiveFeeds(fragment.getView());
+            }
         }
         if (hide_fragment_id != 0) {
             Fragment hide_fragment = manager.findFragmentById(hide_fragment_id);
@@ -198,6 +204,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         if (onRelativeLayout == R.id.rel_feed) {
             ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
             ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
+            ((Button) findViewById(R.id.btn_top_refresh)).setVisibility(View.VISIBLE);
             ((RelativeLayout) findViewById(R.id.rel_feed)).setBackgroundResource(R.drawable.bg_tabbar_selected);
             ((ImageView) findViewById(R.id.imageview_feed)).setImageResource(R.drawable.tab_feed_pressed);
         } else {
@@ -207,6 +214,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         if (onRelativeLayout == R.id.rel_people) {
             ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
             ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
+            ((Button) findViewById(R.id.btn_top_refresh)).setVisibility(View.GONE);
             ((RelativeLayout) findViewById(R.id.rel_people)).setBackgroundResource(R.drawable.bg_tabbar_selected);
             ((ImageView) findViewById(R.id.imageview_people)).setImageResource(R.drawable.tab_people_pressed);
         } else {
@@ -216,12 +224,14 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         if (onRelativeLayout == R.id.rel_places) {
             ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.VISIBLE);
             ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
+            ((Button) findViewById(R.id.btn_top_refresh)).setVisibility(View.GONE);
             ((RelativeLayout) findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_selected);
             ((ImageView) findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
         } else {
             if (onRelativeLayout == R.id.rel_map) {
                 ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
                 ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.VISIBLE);
+                ((Button) findViewById(R.id.btn_top_refresh)).setVisibility(View.GONE);
                 ((RelativeLayout) findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_selected);
                 ((ImageView) findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
             } else {
@@ -234,6 +244,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         if (onRelativeLayout == R.id.rel_contacts) {
             ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
             ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
+            ((Button) findViewById(R.id.btn_top_refresh)).setVisibility(View.GONE);
             if (AppCAP.isLoggedIn()) {
                 ((RelativeLayout) findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_selected);
                 ((ImageView) findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_pressed);
@@ -476,6 +487,21 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
     public void onClickPlaces(View v) {
         menu.onClickPlaces(v);
     }
+
+    public void onClickRefreshActiveFeeds(View v) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentVenueFeeds currFrag = (FragmentVenueFeeds)manager.findFragmentById(R.id.tab_fragment_area_feed);
+        if (currFrag != null) {
+            currFrag.startUpdate();
+        }
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                CacheMgrService.resetVenueFeedsData(false);
+            }
+        }, "CacheMgrService.run");
+        thread.start();
+    }
+
 
     @Override
     public void onClickCheckIn(View v) {
