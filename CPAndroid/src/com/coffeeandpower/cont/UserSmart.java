@@ -1,5 +1,7 @@
 package com.coffeeandpower.cont;
 
+import java.util.ArrayList;
+
 import org.json.JSONObject;
 
 import android.os.Parcel;
@@ -320,6 +322,17 @@ public class UserSmart implements Parcelable {
         this.met = (in.readInt() == 1 ? true : false);
         this.isFirstInList = (in.readInt() == 1 ? true : false);
 
+    }
+
+    public VenueSmart setVenueName(ArrayList<VenueSmart> catalogue)
+    {
+        for(VenueSmart item: catalogue) {
+            if (item.getVenueId()== this.venueId) {
+                this.venueName = item.getName();
+                return item;
+            }
+        }
+        return null;
     }
 
 }

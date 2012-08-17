@@ -3236,6 +3236,7 @@ public class HttpUtil {
                                                 isFirstInList0 = !isFirstInList0;
                                             }
                                         }
+                                        singleUserMap.setVenueName(venues);
                                         users.add(singleUserMap);
                                     } catch (Exception e) {
                                         Log.d("HttpUtil",
