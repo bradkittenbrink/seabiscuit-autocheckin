@@ -42,6 +42,7 @@ import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.utils.Executor;
+
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;

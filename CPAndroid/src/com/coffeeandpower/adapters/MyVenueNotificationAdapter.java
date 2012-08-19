@@ -114,8 +114,6 @@ public class MyVenueNotificationAdapter extends BaseAdapter {
 
 		int venueId = venues.get(position).getVenueId();
 		
-		Log.d(TAG,"getView for venue: " + venueId);
-		
 		holder.textAddress.setText(venues.get(position).getAddress());
 		holder.textName.setText(venues.get(position).getName());
 		holder.myVenueId = venueId;

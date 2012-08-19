@@ -50,6 +50,7 @@ import com.coffeeandpower.maps.MyOverlayItem;
 import com.coffeeandpower.maps.PinDrawable;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
+
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.google.android.maps.GeoPoint;

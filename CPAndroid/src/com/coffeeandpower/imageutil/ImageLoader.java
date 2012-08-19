@@ -52,15 +52,19 @@ public class ImageLoader {
         this.defaultImage = defaultImageRes;
         this.IMAGE_SIZE = size;
         imageViews.put(imageView, url);
-        Bitmap bitmap = memoryCache.get(url);
-
-        if (bitmap != null) {
-            // Log.d("ImageLoader","Got image from cache: " + url);
-            imageView.setImageBitmap(bitmap);
+        if (url == null || url.contentEquals("null") || url.contentEquals("")) {
+            imageView.setImageResource(defaultImageRes); 
         } else {
-            // Log.d("ImageLoader","Queueing image: " + url);
-            queuePhoto(url, imageView);
-            imageView.setImageResource(defaultImageRes);
+            Bitmap bitmap = memoryCache.get(url);
+    
+            if (bitmap != null) {
+                // Log.d("ImageLoader","Got image from cache: " + url);
+                imageView.setImageBitmap(bitmap);
+            } else {
+                // Log.d("ImageLoader","Queueing image: " + url);
+                queuePhoto(url, imageView);
+                imageView.setImageResource(defaultImageRes);
+            }
         }
     }
 
@@ -81,7 +85,9 @@ public class ImageLoader {
     }
 
     private void queuePhoto(String url, ImageView imageView) {
-
+        if (url == null || url.contentEquals("null") || url.contentEquals("")){
+            return;
+        }
         PhotoToLoad p = new PhotoToLoad(url, imageView);
         executorService.submit(new PhotosLoader(p));
     }
@@ -103,9 +109,9 @@ public class ImageLoader {
         ByteArrayOutputStream buffer = null;
 
         try {
-            // Bitmap bitmap = null;
+            // Bitmap bitmap = null; 
             // Log.d("ImageLoader","Loading URL: " + url.hashCode());
-            URL imageUrl = new URL(url);
+            URL imageUrl = new URL(url); 
             HttpURLConnection conn = (HttpURLConnection) imageUrl
                     .openConnection();
             conn.setConnectTimeout(30000);
@@ -114,38 +120,42 @@ public class ImageLoader {
             InputStream is = conn.getInputStream();
 
             // Need to read inputstream into memory, not directly into file
-            // in case file is not writeable
+            // in case file is not writeable 
             buffer = new ByteArrayOutputStream();
-            int nRead;
-            byte[] tmpData = new byte[16384];
-            while ((nRead = is.read(tmpData, 0, tmpData.length)) != -1) {
-                buffer.write(tmpData, 0, nRead);
+            if (buffer != null) {
+                int nRead;
+                byte[] tmpData = new byte[16384];
+                while ((nRead = is.read(tmpData, 0, tmpData.length)) != -1) {
+                    buffer.write(tmpData, 0, nRead);
+                }
+                buffer.flush(); 
             }
-            buffer.flush();
         } catch (Exception e) {
             Log.e("ImageLoader", "Exception in img download: " + e);
         }
-        try {
-
-            byte[] imgBytes = buffer.toByteArray();
-            imgBitmap = BitmapFactory.decodeByteArray(imgBytes, 0,
-                    imgBytes.length);
-
-            // Log.d("ImageLoader","Read image into memory: " +
-            // imgBytes.length);
-            OutputStream os = new FileOutputStream(f);
-            os.write(imgBytes);
-            os.close();
-
-            return imgBitmap;
-        } catch (Exception e) {
-            Log.e("ImageLoader", "Could not save image: " + e);
-            // e.printStackTrace();
-            if (imgBitmap != null)
+        if (buffer != null) {
+            try {
+                byte[] imgBytes = buffer.toByteArray();
+                imgBitmap = BitmapFactory.decodeByteArray(imgBytes, 0,
+                        imgBytes.length);
+    
+                // Log.d("ImageLoader","Read image into memory: " +
+                // imgBytes.length);
+                OutputStream os = new FileOutputStream(f);
+                os.write(imgBytes);
+                os.close();
+    
                 return imgBitmap;
-            else
-                return null;
+            } catch (Exception e) {
+                Log.e("ImageLoader", "Could not save image: " + e);
+                // e.printStackTrace();
+                if (imgBitmap != null)
+                    return imgBitmap;
+                else
+                    return null;
+            }
         }
+        return null;
     }
 
     // decodes image and scales it to reduce memory consumption
@@ -202,6 +212,10 @@ public class ImageLoader {
         public void run() {
             if (imageViewReused(photoToLoad))
                 return;
+            if (photoToLoad.url == null || photoToLoad.url.contentEquals("null")
+                    || photoToLoad.url.contentEquals("")) {
+                return;
+            }
             Bitmap bmp = getBitmap(photoToLoad.url);
             memoryCache.put(photoToLoad.url, bmp);
             if (imageViewReused(photoToLoad))

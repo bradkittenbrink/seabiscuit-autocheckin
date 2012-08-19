@@ -63,21 +63,12 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
 
     private static final int SCREEN_SETTINGS = 0;
     private static final int SCREEN_USER = 1;
-    private static final int TAB_CHECKIN_MOVE_DISTANCE = 230;
-    private static final int TAB_CHECKIN_MOVE_DURATION = 800;
 
     public static final int DIALOG_MUST_BE_A_MEMBER = 30;
 
     private HorizontalPagerModified pager;
 
-    private MyVenueFeedsAdapter adapterFeeds;
-
     private UserAndTabMenu menu;
-
-    private ListView listView;
-    private ProgressDialog progress;
-
-    private ArrayList<VenueNameAndFeeds> arrayFeeds;
 
     private boolean initialLoad = true;
     private Bundle intentExtras;

@@ -78,7 +78,7 @@ public class Executor {
 
     public Executor(Context context) {
         this.context = context;
-        progress = new ProgressDialog(context);
+        progress = new ProgressDialog(context); 
     }
 
     private Handler handler = new Handler() {

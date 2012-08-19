@@ -707,5 +707,8 @@ public class CacheMgrService extends Service {
         }
         venueFeedsListCache.setNewData(AppCAP.getConnection()
                 .getVenueFeedsList(), new double[] { 0, 0 });
+        stopPeriodicTimer();
+        startPeriodicTimer();
+
     }
 }

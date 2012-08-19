@@ -248,8 +248,11 @@ public class HttpUtil {
                         userResume.setTrusted(payload.optString("trusted"));
                         userResume.setSmartererName(payload
                                 .optString("smarterer_name"));
-                        userResume.setJobTitle(payload.optString("job_title"));
-
+                        if (payload.optString("job_title").length() > 0) {
+                            userResume.setJobTitle(payload.optString("job_title"));
+                        } else {
+                            userResume.setJobTitle(payload.optString("headline"));
+                        }
                         // Get Work data
                         JSONArray arrayWork = payload.optJSONArray("work");
                         if (arrayWork != null) {

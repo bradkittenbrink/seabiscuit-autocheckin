@@ -35,48 +35,89 @@
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="90dip"
-                    android:layout_margin="10dip"
-                    android:background="@drawable/paper_texture"
-                    android:layoutAnimation="@anim/layout_random_fade" >
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginTop="10dip" >
 
-                    <ImageButton
-                        android:id="@+id/imagebutton_user_face"
-                        android:layout_width="90dp"
-                        android:layout_height="90dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/default_avatar50"
-                        android:scaleType="fitXY" />
+                    <View
+                        android:id="@+id/vertical_shadow_view"
+                        android:layout_width="10dp"
+                        android:layout_height="86dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="4dip"
+                        android:background="@drawable/vertical_header_shadow" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dip"
-                        android:layout_toRightOf="@+id/imagebutton_user_face"
-                        android:orientation="vertical" >
+                    <RelativeLayout
+                        android:id="@+id/area_with_vertical_shadow"
+                        android:layout_width="fill_parent"
+                        android:layout_height="90dip"
+                        android:layout_toLeftOf="@+id/vertical_shadow_view"
+                        android:background="@drawable/paper_texture"
+                        android:layoutAnimation="@anim/layout_random_fade" >
 
-                        <TextView
-                            android:id="@+id/textview_user_status"
+                        <ImageView
+                            android:id="@+id/imagebutton_user_face_1"
+                            android:layout_width="90dp"
+                            android:layout_height="90dp"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/default_avatar50"
+                            android:scaleType="fitXY" />
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#60605e"
-                            android:textSize="14dip" />
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dip"
+                            android:layout_toRightOf="@id/imagebutton_user_face_1"
+                            android:orientation="vertical" >
 
-                        <com.coffeeandpower.views.CustomFontView
-                            android:id="@+id/textview_nick_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="#60605e"
-                            android:textSize="26dip" />
+                            <TextView
+                                android:id="@+id/textview_user_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#60605e"
+                                android:textSize="14dip" />
 
-                        <TextView
-                            android:id="@+id/textview_user_job_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="#60605e"
-                            android:textSize="12dip" />
-                    </LinearLayout>
+                            <com.coffeeandpower.views.CustomFontView
+                                android:id="@+id/textview_nick_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#60605e"
+                                android:textSize="26dip" />
+
+                            <TextView
+                                android:id="@+id/textview_user_job_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:textColor="#60605e"
+                                android:textSize="12dip" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="0dip" >
+
+                    <View
+                        android:id="@+id/shadow_view_corner"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/header_shadow_corner_7" />
+
+                    <View
+                        android:id="@+id/shadow_view"
+                        android:layout_width="fill_parent"
+                        android:layout_height="10dip"
+                        android:layout_marginLeft="4dip"
+                        android:layout_toLeftOf="@id/shadow_view_corner"
+                        android:background="@drawable/header_shadow" />
                 </RelativeLayout>
 
                 <LinearLayout
@@ -260,7 +301,7 @@
                                 android:id="@+id/text_earned"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="HOURS:"
+                                android:text="HOURS"
                                 android:textColor="#62615f"
                                 android:textSize="14sp" />
 
@@ -725,7 +766,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/check_in"
-        android:onClick="onClickCheckIn" />
+        android:onClick="onClickCheckIn" />
     -->
 
 </RelativeLayout>

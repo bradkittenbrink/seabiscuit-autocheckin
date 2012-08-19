@@ -21,6 +21,9 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
@@ -130,6 +133,8 @@ public class AppCAP extends Application {
 
     public static final int VIEW_HOLDER = 1;
     public static final int VENUE_NAME_AND_FEEDS = 2;
+    
+    private static boolean releaseApp = true;
 
     private static Gson gsonConverter = new Gson();
 
@@ -167,6 +172,7 @@ public class AppCAP extends Application {
         // You may or may not see the onCreate messages in LogCat...
         super.onCreate();
 
+        setReleaseApp(!isDebuggable(this));
         // Start Urban Airship
         UAirship.takeOff(this);
 
@@ -1276,6 +1282,32 @@ public class AppCAP extends Application {
     public static void setListLastCheckedinVenues(
             ArrayList<VenueNameAndFeeds> listLastCheckedinVenues) {
         AppCAP.listLastCheckedinVenues = listLastCheckedinVenues;
+    }
+    
+    public boolean isDebuggable(Context ctx)
+    {
+        boolean debuggable = false;
+     
+        PackageManager pm = ctx.getPackageManager();
+        try
+        {
+            ApplicationInfo appinfo = pm.getApplicationInfo(ctx.getPackageName(), 0);
+            debuggable = (0 != (appinfo.flags &= ApplicationInfo.FLAG_DEBUGGABLE));
+        }
+        catch(NameNotFoundException e)
+        {
+            /*debuggable variable will remain false*/
+        }
+         
+        return debuggable;
+    }
+
+    public static boolean isReleaseApp() {
+        return releaseApp;
+    }
+
+    public static void setReleaseApp(boolean releaseApp) {
+        AppCAP.releaseApp = releaseApp;
     }
 
     private static void getUserLastCheckinVenue() {

@@ -36,6 +36,7 @@ import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
+
 import com.coffeeandpower.utils.Utils;
 
 public class FragmentContacts extends Fragment {

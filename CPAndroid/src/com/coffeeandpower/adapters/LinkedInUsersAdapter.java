@@ -79,12 +79,6 @@ public class LinkedInUsersAdapter extends BaseAdapter {
 
         ViewHolder holder;
 
-        if (Constants.debugLog)
-            Log.d("LinkedinUsersAdapter",
-                    "getView for "
-                            + AppCAP.cleanResponseString(mudArray.get(position)
-                                    .getFirstName()) + ", image: "
-                            + mudArray.get(position).getPictureUrl());
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_list_about_linkedin_person,

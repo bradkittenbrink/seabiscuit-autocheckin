@@ -177,7 +177,7 @@ public class ActivityUserDetails extends RootActivity implements Observer {
         });
 
         mapView = (MapView) findViewById(R.id.mapview_user_details);
-        imageProfile = (ImageView) findViewById(R.id.imagebutton_user_face);
+        imageProfile = (ImageView) findViewById(R.id.imagebutton_user_face_1);
 
         // Get data from intent
         Bundle extras = getIntent().getExtras();

@@ -36,13 +36,12 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
+
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.Utils;
 
 public class FragmentPeopleAndPlaces extends Fragment {
 
-    private static final int SCREEN_SETTINGS = 0;
-    private static final int SCREEN_USER = 1;
 
     private MyUsersAdapter adapterUsers;
     private MyPlacesAdapter adapterPlaces;
@@ -127,7 +126,7 @@ public class FragmentPeopleAndPlaces extends Fragment {
                 null);
         progress = new ProgressDialog(this.getActivity());
         if (AppCAP.isLoggedIn()) {
-            progress.setMessage("Loading...");
+            progress.setMessage("Loading..." );
         } else {
             progress.setMessage("You must login to see the feeds ...");
         }
@@ -264,12 +263,6 @@ public class FragmentPeopleAndPlaces extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        if (!AppCAP.shouldFinishActivities()) {
-            if (!AppCAP.isLoggedIn()) {
-                progress.dismiss();
-            }
-        }
     }
 
     /*

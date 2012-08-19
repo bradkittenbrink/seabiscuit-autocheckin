@@ -111,13 +111,6 @@ public class MyUsersAdapter extends BaseAdapter {
 
         ViewHolder holder;
 
-        if (Constants.debugLog)
-            Log.d("MyUsersAdapter",
-                    "getView for "
-                            + AppCAP.cleanResponseString(mudArray.get(position)
-                                    .getNickName()) + ", image: "
-                            + mudArray.get(position).getFileName());
-
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_list_about_person,
                     null);

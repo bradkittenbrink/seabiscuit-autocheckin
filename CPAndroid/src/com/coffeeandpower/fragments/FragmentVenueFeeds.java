@@ -39,6 +39,7 @@ import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
+
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
@@ -151,7 +152,9 @@ public class FragmentVenueFeeds extends Fragment {
     public void onResume() {
         super.onResume();
 
-        startUpdate();
+        if (listView.isShown()) {
+            startUpdate();
+        }
         if (!AppCAP.shouldFinishActivities()) {
             if (!AppCAP.isLoggedIn()) {
                 progress.dismiss();
@@ -161,6 +164,7 @@ public class FragmentVenueFeeds extends Fragment {
 
     @Override
     public void onPause() {
+        progress.dismiss();
         super.onPause();
     }
 

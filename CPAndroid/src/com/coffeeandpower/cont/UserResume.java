@@ -845,7 +845,7 @@ public class UserResume {
     public void setReviewsRecords(String reviewsRecords) {
         this.reviewsRecords = reviewsRecords;
     }
-
+ 
     public String getReviewsLoveReceived() {
         return reviewsLoveReceived;
     }
