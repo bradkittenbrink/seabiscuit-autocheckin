@@ -11,10 +11,23 @@ public class CustomFontView extends TextView {
         super(context, attrs);
         
         if (!this.isInEditMode()) {
-            Typeface font = Typeface.createFromAsset(context.getAssets(),
-                    "LeagueGothic.otf");
-            this.setTypeface(font);
+            this.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "LiberationSans-Regular.ttf"));
         }
     }
 
+    public CustomFontView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        if (!this.isInEditMode()) {
+            if (defStyle == Typeface.BOLD) {
+                this.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "LiberationSans-Bold.ttf"));
+            } else {
+                this.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "LiberationSans-Regular.ttf"));
+            }
+        }
+    }
+
+    public CustomFontView(Context context) {
+        super(context);
+        this.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "LiberationSans-Regular.ttf"));
+    }
 }
