@@ -334,5 +334,14 @@ public class UserSmart implements Parcelable {
         }
         return null;
     }
+    
+    static public UserSmart getUserById(int userId, ArrayList<UserSmart> arrayUsers) {
+        for (UserSmart us : arrayUsers) {
+            if (us.getUserId() == userId) {
+                return us;
+            }
+        }
+        return null;
+    }
 
 }

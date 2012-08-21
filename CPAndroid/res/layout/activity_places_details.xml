@@ -1,13 +1,12 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent" >
 
     <RelativeLayout
         android:id="@+id/dummy_layout"
         android:layout_width="fill_parent"
         android:layout_height="45dip"
-        android:background="@drawable/header">
+        android:background="@drawable/header" >
 
         <Button
             android:id="@+id/btn_back"
@@ -37,18 +36,18 @@
         android:id="@+id/activity_places_scrollview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/dummy_layout">
+        android:layout_below="@+id/dummy_layout" >
 
         <LinearLayout
             android:id="@+id/activity_places_linear_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical" >
 
             <RelativeLayout
                 android:id="@+id/layout_top"
                 android:layout_width="fill_parent"
-                android:layout_height="250dip">
+                android:layout_height="250dip" >
 
                 <ImageView
                     android:id="@+id/image_view"
@@ -62,7 +61,7 @@
                     android:layout_height="55dip"
                     android:layout_alignParentBottom="true"
                     android:background="#99000000"
-                    android:orientation="vertical">
+                    android:orientation="vertical" >
 
                     <com.coffeeandpower.views.CustomFontView
                         android:id="@+id/textview_place_name"
@@ -77,7 +76,7 @@
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal" >
 
                         <com.coffeeandpower.views.CustomFontView
                             android:id="@+id/textview_place_address"
@@ -116,7 +115,7 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@drawable/texture">
+                android:background="@drawable/texture" >
 
                 <RelativeLayout
                     android:id="@+id/chat_places"
@@ -127,7 +126,7 @@
                     android:layout_marginTop="1dip"
                     android:background="@drawable/bg_silver_chat"
                     android:clickable="true"
-                    android:onClick="onClickChat">
+                    android:onClick="onClickChat" >
 
                     <com.coffeeandpower.views.CustomFontView
                         android:id="@+id/textview_chat_places"
@@ -150,7 +149,6 @@
                         android:background="#d0d0d0" />
 
                     <com.coffeeandpower.views.CustomFontView
-
                         android:id="@+id/textview_chat_places_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -179,39 +177,31 @@
                     android:layout_height="10dip"
                     android:background="@drawable/header_shadow" />
 
-                <!-- item list worked -->
+                <!-- item list checkedin -->
 
                 <RelativeLayout
                     android:id="@+id/shadow_view2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/chat_places"
                     android:layout_margin="15dp"
                     android:background="@drawable/bg_silver"
-                    android:cacheColorHint="#00000000">
+                    android:cacheColorHint="#00000000" >
 
-                    <com.coffeeandpower.views.CustomFontView
-                        android:id="@+id/textview_here"
+                    <HorizontalScrollView
+                        android:id="@+id/hor_view"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dip"
-                        android:layout_marginLeft="15dip"
-                        android:layout_marginTop="5dip"
-                        android:text="@string/activity_places_details_here"
-                        android:textColor="#108086"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:layout_height="wrap_content" >
 
-                    <ListView
-                        android:id="@+id/list_here_now"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textview_here"
-                        android:background="@drawable/bg_silver"
-                        android:cacheColorHint="#00000000"
-                        android:footerDividersEnabled="false"
-                        android:headerDividersEnabled="false" />
+                        <LinearLayout
+                            android:id="@+id/list_here_now"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+                    </HorizontalScrollView>
                 </RelativeLayout>
+
+                <!-- item list worked -->
 
                 <RelativeLayout
                     android:id="@+id/shadow_view3"
@@ -220,7 +210,7 @@
                     android:layout_below="@+id/shadow_view2"
                     android:layout_margin="15dp"
                     android:background="@drawable/bg_silver"
-                    android:cacheColorHint="#00000000">
+                    android:cacheColorHint="#00000000" >
 
                     <com.coffeeandpower.views.CustomFontView
                         android:id="@+id/textview_worked"
@@ -252,7 +242,7 @@
                     android:layout_below="@+id/shadow_view3"
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical" >
 
                     <TextView
                         android:id="@+id/textview_place_check_in"

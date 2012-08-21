@@ -2104,11 +2104,13 @@ public class HttpUtil {
                 ArrayList<Venue> threeVenuesArray = new ArrayList<Venue>();
                 String listIds = "";
                 for(int i=0; i<3; i++) {
-                    if (listIds.contentEquals("") == false) {
-                        listIds = listIds + ",";
+                    if (i < venuesArray.size()) {
+                        if (listIds.contentEquals("") == false) {
+                            listIds += ",";
+                        }
+                        listIds += String.valueOf(venuesArray.get(i).getVenueId());
+                        threeVenuesArray.add(venuesArray.get(i));
                     }
-                    listIds = listIds + String.valueOf(venuesArray.get(i).getVenueId());
-                    threeVenuesArray.add(venuesArray.get(i));
                     
                 }
                 
