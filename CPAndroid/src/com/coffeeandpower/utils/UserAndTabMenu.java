@@ -334,8 +334,12 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 		AppCAP.setLocalUserPhotoLargeURL("");
 		AppCAP.setLocalUserPhotoURL("");
 		AppCAP.setLoggedInUserNickname("");
-		AppCAP.setShouldFinishActivities(true);
+		AppCAP.setShouldFinishActivities(false);
+		AppCAP.setStartLoginPageFromContacts(false); 
+		AppCAP.setUserLinkedInDetails("", "", "");
+		AppCAP.setUserEmail("");
 		userState.onLogOut();
+
 	}
 
     @Override

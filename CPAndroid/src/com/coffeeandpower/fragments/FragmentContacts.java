@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -91,7 +92,7 @@ public class FragmentContacts extends Fragment {
         if (AppCAP.isLoggedIn()) {
             progress.setMessage("Loading...");
         } else {
-            progress.setMessage("You must login to see the feeds ...");
+            progress.setMessage("You must login to see the contacts ...");
         }
         progress.show();
         return mainView;
@@ -128,7 +129,7 @@ public class FragmentContacts extends Fragment {
             blankSlateImg = (ImageView) getView().findViewById(
                     R.id.contacts_blank_slate_img);
         }
-
+        
     }
 
     @Override

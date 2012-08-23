@@ -144,15 +144,11 @@ public class FragmentMap extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View mainView = null;
-         mainView = inflater.inflate(R.layout.tab_fragment_map, null);
+        mainView = inflater.inflate(R.layout.tab_fragment_map, null);
          // start services
-         AppCAP.mainActivityDidStart(getActivity());      
-         progress = new ProgressDialog(this.getActivity());
-        if (AppCAP.isLoggedIn()) {
-            progress.setMessage("Loading...");
-        } else {
-            progress.setMessage("You must login to see the feeds ...");
-        }
+        AppCAP.mainActivityDidStart(getActivity());      
+        progress = new ProgressDialog(this.getActivity());
+        progress.setMessage("Loading...");
         progress.show();
 
         // Executor

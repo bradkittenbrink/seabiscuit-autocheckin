@@ -1,40 +1,42 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="#ff333333"
     android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:src="@drawable/candp_logo" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ff333333"
+        android:orientation="vertical" >
 
-    <ImageButton
-        android:id="@+id/btn_linked_in"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/image"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/btn_linked_in"
-        android:onClick="onClickLinkedIn" />
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/candp_logo" />
 
-    <TextView
-        android:id="@+id/text_connect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_linked_in"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:text="@string/tab_activity_login_connect"
-        android:textSize="16sp" />
+        <ImageButton
+            android:id="@+id/btn_linked_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/btn_linked_in"
+            android:onClick="onClickLinkedIn" />
 
-    <include
-        android:id="@+id/tab_bar"
-        android:layout_alignParentBottom="true"
-        layout="@layout/tab_bar" />
+        <TextView
+            android:id="@+id/text_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_linked_in"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="@string/tab_activity_login_connect"
+            android:textSize="16sp" />
+    </RelativeLayout>
 
 </RelativeLayout>

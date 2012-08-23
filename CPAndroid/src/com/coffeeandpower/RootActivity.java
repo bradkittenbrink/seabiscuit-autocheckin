@@ -107,7 +107,7 @@ public class RootActivity extends FragmentActivity {
 
         if (Float.isNaN(results[0])
                 || (addFarAway && (results[0] / 1000) > 500)) {
-            return AppCAP.getAppContext().getString(R.string.map_distance_far);
+            return AppCAP.getAppContext().getString(R.string.map_distance_far); 
         }
         return formatToMetricsOrImperial(results[0]);
     }

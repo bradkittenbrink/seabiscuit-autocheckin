@@ -31,6 +31,7 @@ import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivityFeedsForOneVenue;
+import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.adapters.MyVenueFeedsAdapter;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cache.CachedDataContainer;
@@ -90,7 +91,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             super.handleMessage(msg);
         }
     };
-    private int  fragment_id = R.id.tab_fragment_area_feed;
+    private int  fragment_id = R.id.tab_fragment_area_feed; 
     
     public int getFragmentId() {
         return fragment_id;
@@ -110,9 +111,9 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         // Get userId form intent
         intentExtras = getIntent().getExtras();
         if (intentExtras != null) {
-            fragment_id  = intentExtras.getInt("fragment");
-            if (fragment_id == 0) {
-                fragment_id = R.id.tab_fragment_area_feed;
+            int new_fragment_id  = intentExtras.getInt("fragment");
+            if (new_fragment_id > 0) {
+                fragment_id = new_fragment_id;
             }
         }
         
@@ -271,6 +272,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
     
     public void updateMenuOnFragmentchange(int next_fragment_id) {
         ((RelativeLayout) findViewById(next_fragment_id)).setVisibility(View.VISIBLE);
+        ((CustomFontView) findViewById(R.id.textview_contact_list)).setVisibility(View.VISIBLE);
         if (fragment_id != 0 && fragment_id != next_fragment_id) {
             ((RelativeLayout) findViewById(fragment_id)).setVisibility(View.GONE);
         }
@@ -292,7 +294,11 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(getResStr(R.string.map_screen_title));
         } else if (next_fragment_id == R.id.tab_fragment_area_contacts) {
             switchTabBackground(R.id.rel_contacts);
-            ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(getResStr(R.string.contacts_screen_title));
+            if (AppCAP.isLoggedIn()) {
+                ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(getResStr(R.string.contacts_screen_title));
+            } else {
+                ((CustomFontView) findViewById(R.id.textview_contact_list)).setVisibility(View.GONE);
+            }
         } else {
             switchTabBackground(R.id.rel_feed);
             if (findViewById(R.id.textview_contact_list) != null) {
@@ -349,9 +355,15 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         return result;
     }
     public void onClickLinkedIn(View v) {
-        AppCAP.setShouldFinishActivities(true);
+        AppCAP.setShouldFinishActivities(false);
         AppCAP.setStartLoginPageFromContacts(true);
-        onBackPressed();
+        this.finish();
+        Intent i = new Intent();
+        i.setClass(getApplicationContext(), ActivityLoginPage.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        
+        
     }
 
     public void onClickMenu(View v) {
@@ -453,7 +465,12 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
     @Override
     public void onClickLogout(View v) {
         menu.onClickLogout(v);
-        onBackPressed();
+        Intent i = new Intent();
+        i.setClass(getApplicationContext(), ActivityLoginPage.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+        this.finish();
     }
 
     @Override

@@ -22,19 +22,28 @@ public class ActivityLoginPage extends RootActivity {
 		setContentView(R.layout.activity_main_login);
 
 		AppCAP.setShouldFinishActivities(false);
-
-		// Start loging in process from Contacts Activity
-		if (AppCAP.isStartingLoginPageFromContacts()) {
-			AppCAP.setStartLoginPageFromContacts(false);
-			connectLinkedIn();
-		}
-
+		
+		// if the userlinkedinid is already in the application preferences
+		// we are going to try to connect directly without the login page
+        if (!AppCAP.getUserLinkedInID().equals("")) {
+                (findViewById(R.id.text_connect)).setVisibility(View.GONE); 
+                ( findViewById(R.id.btn_linked_in)).setVisibility(View.GONE);
+                (findViewById(R.id.btn_later)).setVisibility(View.GONE);
+                connectLinkedIn();
+        }
+        
 		// Get Screen Width and save it for later (dimensions)
 		AppCAP.saveScreenWidth(getDisplayMetrics().widthPixels);
 	}
 
 	@Override
 	protected void onResume() {
+        // Start loging in process from Contacts Activity
+        if (AppCAP.isStartingLoginPageFromContacts()) {
+            AppCAP.setStartLoginPageFromContacts(false);
+            connectLinkedIn();
+        }
+
 		super.onResume();
 	}
 

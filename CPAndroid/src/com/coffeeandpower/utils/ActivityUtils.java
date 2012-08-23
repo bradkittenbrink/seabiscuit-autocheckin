@@ -106,6 +106,7 @@ public class ActivityUtils {
                     a.finish();
                 } else {
                     Intent intent = new Intent(a, ActivityVenueFeeds.class);
+                    intent.putExtra("fragment", R.id.tab_fragment_area_feed);
                     a.startActivity(intent);
                     a.finish();
                 }

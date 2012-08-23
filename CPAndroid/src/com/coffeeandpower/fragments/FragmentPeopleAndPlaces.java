@@ -125,11 +125,7 @@ public class FragmentPeopleAndPlaces extends Fragment {
         mainView = inflater.inflate(R.layout.tab_fragment_people_and_places,
                 null);
         progress = new ProgressDialog(this.getActivity());
-        if (AppCAP.isLoggedIn()) {
-            progress.setMessage("Loading..." );
-        } else {
-            progress.setMessage("You must login to see the feeds ...");
-        }
+        progress.setMessage("Loading..." );
         progress.show();
         // if (arrayFeeds != null) {
         if (intentExtras != null) {
