@@ -336,7 +336,8 @@ public class ActivityPlaceDetails extends RootActivity {
                 5, this.getResources().getDisplayMetrics()));
         int pixels80 = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
                 80, this.getResources().getDisplayMetrics()));
-        Typeface font = Typeface.createFromAsset(this.getAssets(), "LiberationSans-Regular.ttf");
+        Typeface font = Typeface.createFromAsset(this.getAssets(),
+                "LeagueGothic.otf");
         ArrayList<UserSmart> checkedInUsers = skillCat.getUsers();
         if (checkedInUsers != null) {
             if (checkedInUsers.size() > 0) {
