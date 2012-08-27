@@ -53,6 +53,12 @@ public class SkillCategory implements java.lang.Comparable {
         return arrayUsersHereNowWithThisSkill;
     }
     public int compareTo(Object other) { 
+        if (this.getName().contentEquals("other")) {
+            return -1;
+        }
+        if (((SkillCategory) other).getName().contentEquals("other")) {
+            return 1;
+        }
         int nombre1 = ((SkillCategory) other).arrayUsersHereNowWithThisSkill.size(); 
         int nombre2 = this.arrayUsersHereNowWithThisSkill.size(); 
         if (nombre1 > nombre2) {

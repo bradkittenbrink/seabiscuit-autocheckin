@@ -188,17 +188,11 @@
                     android:background="@drawable/bg_silver"
                     android:cacheColorHint="#00000000" >
 
-                    <HorizontalScrollView
-                        android:id="@+id/hor_view"
+                    <LinearLayout
+                        android:id="@+id/list_here_now"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" >
-
-                        <LinearLayout
-                            android:id="@+id/list_here_now"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical" />
-                    </HorizontalScrollView>
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
                 </RelativeLayout>
 
                 <!-- item list worked -->

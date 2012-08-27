@@ -1500,7 +1500,7 @@ public class HttpUtil {
                 JSONObject json = new JSONObject(responseString);
                 if (json != null) {
 
-                    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED); // change
+                    result.setHandlerCode(Executor.HANDLE_SEND_FRIEND_REQUEST); // change
                     // this
                     return result;
                 }

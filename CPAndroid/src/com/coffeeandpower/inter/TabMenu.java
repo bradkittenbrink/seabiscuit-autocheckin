@@ -24,4 +24,6 @@ public interface TabMenu {
 
     public void onClickFeed(View v);
 
+    public void onClickMapFromTab(View v);
+
 }

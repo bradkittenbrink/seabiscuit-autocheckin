@@ -182,6 +182,23 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         ((RootActivity) context).startSmartActivity(intent, "ActivityPeopleAndPlaces");
 
 	}
+    
+	@Override
+    public void onClickMapFromTab(View v) {
+        double[] data = new double[6];
+        data = AppCAP.getUserCoordinates();
+
+        Intent intent = new Intent(context, ActivityVenueFeeds.class);
+        intent.putExtra("sw_lat", data[0]);
+        intent.putExtra("sw_lng", data[1]);
+        intent.putExtra("ne_lat", data[2]);
+        intent.putExtra("ne_lng", data[3]);
+        intent.putExtra("user_lat", data[4]);
+        intent.putExtra("user_lng", data[5]);
+        intent.putExtra("from", "from_tab");
+        ((RootActivity) context).startSmartActivity(intent, "ActivityMap");
+
+    }
 
 	@Override
 	public void onClickCheckIn(View v) {

@@ -356,7 +356,6 @@ public class CacheMgrService extends Service {
 
                     // Determine if venuesWithCheckins should run
                     if (venuesWithCheckinsCache.isActive()
-                            || !venuesWithCheckinsCache.hasData()
                             || refreshAllDataThisRun) {
 
                         // Determine if cached data should be sent or data needs
@@ -386,7 +385,6 @@ public class CacheMgrService extends Service {
 
                     // Determine if venuesWithCheckins should run
                     if (nearbyVenuesCache.isActive()
-                            || !nearbyVenuesCache.hasData()
                             || refreshAllDataThisRun) {
 
                         if (allowCachedDataThisRun
@@ -416,7 +414,6 @@ public class CacheMgrService extends Service {
 
                     // Determine if contactsList should run
                     if (contactsListCache.isActive()
-                            || !contactsListCache.hasData()
                             || refreshAllDataThisRun) {
 
                         if (allowCachedDataThisRun
@@ -435,7 +432,6 @@ public class CacheMgrService extends Service {
 
                     // Determine if contactsList should run
                     if (venueFeedsListCache.isActive()
-                            || !venueFeedsListCache.hasData()
                             || refreshAllDataThisRun) {
 
                         if (venueFeedsListCache.hasData()
@@ -704,11 +700,12 @@ public class CacheMgrService extends Service {
 
         if (withRefresh == true) {
             refreshAllData();
-        }
-        venueFeedsListCache.setNewData(AppCAP.getConnection()
+        } else {
+            venueFeedsListCache.setNewData(AppCAP.getConnection()
                 .getVenueFeedsList(), new double[] { 0, 0 });
-        stopPeriodicTimer();
-        startPeriodicTimer();
+            stopPeriodicTimer();
+            startPeriodicTimer();
+        }
 
     }
 }

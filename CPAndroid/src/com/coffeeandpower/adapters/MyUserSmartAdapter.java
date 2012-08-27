@@ -96,9 +96,7 @@ public class MyUserSmartAdapter extends BaseAdapter {
             holder.textNickName.setText(AppCAP.cleanResponseString(mudArray
                     .get(position).getNickName()));
 
-            String checkStr = mudArray.get(position).getCheckInCount() == 1 ? mudArray
-                    .get(position).getCheckInCount() + " Checkin"
-                    : mudArray.get(position).getCheckInCount() + " Checkins";
+            String checkStr = (mudArray.get(position).getCheckInTime() / 3600)  + " hrs/week";
             holder.textCheckins.setText(checkStr);
 
             // Try to load profile image

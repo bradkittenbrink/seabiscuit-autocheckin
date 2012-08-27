@@ -14,11 +14,12 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
+import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 
-public class ActivityEnterInviteCode extends Activity {
+public class ActivityEnterInviteCode extends RootActivity {
 
     private DataHolder result;
 
@@ -89,6 +90,12 @@ public class ActivityEnterInviteCode extends Activity {
     public void onClickBack(View v) {
         AppCAP.setNotFirstStart();
         onBackPressed();
+    }
+
+    public void onClickLater(View v) {
+        AppCAP.setLoggedIn(false);
+        AppCAP.setShouldFinishActivities(false);
+        startSmartActivity(new Intent(), "ActivityMap");
     }
 
     private void errorReceived() {

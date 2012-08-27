@@ -171,7 +171,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
               }
               newFragment = new FragmentPeopleAndPlaces(this.intentExtras);
           } else {
-              CacheMgrService.resetVenueFeedsData(true);
+              CacheMgrService.resetVenueFeedsData(false);
               newFragment = new FragmentVenueFeeds(this.intentExtras);
           }
             transaction.add(fragment_id, newFragment);
@@ -494,6 +494,11 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
     @Override
     public void onClickPlaces(View v) {
         menu.onClickPlaces(v);
+    }
+
+    @Override
+    public void onClickMapFromTab(View v) {
+        menu.onClickMapFromTab(v);
     }
 
     public void onClickRefreshActiveFeeds(View v) {

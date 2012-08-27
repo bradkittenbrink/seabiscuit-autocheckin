@@ -751,7 +751,9 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                         int id) {
-                                    exe.sendFriendRequest(mud.getUserId());
+                                    if (mud != null) {
+                                        exe.sendFriendRequest(mud.getUserId());
+                                    }
                                     dialog.cancel();
                                 }
                             })

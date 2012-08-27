@@ -28,6 +28,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
@@ -235,6 +236,7 @@ public class ActivityPlaceDetails extends RootActivity {
                 if (cd.getCheckedIn() == 1) {
                     // user is here now
                     if (cd.getCheckedIn() == 1) {
+                        
                         SkillCategory.addNewUserInTheList(UserSmart
                                 .getUserById(cd.getUserId(), arrayUsers),
                                 arrayUsersHereNowForSkill);
@@ -263,8 +265,6 @@ public class ActivityPlaceDetails extends RootActivity {
                 listHereNow.setVisibility(View.GONE);
             } else {
                 listHereNow.setVisibility(View.VISIBLE);
-                int minWidth = ((HorizontalScrollView) listHereNow.getParent()).getWidth();
-                listHereNow.setMinimumWidth(minWidth);
                 Collections.sort(arrayUsersHereNowForSkill, Collections.reverseOrder());
                 populateCategoryList(arrayUsersHereNowForSkill, listHereNow);
             }
@@ -298,6 +298,8 @@ public class ActivityPlaceDetails extends RootActivity {
             }
 
         }
+        ScrollView mainScrollView = (ScrollView)findViewById(R.id.activity_places_scrollview);
+        mainScrollView.smoothScrollTo(0,0);
     }
 
     private void populateCategoryList(ArrayList<SkillCategory> skillCategory,
@@ -362,6 +364,10 @@ public class ActivityPlaceDetails extends RootActivity {
                 layoutForInflateCategoryHeader.addView(numInCat);
                 layoutForInflateSkillCat
                         .addView(layoutForInflateCategoryHeader);
+                HorizontalScrollView horizontalScrollView = new HorizontalScrollView(this);
+                LayoutParams lph = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+                horizontalScrollView.setLayoutParams(lph); 
+                layoutForInflateSkillCat.addView(horizontalScrollView);
                 LinearLayout layoutForInflateUsers = new LinearLayout(this);
                 layoutForInflateUsers.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -394,7 +400,7 @@ public class ActivityPlaceDetails extends RootActivity {
                     layoutForInflateUsers.addView(image);
 
                 }
-                layoutForInflateSkillCat.addView(layoutForInflateUsers);
+                horizontalScrollView.addView(layoutForInflateUsers);
                 // Separator
                 if (!noSep) {
                     LinearLayout layoutForInflateCategorySeparator = new LinearLayout(

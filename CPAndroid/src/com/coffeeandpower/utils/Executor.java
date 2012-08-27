@@ -180,7 +180,7 @@ public class Executor {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                result = AppCAP.getConnection().sendFriendRequest(userId);
+                result = AppCAP.getConnection().sendContactRequestToUserId(userId);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
         }, "Executor.sendFriendRequest").start();
