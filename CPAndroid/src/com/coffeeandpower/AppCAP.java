@@ -110,8 +110,8 @@ public class AppCAP extends Application {
     // // staging
     //public static final String URL_WEB_SERVICE =
     // "http://dev.worklist.net/~andres/candpweb2/web/"; // staging
-    // public static final String URL_WEB_SERVICE =
-    // "http://dev.worklist.net/~andrewa/candpweb2/web/"; // staging
+    //public static final String URL_WEB_SERVICE =
+    //"http://dev.worklist.net/~vincent/candpweb2_18109/web/"; // staging
 
     public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
     public static final String FOURSQUARE_OAUTH = "BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4";
@@ -761,9 +761,6 @@ public class AppCAP extends Application {
         getSharedPreferences().edit().putInt(TAG_LOGGED_IN_USER_ID, userId)
                 .commit();
 
-        // Save logged in user ID
-        getSharedPreferences().edit().putInt(TAG_LOGGED_IN_USER_ID, userId)
-                .commit();
     }
 
     /**

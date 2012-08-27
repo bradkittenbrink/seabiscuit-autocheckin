@@ -88,7 +88,7 @@ public class ActivityLoginPage extends RootActivity {
 	}
 
 	public void onNewIntent(Intent intent) {
-	    if (intent.getData() == null) {
+	    if (intent == null || intent.getData() == null) {
 	        return;
 	    }
 		String verifier = intent.getData().getQueryParameter("oauth_verifier");

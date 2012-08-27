@@ -16,135 +16,134 @@
         android:layout_height="fill_parent"
         android:layout_below="@+id/dummy_layout_ref" >
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:layout_height="90dip"
+                android:layout_margin="10dip"
+                android:background="@drawable/paper_texture"
+                android:layoutAnimation="@anim/layout_random_fade" >
 
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="90dip"
-                    android:layout_margin="10dip"
-                    android:background="@drawable/paper_texture"
-                    android:layoutAnimation="@anim/layout_random_fade" >
-
-                    <ImageButton
-                        android:id="@+id/imagebutton_user_face"
-                        android:layout_width="90dp"
-                        android:layout_height="90dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/default_avatar50"
-                        android:contentDescription="@string/activity_settings_profile_photo"
-                        android:scaleType="fitXY" />
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toRightOf="@+id/imagebutton_user_face"
-                        android:padding="10dp" >
-
-                        <com.coffeeandpower.views.CustomEditText
-                            android:id="@+id/edit_nickname"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="#00000000"
-                            android:ems="10"
-                            android:imeOptions="actionSend"
-                            android:singleLine="true"
-                            android:textColor="#666"
-                            android:textSize="27sp" />
-
-                        <View
-                            android:layout_width="fill_parent"
-                            android:layout_height="1dip"
-                            android:background="#666" />
-                    </LinearLayout>
-                </RelativeLayout>
+                <ImageButton
+                    android:id="@+id/imagebutton_user_face"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/default_avatar50"
+                    android:contentDescription="@string/activity_settings_profile_photo"
+                    android:scaleType="fitXY" />
 
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_margin="10dip"
-                    android:background="@drawable/paper_texture"
-                    android:layoutAnimation="@anim/layout_random_fade"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/imagebutton_user_face"
+                    android:orientation="vertical"
                     android:padding="10dp" >
 
-                    <com.coffeeandpower.views.CustomFontView
-                        android:id="@+id/strongSkillLbl"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/activity_settings_strongest_skill"
-                        android:textColor="#666"
-                        android:textSize="19sp" />
-                    
-                    <Spinner
-                        android:id="@+id/strongSkill"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <com.coffeeandpower.views.CustomFontView
-                        android:id="@+id/jobCategoryLbl"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/activity_settings_job_category_lbl"
-                        android:textColor="#666"
-                        android:textSize="19sp" />
-                    
-                    <Button
-                        android:id="@+id/jobCategory"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/activity_settings_job_category"/>
-
-                    <com.coffeeandpower.views.CustomFontView
-                        android:id="@+id/profileVisibilityLbl"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/activity_settings_profile_visibility"
-                        android:textColor="#666"
-                        android:textSize="19sp" />
-                    
-                    <Spinner
-                        android:id="@+id/profileVisibility"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <com.coffeeandpower.views.CustomFontView
-                        android:id="@+id/emailLbl"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/email"
-                        android:textColor="#666"
-                        android:textSize="19sp" />
-
                     <com.coffeeandpower.views.CustomEditText
-                        android:id="@+id/edit_email"
-                        android:layout_width="fill_parent"
+                        android:id="@+id/edit_nickname"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="#00000000"
                         android:ems="10"
                         android:imeOptions="actionSend"
-                        android:inputType="textEmailAddress"
-                        android:padding="10dip"
                         android:singleLine="true"
-                        android:textColor="#222222"
-                        android:textSize="19sp" />
-                    
-                    <Button
-                        android:id="@+id/deleteAccount"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/activity_settings_profile_delete" />
-                </LinearLayout>
-            </LinearLayout>
+                        android:textColor="#666"
+                        android:textSize="27sp" />
 
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1dip"
+                        android:background="#666" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="10dip"
+                android:background="@drawable/paper_texture"
+                android:layoutAnimation="@anim/layout_random_fade"
+                android:orientation="vertical"
+                android:padding="10dp" >
+
+                <com.coffeeandpower.views.CustomFontView
+                    android:id="@+id/strongSkillLbl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/activity_settings_strongest_skill"
+                    android:textColor="#666"
+                    android:textSize="19sp" />
+
+                <Spinner
+                    android:id="@+id/strongSkill"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.coffeeandpower.views.CustomFontView
+                    android:id="@+id/jobCategoryLbl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/activity_settings_job_category_lbl"
+                    android:textColor="#666"
+                    android:textSize="19sp" />
+
+                <Button
+                    android:id="@+id/jobCategory"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/activity_settings_job_category" />
+
+                <com.coffeeandpower.views.CustomFontView
+                    android:id="@+id/profileVisibilityLbl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/activity_settings_profile_visibility"
+                    android:textColor="#666"
+                    android:textSize="19sp" />
+
+                <Spinner
+                    android:id="@+id/profileVisibility"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.coffeeandpower.views.CustomFontView
+                    android:id="@+id/emailLbl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/email"
+                    android:textColor="#666"
+                    android:textSize="19sp" />
+
+                <com.coffeeandpower.views.CustomEditText
+                    android:id="@+id/edit_email"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:imeOptions="actionSend"
+                    android:inputType="textEmailAddress"
+                    android:padding="10dip"
+                    android:singleLine="true"
+                    android:textColor="#222222"
+                    android:textSize="19sp" />
+
+                <Button
+                    android:id="@+id/deleteAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/activity_settings_profile_delete" />
+            </LinearLayout>
+        </LinearLayout>
     </ScrollView>
 
 </RelativeLayout>

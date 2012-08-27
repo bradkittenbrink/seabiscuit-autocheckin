@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import kankan.wheel.widget.OnWheelScrollListener;
 import kankan.wheel.widget.WheelView;
 import kankan.wheel.widget.adapters.ArrayWheelAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -47,6 +48,13 @@ public class ActivityJobCategory extends RootActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_category);
 
+        // Get userId form intent
+        Bundle intentExtras = getIntent().getExtras();
+        if (intentExtras != null) {
+            selectedMajorJob = intentExtras.getString("major");
+            selectedMinorJob = intentExtras.getString("minor");
+            updateUserDataInUI();
+        }
         // Executor
         exe = new Executor(ActivityJobCategory.this);
         exe.setExecutorListener(new ExecutorInterface() {
@@ -104,24 +112,12 @@ public class ActivityJobCategory extends RootActivity {
         case Executor.HANDLE_SAVE_USER_JOB_CATEGORY:
             Toast.makeText(ActivityJobCategory.this,
                     result.getResponseMessage(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent();
+            intent.putExtra("major", selectedMajorJob);
+            intent.putExtra("minor", selectedMinorJob);
+            setResult(RESULT_OK, intent);
             finish();
-            break;
-
-        case Executor.HANDLE_GET_USER_RESUME:
-            if (result.getObject() != null) {
-                if (result.getObject() instanceof ArrayList<?>) {
-                    ArrayList<Object> tempArray = (ArrayList<Object>) result
-                            .getObject();
-                    if (tempArray != null) {
-                        if (!tempArray.isEmpty()) {
-                            if (tempArray.get(0) instanceof UserResume) {
-                                userResumeData = (UserResume) tempArray.get(0);
-                                updateUserDataInUI();
-                            }
-                        }
-                    }
-                }
-            }
+           
             break;
         }
     }
@@ -163,14 +159,8 @@ public class ActivityJobCategory extends RootActivity {
     }
 
     private void updateUserDataInUI() {
-        if (userResumeData != null) {
-            selectedMajorJob = userResumeData.getMajorJob();
-            selectedMinorJob = userResumeData.getMinorJob();
-            ((Button) findViewById(R.id.button_major)).setText(userResumeData
-                    .getMajorJob());
-            ((Button) findViewById(R.id.button_minor)).setText(userResumeData
-                    .getMinorJob());
-        }
+            ((Button) findViewById(R.id.button_major)).setText(selectedMajorJob);
+            ((Button) findViewById(R.id.button_minor)).setText(selectedMinorJob);
     }
 
     private void uploadJobs() {
@@ -184,8 +174,6 @@ public class ActivityJobCategory extends RootActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        exe.getResumeForUserId(AppCAP.getLoggedInUserId());
     }
 
     public void onClickBack(View v) {

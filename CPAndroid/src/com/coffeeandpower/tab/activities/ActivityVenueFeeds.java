@@ -406,20 +406,6 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         if (AppCAP.shouldFinishActivities()) {
             onBackPressed();
         } else {
-            if (AppCAP.shouldShowInfoDialog()
-                    && AppCAP.getEnteredInviteCode() == false) {
-                CustomDialog cd = new CustomDialog(
-                        ActivityVenueFeeds.this,
-                        "Coffee & Power requires an invite for full membership but you have 30 days of full access to try us out.",
-                        "If you get an invite from another C&P user you can enter it anytime by going to the Account page/Enter invite code tab.");
-                cd.setOnClickListener(new ClickListener() {
-                    @Override
-                    public void onClick() {
-                        AppCAP.dontShowInfoDialog();
-                    }
-                });
-                cd.show();
-            }
             this.displayFragment(fragment_id);
 
             getSupportFragmentManager().addOnBackStackChangedListener(getListener());

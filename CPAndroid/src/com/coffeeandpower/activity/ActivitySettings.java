@@ -50,6 +50,7 @@ public class ActivitySettings extends RootActivity {
 
     public static final String IMAGE_FOLDER = "/CoffeeAndPower";
     private final static int PROFILE_PIC_REQUEST = 1455;
+    private final static int CATEGORY_REQUEST = 1456;
 
     private UserSmart loggedUser;
 
@@ -82,8 +83,14 @@ public class ActivitySettings extends RootActivity {
         case Executor.HANDLE_SET_USER_PROFILE_DATA:
             textEmail.setVisibility(View.VISIBLE);
             textNickName.setVisibility(View.VISIBLE);
-            new CustomDialog(ActivitySettings.this, "Info",
+            boolean res = (Boolean) result.getObject();
+            if (res) {
+                Toast.makeText(ActivitySettings.this, result.getResponseMessage(),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                new CustomDialog(ActivitySettings.this, "Info",
                     result.getResponseMessage()).show();
+            }
             isUserDataChanged = true;
             break;
 
@@ -170,9 +177,11 @@ public class ActivitySettings extends RootActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
+                intent.putExtra("major", loggedUser.getMajorJobCategory());
+                intent.putExtra("minor", loggedUser.getMinorJobCategory());
                 intent.setClass(getApplicationContext(),
                         ActivityJobCategory.class);
-                startActivity(intent);
+                startActivityForResult(intent, CATEGORY_REQUEST);
             }
         });
 
@@ -319,28 +328,33 @@ public class ActivitySettings extends RootActivity {
             title.setText(getResources().getString(R.string.settings));
             textNickName.setText(loggedUser.getNickName());
             textEmail.setText(loggedUser.getUsername());
-            
-            String jobCategories = "";
-            
-            if (loggedUser.getMajorJobCategory().compareTo("") != 0) {
-                jobCategories = loggedUser.getMajorJobCategory();
-            }
-            if (loggedUser.getMinorJobCategory().compareTo("") != 0) {
-                if (jobCategories.compareTo("") != 0) {
-                    jobCategories = jobCategories + ", ";
-                }
-                jobCategories = jobCategories
-                        + loggedUser.getMinorJobCategory();
-            }
 
-            if (jobCategories.compareTo("") != 0) {
-                jobCategory.setText(jobCategories);
-            }
-
+            displayCategory();
             // TODO: Get current skill
         }
     }
 
+    public void displayCategory(){
+        
+        String jobCategories = "";
+        
+        if (loggedUser.getMajorJobCategory().compareTo("") != 0) {
+            jobCategories = loggedUser.getMajorJobCategory();
+        }
+        if (loggedUser.getMinorJobCategory().compareTo("") != 0) {
+            if (jobCategories.compareTo("") != 0) {
+                jobCategories = jobCategories + ", ";
+            }
+            jobCategories = jobCategories
+                    + loggedUser.getMinorJobCategory();
+        }
+
+        if (jobCategories.compareTo("") != 0) {
+            jobCategory.setText(jobCategories);
+        }
+
+
+    }
     /**
      * Load profile photo
      */
@@ -413,6 +427,13 @@ public class ActivitySettings extends RootActivity {
 
         switch (requestCode) {
 
+        case CATEGORY_REQUEST:
+            if (resultCode == RESULT_OK) {
+                loggedUser.setMajorJobCategory(intent.getStringExtra("major"));
+                loggedUser.setMinorJobCategory(intent.getStringExtra("minor"));
+                displayCategory();
+            }
+            break;
         case PROFILE_PIC_REQUEST:
 
             if (resultCode == RESULT_OK) {
@@ -485,11 +506,6 @@ public class ActivitySettings extends RootActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    public void onClickJobCategory(View v) {
-        Intent intent = new Intent(this, ActivityJobCategory.class);
-        startActivity(intent);
     }
 
     public void onClickSmartererBadges(View v) {
