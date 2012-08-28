@@ -2293,7 +2293,7 @@ public class HttpUtil {
      * @return
      */
     public DataHolder venueFeedsForVenueWithID(int venueId, String venueName,
-            String lastChatIDString, String message, boolean isSend) {
+            String lastChatIDString, String message, boolean isSend, String messageType) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
@@ -2310,7 +2310,7 @@ public class HttpUtil {
                 params.add(new BasicNameValuePair("action", "newPost"));
                 params.add(new BasicNameValuePair("venue_id", Integer
                         .toString(venueId)));
-                params.add(new BasicNameValuePair("type", "update"));
+                params.add(new BasicNameValuePair("type", messageType));
                 params.add(new BasicNameValuePair("entry", message));
             }
 

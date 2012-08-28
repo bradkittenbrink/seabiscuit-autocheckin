@@ -225,54 +225,23 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 		
 	}
 
-    public void onClickCheckInOLDWILLBEREMOVED(View v) {
-        if (AppCAP.isUserCheckedIn()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Check Out");
-            builder.setMessage(context.getResources().getString(R.string.checked_out_confirmation))
-                    .setCancelable(false)
-                    .setPositiveButton("Check Out",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                        int id) {
-                            progress.setMessage("Checking out...");
-                            progress.show();
-                            AppCAP.setUserCheckedIn(false);
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                            result = AppCAP.getConnection()
-                                                    .checkOut();
-                                            handler.sendEmptyMessage(result
-                                                    .getHandlerCode());
-                                }
-                            },"UserAndTabMenu.onClickCheckIn").start();
-                        }
-                            })
-                    .setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                        int id) {
-                            dialog.cancel();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
 
+    @Override
+    public void onClickQuestion(View v) {
+        hideVerticalMenu(v);
+        if (!AppCAP.isUserCheckedIn()) {
+            showDialogCheckin();
         } else {
-            double[] data = new double[6];
-            data = AppCAP.getUserCoordinates();
-
-            double userLat = data[4];
-            double userLng = data[5];
-
-            if (userLat != 0 && userLng != 0) {
-                Intent intent = new Intent(context, ActivityCheckInList.class);
+            VenueSmart tmpVenue = null;
+            tmpVenue = CacheMgrService.getCheckedInVenue();
+            if (tmpVenue != null) {
+                Intent intent = new Intent(context, ActivityFeedsForOneVenue.class);
+                intent.putExtra("venue_id", tmpVenue.getVenueId());
+                intent.putExtra("venue_name", tmpVenue.getName());
+                intent.putExtra("caller", "question_button");
                 context.startActivity(intent);
             } else {
-                ((RootActivity) context).startSmartActivity(new Intent(), "ActivityMap");
-                Intent intent2 = new Intent(context, ActivityCheckInList.class);
-                context.startActivity(intent2);
+                showDialogCheckin();
             }
         }
     }
@@ -502,6 +471,23 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 
 
 
+        dialog.show();
+    }
+
+    private void showDialogCheckin() {
+        // custom dialog
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_checkin);
+
+        Button dialog_btn_checkin = (Button) dialog.findViewById(R.id.btn_checkin);
+        dialog_btn_checkin.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                onClickCheckIn(v);
+            }
+        });
         dialog.show();
     }
 

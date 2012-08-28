@@ -115,6 +115,7 @@ public class ActivityPlaceDetails extends RootActivity {
             super.handleMessage(msg);
         }
     };
+    private boolean firstDisplay = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -298,8 +299,11 @@ public class ActivityPlaceDetails extends RootActivity {
             }
 
         }
-        ScrollView mainScrollView = (ScrollView)findViewById(R.id.activity_places_scrollview);
-        mainScrollView.smoothScrollTo(0,0);
+        if (firstDisplay == true) {
+            firstDisplay = false;
+            ScrollView mainScrollView = (ScrollView)findViewById(R.id.activity_places_scrollview);
+            mainScrollView.smoothScrollTo(0, 0);
+        }
     }
 
     private void populateCategoryList(ArrayList<SkillCategory> skillCategory,

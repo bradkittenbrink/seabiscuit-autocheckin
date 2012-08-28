@@ -28,8 +28,10 @@
                 android:id="@+id/imageview_button_question"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="@drawable/action_menu_button_question_b" />
-
+                android:background="@drawable/action_menu_button_question_b"
+                android:clickable="true"
+                android:onClick="onClickQuestion" />
+
             <ImageView
                 android:id="@+id/imageview_button_checkin"
                 android:layout_width="48dp"

@@ -10,6 +10,9 @@ import com.coffeeandpower.Constants;
 
 public class Feed implements Parcelable {
 
+    public static final String FEED_TYPE_UPDATE = "update";
+    public static final String FEED_TYPE_QUESTION = "question";
+
     private int id;
     private String date;
     private String entryText;
@@ -69,7 +72,7 @@ public class Feed implements Parcelable {
             this.receiverPhotoUrl = receiver.optString("filename");
         }
         this.skillId = objFeed.optInt("skillId");
-        this.entryType = objFeed.optString("entryType");
+        this.entryType = objFeed.optString("type");
         this.venueId = objFeed.optInt("venueId");
         this.originalPostId = objFeed.optInt("originalPostId");
         this.likeCount = objFeed.optInt("likeCount");
@@ -95,6 +98,15 @@ public class Feed implements Parcelable {
         this.date = date;
     }
 
+    public String getFormattedEntryText() {
+        String mes;
+        if (entryType.contentEquals(Feed.FEED_TYPE_QUESTION)) {
+            mes = "Question from " + authorNickName + ": " + entryText;
+        } else {
+            mes = entryText;
+        }
+        return mes;
+    }
 
     public String getEntryText() {
         return entryText;

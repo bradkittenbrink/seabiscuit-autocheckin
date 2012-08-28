@@ -9,7 +9,7 @@
     <!--
     staging
     <string name="linkedInApiKey">4xkfzpnvuc72</string> <string 
-        name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+        name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
     -->
 
 
@@ -43,6 +43,7 @@
     <string name="from">From</string>
     <string name="button_feeds">Feeds</string>
     <string name="activityFeedsUpdateText">Update:</string>
+    <string name="activityFeedsQuestionText">Question:</string>
     <string name="activity_add_funds">Add Funds</string>
     <string name="activity_chat_name">Chat Name</string>
     <string name="activity_chat_type">Type to chat</string>
@@ -67,6 +68,11 @@
     <string name="activity_main_login_connect">Connect with LinkedIn \n to start using C&amp;P</string>
     <string name="login">Login</string>
     <string name="you_must_be_a_member">You must be a member to use this feature.</string>
+    <string name="you_must_be_checked_in">Please check in at venue to post a question.</string>
+    <string name="dialog_post_a_question_title">Post a Question</string>
+    <string name="dialog_post_a_question_content_0">Are you sure you want to ask this question? You are the only person here right now.</string>
+    <string name="dialog_post_a_question_content_1">Are you sure you want to ask this question? It will be pushed to 1 person checked in to this location.</string>
+    <string name="dialog_post_a_question_content_2">Are you sure you want to ask this question? It will be pushed to %d people checked in to this location.</string>
     <string name="activity_places_details_here">Here now...</string>
     <string name="activity_places_details_have">Have worked here...</string>
     <string name="activity_settings_invite">Invite</string>

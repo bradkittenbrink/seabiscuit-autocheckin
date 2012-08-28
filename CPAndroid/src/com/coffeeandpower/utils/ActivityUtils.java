@@ -98,18 +98,10 @@ public class ActivityUtils {
 
             case AppCAP.HTTP_REQUEST_SUCCEEDED:
                 AppCAP.setLoggedIn(true);
-                if (AppCAP.getUserEmail().contentEquals("") ||
-                        AppCAP.getUserEmail().contains("@linkedin.com")) {
-                    Intent intent = new Intent(a, ActivitySettings.class);
-                    intent.putExtra("email_required", "yes");
-                    a.startActivity(intent);
-                    a.finish();
-                } else {
                     Intent intent = new Intent(a, ActivityVenueFeeds.class);
                     intent.putExtra("fragment", R.id.tab_fragment_area_feed);
                     a.startActivity(intent);
                     a.finish();
-                }
                 break;
             }
         }

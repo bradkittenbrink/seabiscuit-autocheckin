@@ -437,7 +437,8 @@ public class Executor {
      */
     public synchronized void venueFeeds(final int venueId,
             final String venueName, final String lastChatIDString,
-            final String message, final boolean isSend, boolean withProgress) {
+            final String message, final boolean isSend, boolean withProgress,
+            final String messageType) {
         if (withProgress) {
             progress.setMessage(isSend ? "Sending..." : "Loading...");
             progress.show();
@@ -446,7 +447,7 @@ public class Executor {
             @Override
             public void run() {
                 result = AppCAP.getConnection().venueFeedsForVenueWithID(
-                        venueId, venueName, lastChatIDString, message, isSend);
+                        venueId, venueName, lastChatIDString, message, isSend, messageType);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
         }, "Executor.venueFeeds").start();

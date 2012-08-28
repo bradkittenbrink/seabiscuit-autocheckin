@@ -40,6 +40,8 @@ public class CacheMgrService extends Service {
             "venueFeedsList");
 
     private static boolean isRunning = false;
+    private static boolean isCurrentLoopRunning = false;
+    private static int startLoopNumber = 0;
 
     private static boolean allowCachedDataThisRun = false;
     private static boolean refreshAllDataThisRun = false;
@@ -314,6 +316,14 @@ public class CacheMgrService extends Service {
 
                     // isFirstRun = true;
 
+                    if (isCurrentLoopRunning){
+                        Log.d(TAG,
+                                "Current cache loop is running.");
+                        return;
+                    }
+                    Log.d(TAG,  "New cache loop started,  loop #" + startLoopNumber);
+                    startLoopNumber++;
+                    isCurrentLoopRunning = true;
                     if (AppCAP.getUserLatLon()[0] == 0
                             && AppCAP.getUserLatLon()[1] == 0) {
                         if (Constants.debugLog)
@@ -356,6 +366,7 @@ public class CacheMgrService extends Service {
 
                     // Determine if venuesWithCheckins should run
                     if (venuesWithCheckinsCache.isActive()
+                            || (!venuesWithCheckinsCache.hasData() && startLoopNumber > 0)
                             || refreshAllDataThisRun) {
 
                         // Determine if cached data should be sent or data needs
@@ -385,6 +396,7 @@ public class CacheMgrService extends Service {
 
                     // Determine if venuesWithCheckins should run
                     if (nearbyVenuesCache.isActive()
+                            || (!nearbyVenuesCache.hasData() && startLoopNumber > 10)
                             || refreshAllDataThisRun) {
 
                         if (allowCachedDataThisRun
@@ -414,6 +426,7 @@ public class CacheMgrService extends Service {
 
                     // Determine if contactsList should run
                     if (contactsListCache.isActive()
+                            || (!contactsListCache.hasData() && startLoopNumber > 20)
                             || refreshAllDataThisRun) {
 
                         if (allowCachedDataThisRun
@@ -436,7 +449,6 @@ public class CacheMgrService extends Service {
 
                         if (venueFeedsListCache.hasData()
                                 && !refreshAllDataThisRun) {
-                            venueFeedsListCache.sendCachedData();
                             cachedDataSentThisUpdate = true;
                         } else {
                             venueFeedsListCache.setNewData(AppCAP
@@ -509,7 +521,7 @@ public class CacheMgrService extends Service {
                         // TODO We should also turn off the GPS at this point as
                         // well
                     }
-
+                    isCurrentLoopRunning = false;
                 }
 
             }, "CacheMgrService.run");
@@ -603,17 +615,39 @@ public class CacheMgrService extends Service {
     public static VenueSmart getCheckedInVenue() {
         int lastVenueId = AppCAP.getUserLastCheckinVenueId();
         DataHolder venuesWithCheckins = venuesWithCheckinsCache.getData();
-        Object[] obj = (Object[]) venuesWithCheckins.getObject();
-        @SuppressWarnings("unchecked")
-        List<VenueSmart> listVenues = (List<VenueSmart>) obj[0];
-        for (VenueSmart currVenue : listVenues) {
-            if (currVenue.getVenueId() == lastVenueId) {
-                return currVenue;
+        if (venuesWithCheckins != null) {
+            Object[] obj = (Object[]) venuesWithCheckins.getObject();
+            @SuppressWarnings("unchecked")
+            List<VenueSmart> listVenues = (List<VenueSmart>) obj[0];
+            for (VenueSmart currVenue : listVenues) {
+                if (currVenue.getVenueId() == lastVenueId) {
+                    return currVenue;
+                }
             }
         }
         return null;
     }
 
+    public static int getNumberOfCheckedInInVenue(int venue_id) {
+        int testId = 0;
+        VenueSmart selectedVenue = null;
+        DataHolder venuesWithCheckins = venuesWithCheckinsCache.getData();
+        Object[] obj = (Object[]) venuesWithCheckins.getObject();
+        @SuppressWarnings("unchecked")
+        List<VenueSmart> listVenues = (List<VenueSmart>) obj[0];
+        for (VenueSmart testVenue : listVenues) {
+            testId = testVenue.getVenueId();
+            if (venue_id == testId) {
+                selectedVenue = testVenue;
+                break;
+            }
+        }
+        if (selectedVenue != null){
+            return selectedVenue.getCheckins();
+        } 
+        return 0;
+    }
+    
     public static void checkOutTrigger() {
 
         stopPeriodicTimer();
@@ -701,8 +735,7 @@ public class CacheMgrService extends Service {
         if (withRefresh == true) {
             refreshAllData();
         } else {
-            venueFeedsListCache.setNewData(AppCAP.getConnection()
-                .getVenueFeedsList(), new double[] { 0, 0 });
+            venueFeedsListCache.setHasData(false); 
             stopPeriodicTimer();
             startPeriodicTimer();
         }

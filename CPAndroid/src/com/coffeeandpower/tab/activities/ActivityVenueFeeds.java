@@ -512,6 +512,15 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
     }
 
     @Override
+    public void onClickQuestion(View v) {
+        if (AppCAP.isLoggedIn()) {
+            menu.onClickQuestion(v);
+        } else {
+            showDialog(DIALOG_MUST_BE_A_MEMBER);
+        }
+    }
+
+    @Override
     public void onClickCheckOut(View v) {
         if (AppCAP.isLoggedIn()) {
             menu.onClickCheckOut(v);

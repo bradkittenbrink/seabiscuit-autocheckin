@@ -115,8 +115,8 @@ public class MyFeedsAdapter extends BaseAdapter {
                 
         holder.textDate.setText(dateOnly.format(date));
         holder.textHour.setText(hourOnly.format(date));
-        holder.textMessage.setText(AppCAP.cleanResponseString(messages.get(
-                position).getEntryText()));
+        Feed currentMessage = messages.get(position);
+        holder.textMessage.setText(AppCAP.cleanResponseString(currentMessage.getFormattedEntryText()));
         // Display image
         if (AppCAP.isLoggedIn()) {
             imageLoader.DisplayImage(messages.get(position).getAuthorPhotoUrl(),

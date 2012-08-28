@@ -166,7 +166,7 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
             
     textDate.setText(dateOnly.format(date));
     textHour.setText(hourOnly.format(date));
-    textMessage.setText(AppCAP.cleanResponseString(message.getEntryText()));
+    textMessage.setText(AppCAP.cleanResponseString(message.getFormattedEntryText()));
     // Display image
     if (AppCAP.isLoggedIn()) {
         String imageUrl = message.getAuthorPhotoUrl();

@@ -26,4 +26,6 @@ public interface TabMenu {
 
     public void onClickMapFromTab(View v);
 
+    public void onClickQuestion(View v);
+
 }
