@@ -12,11 +12,10 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
-
-import android.widget.Button;
 import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
@@ -186,6 +185,10 @@ public class ActivityNotifications extends RootActivity {
 		btnFrom.setText(AppCAP.getNotificationFrom());
 
 		super.onResume();
+	}
+	
+	public void onClickBack(View v) {
+	    onBackPressed();
 	}
 
 }

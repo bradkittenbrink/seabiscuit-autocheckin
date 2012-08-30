@@ -16,7 +16,6 @@ import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.utils.Utils;
-import com.coffeeandpower.views.CustomFontView;
 import com.urbanairship.UAirship;
 
 import android.app.Activity;
@@ -34,8 +33,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ToggleButton;
 
 public class ActivityAutoCheckinList extends RootActivity implements Observer {
-	
-	private String AUTOCHECKIN_SCREEN_TITLE = "Auto Checkin";
 	
 	private ListView autoCheckinList = null;		// List with one row for each venue user has checked into before
 	//private ListView masterAutoCheckinToggleList = null;    // List with only one row for master toggle switch
@@ -137,10 +134,6 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 		progress = new ProgressDialog(this);
 		progress.setMessage("Loading...");
 		progress.show();
-		
-		// Views
-		
-		((CustomFontView) findViewById(R.id.textview_autocheckinlist_name)).setText(AUTOCHECKIN_SCREEN_TITLE);
 	}
 	
 	@Override
@@ -238,6 +231,10 @@ public class ActivityAutoCheckinList extends RootActivity implements Observer {
 		if (Constants.debugLog)
 			Log.d("Notifications","ActivityNotifications.update: Sending handler message...");
 		taskHandler.sendMessage(message);
+	}
+	
+	public void onClickBack(View v) {
+	    onBackPressed();
 	}
 
 }

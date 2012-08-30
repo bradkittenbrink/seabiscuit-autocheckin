@@ -2,72 +2,97 @@
 <LinearLayout android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#333333" 
-	android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
+    android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
 
 
 
 
-            <com.coffeeandpower.views.CustomFontView
-                android:id="@+id/textview_autocheckinlist_name"
-                android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-	            android:layout_gravity="center"
-	            android:paddingTop="5dp"
-		        android:paddingLeft="5dp"
-		        android:text=""
-		        android:textColor="#ffffff"
-		        android:textSize="25dip" />
+            <RelativeLayout
+                android:id="@+id/dummy_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="45dip"
+                android:background="@drawable/header" >
+            
+                <Button
+                    android:id="@+id/btn_go_to_notifications"
+                    android:layout_width="90dip"
+                    android:layout_height="28dip"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dip"
+                    android:textColor="#ffffff"
+                    android:background="@drawable/rounded_border"
+                    android:text="@string/notifications_label"
+                    android:onClick="onClickBack" />
+                
+                <com.coffeeandpower.views.CustomFontView
+                    android:id="@+id/textview_autocheckinlist_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/auto_checkin_label"
+                    android:textColor="#ffffff"
+                    android:textSize="25dip" />
+            
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/master_auto_checkin_toggle_layout"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:orientation="horizontal"
-		        android:background="#333333" >
-	        
-		        <TextView
-		            android:text=" Auto Check In To Venues"
-		            android:layout_width="0dip"
-			        android:layout_height="wrap_content"
-		            android:textColor="#ffffff"
-		            android:textSize="15dip"
-		            android:layout_weight="1"
-		            android:layout_gravity="center"
-		            android:gravity="left"    />
-	
-		        <ToggleButton
-		            android:id="@+id/toggleButtonMasterAutoCheckinToggle"
-		            android:layout_width="95dip"
-		            android:layout_height="28dip"
-		            android:layout_marginLeft="5dip"
-		            android:layout_marginTop="5dip"
-		            android:background="@drawable/btn_on_off"
-		            android:textOff=""
-		            android:textOn="" />
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#282828"
+                android:layout_marginTop="0dip"
+                android:paddingBottom="12dip"
+                android:paddingTop="13dip" >
+            
+                <TextView
+                    android:text="Auto Check In To Venues"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:textSize="15dip"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:paddingLeft="5dip"
+                    android:gravity="left"    />
+    
+                <ToggleButton
+                    android:id="@+id/toggleButtonMasterAutoCheckinToggle"
+                    android:layout_width="95dip"
+                    android:layout_height="28dip"
+                    android:layout_marginRight="5dip"
+                    android:layout_marginTop="5dip"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/btn_on_off"
+                    android:textOff=""
+                    android:textOn="" />
 
-    		</LinearLayout>
-    		
+            </LinearLayout>
+            
             <!-- 
 
             <ListView
-				android:id="@+id/master_auto_checkin_toggle"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
+                android:id="@+id/master_auto_checkin_toggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/dummy_layout"
                 android:cacheColorHint="#00000000"
-				android:dividerHeight="1dip"
+                android:dividerHeight="1dip"
                 android:divider="#4a4a4a" >
-		</ListView>
-		-->
+            </ListView>
+        -->
             <ListView
-				android:id="@+id/venue_auto_checkin_list"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
+                android:id="@+id/venue_auto_checkin_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/master_auto_checkin_toggle_layout"
                 android:cacheColorHint="#00000000"
-				android:dividerHeight="1dip"
-                android:divider="#4a4a4a" >
-		</ListView>
+                android:dividerHeight="1dip"
+                android:divider="#404040" >
+            </ListView>
         
 
 </LinearLayout>
