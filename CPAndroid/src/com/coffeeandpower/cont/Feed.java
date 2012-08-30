@@ -12,6 +12,7 @@ public class Feed implements Parcelable {
 
     public static final String FEED_TYPE_UPDATE = "update";
     public static final String FEED_TYPE_QUESTION = "question";
+    public static final String FEED_TYPE_LOVE = "love";
 
     private int id;
     private String date;

@@ -7,6 +7,7 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
@@ -34,14 +36,15 @@ public class MyFeedsAdapter extends BaseAdapter {
 
     private ArrayList<Feed> messages;
     private VenueNameAndFeeds venueNameAndFeeds;
-    private LayoutInflater inflater; 
+    private LayoutInflater inflater;
     public ImageLoader imageLoader;
-    private int localUserId; 
-    private Activity context; 
+    private int localUserId;
+    private Activity context;
 
-    public MyFeedsAdapter(Activity context, ArrayList<Feed> messages, VenueNameAndFeeds venueNameAndFeeds) {
+    public MyFeedsAdapter(Activity context, ArrayList<Feed> messages,
+            VenueNameAndFeeds venueNameAndFeeds) {
         this.context = context;
-        this.inflater = context.getLayoutInflater(); 
+        this.inflater = context.getLayoutInflater();
         this.imageLoader = new ImageLoader(context.getApplicationContext());
         this.localUserId = AppCAP.getLoggedInUserId();
         Log.d("MyFeedsAdapter", "messages length..." + messages.size());
@@ -49,8 +52,8 @@ public class MyFeedsAdapter extends BaseAdapter {
             this.messages = messages;
         } else {
             this.messages = new ArrayList<Feed>();
-        } 
-        this.venueNameAndFeeds = venueNameAndFeeds; 
+        }
+        this.venueNameAndFeeds = venueNameAndFeeds;
     }
 
     @Override
@@ -74,6 +77,8 @@ public class MyFeedsAdapter extends BaseAdapter {
         public TextView textHour;
         public TextView textMessage;
         public ImageView profileImage;
+        private RelativeLayout love_sent_area;
+        private ImageView profileImageReceiver;
 
         public ViewHolder(View convertView) {
 
@@ -84,7 +89,13 @@ public class MyFeedsAdapter extends BaseAdapter {
             this.textMessage = (TextView) convertView
                     .findViewById(R.id.textview_chat_message);
             this.profileImage = (ImageView) convertView
-                    .findViewById(R.id.imageview_image); 
+                    .findViewById(R.id.imageview_image);
+            this.profileImageReceiver = (ImageView) convertView
+                    .findViewById(R.id.imageview_image_receiver);
+
+            this.love_sent_area = (RelativeLayout) convertView
+                    .findViewById(R.id.love_sent_area);
+
         }
     }
 
@@ -92,6 +103,7 @@ public class MyFeedsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder holder;
+        Feed currentMessage = messages.get(position);
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_list_feeds, null);
@@ -103,26 +115,57 @@ public class MyFeedsAdapter extends BaseAdapter {
         convertView.setTag(R.id.venue_name_and_feeds, venueNameAndFeeds);
 
         Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");        
-        SimpleDateFormat dateOnly = new SimpleDateFormat("MMM dd");        
-        SimpleDateFormat hourOnly = new SimpleDateFormat("hh:mm");        
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat dateOnly = new SimpleDateFormat("MMM dd");
+        SimpleDateFormat hourOnly = new SimpleDateFormat("hh:mm");
         try {
-            date = simpleDateFormat.parse(messages.get(position).getDate());
+            date = simpleDateFormat.parse(currentMessage.getDate());
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-                
+        if (currentMessage.getEntryType().contentEquals(Feed.FEED_TYPE_LOVE)) {
+            holder.love_sent_area.setVisibility(View.VISIBLE);
+            holder.love_sent_area.measure(0, 0);
+            int width = holder.love_sent_area.getMeasuredWidth();
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(width, 0, 0, 0);
+            holder.textMessage.setLayoutParams(lp);
+            holder.textMessage.setTypeface(null,Typeface.BOLD);
+        } else {
+            holder.love_sent_area.setVisibility(View.GONE);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(0, 0, 0, 0);
+            holder.textMessage.setLayoutParams(lp);
+            holder.textMessage.setTypeface(null,Typeface.NORMAL);
+        }
+
         holder.textDate.setText(dateOnly.format(date));
         holder.textHour.setText(hourOnly.format(date));
-        Feed currentMessage = messages.get(position);
-        holder.textMessage.setText(AppCAP.cleanResponseString(currentMessage.getFormattedEntryText()));
-        // Display image
+        holder.textMessage.setText(AppCAP.cleanResponseString(currentMessage
+                .getFormattedEntryText()));
+        // Display images
+        displayImage(currentMessage.getAuthorPhotoUrl(),
+                currentMessage.getAuthorId(), holder.profileImage);
+        if (currentMessage.getEntryType().contentEquals(Feed.FEED_TYPE_LOVE)) {
+            displayImage(currentMessage.getReceiverPhotoUrl(),
+                    currentMessage.getReceiverId(), holder.profileImageReceiver);
+        }
+
+        return convertView;
+    }
+
+    public void displayImage(String imageUrl, int userId, ImageView profileImage) {
         if (AppCAP.isLoggedIn()) {
-            imageLoader.DisplayImage(messages.get(position).getAuthorPhotoUrl(),
-                    holder.profileImage, R.drawable.default_avatar50, 70);
-            holder.profileImage.setTag(messages.get(position).getAuthorId());
-            holder.profileImage.setOnClickListener(new OnClickListener() {
+            if (imageUrl.contentEquals("") == false) {
+                imageLoader.DisplayImage(imageUrl, profileImage,
+                        R.drawable.default_avatar50, 70);
+            }
+            profileImage.setTag(userId);
+            profileImage.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (!AppCAP.isLoggedIn()) {
@@ -139,15 +182,13 @@ public class MyFeedsAdapter extends BaseAdapter {
             });
 
         } else {
-            imageLoader.DisplayImage("", holder.profileImage,
-                    R.drawable.default_avatar50_login, 70);  
+            imageLoader.DisplayImage("", profileImage,
+                    R.drawable.default_avatar50_login, 70);
         }
-
-        return convertView;
     }
 
-
-    public void setNewData(ArrayList<Feed> messages2, VenueNameAndFeeds venueNameAndFeeds2) {
+    public void setNewData(ArrayList<Feed> messages2,
+            VenueNameAndFeeds venueNameAndFeeds2) {
         this.messages = messages2;
         this.venueNameAndFeeds = venueNameAndFeeds2;
     }

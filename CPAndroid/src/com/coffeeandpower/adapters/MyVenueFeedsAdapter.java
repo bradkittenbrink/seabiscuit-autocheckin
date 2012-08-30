@@ -7,6 +7,7 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
@@ -151,7 +153,11 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
                 .findViewById(R.id.textview_chat_message);
         ImageView profileImage = (ImageView) vi
                 .findViewById(R.id.imageview_image);  
+        ImageView profileImageReceiver = (ImageView) vi
+                .findViewById(R.id.imageview_image_receiver);  
         vi.setTag(R.id.venue_name_and_feeds, venueNameAndFeeds);
+        RelativeLayout love_sent_area = (RelativeLayout) vi
+                .findViewById(R.id.love_sent_area); 
 
     Date date = new Date();
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");        
@@ -164,37 +170,57 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
         e.printStackTrace();
     }
             
+    if (message.getEntryType().contentEquals(Feed.FEED_TYPE_LOVE)) {
+        love_sent_area.setVisibility(View.VISIBLE);
+        love_sent_area.measure(0, 0);
+        int width = love_sent_area.getMeasuredWidth();
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(width, 0, 0, 0);
+        textMessage.setLayoutParams(lp);
+        textMessage.setTypeface(null,Typeface.BOLD);
+    } else {
+        love_sent_area.setVisibility(View.GONE);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(0, 0, 0, 0);
+        textMessage.setLayoutParams(lp);
+        textMessage.setTypeface(null,Typeface.NORMAL);
+    }
+
     textDate.setText(dateOnly.format(date));
     textHour.setText(hourOnly.format(date));
     textMessage.setText(AppCAP.cleanResponseString(message.getFormattedEntryText()));
-    // Display image
-    if (AppCAP.isLoggedIn()) {
-        String imageUrl = message.getAuthorPhotoUrl();
-        if (imageUrl.contentEquals("") == false) {
-            imageLoader.DisplayImage(message.getAuthorPhotoUrl(),
-                    profileImage, R.drawable.default_avatar50, 70);
-        }
-        profileImage.setTag(message.getAuthorId());
-        profileImage.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!AppCAP.isLoggedIn()) {
-                    context.showDialog(RootActivity.DIALOG_MUST_BE_A_MEMBER);
-                } else {
-                    int user_id = (Integer) v.getTag();
-                    Intent intent = new Intent(context,
-                            ActivityUserDetails.class);
-                    intent.putExtra("user_id", user_id);
-                    intent.putExtra("from_act", "user_id");
-                    context.startActivity(intent);  
-                }
-            }
-        });
-
-    } else {
-        imageLoader.DisplayImage("", profileImage,
-                R.drawable.default_avatar50_login, 70);  
+    // Display images
+    displayImage(message.getAuthorPhotoUrl(), message.getAuthorId(), profileImage);
+    if (message.getEntryType().contentEquals(Feed.FEED_TYPE_LOVE)) {
+        displayImage(message.getReceiverPhotoUrl(), message.getReceiverId(), profileImageReceiver);
     }
 }
+    public void displayImage(String imageUrl, int userId, ImageView profileImage) {
+        if (AppCAP.isLoggedIn()) {
+            if (imageUrl.contentEquals("") == false) {
+                imageLoader.DisplayImage(imageUrl,
+                        profileImage, R.drawable.default_avatar50, 70);
+            }
+            profileImage.setTag(userId);
+            profileImage.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!AppCAP.isLoggedIn()) {
+                        context.showDialog(RootActivity.DIALOG_MUST_BE_A_MEMBER);
+                    } else {
+                        int user_id = (Integer) v.getTag();
+                        Intent intent = new Intent(context,
+                                ActivityUserDetails.class);
+                        intent.putExtra("user_id", user_id);
+                        intent.putExtra("from_act", "user_id");
+                        context.startActivity(intent);  
+                    }
+                }
+            });
 
+        } else {
+            imageLoader.DisplayImage("", profileImage,
+                    R.drawable.default_avatar50_login, 70);  
+        }
+    }
 }
