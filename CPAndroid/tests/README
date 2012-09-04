@@ -1,0 +1,12 @@
+Standard android test framework project setup.
+
+created by running the following command:
+ android create test-project --path . --name CPAndroid_test --main ..
+
+for background, see docs here:
+ * http://developer.android.com/tools/testing/testing_android.html
+ * http://developer.android.com/tools/testing/activity_testing.html
+ * http://developer.android.com/tools/help/monkeyrunner_concepts.html
+
+to run the tests from the command line: connect your device or start up your emulator, then run the following command in this directory:
+ ant debug install test
