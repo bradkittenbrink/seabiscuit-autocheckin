@@ -22,8 +22,6 @@ public interface TabMenu {
 
     public void onClickPlus(View v);
 
-    public void onClickFeed(View v);
-
     public void onClickMapFromTab(View v);
 
     public void onClickQuestion(View v);

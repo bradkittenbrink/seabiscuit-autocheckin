@@ -30,7 +30,6 @@ import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
-import com.coffeeandpower.activity.ActivityFeedsForOneVenue;
 import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.adapters.MyVenueFeedsAdapter;
 import com.coffeeandpower.cache.CacheMgrService;
@@ -39,6 +38,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Feed;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.fragments.FragmentContacts;
+import com.coffeeandpower.fragments.FragmentFeedsForOneVenue;
 import com.coffeeandpower.fragments.FragmentMap;
 import com.coffeeandpower.fragments.FragmentPeopleAndPlaces;
 import com.coffeeandpower.fragments.FragmentPostableFeedVenue;
@@ -115,6 +115,9 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             if (new_fragment_id > 0) {
                 fragment_id = new_fragment_id;
             }
+        } else {
+            intentExtras = new Bundle();
+            intentExtras.putInt("fragment", fragment_id);
         }
         
         // Horizontal Pager
@@ -156,6 +159,8 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             // Create new fragment and transaction
           if (fragment_id == R.id.tab_fragment_area_postable_feed_venue) {
               newFragment = new FragmentPostableFeedVenue(this.intentExtras);
+          } else if (fragment_id == R.id.tab_fragment_area_feeds_for_one_venue) { 
+              newFragment = new FragmentFeedsForOneVenue(this.intentExtras);
           } else if (fragment_id == R.id.tab_fragment_area_contacts) { 
               newFragment = new FragmentContacts(this.intentExtras);
           } else if (fragment_id == R.id.tab_fragment_area_map) { 
@@ -174,11 +179,12 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
               CacheMgrService.resetVenueFeedsData(false);
               newFragment = new FragmentVenueFeeds(this.intentExtras);
           }
-            transaction.add(fragment_id, newFragment);
+          transaction.add(fragment_id, newFragment);
         } else {
             transaction.show(fragment);
-            if (fragment_id == R.id.tab_fragment_area_feed) {
-                onClickRefreshActiveFeeds(fragment.getView());
+            if (fragment_id == R.id.tab_fragment_area_feed || 
+                    fragment_id == R.id.tab_fragment_area_feeds_for_one_venue) {
+                onClickRefreshActiveFeeds(fragment.getView(), false);
             }
         }
         if (hide_fragment_id != 0) {
@@ -196,6 +202,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         if (onRelativeLayout == R.id.rel_feed) {
             ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
             ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
+            ((Button) findViewById(R.id.btn_top_cancel)).setVisibility(View.GONE);
             ((Button) findViewById(R.id.btn_top_refresh)).setVisibility(View.VISIBLE);
             ((RelativeLayout) findViewById(R.id.rel_feed)).setBackgroundResource(R.drawable.bg_tabbar_selected);
             ((ImageView) findViewById(R.id.imageview_feed)).setImageResource(R.drawable.tab_feed_pressed);
@@ -207,6 +214,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
             ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
             ((Button) findViewById(R.id.btn_top_refresh)).setVisibility(View.GONE);
+            ((Button) findViewById(R.id.btn_top_cancel)).setVisibility(View.GONE);
             ((RelativeLayout) findViewById(R.id.rel_people)).setBackgroundResource(R.drawable.bg_tabbar_selected);
             ((ImageView) findViewById(R.id.imageview_people)).setImageResource(R.drawable.tab_people_pressed);
         } else {
@@ -217,6 +225,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.VISIBLE);
             ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
             ((Button) findViewById(R.id.btn_top_refresh)).setVisibility(View.GONE);
+            ((Button) findViewById(R.id.btn_top_cancel)).setVisibility(View.GONE);
             ((RelativeLayout) findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_selected);
             ((ImageView) findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
         } else {
@@ -224,6 +233,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
                 ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
                 ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.VISIBLE);
                 ((Button) findViewById(R.id.btn_top_refresh)).setVisibility(View.GONE);
+                ((Button) findViewById(R.id.btn_top_cancel)).setVisibility(View.GONE);
                 ((RelativeLayout) findViewById(R.id.rel_places)).setBackgroundResource(R.drawable.bg_tabbar_selected);
                 ((ImageView) findViewById(R.id.imageview_places)).setImageResource(R.drawable.tab_places_pressed);
             } else {
@@ -237,6 +247,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
             ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
             ((Button) findViewById(R.id.btn_top_refresh)).setVisibility(View.GONE);
+            ((Button) findViewById(R.id.btn_top_cancel)).setVisibility(View.GONE);
             if (AppCAP.isLoggedIn()) {
                 ((RelativeLayout) findViewById(R.id.rel_contacts)).setBackgroundResource(R.drawable.bg_tabbar_selected);
                 ((ImageView) findViewById(R.id.imageview_contacts)).setImageResource(R.drawable.tab_contacts_pressed);
@@ -270,18 +281,51 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         }
     }
     
+    public void showFullActionBar() {
+        ImageView plus = (ImageView) findViewById(R.id.imageview_button_plus);
+        ImageView minus = (ImageView) findViewById(R.id.imageview_button_minus);
+
+        ImageView imageview_button_question = (ImageView) findViewById(R.id.imageview_button_question_no_action);
+        ImageView imageview_button_update = (ImageView) findViewById(R.id.imageview_button_update_no_action);
+
+        RelativeLayout rel_map = (RelativeLayout) findViewById(R.id.rel_map);
+        RelativeLayout rel_feed = (RelativeLayout) findViewById(R.id.rel_feed);
+        RelativeLayout rel_places = (RelativeLayout) findViewById(R.id.rel_places);
+        RelativeLayout rel_people = (RelativeLayout) findViewById(R.id.rel_people);
+        RelativeLayout rel_contacts = (RelativeLayout) findViewById(R.id.rel_contacts);
+        
+        minus.setVisibility(View.GONE);
+        plus.setVisibility(View.VISIBLE);
+        imageview_button_question.setVisibility(View.GONE);
+        imageview_button_update.setVisibility(View.GONE);
+        rel_map.setVisibility(View.VISIBLE);
+        rel_feed.setVisibility(View.VISIBLE);
+        rel_places.setVisibility(View.VISIBLE);
+        rel_people.setVisibility(View.VISIBLE);
+        rel_contacts.setVisibility(View.VISIBLE);
+
+    }
+    
     public void updateMenuOnFragmentchange(int next_fragment_id) {
         ((RelativeLayout) findViewById(next_fragment_id)).setVisibility(View.VISIBLE);
         ((CustomFontView) findViewById(R.id.textview_contact_list)).setVisibility(View.VISIBLE);
         if (fragment_id != 0 && fragment_id != next_fragment_id) {
             ((RelativeLayout) findViewById(fragment_id)).setVisibility(View.GONE);
         }
+        
+        ((Button) findViewById(R.id.btn_feed)).setVisibility(View.GONE);
         // Create new fragment and transaction
         if (next_fragment_id == R.id.tab_fragment_area_postable_feed_venue) {
             switchTabBackground(R.id.rel_feed);
             if (findViewById(R.id.textview_contact_list) != null) {
                 ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(
                         getResStr(R.string.message_choose_feed));
+            }
+        } else if (next_fragment_id == R.id.tab_fragment_area_feeds_for_one_venue) {
+            switchTabBackground(R.id.rel_feed);
+            ((Button) findViewById(R.id.btn_feed)).setVisibility(View.VISIBLE);
+            if (findViewById(R.id.textview_contact_list) != null) {
+                ((CustomFontView) findViewById(R.id.textview_contact_list)).setText("");
             }
         } else if (next_fragment_id == R.id.tab_fragment_area_people) {
             switchTabBackground(R.id.rel_people);
@@ -362,8 +406,6 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         i.setClass(getApplicationContext(), ActivityLoginPage.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
-        
-        
     }
 
     public void onClickMenu(View v) {
@@ -464,6 +506,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         displayFragment(R.id.tab_fragment_area_map);
     }
     
+    
     @Override
     public boolean onClickVenueFeeds(View v) {
         if (menu.onClickVenueFeeds(v)) {
@@ -488,17 +531,33 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
     }
 
     public void onClickRefreshActiveFeeds(View v) {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentVenueFeeds currFrag = (FragmentVenueFeeds)manager.findFragmentById(R.id.tab_fragment_area_feed);
-        if (currFrag != null) {
-            currFrag.startUpdate();
-        }
-        Thread thread = new Thread(new Runnable() {
-            public void run() {
-                CacheMgrService.resetVenueFeedsData(false);
+        onClickRefreshActiveFeeds(v, true);
+    }
+    
+    public void onClickRefreshActiveFeeds(View v, boolean dataOnly) {
+        if (fragment_id == R.id.tab_fragment_area_feed) {
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentVenueFeeds currFrag = (FragmentVenueFeeds)manager.findFragmentById(R.id.tab_fragment_area_feed);
+            if (currFrag != null) {
+                currFrag.startUpdate();
             }
-        }, "CacheMgrService.run");
-        thread.start();
+            Thread thread = new Thread(new Runnable() {
+                public void run() {
+                    CacheMgrService.resetVenueFeedsData(false);
+                }
+            }, "CacheMgrService.run");
+            thread.start();
+        } else if (fragment_id == R.id.tab_fragment_area_feeds_for_one_venue) {
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentFeedsForOneVenue currFrag = (FragmentFeedsForOneVenue) manager.findFragmentById(R.id.tab_fragment_area_feeds_for_one_venue);
+            if (currFrag != null) {
+                if (dataOnly) {
+                    currFrag.refresh(null);
+                } else {
+                    currFrag.refresh(intentExtras);
+                }
+            }
+        }
     }
 
 
@@ -563,12 +622,11 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         int venueId = venueNameAndFeeds.getVenueId();
         if (venueId != 0) {
             String venue_name = venueNameAndFeeds.getName();
-            Intent intent = new Intent(ActivityVenueFeeds.this,
-                ActivityFeedsForOneVenue.class);
-            intent.putExtra("venue_id", venueId);
-            intent.putExtra("venue_name", venue_name);
-            intent.putExtra("caller", "feeds_list");
-            startActivity(intent);
+            intentExtras.putInt("venue_id", venueId);
+            intentExtras.putString("venue_name", venue_name);
+            intentExtras.putString("caller", "feeds_list");
+            intentExtras.putInt("fragment", R.id.tab_fragment_area_feeds_for_one_venue);
+            displayFragment(R.id.tab_fragment_area_feeds_for_one_venue);
         }
     }
    
@@ -600,7 +658,6 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         menu.onClickPlus(v);
     }
 
-    @Override
     public void onClickFeed(View v) { 
         menu.onClickFeed(v, this);
     }
@@ -613,6 +670,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             return true;
         } else if (activityName == "ActivityVenueFeeds") {
             this.intentExtras = intent.getExtras();
+            showFullActionBar();
             displayFragment(R.id.tab_fragment_area_feed);
             return true;
         } else if (activityName == "ActivityContacts") {
@@ -632,6 +690,43 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             super.startSmartActivity(intent, activityName);
         }
         return false;
+    }
+
+    public void changeToUpdateMode() {
+        if (fragment_id == R.id.tab_fragment_area_feeds_for_one_venue) {
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentFeedsForOneVenue currFrag = (FragmentFeedsForOneVenue) manager.findFragmentById(R.id.tab_fragment_area_feeds_for_one_venue);
+            if (currFrag != null) {
+                currFrag.changeToUpdateMode();
+            }
+        }    
+    }
+
+
+    public void onClickSend(View v) {
+        FragmentManager manager = getSupportFragmentManager();
+
+        if (manager != null)
+        {
+            FragmentFeedsForOneVenue currFrag = (FragmentFeedsForOneVenue) manager.findFragmentById(
+                    R.id.tab_fragment_area_feeds_for_one_venue);
+            if (currFrag != null) {        
+                currFrag.onClickSend(v);
+            }
+        }
+    }
+
+    public void onClickCancel(View v) {
+        FragmentManager manager = getSupportFragmentManager();
+
+        if (manager != null)
+        {
+            FragmentFeedsForOneVenue currFrag = (FragmentFeedsForOneVenue) manager.findFragmentById(
+                    R.id.tab_fragment_area_feeds_for_one_venue);
+            if (currFrag != null) {        
+                currFrag.onClickCancel(v);
+            }
+        }
     }
 
 

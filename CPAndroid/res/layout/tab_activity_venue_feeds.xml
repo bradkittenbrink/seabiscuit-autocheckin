@@ -53,6 +53,19 @@
                         android:layout_marginLeft="10dip"
                         android:background="@drawable/btn_settings"
                         android:onClick="onClickMenu" />
+
+                    <Button
+                        android:id="@+id/btn_feed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/rounded_border"
+                        android:onClick="onClickVenueFeeds"
+                        android:padding="8dp"
+                        android:text="@string/button_feeds"
+                        android:textColor="#ffffff" />
 
                     <com.coffeeandpower.views.CustomFontView
                         android:id="@+id/textview_contact_list"
@@ -74,6 +87,19 @@
                         android:layout_marginTop="10dip"
                         android:background="@drawable/btn_refresh"
                         android:onClick="onClickRefreshActiveFeeds" />
+
+                    <Button
+                        android:id="@+id/btn_top_cancel"
+                        android:layout_width="50dip"
+                        android:layout_height="28dip"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dip"
+                        android:layout_marginTop="10dip"
+                        android:background="@drawable/rounded_border"
+                        android:onClick="onClickCancel"
+                        android:text="@string/button_cancel"
+                        android:textColor="#FFFFFF" />
 
                     <Button
                         android:id="@+id/btn_top_map"
@@ -120,6 +146,14 @@
 
                     <RelativeLayout
                         android:id="@+id/tab_fragment_area_postable_feed_venue"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true" >
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/tab_fragment_area_feeds_for_one_venue"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_alignParentLeft="true"

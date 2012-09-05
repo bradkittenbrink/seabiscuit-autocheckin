@@ -1,10 +1,10 @@
-
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <!-- This is the main color -->
     <item android:left="0dp">
         <shape>
             <solid android:color="#dddddd" />
+
             <padding
                 android:bottom="0dp"
                 android:left="1dp"
@@ -16,11 +16,13 @@
     <item android:left="1dp">
         <shape>
             <solid android:color="#f5f5f5" />
+
             <padding
                 android:bottom="3dp"
-                android:left="16dp"
+                android:left="22dp"
                 android:right="2dp"
-                android:top="3dp" />
+                android:top="6dp" />
         </shape>
     </item>
+
 </layer-list>

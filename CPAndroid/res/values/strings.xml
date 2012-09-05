@@ -42,6 +42,7 @@
     <string name="done">Done</string>
     <string name="from">From</string>
     <string name="button_feeds">Feeds</string>
+    <string name="button_cancel">Cancel</string>
     <string name="activityFeedsUpdateText">Update:</string>
     <string name="activityFeedsQuestionText">Question:</string>
     <string name="activity_add_funds">Add Funds</string>

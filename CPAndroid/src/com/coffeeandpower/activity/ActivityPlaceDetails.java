@@ -48,6 +48,7 @@ import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
+import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
@@ -565,10 +566,11 @@ public class ActivityPlaceDetails extends RootActivity {
         AppCAP.updateUserLastCheckinVenue(new VenueNameAndFeeds(selectedVenue
                 .getVenueId(), selectedVenue.getName()));
         Intent intent = new Intent(ActivityPlaceDetails.this,
-                ActivityFeedsForOneVenue.class);
+                ActivityVenueFeeds.class);
         intent.putExtra("venue_id", selectedVenue.getVenueId());
         intent.putExtra("venue_name", selectedVenue.getName());
         intent.putExtra("caller", "venue_chat");
+        intent.putExtra("fragment", R.id.tab_fragment_area_feeds_for_one_venue);
         startActivity(intent);
         CacheMgrService.resetVenueFeedsData(true);
     }

@@ -161,8 +161,8 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
 
     Date date = new Date();
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");        
-    SimpleDateFormat dateOnly = new SimpleDateFormat("MMM dd");        
-    SimpleDateFormat hourOnly = new SimpleDateFormat("hh:mm");        
+    SimpleDateFormat dateOnly = new SimpleDateFormat("MMM d");        
+    SimpleDateFormat hourOnly = new SimpleDateFormat("hh:mma");        
     try {
         date = simpleDateFormat.parse(message.getDate());
     } catch (ParseException e) { 

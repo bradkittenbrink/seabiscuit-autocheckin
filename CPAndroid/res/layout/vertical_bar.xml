@@ -31,7 +31,7 @@
                 android:background="@drawable/action_menu_button_question_b"
                 android:clickable="true"
                 android:onClick="onClickQuestion" />
-
+
             <ImageView
                 android:id="@+id/imageview_button_checkin"
                 android:layout_width="48dp"
@@ -96,6 +96,24 @@
                 android:background="@drawable/action_menu_button_minus_b"
                 android:clickable="true"
                 android:onClick="onClickMinus"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/imageview_button_question_no_action"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/action_menu_button_question_selected_b"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/imageview_button_update_no_action"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/action_menu_button_update_selected_b"
                 android:visibility="gone" />
         </RelativeLayout>
     </RelativeLayout>

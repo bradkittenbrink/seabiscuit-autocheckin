@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,7 +25,6 @@ import android.widget.TextView;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.activity.ActivityFeedsForOneVenue;
 import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.cont.ChatMessage;
 import com.coffeeandpower.cont.Feed;
@@ -117,8 +117,8 @@ public class MyFeedsAdapter extends BaseAdapter {
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd hh:mm:ss");
-        SimpleDateFormat dateOnly = new SimpleDateFormat("MMM dd");
-        SimpleDateFormat hourOnly = new SimpleDateFormat("hh:mm");
+        SimpleDateFormat dateOnly = new SimpleDateFormat("MMM d");
+        SimpleDateFormat hourOnly = new SimpleDateFormat("hh:mma");
         try {
             date = simpleDateFormat.parse(currentMessage.getDate());
         } catch (ParseException e) {
@@ -142,9 +142,13 @@ public class MyFeedsAdapter extends BaseAdapter {
             holder.textMessage.setLayoutParams(lp);
             holder.textMessage.setTypeface(null,Typeface.NORMAL);
         }
-
-        holder.textDate.setText(dateOnly.format(date));
-        holder.textHour.setText(hourOnly.format(date));
+        if (currentMessage.getAuthorId() == AppCAP.getLoggedInUserId()) {
+            holder.textDate.setText(dateOnly.format(date));
+            holder.textHour.setText(hourOnly.format(date));
+        } else {
+            holder.textDate.setText("");
+            holder.textHour.setText("");
+        }
         holder.textMessage.setText(AppCAP.cleanResponseString(currentMessage
                 .getFormattedEntryText()));
         // Display images

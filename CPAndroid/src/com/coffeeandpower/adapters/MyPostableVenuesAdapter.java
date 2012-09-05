@@ -23,13 +23,13 @@ import android.widget.TextView;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.activity.ActivityFeedsForOneVenue;
 import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.cont.ChatMessage;
 import com.coffeeandpower.cont.Feed;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.fragments.FragmentPostableFeedVenue;
 import com.coffeeandpower.imageutil.ImageLoader;
+import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.utils.Utils;
 
 public class MyPostableVenuesAdapter extends BaseAdapter {
@@ -103,10 +103,11 @@ public class MyPostableVenuesAdapter extends BaseAdapter {
                     int venue_id = (Integer) v.getTag(R.id.venue_id);
                     String venue_name = (String) v.getTag(R.id.venue_name);
                     Intent intent = new Intent(context,
-                            ActivityFeedsForOneVenue.class);
+                            ActivityVenueFeeds.class);
                     intent.putExtra("venue_id", venue_id);
                     intent.putExtra("venue_name", venue_name);
                     intent.putExtra("caller", "postable_venues");
+                    intent.putExtra("fragment", R.id.tab_fragment_area_feeds_for_one_venue);
                     context.startActivity(intent);
                 }
             }

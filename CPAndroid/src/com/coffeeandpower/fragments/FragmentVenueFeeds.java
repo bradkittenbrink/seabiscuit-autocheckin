@@ -28,7 +28,6 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.activity.ActivityFeedsForOneVenue;
 import com.coffeeandpower.adapters.MyVenueFeedsAdapter;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cache.CachedDataContainer;
@@ -234,10 +233,11 @@ public class FragmentVenueFeeds extends Fragment {
         if (venueId != 0) {
             String venue_name = venueNameAndFeeds.getName();
             Intent intent = new Intent(getActivity().getApplicationContext(),
-                    ActivityFeedsForOneVenue.class);
+                    ActivityVenueFeeds.class);
             intent.putExtra("venue_id", venueId);
             intent.putExtra("venue_name", venue_name);
             intent.putExtra("caller", "feeds_list");
+            intent.putExtra("fragment", R.id.tab_fragment_area_feeds_for_one_venue);
             startActivity(intent);
         }
     }
