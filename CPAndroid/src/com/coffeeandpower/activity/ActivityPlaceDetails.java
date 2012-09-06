@@ -564,7 +564,7 @@ public class ActivityPlaceDetails extends RootActivity {
 
     public void onClickChat(View v) {
         AppCAP.updateUserLastCheckinVenue(new VenueNameAndFeeds(selectedVenue
-                .getVenueId(), selectedVenue.getName()));
+                .getVenueId(), selectedVenue.getName()), false);
         Intent intent = new Intent(ActivityPlaceDetails.this,
                 ActivityVenueFeeds.class);
         intent.putExtra("venue_id", selectedVenue.getVenueId());

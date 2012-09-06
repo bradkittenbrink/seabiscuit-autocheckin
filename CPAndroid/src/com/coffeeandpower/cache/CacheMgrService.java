@@ -566,7 +566,7 @@ public class CacheMgrService extends Service {
         AppCAP.setUserLastCheckinVenueId(checkedInVenue.getVenueId());
 
         AppCAP.updateUserLastCheckinVenue(new VenueNameAndFeeds(checkedInVenue
-                .getVenueId(), checkedInVenue.getName()));
+                .getVenueId(), checkedInVenue.getName()), true);
         resetVenueFeedsData(false);
         // Venue Related
 

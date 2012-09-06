@@ -2110,65 +2110,16 @@ public class HttpUtil {
                         }
                         listIds += String.valueOf(venuesArray.get(i).getVenueId());
                         threeVenuesArray.add(venuesArray.get(i));
+                        VenueNameAndFeeds venueNameAndFeeds = new VenueNameAndFeeds(venuesArray.get(i)
+                                .getVenueId(), venuesArray.get(i).getName(), new ArrayList<Feed>()); 
+                        AppCAP.updateUserLastCheckinVenue(venueNameAndFeeds, true);
                     }
                     
                 }
                 
-                params = new ArrayList<NameValuePair>();
-                params.add(new BasicNameValuePair("action", "getVenueFeedPreviews"));
-                params.add(new BasicNameValuePair("venue_IDs", "[" + listIds + "]"));
-                post.setEntity(new UrlEncodedFormEntity(params));
-
-                // Execute HTTP Post Request
-                HttpResponse response2 = client.execute(post);
-                HttpEntity resEntity2 = response2.getEntity();
-
-                String responseString2 = EntityUtils.toString(resEntity2);
-                if (Constants.enableApiJsonLogging)
-                    RootActivity.log("HttpUtil_getVenueFeedsList: " + responseString2);
-
-                if (responseString2 != null) {
-                    JSONObject json2 = new JSONObject(responseString2);
-                    JSONObject venueFeeds = json2.optJSONObject("payload");
-                    ArrayList<VenueNameAndFeeds> VenueNameArray = new ArrayList<VenueNameAndFeeds>();
-                    
-                    for (Venue currVenue : threeVenuesArray) {
-                        ArrayList<Feed> feedsArray = new ArrayList<Feed>();
-                        if (venueFeeds != null) {
-                            JSONArray feeds = venueFeeds.optJSONArray(String.valueOf(currVenue.getVenueId()));
-
-                            if (feeds != null) {
-                                for (int m = 0; m < feeds.length(); m++) {
-
-                                    JSONObject currFeed = feeds
-                                            .optJSONObject(m);
-                                    if (currFeed != null
-                                            && currFeed.optString("entry")
-                                                    .contentEquals("") == false) {
-                                        try {
-                                            feedsArray.add(new Feed(currFeed));
-                                        } catch (Exception e) {
-                                            Log.d("HttpUtil",
-                                                    "Received exception "
-                                                            + e.getLocalizedMessage()
-                                                            + " from getVenueFeedsList API");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        VenueNameArray
-                                .add(new VenueNameAndFeeds(currVenue
-                                        .getVenueId(), currVenue.getName(),
-                                        feedsArray));
-                    }
-
-                    result.setObject(Collections
-                            .unmodifiableList(VenueNameArray));
-                    result.setResponseMessage("HTTP 200 OK");
-                    return result;
+                if (AppCAP.getUserLastCheckinVenueIds().contentEquals("") == false) {
+                    return getVenueFeedsList();
                 }
-                
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -2205,7 +2156,9 @@ public class HttpUtil {
         Log.d("HttpUtil", "getVenueFeedsList" +
                 AppCAP.getUserLastCheckinVenueIds());
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        if (AppCAP.getUserLastCheckinVenueIds().contentEquals("") == false) {
+        if (AppCAP.getUserLastCheckinVenueIds().contentEquals("") == true) {
+            return getNearestVenueFeedsList();
+        } else {
             try {
                 params.add(new BasicNameValuePair("action",
                         "getVenueFeedPreviews"));
@@ -2281,8 +2234,7 @@ public class HttpUtil {
                 return result;
             }
         } 
-        
-        return this.getNearestVenueFeedsList();
+        return result;
     }
 
     /**
@@ -3747,7 +3699,7 @@ public class HttpUtil {
                 result.setResponseMessage(mess);
 
                 if (succeeded) {
-
+                    synchronizeUserData(json);
                     result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
                     return result;
 
@@ -3778,6 +3730,51 @@ public class HttpUtil {
 
         return result;
 
+    }
+    
+    public void synchronizeUserData(JSONObject json){
+        // synchronize the user data
+        JSONObject obj = json.optJSONObject("params");
+        if (obj != null){
+            JSONObject userObj = obj.optJSONObject("params");
+            if (userObj != null){
+                String enteredInviteCode = userObj
+                        .optString("entered_invite_code");
+                if (enteredInviteCode != null) {
+                    if (enteredInviteCode.equalsIgnoreCase("Y")) {
+                        AppCAP.setEnteredInviteCode();
+                    }
+                }
+                int userId = userObj.optInt("id"); 
+                String nickName = userObj.optString("nickname");
+                if (nickName != null) {
+                    AppCAP.setLoggedInUserNickname(nickName);
+                }
+                if (userId != 0){
+                    AppCAP.setLoggedInUserId(userId);
+                }
+                JSONObject checkin_data = userObj.optJSONObject("checkin_data");
+                if (checkin_data != null) {
+                    int checkedin = checkin_data.optInt("checked_in"); 
+                    AppCAP.setUserCheckedIn((checkedin == 1));
+                    
+                    if (checkedin == 1) {
+                        int venue_id = checkin_data.optInt("id"); 
+                        AppCAP.setUserLastCheckinVenueId(venue_id);
+                        String venue_name = checkin_data.optString("name"); 
+                        AppCAP.updateUserLastCheckinVenue(new VenueNameAndFeeds(venue_id, venue_name), true);
+                        float  venue_lng = (float) checkin_data.optDouble("lng"); 
+                        float  venue_lat = (float) checkin_data.optDouble("lat");
+                        AppCAP.setUserLatLon(venue_lat, venue_lng);
+                    } else {
+                        AppCAP.setUserLastCheckinVenueId(0);
+                        float  venue_lng = (float) userObj.optDouble("lng"); 
+                        float  venue_lat = (float) userObj.optDouble("lat");
+                        AppCAP.setUserLatLon(venue_lat, venue_lng);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -3931,21 +3928,7 @@ public class HttpUtil {
                 result.setResponseMessage(mess);
 
                 if (succeeded) {
-                    JSONObject paramsObj = json.optJSONObject("params");
-                    if (paramsObj != null) {
-                        JSONObject paramsObj2 = paramsObj
-                                .optJSONObject("params");
-                        if (paramsObj2 != null) {
-                            String enteredInviteCode = paramsObj2
-                                    .optString("entered_invite_code");
-                            if (enteredInviteCode != null) {
-                                if (enteredInviteCode.equalsIgnoreCase("Y")) {
-                                    AppCAP.setEnteredInviteCode();
-                                }
-                            }
-                        }
-
-                    }
+                    synchronizeUserData(json);
                     result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
                     return result;
 

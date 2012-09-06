@@ -863,6 +863,17 @@ public class AppCAP extends Application {
         return data;
     }
 
+    public static void setUserLatLon(float lat, float lng) {
+        getSharedPreferences()
+            .edit()
+            .putFloat(TAG_USER_COORDINATES + "user_lat",
+                lat).commit();
+        getSharedPreferences()
+            .edit()
+            .putFloat(TAG_USER_COORDINATES + "user_lng",
+                lng).commit();
+    }
+    
     /**
      * 
      * @category localUserData
@@ -1228,17 +1239,25 @@ public class AppCAP extends Application {
     }
 
     public static void updateUserLastCheckinVenue(
-            VenueNameAndFeeds checkedInVenue) {
+            VenueNameAndFeeds checkedInVenue, boolean topPosition) {
         for (VenueNameAndFeeds currVenue : listLastCheckedinVenues) {
             if (currVenue.getVenueId() == checkedInVenue.getVenueId()) {
-                listLastCheckedinVenues.remove(currVenue);
-                break;
+                if (topPosition) {
+                    listLastCheckedinVenues.remove(currVenue);
+                    break;
+                } else {
+                    return;
+                }
             }
         }
-        ArrayList<VenueNameAndFeeds> newList = new ArrayList<VenueNameAndFeeds>();
-        newList.add(checkedInVenue);
-        newList.addAll(listLastCheckedinVenues);
-        listLastCheckedinVenues = newList;
+        if (topPosition) {
+            ArrayList<VenueNameAndFeeds> newList = new ArrayList<VenueNameAndFeeds>();
+            newList.add(checkedInVenue);
+            newList.addAll(listLastCheckedinVenues);
+            listLastCheckedinVenues = newList;
+        } else {
+            listLastCheckedinVenues.add(checkedInVenue);
+        }
         setUserLastCheckinVenue();
     }
 

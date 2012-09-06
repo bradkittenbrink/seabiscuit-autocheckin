@@ -114,7 +114,7 @@ public class FragmentFeedsForOneVenue extends Fragment {
         if (intentExtras != null) {
             venueName = intentExtras.getString("venue_name");
             venueId = intentExtras.getInt("venue_id");
-            caller = intentExtras.getString("caller");
+            setCaller(intentExtras.getString("caller"));
 
         }
     }
@@ -127,11 +127,12 @@ public class FragmentFeedsForOneVenue extends Fragment {
                 ((CustomFontView) getActivity().getWindow().findViewById(R.id.textview_contact_list)).setText(venueName);
             }
             CustomFontView textUpdateOrQuestion = (CustomFontView) getView().findViewById(R.id.textview_update);
-            if (caller.contentEquals("question_button") == true) {
+            if (getCaller().contentEquals("question_button") == true) {
                 textUpdateOrQuestion.setText((String) getResources().getText(R.string.activityFeedsQuestionText));
                 messageType = Feed.FEED_TYPE_QUESTION;
                 showQuestionActionButton();
-            } else if (caller.contentEquals("pen_button") == true) {
+            } else if (getCaller().contentEquals("pen_button") == true ||
+                    getCaller().contentEquals("postable_venues") == true) {
                 textUpdateOrQuestion.setText((String) getResources().getText(R.string.activityFeedsUpdateText));
                 messageType = Feed.FEED_TYPE_UPDATE;
                 showUpdateActionButton();
@@ -142,13 +143,13 @@ public class FragmentFeedsForOneVenue extends Fragment {
             }
             RelativeLayout chatView = (RelativeLayout) getView().findViewById(R.id.layout_places_chat);
             chatView.setVisibility(View.GONE);
-            if (caller.contentEquals("postable_venues") == true) {
+            if (getCaller().contentEquals("postable_venues") == true) {
                 chatView.setVisibility(View.VISIBLE);
             } 
             EditText editText = (EditText) getView().findViewById(R.id.edittext_places_chat);
-            if (caller.contentEquals("pen_button") || 
-                    caller.contentEquals("postable_venues") || 
-                    caller.contentEquals("question_button")) {
+            if (getCaller().contentEquals("pen_button") || 
+                    getCaller().contentEquals("postable_venues") || 
+                    getCaller().contentEquals("question_button")) {
                 showKeyboard();
             } else {
                 getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -227,7 +228,7 @@ public class FragmentFeedsForOneVenue extends Fragment {
     }
     
     public void changeToUpdateMode() {
-        caller = "pen_button";
+        setCaller("pen_button");
         showKeyboard();
         showUpdateActionButton();
     }
@@ -280,19 +281,24 @@ public class FragmentFeedsForOneVenue extends Fragment {
     }
     
     public void showKeyboard() {
-        RelativeLayout chatView = (RelativeLayout) getView().findViewById(R.id.layout_places_chat);       
-        chatView.setVisibility(View.VISIBLE);
-        final EditText editText = (EditText) getView().findViewById(R.id.edittext_places_chat);
-        editText.requestFocus();
+        if (getCaller().contentEquals("pen_button") || 
+                getCaller().contentEquals("postable_venues") || 
+                getCaller().contentEquals("question_button")) {
 
-        editText.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                InputMethodManager inputManager = (InputMethodManager)
-                        getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);            }
-        }, 200); 
+            RelativeLayout chatView = (RelativeLayout) getView().findViewById(R.id.layout_places_chat);       
+            chatView.setVisibility(View.VISIBLE);
+            final EditText editText = (EditText) getView().findViewById(R.id.edittext_places_chat);
+            editText.requestFocus();
+    
+            editText.postDelayed(new Runnable() {
+    
+                @Override
+                public void run() {
+                    InputMethodManager inputManager = (InputMethodManager)
+                            getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);            }
+            }, 1000); 
+        }
     }
 
     private void showDialogQuestionTo(final String input) {
@@ -305,7 +311,8 @@ public class FragmentFeedsForOneVenue extends Fragment {
                 case DialogInterface.BUTTON_POSITIVE:
                     dialog.dismiss();
                     hideQuestionUpdateActionButton();
-                    caller = "feeds_list";
+                    setCaller("feeds_list");
+                    ((ActivityVenueFeeds) getActivity()).changeIntentCaller("feeds_list");
                     exe.venueFeeds(venueId, venueName, "0", input, true, true, messageType);
                     break;
 
@@ -339,6 +346,7 @@ public class FragmentFeedsForOneVenue extends Fragment {
         adapter = new MyFeedsAdapter(getActivity(), venueNameAndFeeds.getFeedsArray(), venueNameAndFeeds);            
         list.setAdapter(adapter);
         progress.dismiss();
+        showKeyboard();
     }
 
     public void onClickOpenVenueFeeds(View v) {
@@ -358,7 +366,8 @@ public class FragmentFeedsForOneVenue extends Fragment {
                 showDialogQuestionTo(input);
             } else {
                 hideQuestionUpdateActionButton();
-                caller = "feeds_list";
+                setCaller("feeds_list");
+                ((ActivityVenueFeeds) getActivity()).changeIntentCaller("feeds_list");
                 exe.venueFeeds(venueId, venueName, "0", input, true, true, messageType);
             }
         }
@@ -371,7 +380,8 @@ public class FragmentFeedsForOneVenue extends Fragment {
 
     public void onClickCancel(View v) {
         hideQuestionUpdateActionButton();
-        caller = "feeds_list";
+        setCaller("feeds_list");
+        ((ActivityVenueFeeds) getActivity()).changeIntentCaller("feeds_list");
     }
 
 
@@ -416,11 +426,11 @@ public class FragmentFeedsForOneVenue extends Fragment {
             extractExtra();
         }
         CustomFontView textUpdateOrQuestion = (CustomFontView) getView().findViewById(R.id.textview_update);
-        if (caller.contentEquals("question_button") == true) {
+        if (getCaller().contentEquals("question_button") == true) {
             textUpdateOrQuestion.setText((String) getResources().getText(R.string.activityFeedsQuestionText));
             messageType = Feed.FEED_TYPE_QUESTION;
             showQuestionActionButton();
-        } else if (caller.contentEquals("pen_button") == true) {
+        } else if (getCaller().contentEquals("pen_button") == true) {
             textUpdateOrQuestion.setText((String) getResources().getText(R.string.activityFeedsUpdateText));
             messageType = Feed.FEED_TYPE_UPDATE;
             showUpdateActionButton();
@@ -431,12 +441,12 @@ public class FragmentFeedsForOneVenue extends Fragment {
         }
         RelativeLayout chatView = (RelativeLayout) getView().findViewById(R.id.layout_places_chat);       
         chatView.setVisibility(View.GONE);
-        if (caller.contentEquals("postable_venues") == true) {
+        if (getCaller().contentEquals("postable_venues") == true) {
             chatView.setVisibility(View.VISIBLE);
         }
-        if (caller.contentEquals("pen_button") || 
-                caller.contentEquals("postable_venues") || 
-                caller.contentEquals("question_button")) {
+        if (getCaller().contentEquals("pen_button") || 
+                getCaller().contentEquals("postable_venues") || 
+                getCaller().contentEquals("question_button")) {
             showKeyboard();
         } else {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -455,12 +465,20 @@ public class FragmentFeedsForOneVenue extends Fragment {
     }
 
     public void onClickFeeds(View v) {
-        if (caller.contentEquals("feeds_list") == true) {
+        if (getCaller().contentEquals("feeds_list") == true) {
             getActivity().onBackPressed();
         } else {
             Intent intent = new Intent(getActivity(), ActivityVenueFeeds.class);
             this.startActivity(intent);
         }
+    }
+
+    public String getCaller() {
+        return caller;
+    }
+
+    public void setCaller(String caller) {
+        this.caller = caller;
     }
 
 }

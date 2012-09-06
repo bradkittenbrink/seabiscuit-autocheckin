@@ -560,6 +560,9 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         }
     }
 
+    public void changeIntentCaller(String caller) {
+        intentExtras.putString("caller", caller);
+    }
 
     @Override
     public void onClickCheckIn(View v) {
