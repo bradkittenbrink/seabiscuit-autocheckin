@@ -44,106 +44,106 @@ import com.coffeeandpower.views.CustomDialog;
 
 public class UserAndTabMenu implements UserMenu, TabMenu {
 
-	public static final int HANDLE_CHECK_OUT = 1800;
-	public static final int HANDLE_LOG_OUT = 1801;
-	public static final int HANDLE_GET_NOTIFICATION_SETTINGS = 1802;
+    public static final int HANDLE_CHECK_OUT = 1800;
+    public static final int HANDLE_LOG_OUT = 1801;
+    public static final int HANDLE_GET_NOTIFICATION_SETTINGS = 1802;
 
-	private ProgressDialog progress;
-	private ToggleButton toggle;
-	private Button btnFrom;
+    private ProgressDialog progress;
+    private ToggleButton toggle;
+    private Button btnFrom;
 
     private RootActivity context;
-	private DataHolder result;
-	private DataHolder resultNotificationSettings;
+    private DataHolder result;
+    private DataHolder resultNotificationSettings;
 
-	public interface OnUserStateChanged {
-		public void onCheckOut();
+    public interface OnUserStateChanged {
+        public void onCheckOut();
 
-		public void onLogOut();
-	}
+        public void onLogOut();
+    }
 
-	OnUserStateChanged userState = new OnUserStateChanged() {
-		@Override
-		public void onCheckOut() {
-		}
+    OnUserStateChanged userState = new OnUserStateChanged() {
+        @Override
+        public void onCheckOut() {
+        }
 
-		public void onLogOut() {
-		}
-	};
+        public void onLogOut() {
+        }
+    };
 
-	public void setOnUserStateChanged(OnUserStateChanged userState) {
-		this.userState = userState;
-	}
+    public void setOnUserStateChanged(OnUserStateChanged userState) {
+        this.userState = userState;
+    }
 
-	public UserAndTabMenu(RootActivity context) {
-		this.context = context;
-		this.progress = new ProgressDialog(context);
+    public UserAndTabMenu(RootActivity context) {
+        this.context = context;
+        this.progress = new ProgressDialog(context);
 
-		// If user is not logged in
-		if (!AppCAP.isLoggedIn()) {
-			View v = ((Activity) context).findViewById(R.id.btn_menu);
+        // If user is not logged in
+        if (!AppCAP.isLoggedIn()) {
+            View v = ((Activity) context).findViewById(R.id.btn_menu);
             RelativeLayout r = (RelativeLayout) ((Activity) context)
                     .findViewById(R.id.rel_log_in);
             RelativeLayout r1 = (RelativeLayout) ((Activity) context)
                     .findViewById(R.id.rel_contacts);
 
-			if (v != null) {
-				v.setVisibility(View.GONE);
-			}
-			if (r != null) {
-				r.setVisibility(View.VISIBLE);
-			}
-			if (r1 != null) {
-				r1.setVisibility(View.GONE);
-			}
-		}
-	}
+            if (v != null) {
+                v.setVisibility(View.GONE);
+            }
+            if (r != null) {
+                r.setVisibility(View.VISIBLE);
+            }
+            if (r1 != null) {
+                r1.setVisibility(View.GONE);
+            }
+        }
+    }
 
-	private Handler handler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
 
-			progress.dismiss();
+            progress.dismiss();
 
-			switch (msg.what) {
-			case AppCAP.HTTP_ERROR:
+            switch (msg.what) {
+            case AppCAP.HTTP_ERROR:
                 new CustomDialog(context, "Error", result.getResponseMessage())
                         .show();
-				break;
+                break;
 
-			case HANDLE_CHECK_OUT:
-				CacheMgrService.checkOutTrigger();
-				userState.onCheckOut();
-				break;
+            case HANDLE_CHECK_OUT:
+                CacheMgrService.checkOutTrigger();
+                userState.onCheckOut();
+                break;
 
-			case HANDLE_GET_NOTIFICATION_SETTINGS:
+            case HANDLE_GET_NOTIFICATION_SETTINGS:
                 if (resultNotificationSettings.getObject() != null
                         && resultNotificationSettings.getObject() instanceof Object[]) {
                     Object[] obj = (Object[]) resultNotificationSettings
                             .getObject();
 
-					String pushDistance = (String) obj[0];
-					String checkedInOnly = (String) obj[1];
+                    String pushDistance = (String) obj[0];
+                    String checkedInOnly = (String) obj[1];
 
                     AppCAP.setPushDistance(pushDistance);
-					AppCAP.setNotificationToggle(checkedInOnly.equals("1"));
+                    AppCAP.setNotificationToggle(checkedInOnly.equals("1"));
 
-					if (toggle != null && btnFrom != null) {
-						if (Constants.debugLog)
+                    if (toggle != null && btnFrom != null) {
+                        if (Constants.debugLog)
                             Log.d("LOG", "text: " + pushDistance + ":"
                                     + checkedInOnly);
-						toggle.setChecked(checkedInOnly.matches("1"));
+                        toggle.setChecked(checkedInOnly.matches("1"));
                         btnFrom.setText(pushDistance.matches("venue") ? "in venue"
                                 : "in city");
-					}
-				}
-				break;
+                    }
+                }
+                break;
 
-			}
-		}
+            }
+        }
 
-	};
+    };
 
     @Override
     public void onClickMap(View v) {
@@ -163,26 +163,26 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         }
     }
 
-	@Override
-	public void onClickPlaces(View v) {
-		double[] data = new double[6];
-		data = AppCAP.getUserCoordinates();
+    @Override
+    public void onClickPlaces(View v) {
+        double[] data = new double[6];
+        data = AppCAP.getUserCoordinates();
 
-		Intent intent = new Intent(context, ActivityVenueFeeds.class);
-		intent.putExtra("sw_lat", data[0]);
-		intent.putExtra("sw_lng", data[1]);
-		intent.putExtra("ne_lat", data[2]);
-		intent.putExtra("ne_lng", data[3]);
-		intent.putExtra("user_lat", data[4]);
-		intent.putExtra("user_lng", data[5]);
-		intent.putExtra("from", "from_tab");
-		intent.putExtra("type", "place");
+        Intent intent = new Intent(context, ActivityVenueFeeds.class);
+        intent.putExtra("sw_lat", data[0]);
+        intent.putExtra("sw_lng", data[1]);
+        intent.putExtra("ne_lat", data[2]);
+        intent.putExtra("ne_lng", data[3]);
+        intent.putExtra("user_lat", data[4]);
+        intent.putExtra("user_lng", data[5]);
+        intent.putExtra("from", "from_tab");
+        intent.putExtra("type", "place");
         intent.putExtra("fragment", "FragmentPlaces");
         ((RootActivity) context).startSmartActivity(intent, "ActivityPeopleAndPlaces");
 
-	}
+    }
     
-	@Override
+    @Override
     public void onClickMapFromTab(View v) {
         double[] data = new double[6];
         data = AppCAP.getUserCoordinates();
@@ -199,30 +199,30 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 
     }
 
-	@Override
-	public void onClickCheckIn(View v) {
-	    hideVerticalMenu(v);
-		if (AppCAP.isUserCheckedIn()) {
-		    Toast.makeText(context, "You will be checked out from your current venue!",
-		            Toast.LENGTH_SHORT).show();
-		} 
-		double[] data = new double[6];
-		data = AppCAP.getUserCoordinates();
+    @Override
+    public void onClickCheckIn(View v) {
+        hideVerticalMenu(v);
+        if (AppCAP.isUserCheckedIn()) {
+            Toast.makeText(context, "You will be checked out from your current venue!",
+                    Toast.LENGTH_SHORT).show();
+        } 
+        double[] data = new double[6];
+        data = AppCAP.getUserCoordinates();
 
-		double userLat = data[4];
-		double userLng = data[5];
+        double userLat = data[4];
+        double userLng = data[5];
 
-		if (userLat != 0 && userLng != 0) {
-			Intent intent = new Intent(context, ActivityCheckInList.class);
-			context.startActivity(intent);
-		} else {
-	        ((RootActivity) context).startSmartActivity(new Intent(), "ActivityMap");
+        if (userLat != 0 && userLng != 0) {
+            Intent intent = new Intent(context, ActivityCheckInList.class);
+            context.startActivity(intent);
+        } else {
+            ((RootActivity) context).startSmartActivity(new Intent(), "ActivityMap");
 
             Intent intent2 = new Intent(context, ActivityCheckInList.class);
             context.startActivity(intent2);
-		}
-		
-	}
+        }
+        
+    }
 
 
     @Override
@@ -266,68 +266,68 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         }
     }
 
-	@Override
-	public void onClickPeople(View v) {
-		double[] data = new double[6];
-		data = AppCAP.getUserCoordinates();
+    @Override
+    public void onClickPeople(View v) {
+        double[] data = new double[6];
+        data = AppCAP.getUserCoordinates();
 
-		Intent intent = new Intent(context, ActivityVenueFeeds.class);
-		intent.putExtra("sw_lat", data[0]);
-		intent.putExtra("sw_lng", data[1]);
-		intent.putExtra("ne_lat", data[2]);
-		intent.putExtra("ne_lng", data[3]);
-		intent.putExtra("user_lat", data[4]);
-		intent.putExtra("user_lng", data[5]);
-		intent.putExtra("from", "from_tab");
-		intent.putExtra("type", "people");
+        Intent intent = new Intent(context, ActivityVenueFeeds.class);
+        intent.putExtra("sw_lat", data[0]);
+        intent.putExtra("sw_lng", data[1]);
+        intent.putExtra("ne_lat", data[2]);
+        intent.putExtra("ne_lng", data[3]);
+        intent.putExtra("user_lat", data[4]);
+        intent.putExtra("user_lng", data[5]);
+        intent.putExtra("from", "from_tab");
+        intent.putExtra("type", "people");
         intent.putExtra("fragment", "FragmentPeople");
         ((RootActivity) context).startSmartActivity(intent, "ActivityPeopleAndPlaces");
-	}
+    }
 
-	@Override
-	public void onClickContacts(View v) {
-		Intent intent = new Intent(context, ActivityVenueFeeds.class);
+    @Override
+    public void onClickContacts(View v) {
+        Intent intent = new Intent(context, ActivityVenueFeeds.class);
         intent.putExtra("fragment", "FragmentContacts");
         ((RootActivity) context).startSmartActivity(intent, "ActivityContacts");
-	}
+    }
 
-	@Override
-	public void onClickEnterInviteCode(View v) {
-		Intent intent = new Intent(context, ActivityEnterInviteCode.class);
-		context.startActivity(intent);
-	}
+    @Override
+    public void onClickEnterInviteCode(View v) {
+        Intent intent = new Intent(context, ActivityEnterInviteCode.class);
+        context.startActivity(intent);
+    }
 
-	@Override
+    @Override
     public void onClickSettings(View v) {
         Intent intent = new Intent(context, ActivitySettings.class);
-		context.startActivity(intent);
-	}
-	
-	@Override
-	public void onClickNotifications(View v) {
-		Intent intent = new Intent(context, ActivityNotifications.class);
-		context.startActivity(intent);
-	}
+        context.startActivity(intent);
+    }
+    
+    @Override
+    public void onClickNotifications(View v) {
+        Intent intent = new Intent(context, ActivityNotifications.class);
+        context.startActivity(intent);
+    }
 
-	@Override
+    @Override
     public void onClickSupport(View v) {
         Intent intent = new Intent(context, ActivitySupport.class);
-		context.startActivity(intent);
-	}
+        context.startActivity(intent);
+    }
 
-	@Override
-	public void onClickLogout(View v) {
-		AppCAP.setLoggedInUserId(0);
-		AppCAP.setLocalUserPhotoLargeURL("");
-		AppCAP.setLocalUserPhotoURL("");
-		AppCAP.setLoggedInUserNickname("");
-		AppCAP.setShouldFinishActivities(false);
-		AppCAP.setStartLoginPageFromContacts(false); 
-		AppCAP.setUserLinkedInDetails("", "", "");
-		AppCAP.setUserEmail("");
-		userState.onLogOut();
+    @Override
+    public void onClickLogout(View v) {
+        AppCAP.setLoggedInUserId(0);
+        AppCAP.setLocalUserPhotoLargeURL("");
+        AppCAP.setLocalUserPhotoURL("");
+        AppCAP.setLoggedInUserNickname("");
+        AppCAP.setShouldFinishActivities(false);
+        AppCAP.setStartLoginPageFromContacts(false); 
+        AppCAP.setUserLinkedInDetails("", "", "");
+        AppCAP.setUserEmail("");
+        userState.onLogOut();
 
-	}
+    }
 
     @Override
     public void onClickPlus(View v) {

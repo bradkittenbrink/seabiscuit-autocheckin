@@ -1040,7 +1040,7 @@ public class HttpUtil {
      */
     public DataHolder setNotificationSettings(String distance,
             boolean checkedInOnly, boolean quietTimeEnabled,
-			String quietFrom, String quietTo, boolean contactsOnlyChat) {
+            String quietFrom, String quietTo, boolean contactsOnlyChat) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
 
