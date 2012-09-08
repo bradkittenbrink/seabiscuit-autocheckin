@@ -353,6 +353,16 @@ public class Executor {
         }, "Executor.checkIn").start();
     }
 
+    public synchronized void checkOut() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().checkOut();
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.checkOut").start();
+    }
+
     public synchronized void enterInvitationCode(final String invitationCode,
             final double lat, final double lng) {
         progress.setMessage("Checking...");
