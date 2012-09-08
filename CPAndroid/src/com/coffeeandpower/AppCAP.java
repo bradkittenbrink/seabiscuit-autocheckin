@@ -30,6 +30,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.coffeeandpower.cache.CacheMgrService;
+import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.location.LocationDetectionService;
 import com.coffeeandpower.location.venueWifiSignature;
@@ -85,7 +86,6 @@ public class AppCAP extends Application {
     private static final String TAG_SHOULD_START_LOG_IN = "tag_sgould_start_log_in";
     private static final String TAG_COOKIE_STRING = "tag_cookie_string";
     private static final String TAG_METRIC_SYSTEM = "tag_metric_system";
-    private static final String TAG_PUSH_DISTANCE = "tag_push_distance";
     private static final String TAG_START_LOGIN_PAGE_FROM_CONTACTS = "tag_start_login_page_from_contacts";
     private static final String TAG_IS_LOGGED_IN = "tag_is_logged_in";
     private static final String TAG_SCREEN_WIDTH = "tag_screen_width";
@@ -98,8 +98,14 @@ public class AppCAP extends Application {
     private static final String TAG_LAST_CHECKEDIN_VENUES = "listLastCheckedinVenues";
 
     // Notification settings
-    private static final String TAG_NOTIFICATION_FROM = "tag_notification_from";
+    private static final String TAG_PUSH_DISTANCE = "tag_push_distance";
     private static final String TAG_NOTIFICATION_TOGGLE = "tag_notification_toggle";
+    private static final String TAG_QUIET_FROM = "tag_quiet_from";
+    private static final String TAG_QUIET_TO = "tag_quiet_to";
+    private static final String TAG_QUIET_TOGGLE = "tag_quiet_toggle";
+    private static final String TAG_CONTACTS_ONLY_CHAT_TOGGLE = "tag_contacts_only_chat_toggle";
+    private static final String DEFAULT_QUIET_FROM = "20:00:00";
+    private static final String DEFAULT_QUIET_TO = "07:00:00";
 
     // public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
     public static final String URL_FEEDBACK = "http://coffeeandpower.uservoice.com";
@@ -998,11 +1004,31 @@ public class AppCAP extends Application {
 
     /**
      * 
-     * @category setter
+     * @category unknown
      */
-    public static void setNotificationFrom(String from) {
-        getSharedPreferences().edit().putString(TAG_NOTIFICATION_FROM, from)
-                .commit();
+    public static void refreshNotificationSettings() {
+        DataHolder data = getConnection().getNotificationSettings();
+        JSONObject settings = (JSONObject) data.getObject();
+
+        // null probably means there's no network connectivity
+        if (settings != null) {
+            String push_distance = settings.optString("push_distance", "city");
+            boolean checked_in_only = settings.optInt("checked_in_only", 0) == 0 ?
+                false : true;
+            boolean quiet_time_enabled = settings.optInt("quiet_time", 0) == 0 ?
+                false : true;
+            String quiet_from = settings.optString("quiet_time_from", "");
+            String quiet_to = settings.optString("quiet_time_to", "");
+            boolean contacts_only_chat = settings.optInt("contacts_only_chat", 0) == 0 ?
+                false : true;
+
+            setPushDistance(push_distance);
+            setNotificationToggle(checked_in_only);
+            setQuietTimeToggle(quiet_time_enabled);
+            setQuietFrom(quiet_from);
+            setQuietTo(quiet_to);
+            setContactsOnlyChatToggle(contacts_only_chat);
+        }
     }
 
     /**
@@ -1014,14 +1040,6 @@ public class AppCAP extends Application {
                 .commit();
     }
 
-    /**
-     * 
-     * @category unknown
-     */
-    public static String getNotificationFrom() {
-        return getSharedPreferences().getString(TAG_NOTIFICATION_FROM,
-                "in city");
-    }
 
     /**
      * 
@@ -1030,6 +1048,78 @@ public class AppCAP extends Application {
     public static boolean getNotificationToggle() {
         return getSharedPreferences()
                 .getBoolean(TAG_NOTIFICATION_TOGGLE, false);
+    }
+
+    /**
+     * 
+     * @category setter
+     */
+    public static void setQuietFrom(String from) {
+        getSharedPreferences().edit().putString(TAG_QUIET_FROM, from)
+                .commit();
+    }
+
+    /**
+     * 
+     * @category setter
+     */
+    public static void setQuietTo(String to) {
+        getSharedPreferences().edit().putString(TAG_QUIET_TO, to)
+                .commit();
+    }
+
+    /**
+     * 
+     * @category setter
+     */
+    public static void setQuietTimeToggle(boolean quietEnabled) {
+        getSharedPreferences().edit().putBoolean(TAG_QUIET_TOGGLE, quietEnabled)
+                .commit();
+    }
+
+    /**
+     * 
+     * @category unknown
+     */
+    public static String getQuietFrom() {
+        return getSharedPreferences().getString(TAG_QUIET_FROM,
+                DEFAULT_QUIET_FROM);
+    }
+
+    /**
+     * 
+     * @category unknown
+     */
+    public static String getQuietTo() {
+        return getSharedPreferences().getString(TAG_QUIET_TO,
+                DEFAULT_QUIET_TO);
+    }
+
+    /**
+     * 
+     * @category unknown
+     */
+    public static boolean getQuietTimeToggle() {
+        return getSharedPreferences()
+                .getBoolean(TAG_QUIET_TOGGLE, false);
+    }
+
+    /**
+     * 
+     * @category setter
+     */
+    public static void setContactsOnlyChatToggle(boolean contactsOnly) {
+        getSharedPreferences().edit().putBoolean(TAG_CONTACTS_ONLY_CHAT_TOGGLE, contactsOnly)
+                .commit();
+    }
+
+    /**
+     * 
+     * @category unknown
+     */
+    public static boolean getContactsOnlyChatToggle() {
+        return getSharedPreferences()
+                .getBoolean(TAG_CONTACTS_ONLY_CHAT_TOGGLE, false);
     }
 
     /**

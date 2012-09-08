@@ -126,8 +126,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 					String pushDistance = (String) obj[0];
 					String checkedInOnly = (String) obj[1];
 
-                    AppCAP.setNotificationFrom(pushDistance.equals("city") ? "in city"
-                            : "in venue");
+                    AppCAP.setPushDistance(pushDistance);
 					AppCAP.setNotificationToggle(checkedInOnly.equals("1"));
 
 					if (toggle != null && btnFrom != null) {

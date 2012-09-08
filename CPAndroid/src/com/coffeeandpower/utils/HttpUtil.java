@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -1031,10 +1032,15 @@ public class HttpUtil {
      * 
      * @param distance
      * @param checkedInOnly
+     * @param quietTimeEnabled
+     * @param quietFrom
+     * @param quietTo
+     * @param contactsOnlyChat
      * @return
      */
     public DataHolder setNotificationSettings(String distance,
-            boolean checkedInOnly) {
+            boolean checkedInOnly, boolean quietTimeEnabled,
+			String quietFrom, String quietTo, boolean contactsOnlyChat) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
 
@@ -1052,6 +1058,13 @@ public class HttpUtil {
                     .encode(distance + "", "utf-8")));
             params.add(new BasicNameValuePair("checked_in_only",
                     checkedInOnly ? "1" : "0"));
+            params.add(new BasicNameValuePair("quiet_time",
+                    quietTimeEnabled ? "1" : "0"));
+            params.add(new BasicNameValuePair("quiet_time_from", quietFrom));
+            params.add(new BasicNameValuePair("quiet_time_to", quietTo));
+            params.add(new BasicNameValuePair("tz_offset_seconds", ((Integer)(TimeZone.getDefault().getRawOffset() * 1000)).toString()));
+            params.add(new BasicNameValuePair("contacts_only_chat",
+                    contactsOnlyChat ? "1" : "0"));
 
             post.setEntity(new UrlEncodedFormEntity(params));
 
@@ -3450,10 +3463,7 @@ public class HttpUtil {
 
                     JSONObject objPayload = json.optJSONObject("payload");
                     if (objPayload != null) {
-
-                        result.setObject(new Object[] {
-                                objPayload.optString("push_distance"),
-                                objPayload.optString("checked_in_only") });
+                        result.setObject(objPayload);
                     }
                 }
             }

@@ -9,7 +9,7 @@
     <!--
     staging
     <string name="linkedInApiKey">4xkfzpnvuc72</string> <string 
-        name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+        name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
     -->
 
 
@@ -41,6 +41,7 @@
     <string name="ok">Ok</string>
     <string name="done">Done</string>
     <string name="from">From</string>
+    <string name="to">To</string>
     <string name="button_feeds">Feeds</string>
     <string name="button_cancel">Cancel</string>
     <string name="activityFeedsUpdateText">Update:</string>
@@ -118,6 +119,8 @@
     <string name="user_menu_logout">Logout</string>
     <string name="user_menu_show">Show me new Check Ins</string>
     <string name="user_menu_in_city">in city</string>
+    <string name="user_menu_in_venue">in venue</string>
+    <string name="user_menu_in_contacts">contacts</string>
     <string name="user_menu_only">Only when I am\nchecked in</string>
     <string name="help_linked_in_invite_list">Click here to select LinkedIn contacts</string>
     <string name="checked_out_confirmation">Are you sure you want to be checked out?</string>
