@@ -1,39 +1,57 @@
 package com.coffeeandpower.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.MotionEvent;
+import android.view.Window;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.inter.OAuthService;
 import com.coffeeandpower.linkedin.LinkedIn;
 import com.coffeeandpower.utils.ActivityUtils;
 
 public class ActivityLoginPage extends RootActivity {
 
-	OAuthService lastAuthorize = null;
+	LinkedIn lastAuthorize = null;
 
+	WebView webView;
+
+    private ProgressBar progressBar;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+        this.getWindow().requestFeature(Window.FEATURE_PROGRESS);
 		setContentView(R.layout.activity_main_login);
 
 		AppCAP.setShouldFinishActivities(false);
+        
+        webView = (WebView) findViewById(R.id.webview);
+        progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        webView.getSettings().setJavaScriptEnabled(true);
+        lastAuthorize = new LinkedIn();
+        lastAuthorize.initialize(
+                (String) getResources().getText(R.string.linkedInApiKey),
+                (String) getResources().getText(R.string.linkedInApiSec));
 		
 		// if the userlinkedinid is already in the application preferences
 		// we are going to try to connect directly without the login page
         if (!AppCAP.getUserLinkedInID().equals("")) {
-                (findViewById(R.id.text_connect)).setVisibility(View.GONE); 
-                ( findViewById(R.id.btn_linked_in)).setVisibility(View.GONE);
-                (findViewById(R.id.btn_later)).setVisibility(View.GONE);
                 connectLinkedIn();
         }
         
 		// Get Screen Width and save it for later (dimensions)
 		AppCAP.saveScreenWidth(getDisplayMetrics().widthPixels);
+
 	}
 
 	@Override
@@ -68,92 +86,134 @@ public class ActivityLoginPage extends RootActivity {
 	 * Intent(ActivityLoginPage.this, ActivitySignInViaMail.class)); }
 	 */
 	private void connectLinkedIn() {
-		lastAuthorize = new LinkedIn();
-        lastAuthorize.initialize(
-                (String) getResources().getText(R.string.linkedInApiKey),
-                (String) getResources().getText(R.string.linkedInApiSec));
+        
 		if (AppCAP.getUserLinkedInID().equals("")) {
-            new Thread(new OAuthAuthorizeAction(lastAuthorize,
-                    new ActivityUtils.JoinProgressHandler(this), null)).start();
+		    displayLinkedinLogin();
 		} else {
-            new Thread(new LoginAction(lastAuthorize,
+		          new Thread(new LoginAction(lastAuthorize,
                     new ActivityUtils.LoginProgressHandler(this), null))
-                    .start();
+                    .start();                           
 		}
+	}
+	
+	public void displayLinkedinLogin() {
+        (findViewById(R.id.text_connect)).setVisibility(View.GONE); 
+        (findViewById(R.id.btn_linked_in)).setVisibility(View.GONE);
+        (findViewById(R.id.btn_later)).setVisibility(View.GONE);
+        (findViewById(R.id.candp_logo)).setVisibility(View.GONE);
+        (findViewById(R.id.text_connect)).setVisibility(View.GONE); 
+        ( findViewById(R.id.btn_linked_in)).setVisibility(View.GONE);
+        (findViewById(R.id.btn_later)).setVisibility(View.GONE);
+        (findViewById(R.id.candp_logo)).setVisibility(View.GONE);
+        
+        webView.setVisibility(View.VISIBLE);
+        webView.requestFocus(View.FOCUS_DOWN);
+        webView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_UP:
+                        if (!v.hasFocus()) {
+                            v.requestFocus();
+                        }
+                        break;
+                }
+                return false;
+            }
+        });        
+        final String url = lastAuthorize.getAuthorizationUrl();
+        final RootActivity activity = this;
+         
+        webView.setWebChromeClient(new WebChromeClient() {
+	            public void onProgressChanged(WebView view, int progress)
+	            {
+	                progressBar.setProgress(progress);
+	                if(progress == 100)
+	                    progressBar.setVisibility(View.GONE);
+	            }
+	        });
+	  
+	        webView.setWebViewClient(new WebViewClient(){
+	            @Override
+	            public boolean shouldOverrideUrlLoading(WebView view, String url){
+	                //check for our custom callback protocol
+	                //otherwise use default behavior
+	                if (lastAuthorize.callbackReceived(url)) {
+                        //authorization complete hide webview for now.
+                        /////webView.setVisibility(View.GONE);
+	                    String mess = lastAuthorize.getErrorMessage();
+	                    if (!mess.contentEquals("")) {
+	                        showDialog("Error returned by Linkedin",mess);
+	                        (findViewById(R.id.text_connect)).setVisibility(View.VISIBLE); 
+	                        ( findViewById(R.id.btn_linked_in)).setVisibility(View.VISIBLE);
+                            (findViewById(R.id.btn_later)).setVisibility(View.VISIBLE);
+                            (findViewById(R.id.candp_logo)).setVisibility(View.VISIBLE);
+                            webView.setVisibility(View.GONE);
+
+	                    } else {
+	                        new Thread(new LoginAction(lastAuthorize,
+	                                new ActivityUtils.LoginProgressHandler(activity), null))
+	                                .start();	                        
+	                        
+	                    }
+	                    return true;
+	                }
+	                return super.shouldOverrideUrlLoading(view, url);
+	            }
+	        });
+	        progressBar.setProgress(0);
+	        progressBar.setVisibility(View.VISIBLE);
+	        webView.setVisibility(View.VISIBLE);
+	        
+	        progressBar.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    webView.loadUrl(url);
+                }
+            }, 4000);
+	        
+	    
+	}
+	
+	public void showDialog(String title, String message) {
+        new AlertDialog.Builder(this)
+        .setTitle(title)
+        .setMessage(message)
+        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        })
+        .show();
+	    
 	}
 
 	public void onClickLinkedIn(View v) {
+        webView.setVisibility(View.VISIBLE);
+
 		AppCAP.setShouldFinishActivities(false);
 		connectLinkedIn();
 	}
-
-	public void onNewIntent(Intent intent) {
-	    if (intent == null || intent.getData() == null) {
-	        return;
-	    }
-		String verifier = intent.getData().getQueryParameter("oauth_verifier");
-		if (lastAuthorize == null)
-			return;
-
-		if (lastAuthorize.verify(verifier)) {
-			// the service provider
-            new Thread(
-                    new OAuthSignUpAction(
-                            lastAuthorize,
-			// the progress handler for this action
-                            new ActivityUtils.JoinProgressHandler(this),
-                            new LoginAction(
-                                    lastAuthorize,
-                                    new ActivityUtils.LoginProgressHandler(this),
-                                    null))).start();
-		}
-	}
-
-	public class OAuthAuthorizeAction extends ActivityUtils.Action {
-        public OAuthAuthorizeAction(OAuthService service_,
+    
+    public class DisplayLinkedinLoginAction extends ActivityUtils.Action {
+        public DisplayLinkedinLoginAction(LinkedIn service_,
                 ActivityUtils.ProgressHandler handler_, Runnable next_) {
-			service = service_;
-			handler = handler_;
-			action = next_;
-		}
+            service = service_;
+            handler = handler_;
+            action = next_;
+        }
 
-		public void run() {
-			Intent webAuthorize = service.authorize();
-			if (webAuthorize != null) {
-				ActivityLoginPage.this.startActivity(webAuthorize);
-				handler.sendEmptyMessage(AppCAP.HTTP_REQUEST_SUCCEEDED);
-			} else
-				handler.sendEmptyMessage(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
-		}
-	}
-
-	public class OAuthSignUpAction extends ActivityUtils.Action {
-        public OAuthSignUpAction(OAuthService service_,
-                ActivityUtils.ProgressHandler handler_, Runnable next_) {
-			service = service_;
-			handler = handler_;
-			action = next_;
-		}
-
-		@Override
-		public void run() {
-			// pass the api key and secret for authorization
-			service.saveSettings();
-			result = AppCAP.getConnection().signupViaOAuthService(service);
-			handler.setResult(result);
-			if (result != null) {
-				handler.sendEmptyMessage(result.getHandlerCode());
-                if (result.getHandlerCode() == AppCAP.HTTP_REQUEST_SUCCEEDED
-                        && action != null)
-					new Thread(action, "ActivityLoginPage.connectLinkedIn.OAuthSignUpAction").start();
-			} else {
-				handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
-			}
-		}
-	}
+        @Override
+        public void run() {
+            // proceed to login
+            displayLinkedinLogin();
+        }
+    }
 
 	public class LoginAction extends ActivityUtils.Action {
-        public LoginAction(OAuthService service_,
+        public LoginAction(LinkedIn service_,
                 ActivityUtils.ProgressHandler handler_, Runnable next_) {
 			service = service_;
 			handler = handler_;
@@ -164,15 +224,18 @@ public class ActivityLoginPage extends RootActivity {
 		public void run() {
 			// proceed to login
 			if (!lastAuthorize.isConnected())
-                lastAuthorize.reconnect(AppCAP.getUserLinkedInToken(),
+                lastAuthorize.reconnectUsingAccessToken(AppCAP.getUserLinkedInToken(),
                         AppCAP.getUserLinkedInTokenSecret());
 			service.getUserId();
 			result = AppCAP.getConnection().loginViaOAuthService(service);
 			if (result != null) {
 				handler.sendEmptyMessage(result.getHandlerCode());
-				if (result.getHandlerCode() == AppCAP.ERROR_SUCCEEDED_SHOW_MESS)
-					service.clearSettings();
-				// assume that the tokens have expired...
+				if (result.getHandlerCode() == AppCAP.HTTP_REQUEST_SUCCEEDED) {
+                    service.saveSettings();
+				} else {
+	                // assume that the tokens have expired...
+                    service.clearSettings();
+				}
 			} else {
 				handler.sendEmptyMessage(AppCAP.HTTP_ERROR);
 			}

@@ -8,9 +8,8 @@ import android.os.Message;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.R;
-import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.inter.OAuthService;
+import com.coffeeandpower.linkedin.LinkedIn;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.views.CustomDialog;
 
@@ -18,7 +17,7 @@ public class ActivityUtils {
 
     public static abstract class Action implements Runnable {
         protected DataHolder result;
-        protected OAuthService service;
+        protected LinkedIn service;
         protected ActivityUtils.ProgressHandler handler;
         protected Runnable action;
 
@@ -104,6 +103,25 @@ public class ActivityUtils {
                     a.finish();
                 break;
             }
+        }
+    };
+
+    public static class DisplayLinkedinLoginProgressHandler extends ProgressHandler {
+
+        public DisplayLinkedinLoginProgressHandler(Activity a) {
+            progress = new ProgressDialog(a);
+            progress.setOwnerActivity(a);
+            progress.setMessage("Logging in...");
+            progress.show();
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            Activity a = progress.getOwnerActivity();
+            progress.dismiss();
+
         }
     };
 

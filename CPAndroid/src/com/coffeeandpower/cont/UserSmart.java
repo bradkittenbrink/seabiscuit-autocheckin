@@ -26,6 +26,9 @@ public class UserSmart implements Parcelable {
     private double lng;
     private int checkedIn;
     private String foursquareId;
+    private String linkedinId;
+    private String linkedinEmail;
+
     private String venueName;
     private int venueId;
     private int checkInCount;
@@ -326,6 +329,12 @@ public class UserSmart implements Parcelable {
 
     }
 
+    public UserSmart(String nickName2, String linkedinId2, String photo2) {
+        this.nickName = nickName2;
+        this.linkedinId = linkedinId2;
+        this.photo = photo2;
+    }
+
     public VenueSmart setVenueName(ArrayList<VenueSmart> catalogue)
     {
         for(VenueSmart item: catalogue) {
@@ -352,6 +361,21 @@ public class UserSmart implements Parcelable {
 
     public void setCheckInTime(int checkInTime) {
         this.checkInTime = checkInTime;
+    }
+    public String getLinkedinId() {
+        return linkedinId;
+    }
+
+    public void setLinkedinId(String linkedinId) {
+        this.linkedinId = linkedinId;
+    }
+
+    public String getLinkedinEmail() {
+        return linkedinEmail;
+    }
+
+    public void setLinkedinEmail(String linkedinEmail) {
+        this.linkedinEmail = linkedinEmail;
     }
 
 }

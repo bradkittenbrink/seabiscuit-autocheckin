@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<!-- Staging -->
-	<string name="LINKED_IN_API_KEY">4xkfzpnvuc72</string>
-	<string name="LINKED_IN_API_SEC">mxgFhH1i1PbPlWjq</string>
+    <!-- staging linkedin V2 -->
+    <string name="linkedInApiKey">hgkjgipubg8b</string>
+    <string name="linkedInApiSec">1coFul6Ym82NJC2Z</string>
+    <!--
+         production linkedin V2 
+    <string name="linkedInApiKey"></string>
+    <string name="linkedInApiSec"></string>
+    -->
+    <!--
+         staging linkedin V1
+    <string name="linkedInApiKey">4xkfzpnvuc72</string>
+    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+    -->
+    <!--
+    production linkedin V1
+    <string name="linkedInApiKey">5tk2ex0mnjqk</string>
+    <string name="linkedInApiSec">9JIH0rUiSbvJuHI2</string>
+    -->
 	<string name="GOOGLE_MAPS_API_KEY">08WpTLaphEjlZ7KvkG-v0IgrMqC8ASbgH39t5hg</string>
-	
+
 </resources>

@@ -25,7 +25,7 @@ public class CacheMgrService extends Service {
 
     private static final double DATA_DISTANCE_REFRESH_THRESHOLD = 1000; // meters
 
-    private static Integer tick = 10; // cache update rate (seconds)
+    private static Integer tick = 100; // cache update rate (seconds)
 
     private static final double defaultLat = 37.7717121657157;
     private static final double defaultLon = -122.4239288438208;

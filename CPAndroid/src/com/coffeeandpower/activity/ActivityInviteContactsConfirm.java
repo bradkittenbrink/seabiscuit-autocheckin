@@ -2,10 +2,14 @@ package com.coffeeandpower.activity;
 
 import java.util.List;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,12 +17,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.cache.CacheMgrService;
+import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.linkedin.LinkedIn;
+import com.coffeeandpower.utils.UserAndTabMenu;
+import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 
 public class ActivityInviteContactsConfirm extends RootActivity {
@@ -28,6 +37,8 @@ public class ActivityInviteContactsConfirm extends RootActivity {
     private List<String> arraySelectedUsersIds;
     private String title;
     private String messageContent;
+    ProgressDialog progress;
+    private DataHolder result;
 
 
     @Override
@@ -48,29 +59,68 @@ public class ActivityInviteContactsConfirm extends RootActivity {
         String text = String.format(res.getString(R.string.activity_invite_confirm_header), escapedUsername);
         CharSequence styledText = Html.fromHtml(text);
         title = styledText.toString();
-        ((CustomFontView) findViewById(R.id.confirm_header)).setText(styledText);
+        ((TextView) findViewById(R.id.confirm_header)).setText(styledText);
         text = String.format(res.getString(R.string.activity_invite_confirm_content), escapedUsername, inviteCodeText);
         styledText = Html.fromHtml(text);
         messageContent = styledText.toString();
-        ((CustomFontView) findViewById(R.id.confirm_content)).setText(styledText);
+        ((TextView) findViewById(R.id.confirm_content)).setText(styledText);
 
     }
+    
+    public void SendProgressHandler() {
+        progress = new ProgressDialog(this);
+        progress.setOwnerActivity(this);
+        progress.setMessage("Sending...");
+        progress.show();
+    }
+
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            AppCAP.setShouldFinishActivities(false);
+            progress.dismiss();
+
+            switch (msg.what) {
+            case 0:
+                Toast.makeText(ActivityInviteContactsConfirm.this, "Invitation sent!",
+                        Toast.LENGTH_LONG).show();
+                finish();
+                startSmartActivity(new Intent(), "ActivityMap");
+                break;
+
+            default:
+                new CustomDialog(ActivityInviteContactsConfirm.this, "Error", result.getResponseMessage()).show();
+                break;
+
+            }
+        }
+
+    };
 
     public void onClickSend(View v) {
         // Display image
         if (AppCAP.isLoggedIn()) {
-            LinkedIn lastAuthorize = new LinkedIn();
-            lastAuthorize.initialize(
-                    (String) getResources().getText(R.string.linkedInApiKey),
-                    (String) getResources().getText(R.string.linkedInApiSec));
-            lastAuthorize.sendInvite(AppCAP.getUserLinkedInToken(),
-                    AppCAP.getUserLinkedInTokenSecret(),
-                    arraySelectedUsersIds,
-                    title,
-                    messageContent);
-            AppCAP.setShouldFinishActivities(false);
-            this.finish();
-            startSmartActivity(new Intent(), "ActivityMap");
+            SendProgressHandler();
+            
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    LinkedIn lastAuthorize = new LinkedIn();
+                    lastAuthorize.initialize(
+                            (String) getResources().getText(R.string.linkedInApiKey),
+                            (String) getResources().getText(R.string.linkedInApiSec));
+                    result = lastAuthorize.sendInvite(AppCAP.getUserLinkedInToken(),
+                            AppCAP.getUserLinkedInTokenSecret(),
+                            arraySelectedUsersIds,
+                            title,
+                            messageContent);
+                    handler.sendEmptyMessage(result.getHandlerCode());
+                }
+            }, "ActivityInviteContactsConfirm").start();
+            
             
         } else {
             showDialog(DIALOG_MUST_BE_A_MEMBER);

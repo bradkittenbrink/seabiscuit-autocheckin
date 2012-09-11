@@ -2,20 +2,6 @@
 
     <string name="hello">Hello World, ActivityMain!</string>
     <string name="app_name">C&amp;P</string>
-
-    <!-- Linked In -->
-
-
-    <!--
-    staging
-    <string name="linkedInApiKey">4xkfzpnvuc72</string> <string 
-        name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
-    -->
-
-
-    <!-- production -->
-    <string name="linkedInApiKey">5tk2ex0mnjqk</string>
-    <string name="linkedInApiSec">9JIH0rUiSbvJuHI2</string>
     <string name="back">Back</string>
     <string name="next">Next</string>
     <string name="send">Send</string>
@@ -139,7 +125,7 @@
     <string name="activity_invite_confirm_content">
 <![CDATA[
         Hi! %1$s is inviting you to join Coffee &amp; Power, the mobile work network.<br/>
-If you haven\'t already, first download the Coffee &amp; Power app in the iTunes app store.<br/>
+If you haven\'t already, first download the Coffee &amp; Power app in the iTunes or Google Play stores.<br/>
 Your personal invite code is: %2$s<br/>
 This code is only good for 24 hours. If you accept this invitation, %1$s will be shown as your sponsor on your Coffee &amp; Power resume.<br/>
 Once signed up, you may sponsor other users with the \'Invite\' button in the app settings page.<br/>

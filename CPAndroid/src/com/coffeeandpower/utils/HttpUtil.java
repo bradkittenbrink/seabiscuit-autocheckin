@@ -12,7 +12,6 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -73,7 +72,7 @@ import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.cont.Work;
-import com.coffeeandpower.inter.OAuthService;
+import com.coffeeandpower.linkedin.LinkedIn;
 import com.google.android.maps.GeoPoint;
 
 public class HttpUtil {
@@ -3646,101 +3645,6 @@ public class HttpUtil {
         return result;
 
     }
-
-    /**
-     * Sign up for a new account using a 3rd party
-     * 
-     * @param userId
-     * @param token
-     * @return
-     */
-    public DataHolder signupViaOAuthService(OAuthService service) {
-
-        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
-
-        // HttpClient client = getThreadSafeClient();
-        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
-                HttpVersion.HTTP_1_1);
-
-        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_SIGNUP);
-
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-
-        String serviceName = service.getServiceNameSignUp();
-        params.add(new BasicNameValuePair("action", "signup"));
-        params.add(new BasicNameValuePair("oauth_token", service
-                .getAccessToken()));
-        params.add(new BasicNameValuePair("oauth_secret", service
-                .getAccessTokenSecret()));
-        params.add(new BasicNameValuePair(serviceName + "_connect", "1"));
-        params.add(new BasicNameValuePair(serviceName + "_id", service
-                .getUserId()));
-        params.add(new BasicNameValuePair("signupUsername", service
-                .getUserName()));
-        params.add(new BasicNameValuePair("signupNickname", service
-                .getUserNickName()));
-        params.add(new BasicNameValuePair("signupPassword", service
-                .getUserPassword()));
-        params.add(new BasicNameValuePair("signupConfirm", service
-                .getUserPassword()));
-        params.add(new BasicNameValuePair("type", "json"));
-
-        try {
-
-            post.setEntity(new UrlEncodedFormEntity(params));
-
-            // Execute HTTP Post Request
-            HttpResponse response = client.execute(post);
-            HttpEntity resEntity = response.getEntity();
-
-            String responseString = EntityUtils.toString(resEntity);
-            if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_signup: "
-                        + EntityUtils.toString(post.getEntity()) + ":"
-                        + responseString);
-
-            if (responseString != null) {
-
-                JSONObject json = new JSONObject(responseString);
-                Boolean succeeded = json.optBoolean("succeeded");
-                String mess = json.optString("message");
-
-                result.setResponseMessage(mess);
-
-                if (succeeded) {
-                    synchronizeUserData(json);
-                    result.setHandlerCode(AppCAP.HTTP_REQUEST_SUCCEEDED);
-                    return result;
-
-                } else {
-                    result.setHandlerCode(AppCAP.ERROR_SUCCEEDED_SHOW_MESS);
-                    return result;
-                }
-            }
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return result;
-
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-            return result;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return result;
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            result.setResponseMessage("JSON Parsing Error: " + e);
-            return result;
-
-        }
-
-        return result;
-
-    }
     
     public void synchronizeUserData(JSONObject json){
         // synchronize the user data
@@ -3878,7 +3782,7 @@ public class HttpUtil {
         return result;
     }
 
-    public DataHolder loginViaOAuthService(OAuthService service) {
+    public DataHolder loginViaOAuthService(LinkedIn service) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
@@ -3891,8 +3795,6 @@ public class HttpUtil {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
 
-        String serviceName = service.getServiceNameLogin();
-        String serviceSignUp = service.getServiceNameSignUp();
         // FIXME
         // This will always crash if we don't have an internet connection or we
         // don't have cached
@@ -3901,6 +3803,7 @@ public class HttpUtil {
                 .getUserNickName()));
         params.add(new BasicNameValuePair("linkedin_id", service.getUserId()));
         params.add(new BasicNameValuePair("linkedin_connect", "1"));
+        params.add(new BasicNameValuePair("linkedin_version", "2"));
         params.add(new BasicNameValuePair("signupUsername", service
                 .getUserName()));
         params.add(new BasicNameValuePair("oauth_token", service

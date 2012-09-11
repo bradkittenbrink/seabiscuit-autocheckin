@@ -32,18 +32,36 @@
         android:id="@+id/btn_linked_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/text_connect"
+        android:layout_above="@id/text_connect"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="5dip"
         android:background="@drawable/btn_linked_in"
         android:onClick="onClickLinkedIn" />
 
     <ImageView
+        android:id="@+id/candp_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:src="@drawable/candp_logo" />
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="10dp"
+        android:layout_alignParentTop="true"
+        android:max="100"
+        android:visibility="gone" />
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/progressbar"
+        android:focusable="true"
+        android:visibility="gone" />
 
 </RelativeLayout>

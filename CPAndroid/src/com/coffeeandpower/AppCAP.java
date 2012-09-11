@@ -36,8 +36,6 @@ import com.coffeeandpower.location.LocationDetectionService;
 import com.coffeeandpower.location.venueWifiSignature;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
-import com.google.code.linkedinapi.schema.Connections;
-import com.google.code.linkedinapi.schema.Person;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.urbanairship.UAirship;
@@ -110,9 +108,9 @@ public class AppCAP extends Application {
     // public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
     public static final String URL_FEEDBACK = "http://coffeeandpower.uservoice.com";
 
-    public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
+    //public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
     // production
-    // public static final String URL_WEB_SERVICE = "https://staging.candp.me/";
+    public static final String URL_WEB_SERVICE = "https://staging.candp.me/";
     // // staging
     //public static final String URL_WEB_SERVICE =
     // "http://dev.worklist.net/~andres/candpweb2/web/"; // staging
@@ -152,8 +150,6 @@ public class AppCAP extends Application {
     private static Context context;
     private static int mapCenterLng;
     private static int mapCenterLat;
-
-    private static Connections connections;
 
     private HttpUtil http;
 
@@ -1192,24 +1188,6 @@ public class AppCAP extends Application {
 
     public static Context getAppContext() {
         return AppCAP.context;
-    }
-
-    public Connections getConnections() {
-        return connections;
-    }
-
-    public static void setConnections(Connections linkedInConnections) {
-        connections = linkedInConnections;
-    }
-
-    public static ArrayList<Person> getUsersConnections() {
-        ArrayList<Person> listPersons;
-        if (connections != null) {
-            listPersons = (ArrayList<Person>) connections.getPersonList();
-        } else {
-            listPersons = new ArrayList<Person>();
-        }
-        return listPersons;
     }
 
     /**
