@@ -82,8 +82,12 @@ public class UserSmart implements Parcelable {
         this.lng = objUser.optDouble("lng");
         this.checkedIn = objUser.optInt("checked_in");
         this.foursquareId = objUser.optString("foursquare");
-        this.venueName = objUser.optString("venue_name");
         this.venueId = objUser.optInt("venue_id");
+        if (objUser.optString("venue_name").contains("null")) {
+            this.venueName = "";
+        } else  {
+            this.venueName = objUser.optString("venue_name");
+        }
         this.checkInCount = objUser.optInt("checkin_count");
         this.checkInTime = objUser.optInt("checkin_time");
         this.skills = objUser.optString("skills");
@@ -115,7 +119,11 @@ public class UserSmart implements Parcelable {
         this.lng = lng;
         this.checkedIn = checkedIn;
         this.foursquareId = foursquareId;
-        this.venueName = venueName;
+        if (venueName.contentEquals("null")) {
+            this.venueName = "";
+        } else {
+            this.venueName = venueName;
+        }
         this.checkInCount = checkInCount;
         this.skills = skills;
         this.met = met;

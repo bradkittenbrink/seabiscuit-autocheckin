@@ -110,6 +110,7 @@ public class MyUsersAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder holder;
+        UserSmart current = mudArray.get(position);
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_list_about_person,
@@ -122,9 +123,8 @@ public class MyUsersAdapter extends BaseAdapter {
 
         // Display image
         if (AppCAP.isLoggedIn()) {
-            holder.textNickName.setText(AppCAP.cleanResponseString(mudArray
-                    .get(position).getNickName()));
-            imageLoader.DisplayImage(mudArray.get(position).getFileName(),
+            holder.textNickName.setText(AppCAP.cleanResponseString(current.getNickName()));
+            imageLoader.DisplayImage(current.getFileName(),
                     holder.profileImage, R.drawable.default_avatar50, 70);
         } else {
             holder.textNickName.setText("Name Hidden");
@@ -133,19 +133,22 @@ public class MyUsersAdapter extends BaseAdapter {
         }
 
         // Display status text
-        if (mudArray.get(position).getStatusText() != null
-                && mudArray.get(position).getStatusText().length() > 0) {
+        if (current.getStatusText() != null
+                && current.getStatusText().length() > 0) {
             holder.textStatus.setText("\""
-                    + AppCAP.cleanResponseString(mudArray.get(position)
-                            .getStatusText()) + "\"");
+                    + AppCAP.cleanResponseString(current.getStatusText()) + "\"");
         } else {
             holder.textStatus.setText("");
         }
-        holder.textVenueName.setText(AppCAP.cleanResponseString(mudArray.get(
-                position).getVenueName()));
+        if (current.getVenueName() != null
+                && current.getVenueName().length() > 0) { 
+            holder.textVenueName.setText(AppCAP.cleanResponseString(current.getVenueName()));
+        } else {
+            holder.textVenueName.setText("");
+        }
 
         // Display major job category
-        String jobName = mudArray.get(position).getMajorJobCategory();
+        String jobName = current.getMajorJobCategory();
         if (jobName != null && jobName.length() > 1)
             jobName = jobName.substring(0, 1).toUpperCase()
                     + jobName.substring(1);
@@ -159,18 +162,18 @@ public class MyUsersAdapter extends BaseAdapter {
             // If we have no position fill that space with something else
         } else {
             holder.textDistance.setText(RootActivity.getDistanceBetween(myLat,
-                    myLng, mudArray.get(position).getLat(),
-                    mudArray.get(position).getLng(), false));
+                    myLng, current.getLat(),
+                    current.getLng(), false));
         }
 
         // Check if we have hereNow user
-        if (mudArray.get(position).getCheckedIn() == 1
+        if (current.getCheckedIn() == 1
                 && mudArray.get(position).isFirstInList()) {
             holder.textGrayLine.setText("Checked In Now");
             holder.textGrayLine.setVisibility(View.VISIBLE);
         }
-        if (mudArray.get(position).getCheckedIn() == 0
-                && mudArray.get(position).isFirstInList()) {
+        if (current.getCheckedIn() == 0
+                && current.isFirstInList()) {
             // it was in last seven days
             holder.textGrayLine.setText("Last 7 Days");
             holder.textGrayLine.setVisibility(View.VISIBLE);
