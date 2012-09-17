@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.R;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyVenuesAdapter.ViewHolder;
 import com.coffeeandpower.cont.VenueSmart;

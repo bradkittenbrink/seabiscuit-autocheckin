@@ -14,6 +14,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.coffeeandpower.activity.ActivityLoginPage;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 
 import android.support.v4.app.Fragment;

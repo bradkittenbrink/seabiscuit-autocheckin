@@ -33,7 +33,7 @@ import android.widget.ListView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
-import com.coffeeandpower.R;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityPlaceDetails;
 import com.coffeeandpower.activity.ActivityUserDetails;

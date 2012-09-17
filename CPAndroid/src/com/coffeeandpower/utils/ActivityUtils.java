@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.R;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.linkedin.LinkedIn;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;

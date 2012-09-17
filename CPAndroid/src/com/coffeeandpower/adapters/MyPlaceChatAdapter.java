@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.R;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.cont.VenueChatEntry;
 import com.coffeeandpower.imageutil.ImageLoader;
 

@@ -13,7 +13,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 
-import com.coffeeandpower.R;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.utils.Utils;
 
 public class PinDrawable extends Drawable {

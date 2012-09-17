@@ -29,6 +29,7 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
@@ -105,7 +106,7 @@ public class AppCAP extends Application {
     private static final String DEFAULT_QUIET_FROM = "20:00:00";
     private static final String DEFAULT_QUIET_TO = "07:00:00";
 
-    // public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
+    //public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
     public static final String URL_FEEDBACK = "http://coffeeandpower.uservoice.com";
 
     //public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
@@ -183,7 +184,7 @@ public class AppCAP extends Application {
         // getting started
         // so we only want to call the app init stuff on the main thread/process
 
-        if (getAppName().equalsIgnoreCase("com.coffeeandpower")) {
+        if (getAppName().equalsIgnoreCase("com.coffeeandpower.app")) {
 
             Log.d("Coffee", "Main process loading (onCreate)...");
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.coffeeandpower"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    package="com.coffeeandpower.app"
+    android:versionCode="2"
+    android:versionName="1.01" >
 
     <uses-sdk android:minSdkVersion="8" />
 
@@ -26,7 +26,7 @@
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
 
     <application
-        android:name=".AppCAP"
+        android:name="com.coffeeandpower.AppCAP"
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
@@ -54,35 +54,35 @@
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-                <category android:name="com.coffeeandpower" />
+                <category android:name="com.coffeeandpower.app" />
             </intent-filter>
 
             <!-- Receive the registration id -->
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="com.coffeeandpower" />
+                <category android:name="com.coffeeandpower.app" />
             </intent-filter>
         </receiver>
 
         <service
             android:name="com.urbanairship.push.PushService"
             android:process=":com.urbanairship.push.process" />
-        <service android:name=".cache.CacheMgrService" />
-        <service android:name=".location.LocationDetectionService" />
+        <service android:name="com.coffeeandpower.cache.CacheMgrService" />
+        <service android:name="com.coffeeandpower.location.LocationDetectionService" />
 
         <receiver
-            android:name=".location.PassiveLocationUpdateReceiver"
+            android:name="com.coffeeandpower.location.PassiveLocationUpdateReceiver"
             android:enabled="true" />
 
         <!--
              OPTIONAL, if you want to receive push, push opened and registration 
             completed intents
         -->
-        <receiver android:name=".urbanairship.IntentReceiver" />
+        <receiver android:name="com.coffeeandpower.urbanairship.IntentReceiver" />
 
         <activity
-            android:name=".activity.ActivityLoginPage"
+            android:name="com.coffeeandpower.activity.ActivityLoginPage"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
@@ -104,118 +104,118 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ActivitySignInViaMail"
+            android:name="com.coffeeandpower.activity.ActivitySignInViaMail"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateAlwaysVisible" >
         </activity>
         <activity
-            android:name=".activity.ActivityJoin"
+            android:name="com.coffeeandpower.activity.ActivityJoin"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateAlwaysVisible" >
         </activity>
         <activity
-            android:name=".activity.ActivityNotifications"
+            android:name="com.coffeeandpower.activity.ActivityNotifications"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateAlwaysVisible" >
         </activity>
         <activity
-            android:name=".tab.activities.ActivityVenueFeeds"
+            android:name="com.coffeeandpower.tab.activities.ActivityVenueFeeds"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateVisible|adjustPan" >
         </activity>
         <activity
-            android:name=".tab.activities.ActivityCheckInList"
+            android:name="com.coffeeandpower.tab.activities.ActivityCheckInList"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityAutoCheckinList"
+            android:name="com.coffeeandpower.activity.ActivityAutoCheckinList"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityCheckIn"
+            android:name="com.coffeeandpower.activity.ActivityCheckIn"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" >
         </activity>
         <activity
-            android:name=".activity.ActivitySupport"
+            android:name="com.coffeeandpower.activity.ActivitySupport"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivitySettings"
+            android:name="com.coffeeandpower.activity.ActivitySettings"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityUserDetails"
+            android:name="com.coffeeandpower.activity.ActivityUserDetails"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityPlaceDetails"
+            android:name="com.coffeeandpower.activity.ActivityPlaceDetails"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityChat"
+            android:name="com.coffeeandpower.activity.ActivityChat"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateVisible|adjustPan" >
         </activity>
         <activity
-            android:name=".activity.ActivityWallet"
+            android:name="com.coffeeandpower.activity.ActivityWallet"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityAddFunds"
+            android:name="com.coffeeandpower.activity.ActivityAddFunds"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityJobCategory"
+            android:name="com.coffeeandpower.activity.ActivityJobCategory"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityEnterInviteCode"
+            android:name="com.coffeeandpower.activity.ActivityEnterInviteCode"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivitySmarterer"
+            android:name="com.coffeeandpower.activity.ActivitySmarterer"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityPlaceChat"
+            android:name="com.coffeeandpower.activity.ActivityPlaceChat"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivitySupportTOS"
+            android:name="com.coffeeandpower.activity.ActivitySupportTOS"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivitySupportFeedback"
+            android:name="com.coffeeandpower.activity.ActivitySupportFeedback"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityInviteContacts"
+            android:name="com.coffeeandpower.activity.ActivityInviteContacts"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.ActivityInviteContactsConfirm"
+            android:name="com.coffeeandpower.activity.ActivityInviteContactsConfirm"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>

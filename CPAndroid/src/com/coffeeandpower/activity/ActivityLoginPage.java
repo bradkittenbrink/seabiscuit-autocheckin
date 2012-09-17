@@ -13,7 +13,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.R;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.linkedin.LinkedIn;
 import com.coffeeandpower.utils.ActivityUtils;

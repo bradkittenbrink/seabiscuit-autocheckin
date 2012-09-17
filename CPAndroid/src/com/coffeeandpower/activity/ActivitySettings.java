@@ -33,7 +33,7 @@ import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.R;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;

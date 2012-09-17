@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import com.coffeeandpower.R;
+import com.coffeeandpower.app.R;
 
 public class MyNotificationsListAdapter extends BaseAdapter {
 

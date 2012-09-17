@@ -26,7 +26,7 @@ import android.widget.ToggleButton;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
-import com.coffeeandpower.R;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyNotificationsListAdapter;
 import com.coffeeandpower.cont.VenueSmart;
@@ -302,7 +302,7 @@ public class ActivityNotifications extends RootActivity {
 
         Resources res = getResources();
 
-        int id = res.getIdentifier(resource_name, "string", "com.coffeeandpower");
+        int id = res.getIdentifier(resource_name, "string", "com.coffeeandpower.app");
         if (0 == id) {
             throw new Resources.NotFoundException(resource_name);
         }

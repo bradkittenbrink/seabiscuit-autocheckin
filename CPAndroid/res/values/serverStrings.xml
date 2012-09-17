@@ -4,11 +4,11 @@
     <!-- staging linkedin V2 -->
     <string name="linkedInApiKey">hgkjgipubg8b</string>
     <string name="linkedInApiSec">1coFul6Ym82NJC2Z</string>
-    <!--
-         production linkedin V2 
+    
+       <!--  production linkedin V2 
     <string name="linkedInApiKey"></string>
-    <string name="linkedInApiSec"></string>
-    -->
+    <string name="linkedInApiSec"></string>	-->
+   
     <!--
          staging linkedin V1
     <string name="linkedInApiKey">4xkfzpnvuc72</string>
@@ -19,6 +19,6 @@
     <string name="linkedInApiKey">5tk2ex0mnjqk</string>
     <string name="linkedInApiSec">9JIH0rUiSbvJuHI2</string>
     -->
-	<string name="GOOGLE_MAPS_API_KEY">08WpTLaphEjlZ7KvkG-v0IgrMqC8ASbgH39t5hg</string>
+	<string name="GOOGLE_MAPS_API_KEY">0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q</string>
 
 </resources>

@@ -36,7 +36,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
-import com.coffeeandpower.R;
+import com.coffeeandpower.app.R;
 
 /**
  * Numeric wheel view.

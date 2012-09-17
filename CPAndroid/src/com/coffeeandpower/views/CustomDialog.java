@@ -7,7 +7,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.coffeeandpower.R;
+import com.coffeeandpower.app.R;
 
 public class CustomDialog extends Dialog implements
         android.view.View.OnClickListener {

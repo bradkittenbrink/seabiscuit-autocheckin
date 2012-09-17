@@ -1,5 +1,7 @@
 package com.coffeeandpower;
 
+import com.coffeeandpower.app.R;
+
 public class Constants {
 
 	// Enable debug LogCat messages
