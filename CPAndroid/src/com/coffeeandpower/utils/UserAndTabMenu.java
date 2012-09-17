@@ -248,8 +248,10 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
     }
 
     @Override
-    public void onClickCheckOut(View v) { 
-        hideVerticalMenu(v);
+    public void onClickCheckOut(View v, final Activity finishActivity) { 
+        if (v != null) {
+            hideVerticalMenu(v);
+        }
         if (AppCAP.isUserCheckedIn()) {
             progress.setMessage("Checking out...");
             progress.show();
@@ -261,6 +263,9 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
                                     .checkOut();
                             handler.sendEmptyMessage(result
                                     .getHandlerCode());
+                            if (finishActivity != null) {
+                                finishActivity.finish();
+                            }
                 }
             },"UserAndTabMenu.onClickCheckOut").start();
         }

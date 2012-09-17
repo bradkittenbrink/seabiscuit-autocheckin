@@ -289,7 +289,7 @@ public class Executor {
                 }
 
                 if (venueId != 0) {
-
+                    AppCAP.queueLocalNotificationForVenue(context, venue, checkOutTime);
                     // If user selected auto checkin, save that to preferences
                     if (userDesiresAutoCheckin) {
                         LocationDetectionService

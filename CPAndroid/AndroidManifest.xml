@@ -35,6 +35,8 @@
             android:required="true" >
         </uses-library>
 
+        <receiver android:name="CheckOutIntentReceiver" >
+        </receiver>
         <!-- REQUIRED -->
         <receiver android:name="com.urbanairship.CoreReceiver" >
 
@@ -77,7 +79,7 @@
 
         <!--
              OPTIONAL, if you want to receive push, push opened and registration 
-            completed intents
+            completed intents
         -->
         <receiver android:name="com.coffeeandpower.urbanairship.IntentReceiver" />
 
@@ -102,6 +104,12 @@
                     android:host="callback"
                     android:scheme="x-oauthflow-linkedin" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.coffeeandpower.activity.ActivityDialog"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Transparent"
+            android:windowSoftInputMode="stateAlwaysHidden" >
         </activity>
         <activity
             android:name="com.coffeeandpower.activity.ActivitySignInViaMail"

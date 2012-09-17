@@ -17,7 +17,9 @@ import org.json.JSONObject;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,6 +35,7 @@ import com.coffeeandpower.app.R;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
+import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.location.LocationDetectionService;
 import com.coffeeandpower.location.venueWifiSignature;
 import com.coffeeandpower.urbanairship.IntentReceiver;
@@ -1360,6 +1363,23 @@ public class AppCAP extends Application {
                 .commit();
     }
 
+
+    public static void queueLocalNotificationForVenue(Context context, VenueSmart venue, int checkInDuration){
+    // Fire a notification 5 minutes before checkout time
+    int minutesBefore = 5;   
+    long currentTime = System.currentTimeMillis();
+    long checkOutTime = currentTime + 
+            (checkInDuration * 60 * 60 * 1000) - 
+            (minutesBefore * 60 * 1000);
+    Intent intent = new Intent(context, CheckOutIntentReceiver.class);
+    intent.putExtra("alarm_message", "You will be checked out of " + 
+            venue.getName() + " in " + minutesBefore + " min." );
+    PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+    AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+    am.set(AlarmManager.RTC_WAKEUP, checkOutTime, sender);   
+}
+
+    
     public static ArrayList<VenueNameAndFeeds> getListLastCheckedinVenues() {
         return listLastCheckedinVenues;
     }

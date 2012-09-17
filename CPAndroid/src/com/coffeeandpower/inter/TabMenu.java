@@ -1,5 +1,6 @@
 package com.coffeeandpower.inter;
 
+import android.app.Activity;
 import android.view.View;
 
 public interface TabMenu {
@@ -12,7 +13,7 @@ public interface TabMenu {
 
     public void onClickCheckIn(View v);
 
-    public void onClickCheckOut(View v);
+    public void onClickCheckOut(View v, Activity finishActivity);
 
     public void onClickPeople(View v);
 
