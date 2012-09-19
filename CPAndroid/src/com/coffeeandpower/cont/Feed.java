@@ -24,6 +24,7 @@ public class Feed implements Parcelable {
     private String authorPhotoUrl;
     private String receiverPhotoUrl;
     private int skillId;
+    private String skillName;
     private String entryType;
     private int venueId;
     private int originalPostId;
@@ -72,7 +73,14 @@ public class Feed implements Parcelable {
             this.receiverNickName = receiver.optString("nickname");
             this.receiverPhotoUrl = receiver.optString("filename");
         }
-        this.skillId = objFeed.optInt("skillId");
+
+        JSONObject skill = objFeed.optJSONObject("skill");
+        if (skill != null) {
+            this.skillId = skill.optInt("id");
+            this.skillName = skill.optString("name");
+        }
+        
+        
         this.entryType = objFeed.optString("type");
         this.venueId = objFeed.optInt("venueId");
         this.originalPostId = objFeed.optInt("originalPostId");
@@ -244,6 +252,14 @@ public class Feed implements Parcelable {
         this.userHasLiked = userHasLiked;
     }
 
+    public String getSkillName() {
+        return skillName;
+    }
+
+    public void setSkillName(String skillName) {
+        this.skillName = skillName;
+    }
+    
     @Override
     public int describeContents() {
         // TODO Auto-generated method stub

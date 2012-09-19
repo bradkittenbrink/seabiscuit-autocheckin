@@ -188,12 +188,17 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
 
     textDate.setText(dateOnly.format(date));
     textHour.setText(hourOnly.format(date));
-    textMessage.setText(AppCAP.cleanResponseString(message.getFormattedEntryText()));
     // Display images
     displayImage(message.getAuthorPhotoUrl(), message.getAuthorId(), profileImage);
+    String messageString = AppCAP.cleanResponseString(message.getFormattedEntryText());
     if (message.getEntryType().contentEquals(Feed.FEED_TYPE_LOVE)) {
+        if (message.getSkillName() != null) {
+            messageString = "(" + message.getSkillName() + ") " + messageString;
+        } // This happens if "general" love is sent.
         displayImage(message.getReceiverPhotoUrl(), message.getReceiverId(), profileImageReceiver);
     }
+    textMessage.setText(messageString);
+    
 }
     public void displayImage(String imageUrl, int userId, ImageView profileImage) {
         if (AppCAP.isLoggedIn()) {

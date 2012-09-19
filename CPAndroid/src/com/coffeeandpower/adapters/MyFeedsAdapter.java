@@ -125,6 +125,8 @@ public class MyFeedsAdapter extends BaseAdapter {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        String messageString=AppCAP.cleanResponseString(currentMessage
+                               .getFormattedEntryText());
         if (currentMessage.getEntryType().contentEquals(Feed.FEED_TYPE_LOVE)) {
             holder.love_sent_area.setVisibility(View.VISIBLE);
             holder.love_sent_area.measure(0, 0);
@@ -135,6 +137,9 @@ public class MyFeedsAdapter extends BaseAdapter {
             lp.setMargins(width, 0, 0, 0);
             holder.textMessage.setLayoutParams(lp);
             holder.textMessage.setTypeface(null,Typeface.BOLD);
+            if (currentMessage.getSkillName() != null) {
+                messageString = " (" + currentMessage.getSkillName() + "): " + messageString;
+            }
         } else {
             holder.love_sent_area.setVisibility(View.GONE);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -149,8 +154,7 @@ public class MyFeedsAdapter extends BaseAdapter {
             holder.textDate.setText("");
             holder.textHour.setText("");
         }
-        holder.textMessage.setText(AppCAP.cleanResponseString(currentMessage
-                .getFormattedEntryText()));
+        holder.textMessage.setText(messageString);
         // Display images
         displayImage(currentMessage.getAuthorPhotoUrl(),
                 currentMessage.getAuthorId(), holder.profileImage);

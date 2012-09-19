@@ -61,6 +61,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
 import com.coffeeandpower.cont.Feed;
 import com.coffeeandpower.cont.Listing;
+import com.coffeeandpower.cont.RankedSkill;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.Transaction;
 import com.coffeeandpower.cont.UserResume;
@@ -128,6 +129,8 @@ public class HttpUtil {
                         ArrayList<Review> reviews = new ArrayList<Review>();
                         ArrayList<Education> education = new ArrayList<Education>();
                         ArrayList<Work> work = new ArrayList<Work>();
+                        ArrayList<RankedSkill> rankedSkills = new ArrayList<RankedSkill>();
+                        
                         ArrayList<Listing> agentList = new ArrayList<Listing>();
                         ArrayList<Listing> clientList = new ArrayList<Listing>();
                         ArrayList<Venue> checkinhistoryArray = new ArrayList<Venue>();
@@ -203,6 +206,30 @@ public class HttpUtil {
                         }
 
                         userResume.setSkillSet(payload.optString("skillSet"));
+                        
+                     // Get Skills data
+                        
+                        JSONArray arrayRankedSkills = payload.optJSONArray("skills");
+                        if (arrayRankedSkills != null) {
+                            for (int x = 0; x < arrayRankedSkills.length(); x++) {
+
+                                JSONObject objSkill = arrayRankedSkills.optJSONObject(x);
+                                if (objSkill != null) {
+                                    String rank = objSkill.getString("rank");
+                                    if (rank == null) {
+                                        rank = "";
+                                    }
+                                    rankedSkills.add(new RankedSkill(objSkill
+                                            .optString("name"), objSkill
+                                            .optInt("love"),
+                                            rank
+                                            ));
+                                } //end of objSkill exists
+                            } //end of looping through skills
+                        }
+                        userResume.setRankedSkills(rankedSkills);
+                        
+                        
                         userResume.setHourlyBillingRate(payload
                                 .optString("hourly_billing_rate"));
 

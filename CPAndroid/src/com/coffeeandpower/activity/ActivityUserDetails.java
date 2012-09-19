@@ -39,6 +39,8 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +54,7 @@ import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Education;
 import com.coffeeandpower.cont.Listing;
+import com.coffeeandpower.cont.RankedSkill;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserSmart;
@@ -371,6 +374,16 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                 ((TextView) findViewById(R.id.text_summary))
                         .setVisibility(View.VISIBLE);
             }
+           
+            // Check for Skills info
+             if (!userResumeData.getRankedSkills().isEmpty()) {
+                ((TextView) findViewById(R.id.text_skills_title))
+                        .setVisibility(View.VISIBLE);
+                TableLayout tableLayoutRankedSkills = (TableLayout) 
+                        findViewById(R.id.table_layout_ranked_skills);
+                tableLayoutRankedSkills.setVisibility(View.VISIBLE);
+                fillRankedSkillsTable(tableLayoutRankedSkills, userResumeData.getRankedSkills());
+            } //end of section for skills
 
             // Chech if user is verified for LinkedIn and Facebook
             if (userResumeData.getVerifiedLinkedIn().matches("1")) {
@@ -460,13 +473,16 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                     if (review.getIsLove().equals("1")) {
                         LayoutInflater inflater = getLayoutInflater();
                         View v = inflater.inflate(R.layout.review_props, null);
-
+                        String loveString = "from " + review.getAuthor();
+                        if (!review.getSkill().equalsIgnoreCase("null")) {
+                            loveString += "(" + review.getSkill() + ")";
+                        }
+                        loveString += ": \"" 
+                                + AppCAP.cleanResponseString(review.getReview()) 
+                                + "\"";
+                        
                         ((TextView) v.findViewById(R.id.textview_review_love))
-                                .setText("from "
-                                        + review.getAuthor()
-                                        + ": \""
-                                        + AppCAP.cleanResponseString(review
-                                                .getReview()) + "\"");
+                                .setText(loveString);
                         ((ImageView) v.findViewById(R.id.image_thumbs_up))
                                 .setVisibility(View.GONE);
                         ((LinearLayout) findViewById(R.id.love_inflate))
@@ -554,6 +570,39 @@ public class ActivityUserDetails extends RootActivity implements Observer {
             }
         });
     }
+
+    private void fillRankedSkillsTable(TableLayout tableLayoutRankedSkills,
+            ArrayList<RankedSkill> rankedSkills) {
+        
+        TableRow tableRow;
+        final int NUM_VISUAL_ROWS = 12; 
+            //12 counting thin lines and captions line.
+        
+        int skillNum = 0;
+        RankedSkill skill;
+        TextView tvName,tvLove,tvTop;
+      
+        for (int row = 3; row < NUM_VISUAL_ROWS; row+=2) { 
+            //Starting at 3 because skipping col headers and thin lines
+                if (skillNum < rankedSkills.size()) {
+                    tableRow = (TableRow) tableLayoutRankedSkills.getChildAt(row);
+                    tableRow.setVisibility(View.VISIBLE);
+                    tableLayoutRankedSkills.getChildAt(row+1).setVisibility(View.VISIBLE);  //the thin line after
+                    skill = rankedSkills.get(skillNum);
+                    for (int col = 0; col < tableRow.getChildCount(); col++) {
+                        tvName = (TextView) tableRow.getChildAt(0);
+                        tvLove = (TextView) tableRow.getChildAt(1);
+                        tvTop = (TextView) tableRow.getChildAt(2);
+                        tvName.setText(skill.getName());
+                        tvLove.setText(String.valueOf(skill.getRecs()));
+                        tvTop.setText(skill.getTop());
+                    } //end of looping through columns
+                   
+                } //end of checking if there are more skills for this person
+                skillNum++;  
+        } //end of looping tableRows in the tableLayout
+        
+    } //end of fillRankedSkillsTable (visual table)
 
     private void createMarker(GeoPoint point) {
         OverlayItem overlayitem = new OverlayItem(point, "", "");

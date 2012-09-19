@@ -39,7 +39,8 @@ public class UserResume {
     private int totalMissions;
     private String totalFunded;
 
-    private String skillSet;
+    private String skillSet; 
+    private ArrayList<RankedSkill> rankedSkills;
     private String hourlyBillingRate;
 
     // Verified
@@ -876,6 +877,14 @@ public class UserResume {
 
     public void setClienListings(ArrayList<Listing> clienListings) {
         this.clienListings = clienListings;
+    }
+    
+    public ArrayList<RankedSkill> getRankedSkills() {
+        return rankedSkills;
+    }
+
+    public void setRankedSkills(ArrayList<RankedSkill> rankedSkills) {
+        this.rankedSkills=rankedSkills;
     }
 
 }
