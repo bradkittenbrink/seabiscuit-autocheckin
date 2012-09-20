@@ -104,7 +104,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("user_id", URLEncoder.encode(
                     userIdForUrl + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -607,7 +607,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("user_id", URLEncoder.encode(
                     userId + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -787,7 +787,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("toUserId", URLEncoder.encode(
                     userId + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -845,7 +845,7 @@ public class HttpUtil {
                     user.getCheckInData_userId() + "", "utf-8")));
             params.add(new BasicNameValuePair("reviewText", review + ""));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -914,7 +914,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("other_user", URLEncoder.encode(
                     userId + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -1007,7 +1007,7 @@ public class HttpUtil {
             if (isEmailChanged) {
                 params.add(new BasicNameValuePair("email", user.getUsername()));
             }
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -1092,7 +1092,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("contacts_only_chat",
                     contactsOnlyChat ? "1" : "0"));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -1426,7 +1426,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("foursquare", URLEncoder.encode(
                     foursquareId + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -1523,7 +1523,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("acceptor_id", URLEncoder.encode(
                     userId + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -1588,7 +1588,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("initiator_id", URLEncoder
                     .encode(userId + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -1651,7 +1651,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("greeted_id", URLEncoder.encode(
                     userId + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -1717,7 +1717,7 @@ public class HttpUtil {
                     AppCAP.FOURSQUARE_OAUTH));
             params.add(new BasicNameValuePair("v", "20120208"));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -1845,7 +1845,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("greeter_id", URLEncoder.encode(
                     userId + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -1909,7 +1909,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("greeter_id", URLEncoder.encode(
                     userId + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -1976,7 +1976,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("password", URLEncoder.encode(
                     password + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -2033,7 +2033,7 @@ public class HttpUtil {
 
         try {
             params.add(new BasicNameValuePair("action", "getContactList"));
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -2104,7 +2104,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("action", "getNearestVenuesWithActiveFeeds"));
             params.add(new BasicNameValuePair("lat", URLEncoder.encode(AppCAP.getUserCoordinates()[4] + "", "utf-8")));
             params.add(new BasicNameValuePair("lng", URLEncoder.encode(AppCAP.getUserCoordinates()[5] + "", "utf-8")));
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -2203,7 +2203,7 @@ public class HttpUtil {
                         "getVenueFeedPreviews"));
                 params.add(new BasicNameValuePair("venue_IDs", "["
                         + AppCAP.getUserLastCheckinVenueIds() + "]"));
-                post.setEntity(new UrlEncodedFormEntity(params));
+                post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
                 // Execute HTTP Post Request
                 HttpResponse response = client.execute(post);
@@ -2305,7 +2305,7 @@ public class HttpUtil {
                 params.add(new BasicNameValuePair("entry", message));
             }
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -2396,7 +2396,7 @@ public class HttpUtil {
         try {
             params.add(new BasicNameValuePair("action", "getPostableFeedVenueIDs"));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -2488,7 +2488,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("lng", URLEncoder.encode(
                     lng + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -2565,7 +2565,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("invite_code", URLEncoder.encode(
                     invitationCode + "", "utf-8")));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -2642,7 +2642,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("minor_job_category",
                     minorJobCategory + ""));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -2711,7 +2711,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("action", "saveUserSmartererName"));
             params.add(new BasicNameValuePair("name", name + ""));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -2773,7 +2773,7 @@ public class HttpUtil {
         try {
             params.add(new BasicNameValuePair("action", "checkout"));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -2857,7 +2857,7 @@ public class HttpUtil {
             else
                 params.add(new BasicNameValuePair("is_automatic", "0"));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -2940,7 +2940,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("lat", userLat));
             params.add(new BasicNameValuePair("lng", userLng));
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Get Request
             HttpResponse responseClient = client.execute(post);
@@ -3315,7 +3315,7 @@ public class HttpUtil {
         params.add(new BasicNameValuePair("action", "getTransactionData"));
 
         try {
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -3395,7 +3395,7 @@ public class HttpUtil {
         params.add(new BasicNameValuePair("action", "getUserData"));
 
         try {
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -3471,7 +3471,7 @@ public class HttpUtil {
         params.add(new BasicNameValuePair("action", "getNotificationSettings"));
 
         try {
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -3526,7 +3526,7 @@ public class HttpUtil {
         params.add(new BasicNameValuePair("action", "deleteAccount"));
 
         try {
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -3619,7 +3619,7 @@ public class HttpUtil {
 
         try {
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -3745,7 +3745,7 @@ public class HttpUtil {
 
         try {
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
@@ -3847,7 +3847,7 @@ public class HttpUtil {
 
         try {
 
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
             HttpResponse response = client.execute(post);
