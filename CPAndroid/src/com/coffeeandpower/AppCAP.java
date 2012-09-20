@@ -38,11 +38,13 @@ import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.location.LocationDetectionService;
 import com.coffeeandpower.location.venueWifiSignature;
+import com.coffeeandpower.urbanairship.CapPushNotificationBuilder;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.urbanairship.UAirship;
+import com.urbanairship.push.BasicPushNotificationBuilder;
 import com.urbanairship.push.PushManager;
 import com.urbanairship.push.PushPreferences;
 
@@ -115,7 +117,8 @@ public class AppCAP extends Application {
     //public static final String URL_WEB_SERVICE = "https://www.candp.me/"; //
     // production
     public static final String URL_WEB_SERVICE = "https://staging.candp.me/";
-    // // staging
+    // staging
+
     //public static final String URL_WEB_SERVICE =
     // "http://dev.worklist.net/~andres/candpweb2/web/"; // staging
     //public static final String URL_WEB_SERVICE =
@@ -147,6 +150,7 @@ public class AppCAP extends Application {
     private static Gson gsonConverter = new Gson();
 
     private static Context mapContext;
+    private static boolean bActive = false;
 
     // App wide observables
 
@@ -203,6 +207,11 @@ public class AppCAP extends Application {
             prefs.setSoundEnabled(true);
             prefs.setVibrateEnabled(true);
 
+            // Setup push notifications (will use app icon
+            // and push payload 'alert' string for message)
+            CapPushNotificationBuilder pnb = new CapPushNotificationBuilder();
+            PushManager.shared().setNotificationBuilder(pnb);
+
             PushManager.enablePush();
             PushManager.shared().setIntentReceiver(IntentReceiver.class);
 
@@ -241,6 +250,14 @@ public class AppCAP extends Application {
 
         enableAutoCheckin(context);
 
+    }
+
+    public static void setActive(boolean active) {
+        bActive = active;
+    }
+
+    public static boolean isActive() {
+        return bActive;
     }
 
     // called from main activity on app exit

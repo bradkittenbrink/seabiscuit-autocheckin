@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="custom_seekbar_track">
         <item name="android:indeterminateOnly">false</item>
@@ -8,4 +8,18 @@
         <item name="android:maxHeight">8dip</item>
     </style>
 
+    <style name="custom_button">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="android:minWidth">110dip</item>
+        <item name="android:minHeight">45dip</item>
+    </style>
+
+    <style name="turquoise_button" parent="custom_button">
+        <item name="android:background">@drawable/button_turquoise</item>
+    </style>
+
+    <style name="gray_button" parent="custom_button">
+        <item name="android:background">@drawable/button_gray</item>
+    </style>
 </resources>

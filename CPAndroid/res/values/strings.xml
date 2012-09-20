@@ -135,5 +135,9 @@ Welcome!
     <string name="googleMapsApiKey">0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q</string>
     <string name="map_distance_far">Far far away</string>
     <string name="auto_checkin_label">Auto Checkin</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="wont_tell">(we won\'t tell)</string>
+    <string name="contact_exchanged_message">%1$s exchanged contact info with you.</string>
 
 </resources>

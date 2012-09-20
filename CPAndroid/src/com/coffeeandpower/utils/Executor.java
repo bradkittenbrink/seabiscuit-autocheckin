@@ -186,6 +186,30 @@ public class Executor {
         }, "Executor.sendFriendRequest").start();
     }
 
+    public synchronized void acceptContactExchangeRequest(final int userId) {
+        progress.setMessage("Completing contact exchange...");
+        progress.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().sendAcceptContactRequestFromUserId(userId);
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.sendAcceptContactRequestFromUserId").start();
+    }
+
+    public synchronized void declineContactExchangeRequest(final int userId) {
+        progress.setMessage("Canceling contact exchange...");
+        progress.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().sendDeclineContactRequestFromUserId(userId);
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.sendDeclineContactRequestFromUserId").start();
+    }
+
     public synchronized void addPlace(final String name) {
         progress.setMessage("Saving new place...");
         progress.show();

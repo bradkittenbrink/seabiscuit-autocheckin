@@ -56,13 +56,14 @@ public class ActivityLoginPage extends RootActivity {
 
 	@Override
 	protected void onResume() {
+	    super.onResume();
+
         // Start loging in process from Contacts Activity
         if (AppCAP.isStartingLoginPageFromContacts()) {
             AppCAP.setStartLoginPageFromContacts(false);
             connectLinkedIn();
         }
 
-		super.onResume();
 	}
 
 	@Override
