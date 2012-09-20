@@ -143,20 +143,7 @@ public class LocationDetectionService extends Service {
         activeLocationListener = new ActiveLocationListener(this);
         activeLocationListener.init();
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                
-                Looper.prepare();
-                
-                LocationDetectionStateMachine.init(LocationDetectionService.this, mainThreadTaskHandler);
-                
-                Looper.loop();
-                
-            }
-        },"LocationDetectionService.onCreate");
-        thread.setDaemon(true);
-        thread.start();
+        LocationDetectionStateMachine.init(LocationDetectionService.this, mainThreadTaskHandler);
 
         activeProxAlerts = new TreeMap<Integer, PendingIntent>();
         

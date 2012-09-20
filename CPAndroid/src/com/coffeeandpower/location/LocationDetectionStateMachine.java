@@ -49,7 +49,7 @@ public class LocationDetectionStateMachine {
     private static ArrayList<VenueSmart> triggeringVenuesCACHE;
     private static VenueSmart currVenueCACHE;
     
-    public static boolean stateMachineActive = false;
+    public static volatile boolean stateMachineActive = false;
     
     private static LocationDetectionService myService;
     
@@ -64,56 +64,83 @@ public class LocationDetectionStateMachine {
         
         myContext = context;
         
-        exe = new Executor(myContext);
-        exe.setExecutorListener(new MyExecutorListener());
-        
-        stateMachineActive = false;
-        
         //This is used for the activeLocationListener, which is currently disabled
         mainThreadTaskHandler = mainThreadHandler;
-        
-        locationThreadTaskHandler = new Handler(Looper.myLooper()) {
 
+        final Object is_started = new Object();
+
+        Thread thread = new Thread(new Runnable() {
             @Override
-            public void handleMessage(Message msg) {
+            public void run() {
+
+                Looper.prepare();
+        
+                exe = new Executor(myContext);
+                exe.setExecutorListener(new MyExecutorListener());
+        
+                stateMachineActive = false;
+        
+                locationThreadTaskHandler = new Handler(Looper.myLooper()) {
+
+                    @Override
+                    public void handleMessage(Message msg) {
                 
-                super.handleMessage(msg);
+                        super.handleMessage(msg);
                 
-                String messageType = msg.getData().getString("type");
-                Log.d(TAG,"locationThreadTaskHandler.handleMessage: " + messageType);
+                        String messageType = msg.getData().getString("type");
+                        Log.d(TAG,"locationThreadTaskHandler.handleMessage: " + messageType);
                 
-                if (messageType.equalsIgnoreCase("start")) {
-                    startCallback();
-                } else if (messageType.equalsIgnoreCase("stop")) {
-                    stopCallback();
-                } else if (messageType.equalsIgnoreCase("startCollection")) {
-                    VenueSmart venue = msg.getData().getParcelable("venue");
-                    startCollectionCallback(venue);
-                } else if (messageType.equalsIgnoreCase("positionListenersCOMPLETE")) {
-                    boolean isHighAssurance = msg.getData().getBoolean("isHighAssurance");
-                    ArrayList<VenueSmart> triggeringVenues = msg.getData().getParcelableArrayList("triggeringVenues");
-                    positionListenersCallback(isHighAssurance,triggeringVenues);
-                } else if (messageType.equalsIgnoreCase("checkWifiSignatureCOMPLETE")) {
-                    VenueSmart currVenue = msg.getData().getParcelable("currVenue");
-                    checkWifiSignatureCallback(currVenue);
-                } else if (messageType.equalsIgnoreCase("passiveListenerDidReceiveLocation")) {
-                    passiveListenerDidReceiveLocationCallback();
-                } else if (messageType.equalsIgnoreCase("wifiScanListenerDidReceiveScan")) {
-                    wifiScanListenerDidReceiveScanCallback();
-                } else if (messageType.equalsIgnoreCase("checkinCheckoutCOMPLETE")) {
-                    checkinCheckoutCallback();
-                } else {
-                    Log.d(TAG, "Location TaskHandler message is unhandled!!!");
+                        if (messageType.equalsIgnoreCase("start")) {
+                            startCallback();
+                        } else if (messageType.equalsIgnoreCase("stop")) {
+                            stopCallback();
+                        } else if (messageType.equalsIgnoreCase("startCollection")) {
+                            VenueSmart venue = msg.getData().getParcelable("venue");
+                            startCollectionCallback(venue);
+                        } else if (messageType.equalsIgnoreCase("positionListenersCOMPLETE")) {
+                            boolean isHighAssurance = msg.getData().getBoolean("isHighAssurance");
+                            ArrayList<VenueSmart> triggeringVenues = msg.getData().getParcelableArrayList("triggeringVenues");
+                            positionListenersCallback(isHighAssurance,triggeringVenues);
+                        } else if (messageType.equalsIgnoreCase("checkWifiSignatureCOMPLETE")) {
+                            VenueSmart currVenue = msg.getData().getParcelable("currVenue");
+                            checkWifiSignatureCallback(currVenue);
+                        } else if (messageType.equalsIgnoreCase("passiveListenerDidReceiveLocation")) {
+                            passiveListenerDidReceiveLocationCallback();
+                        } else if (messageType.equalsIgnoreCase("wifiScanListenerDidReceiveScan")) {
+                            wifiScanListenerDidReceiveScanCallback();
+                        } else if (messageType.equalsIgnoreCase("checkinCheckoutCOMPLETE")) {
+                            checkinCheckoutCallback();
+                        } else {
+                            Log.d(TAG, "Location TaskHandler message is unhandled!!!");
+                        }
+                
+                    }
+                };
+        
+                locationManager = (LocationManager) myContext.getSystemService(Context.LOCATION_SERVICE);
+                wifiStateBroadcastReceiver = new WifiStateBroadcastReceiver();
+                wifiScanBroadcastReceiver = new WifiScanBroadcastReceiver(myContext);
+        
+                start();
+
+                synchronized(is_started) {
+                    is_started.notify();
                 }
-                
+
+                Looper.loop();
+
             }
-        };
-        
-        locationManager = (LocationManager) myContext.getSystemService(Context.LOCATION_SERVICE);
-        wifiStateBroadcastReceiver = new WifiStateBroadcastReceiver();
-        wifiScanBroadcastReceiver = new WifiScanBroadcastReceiver(myContext);
-        
-        start();
+        },"LocationDetectionStateMachine.init");
+        thread.setDaemon(true);
+        thread.start();
+
+        try {
+            synchronized(is_started) {
+                is_started.wait();
+            }
+        } catch(InterruptedException ex) {
+            Log.e(TAG, "thread interrupted before start completed", ex);
+        }
     }
     
     public static void manualCheckin(Context context, Handler mainThreadHandler, VenueSmart venue) {
