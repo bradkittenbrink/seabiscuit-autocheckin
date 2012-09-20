@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
@@ -139,6 +140,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
                     Log.d("Contacts", "onCheckOut()");
             }
         });
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
     
     public void displayFragment(int fragment_id) {
@@ -327,6 +329,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             if (findViewById(R.id.textview_contact_list) != null) {
                 ((CustomFontView) findViewById(R.id.textview_contact_list)).setText("");
             }
+            this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         } else if (next_fragment_id == R.id.tab_fragment_area_people) {
             switchTabBackground(R.id.rel_people);
             ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(getResStr(R.string.people_screen_title));
