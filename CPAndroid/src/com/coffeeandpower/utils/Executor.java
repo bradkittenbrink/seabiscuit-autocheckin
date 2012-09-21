@@ -112,38 +112,35 @@ public class Executor {
     public synchronized void getResumeForUserId(final int userId) {
         progress.setMessage("Loading");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.getResumeForUserId", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().getUserResume(userId);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.getResumeForUserId").start();
+        });
     }
 
     public synchronized void sendPlusOneForLove(final int post_id) {
         progress.setMessage("Sending...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.sendReview", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().sendPlusOneForLove(post_id);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.sendReview").start();
+        });
     }
 
     public synchronized void sendReview(final UserResume userResume,
             final String review) {
         progress.setMessage("Sending...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.sendReview", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().sendReview(userResume, review);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.sendReview").start();
+        });
     }
 
     public synchronized void getVenuesAndUsersWithCheckinsInBoundsDuringInterval(
@@ -152,89 +149,82 @@ public class Executor {
             progress.setMessage("Loading...");
             progress.show();
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.getVenuesAndUsersWithCheckinsInBoundsDuringInterval", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection()
                     .getVenuesAndUsersWithCheckinsInBoundsDuringInterval(coords, 7);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.getVenuesAndUsersWithCheckinsInBoundsDuringInterval").start();
+        });
     }
 
     public synchronized void getUserData() {
         progress.setMessage("Loading...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.getUserData", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().getUserData();
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.getUserData").start();
+        });
     }
 
     public synchronized void getVenuesCloseToLocation(final GeoPoint gp,
             final int number) {
         progress.setMessage("Loading nearby places...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.getVenuesCloseToLocation", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().getVenuesCloseToLocation(gp,
                         number);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.getVenuesCloseToLocation").start();
+        });
     }
 
     public synchronized void sendFriendRequest(final int userId) {
         progress.setMessage("Sending Request...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.sendFriendRequest", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().sendContactRequestToUserId(userId);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.sendFriendRequest").start();
+        });
     }
 
     public synchronized void acceptContactExchangeRequest(final int userId) {
         progress.setMessage("Completing contact exchange...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.sendAcceptContactRequestFromUserId", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().sendAcceptContactRequestFromUserId(userId);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.sendAcceptContactRequestFromUserId").start();
+        });
     }
 
     public synchronized void declineContactExchangeRequest(final int userId) {
         progress.setMessage("Canceling contact exchange...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.sendDeclineContactRequestFromUserId", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().sendDeclineContactRequestFromUserId(userId);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.sendDeclineContactRequestFromUserId").start();
+        });
     }
 
     public synchronized void addPlace(final String name) {
         progress.setMessage("Saving new place...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.addPlace", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().addPlace(name,
                         AppCAP.getUserCoordinates());
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.addPlace").start();
+        });
     }
 
     /**
@@ -250,40 +240,37 @@ public class Executor {
     public synchronized void getOneOnOneChatHistory(final int userId) {
         progress.setMessage("Loading chat...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.getOneOnOneChatHistory", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().getOneOnOneChatHistory(userId);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.getOneOnOneChatHistory").start();
+        });
     }
 
     public synchronized void sendOneOnOneChatMessage(final int userId,
             final String mess) {
         progress.setMessage("Loading...");
         // progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.sendOneOnOneChatMessage", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().sendOneOnOneChatMessage(userId,
                         mess);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.sendOneOnOneChatMessage").start();
+        });
     }
 
     public synchronized void getUsersCheckedInAtFoursquareID(final String venueId) {
         progress.setMessage("Loading...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.getUsersCheckedInAtFoursquareID", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection()
                         .getUsersCheckedInAtFoursquareID(venueId);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.getUsersCheckedInAtFoursquareID").start();
+        });
     }
 
     public synchronized void checkIn(final VenueSmart venue,
@@ -296,9 +283,8 @@ public class Executor {
             progress.show();
         }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.checkIn", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().checkIn(venue, checkInTime,
                         checkOutTime, statusText, checkinIsAutoCheckin);
                 AppCAP.addVenueToUserCheckinList(venue.getVenueId());
@@ -344,110 +330,102 @@ public class Executor {
                 }
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.checkIn").start();
+        });
     }
 
     public synchronized void checkOut() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.checkOut", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().checkOut();
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.checkOut").start();
+        });
     }
 
     public synchronized void enterInvitationCode(final String invitationCode,
             final double lat, final double lng) {
         progress.setMessage("Checking...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.enterInvitationCode", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().enterInvitationCode(
                         invitationCode, lat, lng);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.enterInvitationCode").start();
+        });
     }
 
     public synchronized void getInvitationCode(final double[] latLong) {
         progress.setMessage("Generating Code...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.getInvitationCode", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().getInvitationCodeForLocation(
                         latLong[0], latLong[1]);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.getInvitationCode").start();
-
+        });
     }
 
     public synchronized void saveUserJobCategory(final String selectedMajorJob,
             final String selectedMinorJob) {
         progress.setMessage("Uploading...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.saveUserJobCategory", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().saveUserJobCategory(
                         selectedMajorJob, selectedMinorJob);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.saveUserJobCategory").start();
+        });
     }
 
     public synchronized void setUserProfileData(final UserSmart user,
             final boolean isEmailChanged) {
         progress.setMessage("Uploading...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.setUserProfileData", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().setUserProfileData(user,
                         isEmailChanged);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.setUserProfileData").start();
+        });
     }
 
     public synchronized void uploadUserProfilePhoto() {
         progress.setMessage("Uploading photo...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.uploadUserProfilePhoto", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().uploadUserProfilePhoto();
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.uploadUserProfilePhoto").start();
+        });
     }
 
     public synchronized void getUserTransactionData() {
         progress.setMessage("Loading...");
         progress.show();
-        new Thread(new Runnable() {
+        runTaskAsync("Executor.getUserTransactionData", new Runnable() {
             @Override
             public void run() {
                 result = AppCAP.getConnection().getUserTransactionData();
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.getUserTransactionData").start();
+        });
     }
 
 
     public synchronized void deleteAccount() {
         progress.setMessage("Processing...");
         progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.deleteAccount", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().deleteUserAccount();
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }).start();
+        });
     }
 
     /**
@@ -463,13 +441,12 @@ public class Executor {
     public synchronized void postableVenues() {
             progress.setMessage("Loading...");
             progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.postableVenues", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().postableVenues();
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.postableVenues").start();
+        });
     }
    /**
      * Get/send venue feeds <br>
@@ -489,14 +466,13 @@ public class Executor {
             progress.setMessage(isSend ? "Sending..." : "Loading...");
             progress.show();
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.venueFeeds", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().venueFeedsForVenueWithID(
                         venueId, venueName, lastChatIDString, message, isSend, messageType);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.venueFeeds").start();
+        });
     }
     
     public synchronized void newPost(final int venueId,
@@ -507,14 +483,13 @@ public class Executor {
             progress.setMessage("Sending...");
             progress.show();
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        runTaskAsync("Executor.newPost", new Runnable() {
+            @Override public void run() {
                 result = AppCAP.getConnection().newPost(
                         venueId, venueName, lastChatIDString, message, messageType, original_post_id);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.venueFeeds").start();
+        });
     }
 
     public TextView getCounter() {
@@ -549,4 +524,11 @@ public class Executor {
         }, "Executor.changeSkillVisibility").start();
     }
 
+    /** Helper function for encapsulating task running.
+     *  This allows us to later experiment with other methods of launching tasks
+     *  such as using a managed thread pool or AsyncTask, etc.
+     */
+    private void runTaskAsync(String name, Runnable task) {
+        new Thread(task, name).start();
+    }
 }
