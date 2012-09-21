@@ -236,9 +236,8 @@ public class RootActivity extends FragmentActivity {
         switch (id) {
 
         case DIALOG_MUST_BE_A_MEMBER:
-            String.format(
-                (String) getResources().getText(R.string.contact_exchanged_message), name))
-                    .setCancelable(false)
+            builder.setMessage("You must be a member to use this feature.")
+                .setCancelable(false)
                     .setPositiveButton("LOGIN",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
