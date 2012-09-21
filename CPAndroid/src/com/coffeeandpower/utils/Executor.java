@@ -97,12 +97,10 @@ public class Executor {
 
             if (msg.what == AppCAP.HTTP_ERROR) {
                 exeInter.onErrorReceived();
-                new CustomDialog(context, "Error", result.getResponseMessage())
-                        .show();
+                new CustomDialog(context, "Error", result.getResponseMessage()).show();
             } else {
                 exeInter.onActionFinished(msg.what);
             }
-
         }
     };
     private TextView counter;
@@ -158,12 +156,10 @@ public class Executor {
             @Override
             public void run() {
                 result = AppCAP.getConnection()
-                        .getVenuesAndUsersWithCheckinsInBoundsDuringInterval(
-                                coords, 7);
+                    .getVenuesAndUsersWithCheckinsInBoundsDuringInterval(coords, 7);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
-        }, "Executor.getVenuesAndUsersWithCheckinsInBoundsDuringInterval")
-                .start();
+        }, "Executor.getVenuesAndUsersWithCheckinsInBoundsDuringInterval").start();
     }
 
     public synchronized void getUserData() {
@@ -277,8 +273,7 @@ public class Executor {
         }, "Executor.sendOneOnOneChatMessage").start();
     }
 
-    public synchronized void getUsersCheckedInAtFoursquareID(
-            final String venueId) {
+    public synchronized void getUsersCheckedInAtFoursquareID(final String venueId) {
         progress.setMessage("Loading...");
         progress.show();
         new Thread(new Runnable() {
@@ -297,7 +292,6 @@ public class Executor {
             final boolean checkinIsAutoCheckin, final Context context) {
 
         if (!checkinIsAutoCheckin) {
-
             progress.setMessage("Checking in...");
             progress.show();
         }
