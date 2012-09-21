@@ -31,7 +31,7 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.coffeeandpower.app.R;
+import com.coffeeandpower.app.R; 
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.VenueNameAndFeeds;

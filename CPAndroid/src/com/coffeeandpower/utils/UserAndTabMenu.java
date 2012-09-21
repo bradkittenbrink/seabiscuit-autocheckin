@@ -484,7 +484,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         dialog.show();
     }
 
-    private void showDialogCheckin() {
+    public void showDialogCheckin() {
         // custom dialog
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

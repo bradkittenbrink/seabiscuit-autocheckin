@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,6 +86,7 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
         public TextView textDate;
         public TextView textMessage;
         public LinearLayout listFeeds;
+        public LinearLayout reply_area;
         public Button removeButton;
 
         public ViewHolder(View convertView) {
@@ -158,6 +160,8 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
         vi.setTag(R.id.venue_name_and_feeds, venueNameAndFeeds);
         RelativeLayout love_sent_area = (RelativeLayout) vi
                 .findViewById(R.id.love_sent_area); 
+        LinearLayout reply_area = (LinearLayout) vi
+                .findViewById(R.id.item_venue_feeds_reply_listview);
 
     Date date = new Date();
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");        
@@ -170,22 +174,25 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
         e.printStackTrace();
     }
             
+    int pixels14 = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+            14, vi.getResources().getDisplayMetrics()));
     if (message.getEntryType().contentEquals(Feed.FEED_TYPE_LOVE)) {
         love_sent_area.setVisibility(View.VISIBLE);
         love_sent_area.measure(0, 0);
         int width = love_sent_area.getMeasuredWidth();
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 
+                LinearLayout.LayoutParams.WRAP_CONTENT);
         lp.setMargins(width, 0, 0, 0);
         textMessage.setLayoutParams(lp);
         textMessage.setTypeface(null,Typeface.BOLD);
     } else {
         love_sent_area.setVisibility(View.GONE);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 
+                LinearLayout.LayoutParams.WRAP_CONTENT);
         lp.setMargins(0, 0, 0, 0);
         textMessage.setLayoutParams(lp);
         textMessage.setTypeface(null,Typeface.NORMAL);
     }
-
     textDate.setText(dateOnly.format(date));
     textHour.setText(hourOnly.format(date));
     // Display images

@@ -4,5 +4,12 @@
     <item name="venue_name_and_feeds" type="id"/>
     <item name="venue_id" type="id"/>
     <item name="venue_name" type="id"/>
+    <item name="user_image_in_reply" type="id"/>
+    <item name="input_title_in_reply" type="id"/>
+    <item name="reply_item_area" type="id"/>
+    <item name="tag_feed_id" type="id"/>
+    <item name="tag_feed_type" type="id"/>
+    <item name="input_in_reply" type="id"/>
+    <item name="tag_feed_by_me" type="id"/>
 
 </resources>

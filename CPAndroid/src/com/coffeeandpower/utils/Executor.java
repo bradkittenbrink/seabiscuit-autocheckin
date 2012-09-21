@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.cont.DataHolder;
@@ -48,6 +49,8 @@ public class Executor {
     public static final int HANDLE_ACCOUNT_DELETE_SUCCEEDED = 1626;
     public static final int HANDLE_ACCOUNT_DELETE_FAILED = 1627;
     public static final int HANDLE_GET_POSTABLE_VENUES = 1628;
+    public static final int HANDLE_SENDING_PLUS_ONE = 1629;
+    
 
     private DataHolder result;
 
@@ -100,6 +103,7 @@ public class Executor {
 
         }
     };
+    private TextView counter;
 
     public synchronized DataHolder getResult() {
         return result;
@@ -115,6 +119,18 @@ public class Executor {
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
         }, "Executor.getResumeForUserId").start();
+    }
+
+    public synchronized void sendPlusOneForLove(final int post_id) {
+        progress.setMessage("Sending...");
+        progress.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().sendPlusOneForLove(post_id);
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.sendReview").start();
     }
 
     public synchronized void sendReview(final UserResume userResume,
@@ -476,5 +492,31 @@ public class Executor {
             }
         }, "Executor.venueFeeds").start();
     }
+    
+    public synchronized void newPost(final int venueId,
+            final String venueName, final String lastChatIDString,
+            final String message, boolean withProgress,
+            final String messageType, final int original_post_id) {
+        if (withProgress) {
+            progress.setMessage("Sending...");
+            progress.show();
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().newPost(
+                        venueId, venueName, lastChatIDString, message, messageType, original_post_id);
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.venueFeeds").start();
+    }
+
+public TextView getCounter() {
+    return counter;
+}
+
+public void setCounter(TextView counter) {
+    this.counter = counter;
+}
 
 }

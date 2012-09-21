@@ -7,9 +7,13 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +29,12 @@ import android.widget.TextView;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.activity.ActivityPlaceDetails;
 import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.cont.ChatMessage;
 import com.coffeeandpower.cont.Feed;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
+import com.coffeeandpower.fragments.FragmentFeedsForOneVenue;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.utils.Utils;
 
@@ -79,6 +85,10 @@ public class MyFeedsAdapter extends BaseAdapter {
         public ImageView profileImage;
         private RelativeLayout love_sent_area;
         private ImageView profileImageReceiver;
+        private LinearLayout reply_area;
+        private RelativeLayout plus_one_comment_button;
+        public TextView plus_one_counter;
+        private ImageView pill_button_plus1_comment_right;
 
         public ViewHolder(View convertView) {
 
@@ -92,7 +102,15 @@ public class MyFeedsAdapter extends BaseAdapter {
                     .findViewById(R.id.imageview_image);
             this.profileImageReceiver = (ImageView) convertView
                     .findViewById(R.id.imageview_image_receiver);
-
+            this.reply_area = (LinearLayout) convertView
+                    .findViewById(R.id.item_venue_feeds_reply_listview);
+            this.plus_one_comment_button = (RelativeLayout) convertView
+                    .findViewById(R.id.item_venue_feeds_plus_one_comment_button);
+            this.plus_one_counter = (TextView) convertView
+                    .findViewById(R.id.item_venue_feeds_plus_one_counter);
+            this.pill_button_plus1_comment_right = (ImageView) convertView
+                    .findViewById(R.id.pill_button_plus1_comment_right);
+            
             this.love_sent_area = (RelativeLayout) convertView
                     .findViewById(R.id.love_sent_area);
 
@@ -122,9 +140,10 @@ public class MyFeedsAdapter extends BaseAdapter {
         try {
             date = simpleDateFormat.parse(currentMessage.getDate());
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        int pixels14 = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                14, convertView.getResources().getDisplayMetrics()));
         String messageString=AppCAP.cleanResponseString(currentMessage
                                .getFormattedEntryText());
         if (currentMessage.getEntryType().contentEquals(Feed.FEED_TYPE_LOVE)) {
@@ -154,7 +173,47 @@ public class MyFeedsAdapter extends BaseAdapter {
             holder.textDate.setText("");
             holder.textHour.setText("");
         }
+
+        int pixels62 = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                62, convertView.getResources().getDisplayMetrics()));
+        int pixels22 = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                22, convertView.getResources().getDisplayMetrics()));
+        int pixels10 = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                10, convertView.getResources().getDisplayMetrics()));
+        ArrayList<Feed> feedsReply = currentMessage.getReplyFeeds();
+        if (feedsReply != null && feedsReply.size() > 0) {
+            holder.reply_area.setVisibility(View.VISIBLE);
+            displayReply(holder.reply_area, feedsReply, convertView.getContext());
+        } else {
+            holder.reply_area.setVisibility(View.GONE);
+        }
+        holder.plus_one_comment_button.setVisibility(View.VISIBLE);
+        holder.plus_one_comment_button.setTag(R.id.tag_feed_id, currentMessage.getId());
+        holder.plus_one_comment_button.setTag(R.id.tag_feed_type, currentMessage.getEntryType());
+        holder.plus_one_comment_button.setTag(R.id.tag_feed_by_me, currentMessage.getUserHasLiked());
+
+        if (currentMessage.getLikeCount() > 0){
+            holder.plus_one_counter.setText("" + currentMessage.getLikeCount() );
+            holder.plus_one_counter.setTextColor(Color.parseColor("#111111"));
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                    pixels62,
+                    pixels22);
+            lp.setMargins(0, 0, 0, 0);
+            holder.pill_button_plus1_comment_right.setLayoutParams(lp);
+
+        } else {
+            holder.plus_one_counter.setText("");
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                    pixels62,
+                    pixels22);
+            lp.setMargins(-pixels10, 0, 0, 0);
+            holder.pill_button_plus1_comment_right.setLayoutParams(lp);
+        }
+        holder.textMessage.setText(AppCAP.cleanResponseString(currentMessage
+                .getFormattedEntryText()));
+
         holder.textMessage.setText(messageString);
+
         // Display images
         displayImage(currentMessage.getAuthorPhotoUrl(),
                 currentMessage.getAuthorId(), holder.profileImage);
@@ -166,11 +225,58 @@ public class MyFeedsAdapter extends BaseAdapter {
         return convertView;
     }
 
+    private void displayReply(LinearLayout reply_area,
+            ArrayList<Feed> feedsReply, final Context context) {
+        int pixels10 = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                10, context.getResources().getDisplayMetrics()));
+        int pixels2 = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                2, context.getResources().getDisplayMetrics()));
+        int pixels5 = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                5, context.getResources().getDisplayMetrics()));
+        int pixels30 = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                50, context.getResources().getDisplayMetrics()));
+        reply_area.removeAllViews();
+        for (int i = 0; i < feedsReply.size(); i++) {
+            RelativeLayout layoutForInflateCategoryHeader = new RelativeLayout(context);
+            LayoutParams lpRow = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+            layoutForInflateCategoryHeader.setLayoutParams(lpRow); 
+            // user image
+            ImageView image = new ImageView(context);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(pixels30, pixels30);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            image.setLayoutParams(lp); 
+            image.setId(R.id.user_image_in_reply);
+            image.setPadding(pixels10, pixels5, pixels10, pixels10);
+            displayImage(feedsReply.get(i).getAuthorPhotoUrl(), feedsReply.get(i).getAuthorId(),
+                    image);
+            layoutForInflateCategoryHeader.addView(image);
+            // user image mask
+            ImageView imageM = new ImageView(context);
+            imageM.setLayoutParams(lp);          
+            imageM.setPadding(pixels10, pixels5, pixels10, pixels10);
+            Drawable drawable = context.getResources().getDrawable(
+                    R.drawable.user_image_mask);
+            imageM.setImageDrawable(drawable);
+            layoutForInflateCategoryHeader.addView(imageM);
+
+            // Set text
+            TextView catName = new TextView(context);
+            catName.setText(feedsReply.get(i).getEntryText());
+            RelativeLayout.LayoutParams lptext = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            lptext.addRule(RelativeLayout.RIGHT_OF, R.id.user_image_in_reply);
+            catName.setLayoutParams(lptext); 
+            catName.setPadding(pixels5, pixels5, 0, 0);
+            layoutForInflateCategoryHeader.addView(catName);
+
+            reply_area.addView(layoutForInflateCategoryHeader);
+        }
+    }
+
     public void displayImage(String imageUrl, int userId, ImageView profileImage) {
         if (AppCAP.isLoggedIn()) {
             if (imageUrl.contentEquals("") == false) {
                 imageLoader.DisplayImage(imageUrl, profileImage,
-                        R.drawable.default_avatar50, 70);
+                        R.drawable.default_avatar50, 30);
             }
             profileImage.setTag(userId);
             profileImage.setOnClickListener(new OnClickListener() {
@@ -191,7 +297,7 @@ public class MyFeedsAdapter extends BaseAdapter {
 
         } else {
             imageLoader.DisplayImage("", profileImage,
-                    R.drawable.default_avatar50_login, 70);
+                    R.drawable.default_avatar50_login, 30);
         }
     }
 

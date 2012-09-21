@@ -57,6 +57,7 @@
     <string name="login">Login</string>
     <string name="you_must_be_a_member">You must be a member to use this feature.</string>
     <string name="you_must_be_checked_in">Please check in at venue to post a question.</string>
+    <string name="you_have_to_be_checked_in">You have to be checked in to this venue to comment or +1.</string>
     <string name="dialog_post_a_question_title">Post a Question</string>
     <string name="dialog_post_a_question_content_0">Are you sure you want to ask this question? You are the only person here right now.</string>
     <string name="dialog_post_a_question_content_1">Are you sure you want to ask this question? It will be pushed to 1 person checked in to this location.</string>

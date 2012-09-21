@@ -1,5 +1,7 @@
 package com.coffeeandpower.cont;
 
+import java.util.ArrayList;
+
 import org.json.JSONObject;
 
 import android.os.Parcel;
@@ -30,6 +32,7 @@ public class Feed implements Parcelable {
     private int originalPostId;
     private int likeCount;
     private int userHasLiked;
+    private ArrayList<Feed> replyFeeds;
 
 
     public Feed(int id, String date, String entryText, int authorId,
@@ -52,6 +55,7 @@ public class Feed implements Parcelable {
         this.originalPostId = originalPostId;
         this.likeCount = likeCount;
         this.userHasLiked = userHasLiked;
+        this.replyFeeds = new ArrayList<Feed>();
     }
 
     
@@ -83,9 +87,10 @@ public class Feed implements Parcelable {
         
         this.entryType = objFeed.optString("type");
         this.venueId = objFeed.optInt("venueId");
-        this.originalPostId = objFeed.optInt("originalPostId");
-        this.likeCount = objFeed.optInt("likeCount");
-        this.userHasLiked = objFeed.optInt("userHasLiked");
+        this.originalPostId = objFeed.optInt("original_post_id");
+        this.likeCount = objFeed.optInt("like_count");
+        this.userHasLiked = objFeed.optInt("user_has_liked");
+        this.replyFeeds = new ArrayList<Feed>();
     }
 
     public int getId() {
@@ -311,6 +316,42 @@ public class Feed implements Parcelable {
         this.authorPhotoUrl = in.readString();
         this.receiverPhotoUrl = in.readString();
         this.entryType = in.readString();
+        this.replyFeeds = new ArrayList<Feed>();
+    }
+
+
+    public ArrayList<Feed> getReplyFeeds() {
+        return replyFeeds;
+    }
+
+
+    public void setReplyFeeds(ArrayList<Feed> replyFeeds) {
+        this.replyFeeds = replyFeeds;
+    }
+
+
+    public void attachToFeedsArray(ArrayList<Feed> feedsArray) {
+        if (originalPostId != 0) {
+            Feed originalFeed = searchFeedInFeedsArray(feedsArray, originalPostId);
+            if (originalFeed != null) {
+                ArrayList<Feed> replyFeeds = originalFeed.getReplyFeeds();
+                replyFeeds.add(this);
+            }
+        }
+        
+    }
+
+
+    private Feed searchFeedInFeedsArray(ArrayList<Feed> feedsArray,
+            int originalPostId2) {
+        Feed returnedFeed = null;
+        for (Feed currFeed : feedsArray) {
+            if (currFeed.getId() == originalPostId2) {
+                returnedFeed = currFeed;
+                break;
+            }
+        }
+        return returnedFeed;
     }
 
 }

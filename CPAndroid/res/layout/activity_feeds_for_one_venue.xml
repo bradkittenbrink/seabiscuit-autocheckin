@@ -96,14 +96,19 @@
     <ListView
         android:id="@+id/listview_places_chat"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/horizontal_line_after_update"
         android:layout_marginBottom="4dp"
         android:background="#f5f5f5"
-        android:cacheColorHint="#ffffff"
+        android:cacheColorHint="@android:color/transparent"
+        android:clickable="false"
+        android:descendantFocusability="afterDescendants"
         android:divider="#eeeeee"
         android:dividerHeight="1dp"
-        android:headerDividersEnabled="false" >
+        android:drawSelectorOnTop="false"
+        android:focusable="true"
+        android:headerDividersEnabled="false"
+        android:listSelector="@android:color/transparent" >
     </ListView>
 
 </RelativeLayout>

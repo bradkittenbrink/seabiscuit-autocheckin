@@ -6,25 +6,45 @@ import java.util.Observable;
 import java.util.Observer;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
+import android.view.ViewParent;
+import android.view.Window;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
@@ -32,11 +52,14 @@ import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityEnterInviteCode;
 import com.coffeeandpower.activity.ActivityLoginPage;
+import com.coffeeandpower.activity.ActivitySettings;
+import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.adapters.MyVenueFeedsAdapter;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Feed;
+import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.fragments.FragmentContacts;
 import com.coffeeandpower.fragments.FragmentFeedsForOneVenue;
@@ -44,6 +67,7 @@ import com.coffeeandpower.fragments.FragmentMap;
 import com.coffeeandpower.fragments.FragmentPeopleAndPlaces;
 import com.coffeeandpower.fragments.FragmentPostableFeedVenue;
 import com.coffeeandpower.fragments.FragmentVenueFeeds;
+import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
@@ -92,7 +116,8 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             super.handleMessage(msg);
         }
     };
-    private int  fragment_id = R.id.tab_fragment_area_feed; 
+    private int  fragment_id = R.id.tab_fragment_area_feed;
+    private DataHolder result; 
     
     public int getFragmentId() {
         return fragment_id;
@@ -101,11 +126,14 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
     public void setFragmentId(int fragment_id) {
         this.fragment_id = fragment_id;
     }
+    
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab_activity_venue_feeds);
+
 
         ((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
         
@@ -140,7 +168,8 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
                     Log.d("Contacts", "onCheckOut()");
             }
         });
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN |
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
     
     public void displayFragment(int fragment_id) {
@@ -329,7 +358,8 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             if (findViewById(R.id.textview_contact_list) != null) {
                 ((CustomFontView) findViewById(R.id.textview_contact_list)).setText("");
             }
-            this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE |
+                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         } else if (next_fragment_id == R.id.tab_fragment_area_people) {
             switchTabBackground(R.id.rel_people);
             ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(getResStr(R.string.people_screen_title));
@@ -355,6 +385,13 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         }
     }
     
+    public void onClickPlusOneOrComment(View v) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentFeedsForOneVenue currFrag = (FragmentFeedsForOneVenue) manager.findFragmentById(R.id.tab_fragment_area_feeds_for_one_venue);
+        if (currFrag != null) {
+            currFrag.onClickPlusOneOrComment(v);
+        }
+    }
 
     public void onClickRefresh(View v) {
         FragmentManager manager = getSupportFragmentManager();
@@ -370,8 +407,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
     public void onClickLocateMe(View v) {
         FragmentManager manager = getSupportFragmentManager();
 
-        if (manager != null)
-        {
+        if (manager != null) {
             FragmentMap currFrag = (FragmentMap)manager.findFragmentById(R.id.tab_fragment_area_map);
             if (currFrag != null) {        
                 currFrag.onClickLocateMe(v);

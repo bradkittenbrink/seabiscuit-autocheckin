@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -276,9 +277,11 @@ public class HttpUtil {
                         userResume.setSmartererName(payload
                                 .optString("smarterer_name"));
                         if (payload.optString("job_title").length() > 0) {
-                            userResume.setJobTitle(payload.optString("job_title"));
+                            userResume.setJobTitle(payload
+                                    .optString("job_title"));
                         } else {
-                            userResume.setJobTitle(payload.optString("headline"));
+                            userResume.setJobTitle(payload
+                                    .optString("headline"));
                         }
                         // Get Work data
                         JSONArray arrayWork = payload.optJSONArray("work");
@@ -821,6 +824,74 @@ public class HttpUtil {
     }
 
     /**
+     * Send Plus One
+     * 
+     * @param user
+     * @param review
+     * @return
+     */
+    public DataHolder sendPlusOneForLove(int post_id) {
+
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                "Internet connection error", null);
+
+        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
+                HttpVersion.HTTP_1_1);
+
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + "api.php");
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        try {
+            params.add(new BasicNameValuePair("action", "sendPlusOneForLove"));
+            params.add(new BasicNameValuePair("review_id", post_id + ""));
+
+            post.setEntity(new UrlEncodedFormEntity(params));
+
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            String responseString = EntityUtils.toString(resEntity);
+            if (Constants.enableApiJsonLogging)
+                RootActivity.log("HttpUtil_sendPlusOneForLove: " + responseString);
+
+            if (responseString != null) {
+
+                JSONObject json = new JSONObject(responseString);
+                if (json != null) {
+
+                    boolean res = json.optBoolean("error");
+                    result.setObject(res);
+
+                    String message = json.optString("payload");
+                    result.setResponseMessage(message);
+                    result.setHandlerCode(Executor.HANDLE_SENDING_PLUS_ONE);
+                    return result;
+                }
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.setResponseMessage("JSON Parsing Error: " + e);
+            return result;
+        }
+        return result;
+    }
+
+    /**
      * Send love review
      * 
      * @param user
@@ -1065,8 +1136,8 @@ public class HttpUtil {
      * @return
      */
     public DataHolder setNotificationSettings(String distance,
-            boolean checkedInOnly, boolean quietTimeEnabled,
-            String quietFrom, String quietTo, boolean contactsOnlyChat) {
+            boolean checkedInOnly, boolean quietTimeEnabled, String quietFrom,
+            String quietTo, boolean contactsOnlyChat) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
 
@@ -1088,7 +1159,9 @@ public class HttpUtil {
                     quietTimeEnabled ? "1" : "0"));
             params.add(new BasicNameValuePair("quiet_time_from", quietFrom));
             params.add(new BasicNameValuePair("quiet_time_to", quietTo));
-            params.add(new BasicNameValuePair("tz_offset_seconds", ((Integer)(TimeZone.getDefault().getRawOffset() * 1000)).toString()));
+            params.add(new BasicNameValuePair("tz_offset_seconds",
+                    ((Integer) (TimeZone.getDefault().getRawOffset() * 1000))
+                            .toString()));
             params.add(new BasicNameValuePair("contacts_only_chat",
                     contactsOnlyChat ? "1" : "0"));
 
@@ -2156,8 +2229,10 @@ public class HttpUtil {
         }
         return result;
     }
+
     public DataHolder getNearestVenueFeedsList() {
-        Log.d("HttpUtil", "---------------------getNearestVenueFeedsList------------");
+        Log.d("HttpUtil",
+                "---------------------getNearestVenueFeedsList------------");
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
@@ -2165,11 +2240,14 @@ public class HttpUtil {
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        
+
         try {
-            params.add(new BasicNameValuePair("action", "getNearestVenuesWithActiveFeeds"));
-            params.add(new BasicNameValuePair("lat", URLEncoder.encode(AppCAP.getUserCoordinates()[4] + "", "utf-8")));
-            params.add(new BasicNameValuePair("lng", URLEncoder.encode(AppCAP.getUserCoordinates()[5] + "", "utf-8")));
+            params.add(new BasicNameValuePair("action",
+                    "getNearestVenuesWithActiveFeeds"));
+            params.add(new BasicNameValuePair("lat", URLEncoder.encode(
+                    AppCAP.getUserCoordinates()[4] + "", "utf-8")));
+            params.add(new BasicNameValuePair("lng", URLEncoder.encode(
+                    AppCAP.getUserCoordinates()[5] + "", "utf-8")));
             post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             // Execute HTTP Post Request
@@ -2190,38 +2268,42 @@ public class HttpUtil {
                     JSONArray venues = payload.optJSONArray("venues");
                     if (venues != null) {
                         for (int m = 0; m < venues.length(); m++) {
-                            
+
                             JSONObject venue = venues.optJSONObject(m);
-                            
+
                             if (venue != null) {
                                 venuesArray.add(new Venue(venue));
                             }
                         }
-                        
+
                     }
                 }
-                
+
                 Collections.sort(venuesArray, new Comparator<Venue>() {
                     public int compare(Venue v1, Venue v2) {
-                      return v2.getPosts_count() - v1.getPosts_count();
+                        return v2.getPosts_count() - v1.getPosts_count();
                     }
                 });
                 ArrayList<Venue> threeVenuesArray = new ArrayList<Venue>();
                 String listIds = "";
-                for(int i=0; i<3; i++) {
+                for (int i = 0; i < 3; i++) {
                     if (i < venuesArray.size()) {
                         if (listIds.contentEquals("") == false) {
                             listIds += ",";
                         }
-                        listIds += String.valueOf(venuesArray.get(i).getVenueId());
+                        listIds += String.valueOf(venuesArray.get(i)
+                                .getVenueId());
                         threeVenuesArray.add(venuesArray.get(i));
-                        VenueNameAndFeeds venueNameAndFeeds = new VenueNameAndFeeds(venuesArray.get(i)
-                                .getVenueId(), venuesArray.get(i).getName(), new ArrayList<Feed>()); 
-                        AppCAP.updateUserLastCheckinVenue(venueNameAndFeeds, true);
+                        VenueNameAndFeeds venueNameAndFeeds = new VenueNameAndFeeds(
+                                venuesArray.get(i).getVenueId(), venuesArray
+                                        .get(i).getName(),
+                                new ArrayList<Feed>());
+                        AppCAP.updateUserLastCheckinVenue(venueNameAndFeeds,
+                                true);
                     }
-                    
+
                 }
-                
+
                 if (AppCAP.getUserLastCheckinVenueIds().contentEquals("") == false) {
                     return getVenueFeedsList();
                 }
@@ -2258,8 +2340,8 @@ public class HttpUtil {
                 HttpVersion.HTTP_1_1);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
-        Log.d("HttpUtil", "getVenueFeedsList" +
-                AppCAP.getUserLastCheckinVenueIds());
+        Log.d("HttpUtil",
+                "getVenueFeedsList" + AppCAP.getUserLastCheckinVenueIds());
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         if (AppCAP.getUserLastCheckinVenueIds().contentEquals("") == true) {
             return getNearestVenueFeedsList();
@@ -2338,7 +2420,103 @@ public class HttpUtil {
                 result.setResponseMessage("JSON Parsing Error: " + e);
                 return result;
             }
-        } 
+        }
+        return result;
+    }
+
+    public DataHolder getPostRepliesForVenueFeed(int venueId,
+            String lastChatIDString, VenueNameAndFeeds currVenue) {
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                "Internet connection error", null);
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        try {
+            params.add(new BasicNameValuePair("action", "getVenueFeed"));
+            params.add(new BasicNameValuePair("venue_id", Integer
+                    .toString(venueId)));
+            params.add(new BasicNameValuePair("last_id", lastChatIDString));
+            params.add(new BasicNameValuePair("replies_only", "1"));
+
+            post.setEntity(new UrlEncodedFormEntity(params));
+
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            String responseString = EntityUtils.toString(resEntity);
+            if (Constants.enableApiJsonLogging)
+                RootActivity.log("HttpUtil_VenueChatForVenueWithID: "
+                        + responseString);
+
+            if (responseString != null && responseString.trim().length() > 0) {
+                JSONObject json = new JSONObject(responseString);
+                if (json != null) {
+
+                    if (json.optBoolean("error")) {
+                        result.setHandlerCode(AppCAP.HTTP_ERROR);
+                        result.setResponseMessage(json.optString("message"));
+                    } else {
+                        JSONObject feedOriginal = json.optJSONObject("payload");
+                        if (feedOriginal != null && feedOriginal.length() > 0) {
+                            Iterator iter = feedOriginal.keys();
+                            while (iter.hasNext()) {
+                                String key = (String) iter.next();
+                                JSONArray feeds = feedOriginal
+                                        .getJSONArray(key);
+                                ArrayList<Feed> feedsArray = currVenue
+                                        .getFeedsArray();
+                                Feed currentFeed;
+
+                                if (feeds != null) {
+                                    for (int m = 0; m < feeds.length(); m++) {
+
+                                        JSONObject currFeed = feeds
+                                                .optJSONObject(m);
+                                        if (currFeed != null
+                                                && currFeed.optString("entry")
+                                                        .contentEquals("") == false) {
+                                            try {
+                                                currentFeed = new Feed(currFeed);
+                                                currentFeed
+                                                        .attachToFeedsArray(feedsArray);
+                                            } catch (Exception e) {
+                                                Log.d("HttpUtil",
+                                                        "Received exception "
+                                                                + e.getLocalizedMessage()
+                                                                + " from getVenueFeedsList API");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        result.setObject(currVenue);
+                        result.setHandlerCode(Executor.HANDLE_VENUE_FEED);
+                        return result;
+                    }
+                }
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.setResponseMessage("JSON Parsing Error: " + e);
+            return result;
+        }
         return result;
     }
 
@@ -2350,7 +2528,8 @@ public class HttpUtil {
      * @return
      */
     public DataHolder venueFeedsForVenueWithID(int venueId, String venueName,
-            String lastChatIDString, String message, boolean isSend, String messageType) {
+            String lastChatIDString, String message, boolean isSend,
+            String messageType) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
@@ -2413,6 +2592,8 @@ public class HttpUtil {
                         VenueNameAndFeeds currVenue = new VenueNameAndFeeds(
                                 venueId, venueName, feedsArray);
 
+                        getPostRepliesForVenueFeed(venueId, lastChatIDString,
+                                currVenue);
                         result.setObject(currVenue);
                         if (isSend == false) {
                             result.setHandlerCode(Executor.HANDLE_VENUE_FEED);
@@ -2444,6 +2625,102 @@ public class HttpUtil {
         return result;
     }
 
+    /**
+     * Get or send venue feed
+     * 
+     * @param venueId
+     * @param lastChatIDString
+     * @return
+     */
+    public DataHolder newPost(int venueId, String venueName,
+            String lastChatIDString, String message, 
+            String messageType, int original_post_id) {
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                "Internet connection error", null);
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        try {
+                params.add(new BasicNameValuePair("action", "newPost"));
+                params.add(new BasicNameValuePair("venue_id", Integer
+                        .toString(venueId)));
+                params.add(new BasicNameValuePair("type", messageType));
+                params.add(new BasicNameValuePair("entry", message));
+                params.add(new BasicNameValuePair("original_post_id", Integer
+                        .toString(original_post_id)));
+                
+ 
+            post.setEntity(new UrlEncodedFormEntity(params));
+
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            String responseString = EntityUtils.toString(resEntity);
+            if (Constants.enableApiJsonLogging)
+                RootActivity.log("HttpUtil_VenueChatForVenueWithID: "
+                        + responseString);
+
+            if (responseString != null && responseString.trim().length() > 0) {
+                JSONObject json = new JSONObject(responseString);
+                if (json != null) {
+
+                    if (json.optBoolean("error")) {
+                        result.setHandlerCode(AppCAP.HTTP_ERROR);
+                        result.setResponseMessage(json.optString("message"));
+                    } else {
+                        JSONArray feeds = json.optJSONArray("payload");
+                        ArrayList<Feed> feedsArray = new ArrayList<Feed>();
+
+                        if (feeds != null) {
+                            for (int m = 0; m < feeds.length(); m++) {
+
+                                JSONObject currFeed = feeds.optJSONObject(m);
+                                if (currFeed != null
+                                        && currFeed.optString("entry")
+                                                .contentEquals("") == false) {
+                                    try {
+                                        feedsArray.add(new Feed(currFeed));
+                                    } catch (Exception e) {
+                                        Log.d("HttpUtil", "Received exception "
+                                                + e.getLocalizedMessage()
+                                                + " from getVenueFeedsList API");
+                                    }
+                                }
+                            }
+                        }
+                        VenueNameAndFeeds currVenue = new VenueNameAndFeeds(
+                                venueId, venueName, feedsArray);
+
+                        getPostRepliesForVenueFeed(venueId, lastChatIDString,
+                                currVenue);
+                        result.setObject(currVenue);
+                        result.setHandlerCode(Executor.HANDLE_SEND_VENUE_FEED);
+                        return result;
+                    }
+                }
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.setResponseMessage("JSON Parsing Error: " + e);
+            return result;
+        }
+        return result;
+    }
 
     /**
      * Get or send venue feed
@@ -2460,7 +2737,8 @@ public class HttpUtil {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
 
         try {
-            params.add(new BasicNameValuePair("action", "getPostableFeedVenueIDs"));
+            params.add(new BasicNameValuePair("action",
+                    "getPostableFeedVenueIDs"));
 
             post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
@@ -2470,8 +2748,7 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_postableVenues: "
-                        + responseString);
+                RootActivity.log("HttpUtil_postableVenues: " + responseString);
 
             if (responseString != null && responseString.trim().length() > 0) {
                 JSONObject json = new JSONObject(responseString);
@@ -2495,7 +2772,7 @@ public class HttpUtil {
                                         VenueNameArray.add(currVenue);
                                         break;
                                     }
-                                    
+
                                 }
 
                             }
@@ -2679,7 +2956,6 @@ public class HttpUtil {
         }
         return result;
     }
-
 
     /**
      * Save User Job Category
@@ -2917,7 +3193,7 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("phone", ""));
             params.add(new BasicNameValuePair("status", statusText + ""));
 
-            params.add(new BasicNameValuePair("is_virtual", "0")); 
+            params.add(new BasicNameValuePair("is_virtual", "0"));
             if (isAutomatic)
                 params.add(new BasicNameValuePair("is_automatic", "1"));
             else
@@ -3738,13 +4014,13 @@ public class HttpUtil {
         return result;
 
     }
-    
-    public void synchronizeUserData(JSONObject json){
+
+    public void synchronizeUserData(JSONObject json) {
         // synchronize the user data
         JSONObject obj = json.optJSONObject("params");
-        if (obj != null){
+        if (obj != null) {
             JSONObject userObj = obj.optJSONObject("params");
-            if (userObj != null){
+            if (userObj != null) {
                 String enteredInviteCode = userObj
                         .optString("entered_invite_code");
                 if (enteredInviteCode != null) {
@@ -3752,31 +4028,33 @@ public class HttpUtil {
                         AppCAP.setEnteredInviteCode();
                     }
                 }
-                int userId = userObj.optInt("id"); 
+                int userId = userObj.optInt("id");
                 String nickName = userObj.optString("nickname");
                 if (nickName != null) {
                     AppCAP.setLoggedInUserNickname(nickName);
                 }
-                if (userId != 0){
+                if (userId != 0) {
                     AppCAP.setLoggedInUserId(userId);
                 }
                 JSONObject checkin_data = userObj.optJSONObject("checkin_data");
                 if (checkin_data != null) {
-                    int checkedin = checkin_data.optInt("checked_in"); 
+                    int checkedin = checkin_data.optInt("checked_in");
                     AppCAP.setUserCheckedIn((checkedin == 1));
-                    
+
                     if (checkedin == 1) {
-                        int venue_id = checkin_data.optInt("id"); 
+                        int venue_id = checkin_data.optInt("id");
                         AppCAP.setUserLastCheckinVenueId(venue_id);
-                        String venue_name = checkin_data.optString("name"); 
-                        AppCAP.updateUserLastCheckinVenue(new VenueNameAndFeeds(venue_id, venue_name), true);
-                        float  venue_lng = (float) checkin_data.optDouble("lng"); 
-                        float  venue_lat = (float) checkin_data.optDouble("lat");
+                        String venue_name = checkin_data.optString("name");
+                        AppCAP.updateUserLastCheckinVenue(
+                                new VenueNameAndFeeds(venue_id, venue_name),
+                                true);
+                        float venue_lng = (float) checkin_data.optDouble("lng");
+                        float venue_lat = (float) checkin_data.optDouble("lat");
                         AppCAP.setUserLatLon(venue_lat, venue_lng);
                     } else {
                         AppCAP.setUserLastCheckinVenueId(0);
-                        float  venue_lng = (float) userObj.optDouble("lng"); 
-                        float  venue_lat = (float) userObj.optDouble("lat");
+                        float venue_lng = (float) userObj.optDouble("lng");
+                        float venue_lat = (float) userObj.optDouble("lat");
                         AppCAP.setUserLatLon(venue_lat, venue_lng);
                     }
                 }
