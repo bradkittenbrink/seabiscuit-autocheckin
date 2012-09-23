@@ -66,7 +66,13 @@
     <string name="activity_places_details_have">Have worked here...</string>
     <string name="activity_settings_invite">Invite</string>
     <string name="activity_settings_profile_photo">Profile Photo</string>
-    <string name="activity_settings_strongest_skill">My strongest skill is..</string>
+    <string name="activity_settings_strongest_skill_lbl">My strongest skill is...</string>
+    <string name="activity_settings_strongest_skill_lbl_p">My strongest skills are...</string>
+    <string name="activity_settings_skills_lbl">Select a maximum of five skills that best represent you.</string>
+    <string name="max_5_skills">You may select a maximum of 5 skills</string>
+    <string name="activity_linkedin_skills_title">Skills</string>
+    <string name="profile_title">Profile</string>
+    <string name="activity_settings_strongest_skill">None</string>
     <string name="activity_settings_job_category_lbl">Job Categories</string>
     <string name="activity_settings_job_category">Other/Other</string>
     <string name="activity_settings_smarterer">Smarterer Badges</string>

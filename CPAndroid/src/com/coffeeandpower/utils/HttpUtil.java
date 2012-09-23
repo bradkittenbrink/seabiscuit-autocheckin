@@ -65,6 +65,7 @@ import com.coffeeandpower.cont.Listing;
 import com.coffeeandpower.cont.RankedSkill;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.Transaction;
+import com.coffeeandpower.cont.UserLinkedinSkills;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserShort;
 import com.coffeeandpower.cont.UserSmart;
@@ -586,7 +587,142 @@ public class HttpUtil {
         }
         return result;
     }
+    
+    public DataHolder changeSkillVisibility(int skill_id, int visible) {
 
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                "Internet connection error", null);
+
+        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
+                HttpVersion.HTTP_1_1);
+
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + "api.php");
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        try {
+            params.add(new BasicNameValuePair("action", "changeSkillVisibility"));
+            params.add(new BasicNameValuePair("skill_id", skill_id + ""));
+            params.add(new BasicNameValuePair("visible", visible + ""));
+
+            post.setEntity(new UrlEncodedFormEntity(params));
+
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            String responseString = EntityUtils.toString(resEntity);
+ 
+            if (responseString != null) {
+
+                JSONObject json = new JSONObject(responseString);
+                if (json != null) {
+
+                    boolean res = json.optBoolean("error");
+                    result.setObject(res);
+
+                    String message = json.optString("payload");
+                    result.setResponseMessage(message);
+                    result.setHandlerCode(Executor.HANDLE_USER_LINKEDIN_SKILL_UPDATE);
+                    return result;
+                }
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.setResponseMessage("JSON Parsing Error: " + e);
+            return result;
+        }
+        return result;
+    }
+
+    
+    
+    public DataHolder getSkillsForUser() {
+
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                "Internet connection error", null);
+
+        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
+                HttpVersion.HTTP_1_1);
+
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        try {
+            params.add(new BasicNameValuePair("action", "getSkillsForUser"));
+
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            String responseString = EntityUtils.toString(resEntity);
+            if (Constants.enableApiJsonLogging)
+                RootActivity.log("HttpUtil_getCheckInDataWithUserId: "
+                        + responseString);
+
+            if (responseString != null) {
+
+                JSONObject json = new JSONObject(responseString);
+                if (json != null) {
+
+                    JSONArray arraySkills = json.optJSONArray("payload");
+                    ArrayList<UserLinkedinSkills> userLinkedinSkills = new ArrayList<UserLinkedinSkills>();
+                    if (arraySkills != null) {
+                        for (int x = 0; x < arraySkills.length(); x++) {
+
+                            JSONObject objSkill = arraySkills.optJSONObject(x);
+                            if (objSkill != null) {
+                                userLinkedinSkills.add(new UserLinkedinSkills(objSkill
+                                        .optInt("id"), objSkill
+                                        .optString("name"), objSkill
+                                        .optInt("visible") == 0 ? false : true));
+                            }
+                        }
+                    }
+                    result.setObject(userLinkedinSkills);
+                    result.setHandlerCode(Executor.HANDLE_USER_LINKEDIN_SKILLS);
+                    return result;
+                }
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.setResponseMessage("JSON Parsing Error: " + e);
+            return result;
+        }
+        return result;
+    }
+    
+    
+    
     /**
      * Get user data with userID
      * 

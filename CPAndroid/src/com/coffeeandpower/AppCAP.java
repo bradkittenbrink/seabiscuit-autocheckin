@@ -122,7 +122,7 @@ public class AppCAP extends Application {
     //public static final String URL_WEB_SERVICE =
     // "http://dev.worklist.net/~andres/candpweb2/web/"; // staging
     //public static final String URL_WEB_SERVICE =
-    //"http://dev.worklist.net/~vincent/candpweb2_18109/web/"; // staging
+    //"http://dev.worklist.net/~vincent/candpweb2_18320/web/"; // staging
 
     public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
     public static final String FOURSQUARE_OAUTH = "BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4";

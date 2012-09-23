@@ -79,7 +79,7 @@
 
         <!--
              OPTIONAL, if you want to receive push, push opened and registration 
-            completed intents
+            completed intents
         -->
         <receiver android:name="com.coffeeandpower.urbanairship.IntentReceiver" />
 
@@ -219,6 +219,11 @@
         </activity>
         <activity
             android:name="com.coffeeandpower.activity.ActivityInviteContacts"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.coffeeandpower.activity.ActivityLinkedinSkills"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>

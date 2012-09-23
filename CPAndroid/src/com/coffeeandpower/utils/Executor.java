@@ -50,6 +50,8 @@ public class Executor {
     public static final int HANDLE_ACCOUNT_DELETE_FAILED = 1627;
     public static final int HANDLE_GET_POSTABLE_VENUES = 1628;
     public static final int HANDLE_SENDING_PLUS_ONE = 1629;
+    public static final int HANDLE_USER_LINKEDIN_SKILLS = 1630;
+    public static final int HANDLE_USER_LINKEDIN_SKILL_UPDATE = 1631;
     
 
     private DataHolder result;
@@ -511,12 +513,36 @@ public class Executor {
         }, "Executor.venueFeeds").start();
     }
 
-public TextView getCounter() {
-    return counter;
-}
-
-public void setCounter(TextView counter) {
-    this.counter = counter;
-}
+    public TextView getCounter() {
+        return counter;
+    }
+    
+    public void setCounter(TextView counter) {
+        this.counter = counter;
+    }
+    
+    public void getSkillsForUser() {
+        progress.setMessage("Loading linkedin skills ...");
+        progress.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().getSkillsForUser();
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.getOneOnOneChatHistory").start();
+    }
+    
+    public synchronized void changeSkillVisibility(final int skill_id, final int visible)  {
+        progress.setMessage("Update skill...");
+        progress.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().changeSkillVisibility(skill_id, visible) ;
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.changeSkillVisibility").start();
+    }
 
 }

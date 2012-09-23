@@ -77,14 +77,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/activity_settings_strongest_skill"
+                    android:text="@string/activity_settings_strongest_skill_lbl"
                     android:textColor="#666"
                     android:textSize="19sp" />
 
-                <Spinner
+                <Button
                     android:id="@+id/strongSkill"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|left"
+                    android:text="@string/activity_settings_strongest_skill" />
 
                 <com.coffeeandpower.views.CustomFontView
                     android:id="@+id/jobCategoryLbl"
@@ -99,6 +101,7 @@
                     android:id="@+id/jobCategory"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical|left"
                     android:text="@string/activity_settings_job_category" />
 
                 <com.coffeeandpower.views.CustomFontView

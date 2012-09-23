@@ -51,6 +51,7 @@ public class ActivitySettings extends RootActivity {
     public static final String IMAGE_FOLDER = "/CoffeeAndPower";
     private final static int PROFILE_PIC_REQUEST = 1455;
     private final static int CATEGORY_REQUEST = 1456;
+    private final static int SKILL_REQUEST = 1457;
 
     private UserSmart loggedUser;
 
@@ -61,7 +62,7 @@ public class ActivitySettings extends RootActivity {
     private RelativeLayout backgroundPhoto;
     private Button deleteAccount;
 
-    private Spinner strongestSkill;
+    private Button strongestSkill;
     private Button jobCategory;
     private Spinner profileVisibility;
 
@@ -168,7 +169,7 @@ public class ActivitySettings extends RootActivity {
         textEmail = (EditText) findViewById(R.id.edit_email);
         imageProfilePhoto = (ImageView) findViewById(R.id.imagebutton_user_face);
         backgroundPhoto = (RelativeLayout) findViewById(R.id.activity_user_profile_root);
-        strongestSkill = (Spinner) findViewById(R.id.strongSkill);
+        strongestSkill = (Button) findViewById(R.id.strongSkill);
         jobCategory = (Button) findViewById(R.id.jobCategory);
         profileVisibility = (Spinner) findViewById(R.id.profileVisibility);
         deleteAccount = (Button) findViewById(R.id.deleteAccount);
@@ -233,13 +234,15 @@ public class ActivitySettings extends RootActivity {
             }
         });
 
-        // -- Setup the strongest skill spinner
-        String[] skillsList = {};
-        ArrayAdapter<String> skillAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, skillsList);
-        skillAdapter
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        strongestSkill.setAdapter(skillAdapter);
+        strongestSkill.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(getApplicationContext(),
+                        ActivityLinkedinSkills.class);
+                startActivityForResult(intent, SKILL_REQUEST);
+            }
+        });
 
         // -- Setup the visibility options spinner
         String[] visibilityOptions = { "Allow anyone", "Only logged in users" };
@@ -330,7 +333,7 @@ public class ActivitySettings extends RootActivity {
             textEmail.setText(loggedUser.getUsername());
 
             displayCategory();
-            // TODO: Get current skill
+            displaySkill();
         }
     }
 
@@ -353,6 +356,24 @@ public class ActivitySettings extends RootActivity {
             jobCategory.setText(jobCategories);
         }
 
+
+    }
+
+    public void displaySkill(){
+        
+        String userSkills = loggedUser.getSkills();
+        
+        if (userSkills.compareTo("") != 0) {
+            strongestSkill.setText(userSkills);
+        }
+        CustomFontView lib = (CustomFontView) findViewById(R.id.strongSkillLbl);
+        if (lib != null){
+            if (userSkills.contains(", ")){
+                    lib.setText(getResources().getString(R.string.activity_settings_strongest_skill_lbl_p));
+            } else {
+                lib.setText(getResources().getString(R.string.activity_settings_strongest_skill_lbl));
+            }
+        }
 
     }
     /**
@@ -432,6 +453,12 @@ public class ActivitySettings extends RootActivity {
                 loggedUser.setMajorJobCategory(intent.getStringExtra("major"));
                 loggedUser.setMinorJobCategory(intent.getStringExtra("minor"));
                 displayCategory();
+            }
+            break;
+        case SKILL_REQUEST:
+            if (resultCode == RESULT_OK) {
+                loggedUser.setSkills(intent.getStringExtra("stronguestSkillsList"));
+                displaySkill();
             }
             break;
         case PROFILE_PIC_REQUEST:
