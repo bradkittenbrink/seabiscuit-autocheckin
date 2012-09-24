@@ -305,6 +305,9 @@ public class ActivityUserDetails extends RootActivity implements Observer {
      */
     private void updateUserDataInUI() {
         if (userResumeData != null) {
+            
+            // Load profile nickname
+            ((CustomFontView) findViewById(R.id.textview_tile)).setText(userResumeData.getNickName());
             // Load profile picture
             imageLoader.DisplayImage(userResumeData.getUrlPhoto(),
                     imageProfile, R.drawable.default_avatar50, 70);
