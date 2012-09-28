@@ -863,6 +863,13 @@ public class UserResume {
         this.reviews = reviews;
     }
 
+    public void addReview(Review review) {
+        if(reviews != null) {
+            // most recent first
+            reviews.add(0, review);
+        }
+    }
+
     public ArrayList<Listing> getAgentListings() {
         return agentListings;
     }

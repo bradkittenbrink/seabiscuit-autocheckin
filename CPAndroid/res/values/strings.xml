@@ -93,7 +93,9 @@
     <string name="activity_wallet_transaction_history">Transaction History</string>
     <string name="custom_dialog_title">Title</string>
     <string name="custom_dialog_message">Message</string>
-    <string name="dialog_send_love_type">Type your recognition text here.</string>
+    <string name="recognition_placeholder">Type your recognition text here.</string>
+    <string name="recognition_char_limit">140</string>
+    <string name="recognize_skill_prompt">Recognize Skill</string>
     <string name="tab_activity_contacts_contact">Contact list</string>
     <string name="tab_activity_login_connect">Connect with LinkedIn \n to start using C&amp;P</string>
     <string name="tab_map">Map</string>

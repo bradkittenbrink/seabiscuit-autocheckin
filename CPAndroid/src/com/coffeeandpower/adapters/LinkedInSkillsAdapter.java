@@ -3,22 +3,15 @@ package com.coffeeandpower.adapters;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.Constants;
 import com.coffeeandpower.app.R;
 import com.coffeeandpower.cont.UserLinkedinSkills;
-import com.coffeeandpower.cont.UserSmart;
-import com.coffeeandpower.imageutil.ImageLoader;
 
 public class LinkedInSkillsAdapter extends BaseAdapter {
 

@@ -1,0 +1,88 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1">
+
+        <EditText
+            android:id="@+id/edit_recognition"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top|left"
+            android:paddingLeft="80dip"
+            android:paddingTop="10dip"
+            android:paddingBottom="20dip"
+            android:inputType="textMultiLine|textCapSentences"
+            android:background="@drawable/paper_texture">
+            <requestFocus />
+        </EditText>
+
+        <ImageView
+            android:id="@+id/image_user"
+            android:layout_width="75dip"
+            android:layout_height="75dip"
+            android:padding="10dip"
+            android:src="@drawable/default_avatar50"/>
+
+        <TextView
+            android:id="@+id/recognition_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:paddingLeft="80dip"
+            android:paddingTop="10dip"
+            android:text="@string/recognition_placeholder"
+            android:textColor="#ffa0a0a0" />
+
+        <TextView
+            android:id="@+id/recognition_char_limit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:padding="10dip"
+            android:text="@string/recognition_char_limit"
+            android:textColor="#ffa0a0a0" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom">
+
+        <Spinner
+            android:id="@+id/skills_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="5dip" >
+
+            <Button
+                android:id="@+id/btn_send"
+                style="@style/turquoise_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/send" />
+
+            <Button
+                android:id="@+id/btn_cancel"
+                style="@style/gray_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cancel" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

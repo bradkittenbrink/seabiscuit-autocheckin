@@ -337,7 +337,7 @@ public class ActivitySettings extends RootActivity {
         }
     }
 
-    public void displayCategory(){
+    public void displayCategory() {
         
         String jobCategories = "";
         
@@ -359,19 +359,21 @@ public class ActivitySettings extends RootActivity {
 
     }
 
-    public void displaySkill(){
-        
+    public void displaySkill() {
+
         String userSkills = loggedUser.getSkills();
-        
-        if (userSkills.compareTo("") != 0) {
-            strongestSkill.setText(userSkills);
-        }
-        CustomFontView lib = (CustomFontView) findViewById(R.id.strongSkillLbl);
-        if (lib != null){
-            if (userSkills.contains(", ")){
+
+        if (userSkills != null) {
+            if (userSkills.compareTo("") != 0) {
+                strongestSkill.setText(userSkills);
+            }
+            CustomFontView lib = (CustomFontView) findViewById(R.id.strongSkillLbl);
+            if (lib != null) {
+                if (userSkills.contains(", ")) {
                     lib.setText(getResources().getString(R.string.activity_settings_strongest_skill_lbl_p));
-            } else {
-                lib.setText(getResources().getString(R.string.activity_settings_strongest_skill_lbl));
+                } else {
+                    lib.setText(getResources().getString(R.string.activity_settings_strongest_skill_lbl));
+                }
             }
         }
 
@@ -457,7 +459,7 @@ public class ActivitySettings extends RootActivity {
             break;
         case SKILL_REQUEST:
             if (resultCode == RESULT_OK) {
-                loggedUser.setSkills(intent.getStringExtra("stronguestSkillsList"));
+                loggedUser.setSkills(intent.getStringExtra("strongestSkillsList"));
                 displaySkill();
             }
             break;

@@ -106,17 +106,21 @@ public class ActivityLinkedinSkills extends RootActivity {
     }
     
     public void onBackPressed() {
-        UserLinkedinSkills firstSkill = this.skills.get(0);
-        String skillsList = "";
-        if (firstSkill != null){
-            skillsList = firstSkill.getVisible(this.skills);
+        
+        Intent i = new Intent();
+
+        if (this.skills != null && this.skills.size() > 0) {
+            UserLinkedinSkills firstSkill = this.skills.get(0);
+            String skillsList = "";
+            if (firstSkill != null) {
+                skillsList = firstSkill.getVisible(this.skills);
+            }
+            if (skillsList.contentEquals("")) {
+                skillsList = "None";
+            }
+            i.putExtra("strongestSkillsList", skillsList);
         }
-        if (skillsList.contentEquals("")) {
-            skillsList = "None";
-        }
-        Intent intent = new Intent();
-        intent.putExtra("stronguestSkillsList", skillsList);
-        setResult(RESULT_OK, intent);
+        setResult(RESULT_OK, i);
         finish();
     }
     

@@ -11,15 +11,20 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -30,6 +35,7 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,6 +45,8 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -48,6 +56,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.adapters.LinkedInSkillsAdapter;
 import com.coffeeandpower.adapters.MyFavouritePlacesAdapter;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cache.CachedDataContainer;
@@ -56,6 +65,7 @@ import com.coffeeandpower.cont.Education;
 import com.coffeeandpower.cont.Listing;
 import com.coffeeandpower.cont.RankedSkill;
 import com.coffeeandpower.cont.Review;
+import com.coffeeandpower.cont.UserLinkedinSkills;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
@@ -77,9 +87,13 @@ import com.urbanairship.UAirship;
 
 public class ActivityUserDetails extends RootActivity implements Observer {
 
+    public static final String TAG = ActivityUserDetails.class.getSimpleName();
+
     private static final int DIALOG_SEND_PROP = 0;
     private static final int DIALOG_SEND_F2F_INVITE = 1;
     private static final int MAPVIEW_HEIGHT = 350;
+
+    private int user_id = 0;
 
     private UserSmart mud;
 
@@ -102,6 +116,9 @@ public class ActivityUserDetails extends RootActivity implements Observer {
     private ArrayList<Venue> favoritePlaces;
     private ArrayList<VenueSmart> arraySmartVenues;
 
+    private Spinner mRecognizeSkillsSpinner;
+    private static final String SKILL_GENERAL = "General";
+
     // Scheduler - create a custom message handler for use in passing venue data
     // from background API call to main thread
     protected Handler taskHandler = new Handler() {
@@ -114,7 +131,6 @@ public class ActivityUserDetails extends RootActivity implements Observer {
             super.handleMessage(msg);
         }
     };
-    private int user_id = 0;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -467,8 +483,11 @@ public class ActivityUserDetails extends RootActivity implements Observer {
 
                 // Check if we have love review
                 if (!userResumeData.getReviewsLoveReceived().equals("0")) {
-                    ((LinearLayout) findViewById(R.id.love_inflate))
-                            .setVisibility(View.VISIBLE);
+                    final ViewGroup vg = ((LinearLayout) findViewById(
+                            R.id.love_inflate));
+                    // clear and show
+                    vg.removeAllViews();
+                    vg.setVisibility(View.VISIBLE);
                 }
 
                 // Find all love reviews
@@ -476,18 +495,12 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                     if (review.getIsLove().equals("1")) {
                         LayoutInflater inflater = getLayoutInflater();
                         View v = inflater.inflate(R.layout.review_props, null);
-                        String loveString = "from " + review.getAuthor();
-                        if (!review.getSkill().equalsIgnoreCase("null")) {
-                            loveString += "(" + review.getSkill() + ")";
-                        }
-                        loveString += ": \"" 
-                                + AppCAP.cleanResponseString(review.getReview()) 
-                                + "\"";
-                        
+
                         ((TextView) v.findViewById(R.id.textview_review_love))
-                                .setText(loveString);
+                                .setText(review.toString());
                         ((ImageView) v.findViewById(R.id.image_thumbs_up))
                                 .setVisibility(View.GONE);
+
                         ((LinearLayout) findViewById(R.id.love_inflate))
                                 .addView(v);
                     }
@@ -500,10 +513,7 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                         View v = inflater.inflate(R.layout.review_props, null);
 
                         ((TextView) v.findViewById(R.id.textview_review_love))
-                                .setText(AppCAP.cleanResponseString(review
-                                        .getReview())
-                                        + (review.getSkill().contains("null") ? ""
-                                                : "\n" + review.getSkill()));
+                                .setText(review.toString());
                         ((ImageView) v.findViewById(R.id.image_send_love))
                                 .setVisibility(View.GONE);
                         ((LinearLayout) findViewById(R.id.love_inflate))
@@ -748,32 +758,132 @@ public class ActivityUserDetails extends RootActivity implements Observer {
         return false;
     }
 
+    /* (non-Javadoc)
+     * @see android.app.Activity#onPrepareDialog(int, android.app.Dialog, android.os.Bundle)
+     */
     @Override
-    protected Dialog onCreateDialog(int id) {
+    protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
 
-        final Dialog dialog = new Dialog(ActivityUserDetails.this);
+        // reset as required
+        switch (id) {
+
+        case DIALOG_SEND_PROP:
+            // edit text area
+            EditText textbox = (EditText)dialog.findViewById(R.id.edit_recognition);
+            textbox.setText("");
+            // spinner
+            mRecognizeSkillsSpinner.setSelection(0);
+            break;
+        }
+
+        super.onPrepareDialog(id, dialog, args);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id, Bundle arg) {
+
+        final Dialog dialog = new Dialog(ActivityUserDetails.this, R.style.CustomDialog);
 
         switch (id) {
 
         case DIALOG_SEND_PROP:
-            dialog.setContentView(R.layout.dialog_send_love);
-            dialog.setTitle(R.string.activity_user_details_sendlove);
 
-            dialog.getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+            // fetch skills
+            exe.getSkillsForUser((mud != null) ? mud.getUserId() : user_id);
+
+            dialog.setContentView(R.layout.dialog_recognize_skills);
+
+            // title: nickname or default
+            final String title = (userResumeData.getNickName());
+            dialog.setTitle(title);
+
+            dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             dialog.getWindow().setSoftInputMode(
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+            // user image
+            final ImageView avatar = (ImageView)dialog.findViewById(R.id.image_user);
+            imageLoader.DisplayImage(userResumeData.getUrlPhoto(),
+                    avatar, R.drawable.default_avatar50, 50);
+
+            // placeholder text
+            final TextView placeholder = (TextView)dialog.findViewById(R.id.recognition_placeholder);
+            // countdown text
+            final TextView countdown = (TextView)dialog.findViewById(R.id.recognition_char_limit);
+
+            // edit text area
+            EditText textbox = (EditText)dialog.findViewById(R.id.edit_recognition);
+            // limit text input to 140 chars
+            final int MAX_LENGTH = 140;
+            InputFilter[] fa = new InputFilter[1];
+            fa[0] = new InputFilter.LengthFilter(MAX_LENGTH);
+            textbox.setFilters(fa);
+            // listen for text changes for dynamic update
+            textbox.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // update the length countdown
+                    int remainder = MAX_LENGTH - (start + count);
+                    countdown.setText(String.valueOf(remainder));
+                    // update placeholder visibility
+                    placeholder.setVisibility((s.length() > 0) ? View.GONE : View.VISIBLE);
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count,
+                        int after) {
+                    // do nothing
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    // do nothing
+                }
+            });
+
+            // set up skills spinner, but set invisible. This will only show up
+            // if the skills query comes back to populate
+            mRecognizeSkillsSpinner = (Spinner)dialog.findViewById(R.id.skills_spinner);
+            mRecognizeSkillsSpinner.setVisibility(View.GONE);
+
             ((Button) dialog.findViewById(R.id.btn_send))
                     .setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (((EditText) dialog.findViewById(R.id.edit_review))
-                                    .getText().toString().length() > 0) {
+                            UserLinkedinSkills skill = null;
+                            String review = null;
+
+                            if (((EditText) dialog.findViewById(R.id.edit_recognition))
+                                    .getText().toString().length() > 0)
+                            {
+                                if (null != mRecognizeSkillsSpinner && 
+                                        null != mRecognizeSkillsSpinner.getSelectedItem() &&
+                                        mRecognizeSkillsSpinner.getSelectedItemPosition() > 0) 
+                                {
+                                    skill = (UserLinkedinSkills)mRecognizeSkillsSpinner.getSelectedItem();
+                                }
+                                review = ((EditText) dialog.findViewById(R.id.edit_recognition)).getText().toString();
+
+                                // stub review for purpose of local data display
+                                Review r = new Review();
+                                r.setAuthor(AppCAP.getLoggedInUserNickname());
+                                r.setSkill((skill != null) ? skill.getName() : null);
+                                r.setIsLove("1");
+                                r.setReview(review);
+
                                 dialog.dismiss();
-                                exe.sendReview(
-                                        userResumeData,
-                                        ((EditText) dialog
-                                                .findViewById(R.id.edit_review))
-                                                .getText().toString());
+                                exe.sendReview(userResumeData, r, (skill != null) ? skill.getId() : 0);
+
+                                // update local review data so that UI refresh on
+                                // completion will display all - full refresh will
+                                // be pulled on view update
+                                userResumeData.addReview(r);
+                                // TODO: tracking a count seems superfluous if this
+                                // is just based on the size of the review list, but
+                                // we'll update this so as to keep this in sync 
+                                userResumeData.setReviewsLoveReceived(
+                                        (Integer.parseInt(userResumeData.getReviewsLoveReceived()) + 1) + "");
 
                                 onClickPlus(findViewById(R.id.imagebutton_plus));
                             } else {
@@ -784,7 +894,6 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                             }
                         }
                     });
-
             ((Button) dialog.findViewById(R.id.btn_cancel))
                     .setOnClickListener(new OnClickListener() {
                         @Override
@@ -853,12 +962,36 @@ public class ActivityUserDetails extends RootActivity implements Observer {
             Toast.makeText(ActivityUserDetails.this,
                     "You recognized " + userResumeData.getNickName(),
                     Toast.LENGTH_SHORT).show();
+            // we've updated the local data for reviews - refresh UI here
+            updateUserDataInUI();
             break;
-        }
 
+        case Executor.HANDLE_USER_LINKEDIN_SKILLS:
+            if (result.getObject() instanceof ArrayList<?>) {
+                ArrayList<UserLinkedinSkills> skills = (ArrayList<UserLinkedinSkills>) result
+                        .getObject();
+                if(null != skills && skills.size() > 0) {
+                    // make sure 'General' is in the list
+                    if(!skills.contains(SKILL_GENERAL)) {
+                        skills.add(0, new UserLinkedinSkills(1, SKILL_GENERAL, true));
+                    }
+                    // setup the spinner/adapter
+                    ArrayAdapter<UserLinkedinSkills> adapter =
+                        new ArrayAdapter<UserLinkedinSkills>(getApplicationContext(), 
+                        android.R.layout.simple_spinner_item, skills);
+                    adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+                    mRecognizeSkillsSpinner.setAdapter(adapter);
+                    mRecognizeSkillsSpinner.setPromptId(R.string.recognize_skill_prompt);
+                    mRecognizeSkillsSpinner.setVisibility(View.VISIBLE);
+                }
+            }
+
+        break;
+        }
     }
 
     public void errorReceived() {
+        Log.d(TAG, "Execution received error : " + exe.getResult().getResponseMessage());
     }
 
     @Override

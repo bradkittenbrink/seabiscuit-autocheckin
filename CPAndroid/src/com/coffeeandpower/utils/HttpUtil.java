@@ -87,7 +87,7 @@ public class HttpUtil {
     }
 
     /**
-     * Get Resume for user woth userId
+     * Get Resume for user with userId
      * 
      * @param userId
      * @return
@@ -648,9 +648,8 @@ public class HttpUtil {
         return result;
     }
 
-    
-    
-    public DataHolder getSkillsForUser() {
+
+    public DataHolder getSkillsForUser(int userId) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
@@ -664,6 +663,11 @@ public class HttpUtil {
 
         try {
             params.add(new BasicNameValuePair("action", "getSkillsForUser"));
+
+            if (userId > 0) {
+                params.add(new BasicNameValuePair("user_id", URLEncoder.encode(
+                        userId + "", "utf-8")));
+            }
 
             post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
@@ -1034,7 +1038,7 @@ public class HttpUtil {
      * @param review
      * @return
      */
-    public DataHolder sendReview(UserResume user, String review) {
+    public DataHolder sendReview(UserResume user, Review review, int skillId) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
@@ -1050,7 +1054,11 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("action", "sendLove"));
             params.add(new BasicNameValuePair("recipientID", URLEncoder.encode(
                     user.getCheckInData_userId() + "", "utf-8")));
-            params.add(new BasicNameValuePair("reviewText", review + ""));
+            params.add(new BasicNameValuePair("reviewText", review.getReview() + ""));
+
+            if (skillId > 0) {
+                params.add(new BasicNameValuePair("skill_id", skillId + ""));
+            }
 
             post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 

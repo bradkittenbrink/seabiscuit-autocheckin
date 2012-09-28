@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
@@ -136,13 +137,13 @@ public class Executor {
     }
 
     public synchronized void sendReview(final UserResume userResume,
-            final String review) {
+            final Review review, final int skillId) {
         progress.setMessage("Sending...");
         progress.show();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                result = AppCAP.getConnection().sendReview(userResume, review);
+                result = AppCAP.getConnection().sendReview(userResume, review, skillId);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
         }, "Executor.sendReview").start();
@@ -520,14 +521,18 @@ public class Executor {
     public void setCounter(TextView counter) {
         this.counter = counter;
     }
-    
+
     public void getSkillsForUser() {
+        getSkillsForUser(-1);
+    }
+
+    public void getSkillsForUser(final int userId) {
         progress.setMessage("Loading linkedin skills ...");
         progress.show();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                result = AppCAP.getConnection().getSkillsForUser();
+                result = AppCAP.getConnection().getSkillsForUser(userId);
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
         }, "Executor.getOneOnOneChatHistory").start();

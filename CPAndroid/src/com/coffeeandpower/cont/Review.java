@@ -1,5 +1,7 @@
 package com.coffeeandpower.cont;
 
+import com.coffeeandpower.AppCAP;
+
 public class Review {
 
     private int id;
@@ -14,6 +16,10 @@ public class Review {
     private String review;
     private String ratingImage;
     private String relativeTime;
+
+    public Review() {
+        this(-1, "", "", "", "", "", "", "", "", "", "", "");
+    }
 
     public Review(int id, String author, String title, String type,
             String createTime, String skill, String rating, String isLove,
@@ -130,4 +136,20 @@ public class Review {
         this.relativeTime = relativeTime;
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (null != this.author
+                && this.author.length() > 0) {
+            sb.append(this.author);
+        }
+        if (null != this.skill 
+                && this.skill.length() > 0
+                && !this.skill.equalsIgnoreCase("null")) {
+            sb.append(" (").append(this.skill).append(")");
+        }
+        sb.append(" : ");
+        sb.append(AppCAP.cleanResponseString(this.review));
+        return sb.toString();
+        
+    }
 }
