@@ -2056,26 +2056,24 @@ public class HttpUtil {
 
                                         }
                                         result.setHandlerCode(Executor.HANDLE_ADD_PLACE);
-                                        result.setObject(new Venue(
-                                                "",
-                                                venueObj.optInt("id"),
-                                                venueObj.optString("name"),
-                                                locationObj
-                                                        .optString("address"),
-                                                locationObj
-                                                        .optString("crossStreet"),
-                                                locationObj.optDouble("lat"),
-                                                locationObj.optDouble("lng"),
-                                                locationObj.optInt("distance"),
-                                                locationObj
-                                                        .optString("postalCode"),
+                                        result.setObject(new VenueSmart(0, 
+                                                venueObj.optString("name"), 
+                                                locationObj.optString("address"), 
                                                 locationObj.optString("city"),
-                                                locationObj.optString("state"),
-                                                locationObj
-                                                        .optString("country"),
-                                                "", "", "", checkinsCount,
-                                                usersCount, tipCount,
-                                                hereNowCount, "", "", "", 0, 0));
+                                                locationObj.optString("state"), 
+                                                locationObj.optInt("distance"), 
+                                                venueObj.optString("id"), 
+                                                checkinsCount,
+                                                0, 
+                                                0, 
+                                                "",
+                                                "", 
+                                                "", 
+                                                "",
+                                                locationObj.optDouble("lat"), 
+                                                locationObj.optDouble("lng"), 
+                                                new ArrayList<CheckinData>())
+                                        );
 
                                     }
                                 }
