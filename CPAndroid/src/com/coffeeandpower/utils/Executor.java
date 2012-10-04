@@ -53,6 +53,7 @@ public class Executor {
     public static final int HANDLE_SENDING_PLUS_ONE = 1629;
     public static final int HANDLE_USER_LINKEDIN_SKILLS = 1630;
     public static final int HANDLE_USER_LINKEDIN_SKILL_UPDATE = 1631;
+    public static final int HANDLE_GET_QUESTIONS_RECEIVERS = 1632;
     
 
     private DataHolder result;
@@ -548,6 +549,18 @@ public class Executor {
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
         }, "Executor.changeSkillVisibility").start();
+    }
+
+    public void getQuestionReceivers(final String input, final double[] userLatLon) {
+        progress.setMessage("Get number of receivers...");
+        progress.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().getQuestionReceivers(input, userLatLon) ;
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.getQuestionReceivers").start();
     }
 
 }

@@ -132,7 +132,7 @@ public class HttpUtil {
                         ArrayList<Education> education = new ArrayList<Education>();
                         ArrayList<Work> work = new ArrayList<Work>();
                         ArrayList<RankedSkill> rankedSkills = new ArrayList<RankedSkill>();
-                        
+
                         ArrayList<Listing> agentList = new ArrayList<Listing>();
                         ArrayList<Listing> clientList = new ArrayList<Listing>();
                         ArrayList<Venue> checkinhistoryArray = new ArrayList<Venue>();
@@ -208,14 +208,16 @@ public class HttpUtil {
                         }
 
                         userResume.setSkillSet(payload.optString("skillSet"));
-                        
-                     // Get Skills data
-                        
-                        JSONArray arrayRankedSkills = payload.optJSONArray("skills");
+
+                        // Get Skills data
+
+                        JSONArray arrayRankedSkills = payload
+                                .optJSONArray("skills");
                         if (arrayRankedSkills != null) {
                             for (int x = 0; x < arrayRankedSkills.length(); x++) {
 
-                                JSONObject objSkill = arrayRankedSkills.optJSONObject(x);
+                                JSONObject objSkill = arrayRankedSkills
+                                        .optJSONObject(x);
                                 if (objSkill != null) {
                                     String rank = objSkill.getString("rank");
                                     if (rank == null) {
@@ -223,15 +225,12 @@ public class HttpUtil {
                                     }
                                     rankedSkills.add(new RankedSkill(objSkill
                                             .optString("name"), objSkill
-                                            .optInt("love"),
-                                            rank
-                                            ));
-                                } //end of objSkill exists
-                            } //end of looping through skills
+                                            .optInt("love"), rank));
+                                } // end of objSkill exists
+                            } // end of looping through skills
                         }
                         userResume.setRankedSkills(rankedSkills);
-                        
-                        
+
                         userResume.setHourlyBillingRate(payload
                                 .optString("hourly_billing_rate"));
 
@@ -587,7 +586,7 @@ public class HttpUtil {
         }
         return result;
     }
-    
+
     public DataHolder changeSkillVisibility(int skill_id, int visible) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
@@ -612,7 +611,7 @@ public class HttpUtil {
             HttpEntity resEntity = response.getEntity();
 
             String responseString = EntityUtils.toString(resEntity);
- 
+
             if (responseString != null) {
 
                 JSONObject json = new JSONObject(responseString);
@@ -647,7 +646,6 @@ public class HttpUtil {
         }
         return result;
     }
-
 
     public DataHolder getSkillsForUser(int userId) {
 
@@ -692,10 +690,11 @@ public class HttpUtil {
 
                             JSONObject objSkill = arraySkills.optJSONObject(x);
                             if (objSkill != null) {
-                                userLinkedinSkills.add(new UserLinkedinSkills(objSkill
-                                        .optInt("id"), objSkill
-                                        .optString("name"), objSkill
-                                        .optInt("visible") == 0 ? false : true));
+                                userLinkedinSkills.add(new UserLinkedinSkills(
+                                        objSkill.optInt("id"), objSkill
+                                                .optString("name"), objSkill
+                                                .optInt("visible") == 0 ? false
+                                                : true));
                             }
                         }
                     }
@@ -724,9 +723,7 @@ public class HttpUtil {
         }
         return result;
     }
-    
-    
-    
+
     /**
      * Get user data with userID
      * 
@@ -994,7 +991,8 @@ public class HttpUtil {
 
             String responseString = EntityUtils.toString(resEntity);
             if (Constants.enableApiJsonLogging)
-                RootActivity.log("HttpUtil_sendPlusOneForLove: " + responseString);
+                RootActivity.log("HttpUtil_sendPlusOneForLove: "
+                        + responseString);
 
             if (responseString != null) {
 
@@ -1054,7 +1052,8 @@ public class HttpUtil {
             params.add(new BasicNameValuePair("action", "sendLove"));
             params.add(new BasicNameValuePair("recipientID", URLEncoder.encode(
                     user.getCheckInData_userId() + "", "utf-8")));
-            params.add(new BasicNameValuePair("reviewText", review.getReview() + ""));
+            params.add(new BasicNameValuePair("reviewText", review.getReview()
+                    + ""));
 
             if (skillId > 0) {
                 params.add(new BasicNameValuePair("skill_id", skillId + ""));
@@ -2056,24 +2055,19 @@ public class HttpUtil {
 
                                         }
                                         result.setHandlerCode(Executor.HANDLE_ADD_PLACE);
-                                        result.setObject(new VenueSmart(0, 
-                                                venueObj.optString("name"), 
-                                                locationObj.optString("address"), 
+                                        result.setObject(new VenueSmart(0,
+                                                venueObj.optString("name"),
+                                                locationObj
+                                                        .optString("address"),
                                                 locationObj.optString("city"),
-                                                locationObj.optString("state"), 
-                                                locationObj.optInt("distance"), 
-                                                venueObj.optString("id"), 
-                                                checkinsCount,
-                                                0, 
-                                                0, 
-                                                "",
-                                                "", 
-                                                "", 
-                                                "",
-                                                locationObj.optDouble("lat"), 
-                                                locationObj.optDouble("lng"), 
-                                                new ArrayList<CheckinData>())
-                                        );
+                                                locationObj.optString("state"),
+                                                locationObj.optInt("distance"),
+                                                venueObj.optString("id"),
+                                                checkinsCount, 0, 0, "", "",
+                                                "", "", locationObj
+                                                        .optDouble("lat"),
+                                                locationObj.optDouble("lng"),
+                                                new ArrayList<CheckinData>()));
 
                                     }
                                 }
@@ -2690,6 +2684,11 @@ public class HttpUtil {
                         .toString(venueId)));
                 params.add(new BasicNameValuePair("type", messageType));
                 params.add(new BasicNameValuePair("entry", message));
+                if (messageType == Feed.FEED_TYPE_QUESTION) {
+                    double[] userLatLon = AppCAP.getUserLatLon();
+                    params.add(new BasicNameValuePair("lat", Double.toString(userLatLon[0])));
+                    params.add(new BasicNameValuePair("lng", Double.toString(userLatLon[1])));
+                }
             }
 
             post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
@@ -2775,8 +2774,8 @@ public class HttpUtil {
      * @return
      */
     public DataHolder newPost(int venueId, String venueName,
-            String lastChatIDString, String message, 
-            String messageType, int original_post_id) {
+            String lastChatIDString, String message, String messageType,
+            int original_post_id) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
@@ -2784,15 +2783,14 @@ public class HttpUtil {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
 
         try {
-                params.add(new BasicNameValuePair("action", "newPost"));
-                params.add(new BasicNameValuePair("venue_id", Integer
-                        .toString(venueId)));
-                params.add(new BasicNameValuePair("type", messageType));
-                params.add(new BasicNameValuePair("entry", message));
-                params.add(new BasicNameValuePair("original_post_id", Integer
-                        .toString(original_post_id)));
-                
- 
+            params.add(new BasicNameValuePair("action", "newPost"));
+            params.add(new BasicNameValuePair("venue_id", Integer
+                    .toString(venueId)));
+            params.add(new BasicNameValuePair("type", messageType));
+            params.add(new BasicNameValuePair("entry", message));
+            params.add(new BasicNameValuePair("original_post_id", Integer
+                    .toString(original_post_id)));
+
             post.setEntity(new UrlEncodedFormEntity(params));
 
             // Execute HTTP Post Request
@@ -4392,7 +4390,7 @@ public class HttpUtil {
      * @return
      */
     private Object mLock = new Object();
-    private CookieStore mCookie = null;
+    private CookieStore mCookie = null; 
 
     private DefaultHttpClient getThreadSafeClient() {
         DefaultHttpClient client = new DefaultHttpClient();
@@ -4461,6 +4459,61 @@ public class HttpUtil {
 
         client.getConnectionManager().getSchemeRegistry()
                 .register(new Scheme("https", socketFactory, 443));
+    }
+
+    public DataHolder getQuestionReceivers(String input, double[] userLatLon) {
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                "Internet connection error", null);
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+        if (userLatLon.length > 1) {
+            double latForAPI = userLatLon[0];
+            double lonForAPI = userLatLon[1];
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+    
+            try {
+                params.add(new BasicNameValuePair("action", "getQuestionReceivers"));
+                params.add(new BasicNameValuePair("lat", Double.toString(latForAPI)));
+                params.add(new BasicNameValuePair("lng", Double.toString(lonForAPI)));
+     
+                post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+    
+                // Execute HTTP Post Request
+                HttpResponse response = client.execute(post);
+                HttpEntity resEntity = response.getEntity();
+    
+                String responseString = EntityUtils.toString(resEntity);
+    
+                if (responseString != null && responseString.trim().length() > 0) {
+                    JSONObject json = new JSONObject(responseString);
+                    if (json != null) {
+    
+                        if (json.optBoolean("error")) {
+                            result.setHandlerCode(AppCAP.HTTP_ERROR);
+                            result.setResponseMessage(json.optString("message"));
+                        } else {
+                            JSONObject payload = json.optJSONObject("payload");
+                            int count = payload.optInt("count");
+                            result.setObject(count);
+                            result.setObject(new Object[] {
+                                    count,
+                                    input });
+                            result.setHandlerCode(Executor.HANDLE_GET_QUESTIONS_RECEIVERS);
+                            return result;
+                        }
+                    }
+                }
+    
+            } catch (IOException e) {
+                e.printStackTrace();
+                return result;
+    
+            } catch (JSONException e) {
+                e.printStackTrace();
+                result.setResponseMessage("JSON Parsing Error: " + e);
+                return result;
+            }
+        }
+        return result;
     }
 
 }

@@ -60,6 +60,7 @@ import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Feed;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
+import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
@@ -219,6 +220,16 @@ public class FragmentFeedsForOneVenue extends Fragment {
                                     .getObject();
 
                             populateList(venueNameAndFeeds);
+                        }
+                        break;
+                    case Executor.HANDLE_GET_QUESTIONS_RECEIVERS:
+                        if (result != null
+                                && result.getObject() != null) {
+                            Object[] obj = (Object[]) result.getObject();
+                            @SuppressWarnings("unchecked")
+                            String input = (String) obj[1];
+                            int count = ((Integer)obj[0]).intValue();
+                            showDialogQuestionTo(input, count);
                         }
                         break;
                     case Executor.HANDLE_SEND_VENUE_FEED:
@@ -397,7 +408,7 @@ public class FragmentFeedsForOneVenue extends Fragment {
         }
     }
 
-    private void showDialogQuestionTo(final String input) {
+    private void showDialogQuestionTo(final String input, int numberOfUsersHere) {
         // custom dialog
 
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -420,17 +431,16 @@ public class FragmentFeedsForOneVenue extends Fragment {
                 }
             }
         };
-        int numberOfUsersHere = CacheMgrService
-                .getNumberOfCheckedInInVenue(venueId);
+        
         String mess;
-        if (numberOfUsersHere == 2) {
+        if (numberOfUsersHere == 1) {
             mess = (String) getResources().getText(
                     R.string.dialog_post_a_question_content_1);
-        } else if (numberOfUsersHere > 2) {
+        } else if (numberOfUsersHere > 1) {
             mess = String.format(
                     (String) getResources().getText(
                             R.string.dialog_post_a_question_content_2),
-                    numberOfUsersHere - 1);
+                    numberOfUsersHere);
         } else {
             mess = (String) getResources().getText(
                     R.string.dialog_post_a_question_content_0);
@@ -473,7 +483,7 @@ public class FragmentFeedsForOneVenue extends Fragment {
                 .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         if (input != null && input.length() > 0) {
             if (messageType == Feed.FEED_TYPE_QUESTION) {
-                showDialogQuestionTo(input);
+                exe.getQuestionReceivers(input, AppCAP.getUserLatLon());
             } else {
                 hideQuestionUpdateActionButton();
                 setCaller("feeds_list");
