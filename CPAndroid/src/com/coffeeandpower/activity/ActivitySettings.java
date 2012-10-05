@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,8 +21,11 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,7 +63,6 @@ public class ActivitySettings extends RootActivity {
     private EditText textNickName;
     private EditText textEmail;
     private ImageView imageProfilePhoto;
-    private RelativeLayout backgroundPhoto;
     private Button deleteAccount;
 
     private Button strongestSkill;
@@ -71,6 +74,7 @@ public class ActivitySettings extends RootActivity {
     private ImageLoader imageLoader;
     private boolean isUserDataChanged = false;
     private String email_required = "";
+    private Button cancelButton;
 
     private void errorReceived() {
 
@@ -88,6 +92,7 @@ public class ActivitySettings extends RootActivity {
             if (res) {
                 Toast.makeText(ActivitySettings.this, result.getResponseMessage(),
                         Toast.LENGTH_LONG).show();
+                hideKeyboard();
             } else {
                 new CustomDialog(ActivitySettings.this, "Info",
                     result.getResponseMessage()).show();
@@ -168,11 +173,11 @@ public class ActivitySettings extends RootActivity {
         textNickName = (EditText) findViewById(R.id.edit_nickname);
         textEmail = (EditText) findViewById(R.id.edit_email);
         imageProfilePhoto = (ImageView) findViewById(R.id.imagebutton_user_face);
-        backgroundPhoto = (RelativeLayout) findViewById(R.id.activity_user_profile_root);
         strongestSkill = (Button) findViewById(R.id.strongSkill);
         jobCategory = (Button) findViewById(R.id.jobCategory);
         profileVisibility = (Spinner) findViewById(R.id.profileVisibility);
         deleteAccount = (Button) findViewById(R.id.deleteAccount);
+        cancelButton = (Button) findViewById(R.id.button_cancel_name);
         
         jobCategory.setOnClickListener(new OnClickListener() {
             @Override
@@ -231,6 +236,22 @@ public class ActivitySettings extends RootActivity {
                     }
                 }
                 return false;
+            }
+        });
+        textNickName.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    cancelButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        textEmail.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    cancelButton.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -321,11 +342,6 @@ public class ActivitySettings extends RootActivity {
                     }
                 }
     
-                LoadPhotoThread t = new LoadPhotoThread();
-                t.activity = this;
-                t.layout = backgroundPhoto;
-                t.url = photo;
-                new Thread(t).start();
             }
 
             title.setText(getResources().getString(R.string.settings));
@@ -385,35 +401,6 @@ public class ActivitySettings extends RootActivity {
         if (AppCAP.getLocalUserPhotoURL().length() > 5) {
             imageLoader.DisplayImage(AppCAP.getLocalUserPhotoLargeURL(),
                     imageProfilePhoto, R.drawable.default_avatar25, 400);
-
-            class LoadPhotoThread implements Runnable {
-                public Activity activity;
-                public RelativeLayout layout;
-                public String url;
-
-                @Override
-                public void run() {
-                    Bitmap b = imageLoader.getBitmap(url);
-                    final Bitmap background = ImageLoader.FastBlur(b, 4);
-                    b.recycle();
-
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (background != null) {
-                                layout.setBackgroundDrawable(new BitmapDrawable(
-                                        background));
-                            }
-                        }
-                    });
-                }
-            }
-
-            LoadPhotoThread t = new LoadPhotoThread();
-            t.activity = this;
-            t.layout = backgroundPhoto;
-            t.url = AppCAP.getLocalUserPhotoLargeURL();
-            new Thread(t).start();
         }
     }
 
@@ -511,6 +498,27 @@ public class ActivitySettings extends RootActivity {
 
     public void onClickClearEmail(View v) {
         textEmail.setText("");
+    }
+    
+    public void hideKeyboard() {
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputManager != null && textNickName != null) {
+            inputManager.hideSoftInputFromWindow(
+                    textNickName.getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    public void onClickCancel(View v) {
+        hideKeyboard();
+        textNickName.setText(loggedUser.getNickName());
+        textEmail.setText(loggedUser.getUsername());
+        cancelButton.requestFocus();
+        RelativeLayout myLayout = (RelativeLayout) findViewById(R.id.activity_user_profile_root);
+        myLayout.requestFocus();
+        cancelButton.setVisibility(View.GONE);
     }
 
     public void onClickBack(View v) {

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dummy_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="45dip"
+    android:background="@drawable/header" >
+
+    <Button
+        android:id="@+id/button_location_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dip"
+        android:background="@drawable/rounded_border"
+        android:onClick="onClickBack"
+        android:padding="8dip"
+        android:text="@string/app_name"
+        android:textColor="#ffffff" />
+
+    <com.coffeeandpower.views.CustomFontView
+        android:id="@+id/textview_tile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textColor="#ffffff"
+        android:textSize="25dip" />
+
+    <Button
+        android:id="@+id/button_cancel_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dip"
+        android:background="@drawable/rounded_border"
+        android:onClick="onClickCancel"
+        android:padding="8dip"
+        android:text="@string/cancel"
+        android:textColor="#ffffff" />
+
+</RelativeLayout>

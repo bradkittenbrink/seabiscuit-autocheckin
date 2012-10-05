@@ -2,13 +2,15 @@
     android:id="@+id/activity_user_profile_root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/default_avatar50" >
+    android:background="#f5f4f3"
+    android:focusable="true"
+    android:focusableInTouchMode="true" >
 
     <include
         android:id="@+id/dummy_layout_ref"
         android:layout_width="fill_parent"
         android:layout_height="45dip"
-        layout="@layout/header_layout" />
+        layout="@layout/header_layout_in_profile" />
 
     <ScrollView
         android:id="@+id/scroll"
