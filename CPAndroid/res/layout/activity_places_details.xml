@@ -2,7 +2,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/dummy_layout"
         android:layout_width="fill_parent"
         android:layout_height="45dip"
@@ -12,8 +12,7 @@
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
+            android:layout_gravity="left|center"
             android:layout_marginLeft="10dip"
             android:background="@drawable/rounded_border"
             android:onClick="onClickBack"
@@ -23,14 +22,18 @@
 
         <com.coffeeandpower.views.CustomFontView
             android:id="@+id/textview_chat_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:singleLine="true"
+            android:ellipsize="end"
+            android:paddingLeft="65dip"
+            android:paddingRight="50dip"
+            android:layout_marginRight="10dip"
             android:textColor="#ffffff"
             android:textSize="25dip" />
-    </RelativeLayout>
+    </FrameLayout>
 
     <ScrollView
         android:id="@+id/activity_places_scrollview"
@@ -69,6 +72,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:singleLine="true"
+                        android:ellipsize="end"
+                        android:paddingLeft="10dip"
+                        android:paddingRight="10dip"
                         android:textColor="#ffffff"
                         android:textSize="24dip"
                         android:textStyle="bold" />
