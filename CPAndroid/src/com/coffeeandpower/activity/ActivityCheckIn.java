@@ -16,6 +16,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -311,6 +312,10 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 				break;
 			}
 		}
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(getCurrentFocus()
+                .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		
 		if (!venueMatched) {
                 		
