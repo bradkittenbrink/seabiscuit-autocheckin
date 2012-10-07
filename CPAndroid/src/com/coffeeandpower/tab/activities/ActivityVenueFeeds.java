@@ -481,6 +481,11 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // Job 18344: No call for super(). Bug on API Level > 11.
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
