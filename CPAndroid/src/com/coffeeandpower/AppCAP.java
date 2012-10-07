@@ -647,8 +647,12 @@ public class AppCAP extends Application {
     }
 
     /**
+     * Takes a chunk of text and parses it using Html.fromHtml 
+     * @see android.text.Html.html#fromHtml(java.lang.String). Then decodes
+     * using UTF-8 encoding (@see URLDecoder).
      * 
-     * @category unknown
+     * NOTE: This process will remove newlines and tabs characters however 
+     * <br> tags will be converted into newline characters.
      */
     public static String cleanResponseString(String data) {
         String retS = data;
@@ -664,6 +668,18 @@ public class AppCAP extends Application {
         return retS;
     }
 
+
+    /**
+     * Cleans the response string as per cleanReponseString() but preserves
+     * any newline or tab characters. Same behaviour as candpweb which uses
+     * the php routine nl2br(). (#18346)
+     */
+    public static String cleanResponseStringPreserveWhitespace(String data) {
+        data = data.replaceAll("\r\n", "<br/>").replaceAll("\n", "<br/>")
+                .replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+        return AppCAP.cleanResponseString(data);
+    }
+    
     /**
      * 
      * @category localUserData

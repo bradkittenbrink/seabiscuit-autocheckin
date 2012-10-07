@@ -386,11 +386,16 @@ public class ActivityUserDetails extends RootActivity implements Observer {
             if (userResumeData.getBio() != null
                     && !userResumeData.getBio().contains("null")
                     && !userResumeData.getBio().equals("")) {
-                ((TextView) findViewById(R.id.text_summary)).setText(AppCAP
-                        .cleanResponseString(userResumeData.getBio()));
+                
+                // #18346: preserve new lines
+                String txtSummary = userResumeData.getBio();
+                txtSummary = AppCAP.cleanResponseStringPreserveWhitespace(txtSummary);
+                
+                TextView txtSummaryView = (TextView) findViewById(R.id.text_summary);
+                txtSummaryView.setText(txtSummary);
+                txtSummaryView.setVisibility(View.VISIBLE);
+                
                 ((TextView) findViewById(R.id.text_summary_title))
-                        .setVisibility(View.VISIBLE);
-                ((TextView) findViewById(R.id.text_summary))
                         .setVisibility(View.VISIBLE);
             }
            
