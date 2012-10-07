@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.app.R;
+import com.coffeeandpower.app.R.string;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.views.CustomDialog;
@@ -45,7 +46,7 @@ public class ActivitySignInViaMail extends RootActivity {
 			case AppCAP.HTTP_ERROR:
 				textViewErrorMsg.setVisibility(View.INVISIBLE);
                 new CustomDialog(ActivitySignInViaMail.this, "Error",
-                        "Internet connection error").show();
+                        getString(string.message_internet_connection_error)).show();
 				break;
 
 			case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:

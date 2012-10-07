@@ -719,9 +719,11 @@ public class ActivityUserDetails extends RootActivity implements Observer {
     }
 
     public void onClickChat(View v) {
-        startActivity(new Intent(ActivityUserDetails.this, ActivityChat.class)
-                .putExtra("user_id", userResumeData.getCheckInData_userId())
-                .putExtra("nick_name", userResumeData.getNickName()));
+        if (userResumeData != null) {
+            startActivity(new Intent(ActivityUserDetails.this, ActivityChat.class)
+                    .putExtra("user_id", userResumeData.getCheckInData_userId())
+                    .putExtra("nick_name", userResumeData.getNickName()));
+        }
     }
 
     public void onClickPaid(View v) {

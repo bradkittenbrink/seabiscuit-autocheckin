@@ -31,7 +31,8 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.coffeeandpower.app.R; 
+import com.coffeeandpower.app.R;
+import com.coffeeandpower.app.R.string;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
@@ -201,7 +202,7 @@ public class AppCAP extends Application {
             // null).commit();
             AppCAP.context = getApplicationContext();
 
-            this.http = new HttpUtil();
+            this.http = new HttpUtil(getString(string.message_internet_connection_error));
 
             PushPreferences prefs = PushManager.shared().getPreferences();
             prefs.setSoundEnabled(true);

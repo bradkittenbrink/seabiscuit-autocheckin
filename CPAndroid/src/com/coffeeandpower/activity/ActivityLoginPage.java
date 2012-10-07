@@ -4,8 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -13,10 +13,13 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.linkedin.LinkedIn;
+import com.coffeeandpower.linkedin.LinkedInInitException;
 import com.coffeeandpower.utils.ActivityUtils;
+import com.coffeeandpower.views.CustomDialog;
+import com.coffeeandpower.views.CustomDialog.ClickListener;
 
 public class ActivityLoginPage extends RootActivity {
 
@@ -39,9 +42,22 @@ public class ActivityLoginPage extends RootActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
         webView.getSettings().setJavaScriptEnabled(true);
         lastAuthorize = new LinkedIn();
-        lastAuthorize.initialize(
-                (String) getResources().getText(R.string.linkedInApiKey),
-                (String) getResources().getText(R.string.linkedInApiSec));
+        try {
+            lastAuthorize.initialize(
+                    (String) getResources().getText(R.string.linkedInApiKey),
+                    (String) getResources().getText(R.string.linkedInApiSec));
+        } catch (LinkedInInitException e) {
+            CustomDialog errorDialog = new CustomDialog(this, "Error", 
+                    getString(R.string.message_internet_connection_error));
+            errorDialog.setOnClickListener(new ClickListener() {
+                @Override
+                public void onClick() {
+                    ActivityLoginPage.this.finish();
+                }
+            });
+            errorDialog.show();
+            return;
+        }
 		
 		// if the userlinkedinid is already in the application preferences
 		// we are going to try to connect directly without the login page

@@ -4,7 +4,6 @@
  */
 package com.coffeeandpower.linkedin;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.scribe.builder.ServiceBuilder;
+import org.scribe.exceptions.OAuthException;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -20,11 +20,10 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
 import android.net.Uri;
-import android.util.Log;
+
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
-import com.coffeeandpower.linkedin.LinkedInApiWithEmail;
 
 /**
  * 
@@ -63,7 +62,7 @@ public class LinkedIn {
         return service != null && accessToken != null;
     }
 
-    public void initialize(String apiKey_, String apiSec_) {
+    public void initialize(String apiKey_, String apiSec_) throws LinkedInInitException {
         apiKey = apiKey_;
         apiSec = apiSec_;
         currUser = new UserSmart(0, 0, "", "", "", "", "", "", "", 0, 0, 0, "",
@@ -73,7 +72,11 @@ public class LinkedIn {
                 .apiKey(apiKey).apiSecret(apiSec).callback(OAUTH_CALLBACK_URL)
                 .build();
 
-        requestToken = service.getRequestToken();
+        try {
+            requestToken = service.getRequestToken();
+        } catch (OAuthException e) {
+            throw new LinkedInInitException("Problem fetching a LinkedIn token", e);
+        }
 
         String url = service.getAuthorizationUrl(requestToken);
     }

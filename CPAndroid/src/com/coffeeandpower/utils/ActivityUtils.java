@@ -13,6 +13,7 @@ import android.os.Message;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.app.R;
+import com.coffeeandpower.app.R.string;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.linkedin.LinkedIn;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
@@ -60,7 +61,8 @@ public class ActivityUtils {
             switch (msg.what) {
 
             case AppCAP.HTTP_ERROR:
-                new CustomDialog(a, "Error", "Internet connection error")
+                new CustomDialog(a, "Error", 
+                        a.getString(string.message_internet_connection_error))
                         .show();
                 break;
 
@@ -113,7 +115,8 @@ public class ActivityUtils {
             switch (msg.what) {
 
             case AppCAP.HTTP_ERROR:
-                new CustomDialog(a, "Error", "Internet connection error")
+                new CustomDialog(a, "Error", 
+                        a.getString(string.message_internet_connection_error))
                         .show();
                 break;
 

@@ -1,6 +1,5 @@
 <resources>
 
-    <string name="hello">Hello World, ActivityMain!</string>
     <string name="app_name">C&amp;P</string>
     <string name="back">Back</string>
     <string name="next">Next</string>
@@ -148,5 +147,6 @@ Welcome!
     <string name="decline">Decline</string>
     <string name="wont_tell">(we won\'t tell)</string>
     <string name="contact_exchanged_message">%1$s exchanged contact info with you.</string>
+    <string name="message_internet_connection_error">Internet connection error</string>
 
 </resources>

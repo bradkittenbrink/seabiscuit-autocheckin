@@ -25,7 +25,9 @@ import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.LinkedInUsersAdapter;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.linkedin.LinkedIn;
+import com.coffeeandpower.linkedin.LinkedInInitException;
 import com.coffeeandpower.utils.Utils;
+import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 
@@ -87,9 +89,15 @@ public class ActivityInviteContacts extends RootActivity {
     
     public ArrayList<UserSmart>  getUsersConnections() {
         lastAuthorize = new LinkedIn();
-        lastAuthorize.initialize(
-                (String) getResources().getText(R.string.linkedInApiKey),
-                (String) getResources().getText(R.string.linkedInApiSec));
+        try {
+            lastAuthorize.initialize(
+                    (String) getResources().getText(R.string.linkedInApiKey),
+                    (String) getResources().getText(R.string.linkedInApiSec));
+        } catch (LinkedInInitException e) {
+            new CustomDialog(this, "Error", 
+                    getString(R.string.message_internet_connection_error)).show();
+            return new ArrayList<UserSmart>();
+        }
         return lastAuthorize.getConnections();
 
     }

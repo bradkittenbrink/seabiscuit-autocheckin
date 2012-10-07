@@ -81,9 +81,12 @@ import com.google.android.maps.GeoPoint;
 public class HttpUtil {
 
     private AbstractHttpClient client;
+    
+    private static String internetConnectionErrorMsg; 
 
-    public HttpUtil() {
+    public HttpUtil(String internetConnectionErrorMsg) {
         this.client = getThreadSafeClient();
+        this.internetConnectionErrorMsg = internetConnectionErrorMsg;
     }
 
     /**
@@ -94,7 +97,7 @@ public class HttpUtil {
      */
     public DataHolder getUserResume(int userIdForUrl) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
@@ -733,7 +736,7 @@ public class HttpUtil {
     public DataHolder getCheckInDataWithUserId(int userId) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -797,7 +800,7 @@ public class HttpUtil {
     public static DataHolder getBitmapFromURL(String url) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         URL myFileUrl = null;
         Bitmap bmImg = null;
@@ -837,7 +840,7 @@ public class HttpUtil {
      */
     public DataHolder uploadUserProfilePhoto() {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
@@ -912,7 +915,7 @@ public class HttpUtil {
     public DataHolder sendOneOnOneChatMessage(int userId, String message) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -1039,7 +1042,7 @@ public class HttpUtil {
     public DataHolder sendReview(UserResume user, Review review, int skillId) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -1113,7 +1116,7 @@ public class HttpUtil {
     public DataHolder getOneOnOneChatHistory(int userId) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -1205,7 +1208,7 @@ public class HttpUtil {
     public DataHolder setUserProfileData(UserSmart user, boolean isEmailChanged) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -1282,7 +1285,7 @@ public class HttpUtil {
             boolean checkedInOnly, boolean quietTimeEnabled, String quietFrom,
             String quietTo, boolean contactsOnlyChat) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -1348,7 +1351,7 @@ public class HttpUtil {
      * public DataHolder getCheckedInBoundsOverTime (MapView mapView){
      * 
      * DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-     * "Internet connection error", null);
+     * internetConnectionErrorMsg, null);
      * 
      * client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
      * HttpVersion.HTTP_1_1);
@@ -1439,7 +1442,7 @@ public class HttpUtil {
             double data[], int numberOfDays) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
 
@@ -1628,7 +1631,7 @@ public class HttpUtil {
     public DataHolder getUsersCheckedInAtFoursquareID(String foursquareId) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -1725,7 +1728,7 @@ public class HttpUtil {
     public DataHolder sendContactRequestToUserId(int userId) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -1790,7 +1793,7 @@ public class HttpUtil {
     public DataHolder sendAcceptContactRequestFromUserId(int userId) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -1921,7 +1924,7 @@ public class HttpUtil {
      */
     public DataHolder sendFriendRequest(int userId) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
@@ -1985,7 +1988,7 @@ public class HttpUtil {
      */
     public DataHolder addPlace(String name, double[] coords) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
         HttpPost post = new HttpPost("https://api.foursquare.com/v2/venues/add");
@@ -2106,7 +2109,7 @@ public class HttpUtil {
     public DataHolder sendF2FAccept(int userId) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -2170,7 +2173,7 @@ public class HttpUtil {
     public DataHolder sendF2FDecline(int userId) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -2235,7 +2238,7 @@ public class HttpUtil {
     public DataHolder sendF2FVerify(int userId, String password) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -2299,7 +2302,7 @@ public class HttpUtil {
      */
     public DataHolder getContactsList() {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
@@ -2370,7 +2373,7 @@ public class HttpUtil {
         Log.d("HttpUtil",
                 "---------------------getNearestVenueFeedsList------------");
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
@@ -2471,7 +2474,7 @@ public class HttpUtil {
      */
     public DataHolder getVenueFeedsList() {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
@@ -2667,7 +2670,7 @@ public class HttpUtil {
             String lastChatIDString, String message, boolean isSend,
             String messageType) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -2871,7 +2874,7 @@ public class HttpUtil {
      */
     public DataHolder postableVenues() {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -2955,7 +2958,7 @@ public class HttpUtil {
     public DataHolder getInvitationCodeForLocation(double lat, double lng) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -3032,7 +3035,7 @@ public class HttpUtil {
     public DataHolder enterInvitationCode(String invitationCode, double lat,
             double lng) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
@@ -3108,7 +3111,7 @@ public class HttpUtil {
             String minorJobCategory) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -3180,7 +3183,7 @@ public class HttpUtil {
     public DataHolder saveUserSmartererName(String name) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -3243,7 +3246,7 @@ public class HttpUtil {
     public DataHolder checkOut() {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -3304,7 +3307,7 @@ public class HttpUtil {
             int checkOutTime, String statusText, boolean isAutomatic) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -3397,7 +3400,7 @@ public class HttpUtil {
      */
     public DataHolder getVenuesInSWCoords(double data[]) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         String userLat = "";
         String userLng = "";
@@ -3508,7 +3511,7 @@ public class HttpUtil {
         double lngFromGp = gp.getLongitudeE6() / 1E6;
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
 
@@ -3601,7 +3604,7 @@ public class HttpUtil {
      */
     public DataHolder getNearestVenuesWithCheckinsToCoordinate(double[] coords) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
         int testVar = AppCAP.getLoggedInUserId();
@@ -3786,7 +3789,7 @@ public class HttpUtil {
     public DataHolder getUserTransactionData() {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -3867,7 +3870,7 @@ public class HttpUtil {
      */
     public DataHolder getUserData() {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -3943,7 +3946,7 @@ public class HttpUtil {
      */
     public DataHolder getNotificationSettings() {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -3998,7 +4001,7 @@ public class HttpUtil {
 
     public DataHolder deleteUserAccount() {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
                 HttpVersion.HTTP_1_1);
@@ -4081,7 +4084,7 @@ public class HttpUtil {
     public DataHolder signup(String userName, String password, String nickName) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         // HttpClient client = getThreadSafeClient();
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
@@ -4212,7 +4215,7 @@ public class HttpUtil {
     public DataHolder login(String userName, String password) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         // HttpClient client = getThreadSafeClient();
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
@@ -4296,7 +4299,7 @@ public class HttpUtil {
     public DataHolder loginViaOAuthService(LinkedIn service) {
 
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
-                "Internet connection error", null);
+                internetConnectionErrorMsg, null);
 
         // HttpClient client = getThreadSafeClient();
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,

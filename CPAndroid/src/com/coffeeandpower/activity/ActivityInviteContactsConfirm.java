@@ -2,11 +2,9 @@ package com.coffeeandpower.activity;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,21 +12,17 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
-import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.cache.CacheMgrService;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.linkedin.LinkedIn;
-import com.coffeeandpower.utils.UserAndTabMenu;
+import com.coffeeandpower.linkedin.LinkedInInitException;
 import com.coffeeandpower.views.CustomDialog;
-import com.coffeeandpower.views.CustomFontView;
 
 public class ActivityInviteContactsConfirm extends RootActivity {
 
@@ -109,9 +103,16 @@ public class ActivityInviteContactsConfirm extends RootActivity {
                 @Override
                 public void run() {
                     LinkedIn lastAuthorize = new LinkedIn();
-                    lastAuthorize.initialize(
-                            (String) getResources().getText(R.string.linkedInApiKey),
-                            (String) getResources().getText(R.string.linkedInApiSec));
+                    try {
+                        lastAuthorize.initialize(
+                                (String) getResources().getText(R.string.linkedInApiKey),
+                                (String) getResources().getText(R.string.linkedInApiSec));
+                    } catch (LinkedInInitException e) {
+                        final String errorMsg = getString(R.string.message_internet_connection_error);
+                        final int errorCode = -1;
+                        result = new DataHolder(errorCode, errorMsg, null);
+                        handler.sendEmptyMessage(result.getResponseCode());
+                    }
                     result = lastAuthorize.sendInvite(AppCAP.getUserLinkedInToken(),
                             AppCAP.getUserLinkedInTokenSecret(),
                             arraySelectedUsersIds,
