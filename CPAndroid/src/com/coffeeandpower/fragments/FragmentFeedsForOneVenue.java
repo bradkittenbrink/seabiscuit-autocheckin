@@ -90,8 +90,8 @@ public class FragmentFeedsForOneVenue extends Fragment {
     private int venueId = 0;
     private String venueName = "";
     private String lastChatIDString = "0";
-    private VenueNameAndFeeds venueNameAndFeeds;
-    private MyFeedsAdapter adapter;
+    private VenueNameAndFeeds venueNameAndFeeds = null;
+    private MyFeedsAdapter adapter = null;
     private String caller;
     private String messageType;
     private Bundle intentExtras;
@@ -212,14 +212,23 @@ public class FragmentFeedsForOneVenue extends Fragment {
                     result = exe.getResult();
 
                     switch (action) {
+                    case Executor.HTTP_ERROR_IN_MORE_FEED:
+                        onErrorReceived();
+                        new CustomDialog(getActivity(), "Error", result.getResponseMessage())
+                                .show();
+                        if (adapter != null) {
+                            adapter.setLastViewed(0);
+                        }
+                        break;
                     case Executor.HANDLE_VENUE_FEED:
+                    case Executor.HANDLE_VENUE_MORE_FEED:                       
                         if (result != null
                                 && result.getObject() != null
                                 && (result.getObject() instanceof VenueNameAndFeeds)) {
-                            VenueNameAndFeeds venueNameAndFeeds = (VenueNameAndFeeds) result
+                            venueNameAndFeeds = (VenueNameAndFeeds) result
                                     .getObject();
 
-                            populateList(venueNameAndFeeds);
+                            populateList();
                         }
                         break;
                     case Executor.HANDLE_GET_QUESTIONS_RECEIVERS:
@@ -452,19 +461,24 @@ public class FragmentFeedsForOneVenue extends Fragment {
                 .setNegativeButton("No", dialogClickListener).show();
     }
 
-    private void populateList(VenueNameAndFeeds venueNameAndFeeds) {
+    private void populateList() {
         if (getActivity() == null) {
             return;
         }
-        if (AppCAP.getLocalUserPhotoURL().length() > 5) {
-            this.userProfileImage = (ImageView) getView().findViewById(
-                    R.id.imageview_user_image);
-            imageLoader.DisplayImage(AppCAP.getLocalUserPhotoURL(),
-                    userProfileImage, R.drawable.default_avatar25, 70);
+        Log.d("Fragment Feeds", "venueNameAndFeeds messages length..." + venueNameAndFeeds.getFeedsArray().size());
+        if (adapter == null) {
+            if (AppCAP.getLocalUserPhotoURL().length() > 5) {
+                this.userProfileImage = (ImageView) getView().findViewById(
+                        R.id.imageview_user_image);
+                imageLoader.DisplayImage(AppCAP.getLocalUserPhotoURL(),
+                        userProfileImage, R.drawable.default_avatar25, 70);
+            }
+            adapter = new MyFeedsAdapter(getActivity(), venueNameAndFeeds, this);
+            list.setAdapter(adapter);
+        } else {
+            adapter.setNewData(venueNameAndFeeds);
+            adapter.notifyDataSetChanged();
         }
-        adapter = new MyFeedsAdapter(getActivity(),
-                venueNameAndFeeds.getFeedsArray(), venueNameAndFeeds);
-        list.setAdapter(adapter);
         progress.dismiss();
         showKeyboard();
     }
@@ -738,8 +752,26 @@ public class FragmentFeedsForOneVenue extends Fragment {
                         R.id.textview_contact_list)).setText(venueName);
             }
             // Get venue chat
+            venueFeeds();
+        }
+    }
+    
+    public void venueFeeds() {
+        if (venueNameAndFeeds != null &&
+                venueNameAndFeeds.getVenueId() == venueId && 
+                adapter != null) {
+            adapter.setNewData(venueNameAndFeeds);
+            adapter.notifyDataSetChanged();
+            
+        } else {
+            if (adapter != null) {
+                adapter.setLastViewed(0);
+            }
+            if (list != null) {
+                list.setSelection(0);
+            }
             exe.venueFeeds(venueId, venueName, lastChatIDString, "", false,
-                    true, "");
+                true, "");
         }
     }
 
@@ -803,8 +835,7 @@ public class FragmentFeedsForOneVenue extends Fragment {
             ((CustomFontView) getActivity().getWindow().findViewById(
                     R.id.textview_contact_list)).setText(venueName);
         }
-        exe.venueFeeds(venueId, venueName, lastChatIDString, "", false, true,
-                "");
+        venueFeeds();
     }
 
     public void onClickFeeds(View v) {
@@ -822,6 +853,10 @@ public class FragmentFeedsForOneVenue extends Fragment {
 
     public void setCaller(String caller) {
         this.caller = caller;
+    }
+
+    public void getMoreFeeds() {
+        exe.getMoreFeeds(venueNameAndFeeds);
     }
 
 }

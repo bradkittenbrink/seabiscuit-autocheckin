@@ -30,6 +30,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityPlaceDetails;
+import com.coffeeandpower.activity.ActivitySettings;
 import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.cont.ChatMessage;
 import com.coffeeandpower.cont.Feed;
@@ -37,6 +38,7 @@ import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.fragments.FragmentFeedsForOneVenue;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.utils.Utils;
+import com.coffeeandpower.views.CustomDialog;
 
 public class MyFeedsAdapter extends BaseAdapter {
 
@@ -46,19 +48,22 @@ public class MyFeedsAdapter extends BaseAdapter {
     public ImageLoader imageLoader;
     private int localUserId;
     private Activity context;
+    private FragmentFeedsForOneVenue fragment;
+    private int lastViewed = 0;
 
-    public MyFeedsAdapter(Activity context, ArrayList<Feed> messages,
-            VenueNameAndFeeds venueNameAndFeeds) {
+    public MyFeedsAdapter(Activity context, VenueNameAndFeeds venueNameAndFeeds, FragmentFeedsForOneVenue fragment) {
         this.context = context;
+        this.fragment = fragment;
         this.inflater = context.getLayoutInflater();
         this.imageLoader = new ImageLoader(context.getApplicationContext());
         this.localUserId = AppCAP.getLoggedInUserId();
-        Log.d("MyFeedsAdapter", "messages length..." + messages.size());
+        ArrayList<Feed> messages = venueNameAndFeeds.getFeedsArray();
         if (messages != null) {
             this.messages = messages;
         } else {
             this.messages = new ArrayList<Feed>();
         }
+        Log.d("MyFeedsAdapter", "messages length..." + messages.size());
         this.venueNameAndFeeds = venueNameAndFeeds;
     }
 
@@ -209,8 +214,6 @@ public class MyFeedsAdapter extends BaseAdapter {
             lp.setMargins(-pixels10, 0, 0, 0);
             holder.pill_button_plus1_comment_right.setLayoutParams(lp);
         }
-        holder.textMessage.setText(AppCAP.cleanResponseString(currentMessage
-                .getFormattedEntryText()));
 
         holder.textMessage.setText(messageString);
 
@@ -221,8 +224,19 @@ public class MyFeedsAdapter extends BaseAdapter {
             displayImage(currentMessage.getReceiverPhotoUrl(),
                     currentMessage.getReceiverId(), holder.profileImageReceiver);
         }
-
+        if (position > lastViewed  && position == getCount() - 1) {
+            lastViewed = position;
+            fragment.getMoreFeeds();
+        }
         return convertView;
+    }
+
+    public int getLastViewed() {
+        return lastViewed;
+    }
+
+    public void setLastViewed(int lastViewed) {
+        this.lastViewed = lastViewed;
     }
 
     private void displayReply(LinearLayout reply_area,
@@ -301,9 +315,19 @@ public class MyFeedsAdapter extends BaseAdapter {
         }
     }
 
-    public void setNewData(ArrayList<Feed> messages2,
-            VenueNameAndFeeds venueNameAndFeeds2) {
-        this.messages = messages2;
+    public void setNewData(VenueNameAndFeeds venueNameAndFeeds2) {
+        if (venueNameAndFeeds2.getVenueId() != this.venueNameAndFeeds.getVenueId()) {
+            lastViewed = 0;
+        } else {
+            if (venueNameAndFeeds2.getFeedsArray() != null && 
+                    venueNameAndFeeds2.getFeedsArray().size() < this.messages.size()) {
+                lastViewed = 0;
+            }
+        }
+        this.messages = venueNameAndFeeds2.getFeedsArray();
+        if (this.messages == null) {
+            this.messages = new ArrayList<Feed>();
+        }
         this.venueNameAndFeeds = venueNameAndFeeds2;
     }
 

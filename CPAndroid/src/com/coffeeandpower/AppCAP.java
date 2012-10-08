@@ -133,6 +133,8 @@ public class AppCAP extends Application {
     public static final String URL_SIGNUP = "signup.php";
     public static final String URL_API = "api.php";
     public static final String URL_TOS = "terms.php#termsTabContent";
+    public static final String FEEDS_LIMIT = "20";
+    
 
     // Activity codes
     public static final int ACT_CHECK_IN = 1888;

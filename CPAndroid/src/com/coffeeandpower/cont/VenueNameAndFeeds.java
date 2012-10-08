@@ -82,4 +82,14 @@ public class VenueNameAndFeeds  implements Parcelable  {
         this.name = in.readString();
     }
 
+    public String getLastFeedId() {
+        String sId = "";
+        if (feedsArray != null) {
+            Feed lastFeed = feedsArray.get(feedsArray.size() - 1);
+            sId = Integer.toString(lastFeed.getId());
+        }
+        return sId;
+    }
+
+
 }

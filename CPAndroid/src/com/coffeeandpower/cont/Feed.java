@@ -336,6 +336,9 @@ public class Feed implements Parcelable {
             if (originalFeed != null) {
                 ArrayList<Feed> replyFeeds = originalFeed.getReplyFeeds();
                 replyFeeds.add(this);
+            } else {
+                Log.d("Feed", "Feed id not found in attachToFeedsArray: "
+                        + originalPostId);
             }
         }
         

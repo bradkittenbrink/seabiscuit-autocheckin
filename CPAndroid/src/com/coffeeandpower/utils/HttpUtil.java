@@ -2564,7 +2564,7 @@ public class HttpUtil {
     }
 
     public DataHolder getPostRepliesForVenueFeed(int venueId,
-            String lastChatIDString, VenueNameAndFeeds currVenue) {
+            String lastChatIDString, VenueNameAndFeeds currVenue, String from_scroll, String limit) {
         DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
                 "Internet connection error", null);
         HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
@@ -2577,6 +2577,8 @@ public class HttpUtil {
                     .toString(venueId)));
             params.add(new BasicNameValuePair("last_id", lastChatIDString));
             params.add(new BasicNameValuePair("replies_only", "1"));
+            params.add(new BasicNameValuePair("from_scroll", from_scroll));             
+            params.add(new BasicNameValuePair("limit", limit));
 
             post.setEntity(new UrlEncodedFormEntity(params));
 
@@ -2681,6 +2683,9 @@ public class HttpUtil {
                 params.add(new BasicNameValuePair("venue_id", Integer
                         .toString(venueId)));
                 params.add(new BasicNameValuePair("last_id", lastChatIDString));
+                params.add(new BasicNameValuePair("limit", AppCAP.FEEDS_LIMIT));
+                params.add(new BasicNameValuePair("full_feed", "1"));             
+                
             } else {
                 params.add(new BasicNameValuePair("action", "newPost"));
                 params.add(new BasicNameValuePair("venue_id", Integer
@@ -2715,7 +2720,7 @@ public class HttpUtil {
                     } else {
                         JSONArray feeds = json.optJSONArray("payload");
                         ArrayList<Feed> feedsArray = new ArrayList<Feed>();
-
+                        ArrayList<Feed> feedsArrayForComments = new ArrayList<Feed>();
                         if (feeds != null) {
                             for (int m = 0; m < feeds.length(); m++) {
 
@@ -2724,7 +2729,13 @@ public class HttpUtil {
                                         && currFeed.optString("entry")
                                                 .contentEquals("") == false) {
                                     try {
-                                        feedsArray.add(new Feed(currFeed));
+                                        Feed currentFeed = new Feed(currFeed);
+                                        if (currentFeed.getOriginalPostId() != 0){
+                                            feedsArrayForComments.add(currentFeed);
+                                            
+                                        } else {
+                                            feedsArray.add(new Feed(currFeed));
+                                        }
                                     } catch (Exception e) {
                                         Log.d("HttpUtil", "Received exception "
                                                 + e.getLocalizedMessage()
@@ -2736,8 +2747,9 @@ public class HttpUtil {
                         VenueNameAndFeeds currVenue = new VenueNameAndFeeds(
                                 venueId, venueName, feedsArray);
 
-                        getPostRepliesForVenueFeed(venueId, lastChatIDString,
-                                currVenue);
+                        for (Feed currFeed : feedsArrayForComments) {
+                            currFeed.attachToFeedsArray(feedsArray);
+                        }                        
                         result.setObject(currVenue);
                         if (isSend == false) {
                             result.setHandlerCode(Executor.HANDLE_VENUE_FEED);
@@ -2837,7 +2849,7 @@ public class HttpUtil {
                                 venueId, venueName, feedsArray);
 
                         getPostRepliesForVenueFeed(venueId, lastChatIDString,
-                                currVenue);
+                                currVenue, "0", "0");
                         result.setObject(currVenue);
                         result.setHandlerCode(Executor.HANDLE_SEND_VENUE_FEED);
                         return result;
@@ -4515,6 +4527,94 @@ public class HttpUtil {
                 result.setResponseMessage("JSON Parsing Error: " + e);
                 return result;
             }
+        }
+        return result;
+    }
+
+    public DataHolder getMoreFeeds(VenueNameAndFeeds venueNameAndFeeds) {
+        DataHolder result = new DataHolder(Executor.HTTP_ERROR_IN_MORE_FEED,
+                internetConnectionErrorMsg, null);
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        String lastChatIDString = venueNameAndFeeds.getLastFeedId();
+
+        try {
+                params.add(new BasicNameValuePair("action", "getVenueFeed"));
+                params.add(new BasicNameValuePair("venue_id", Integer
+                        .toString(venueNameAndFeeds.getVenueId())));
+                params.add(new BasicNameValuePair("last_id", lastChatIDString));
+                params.add(new BasicNameValuePair("from_scroll", "1"));             
+                params.add(new BasicNameValuePair("full_feed", "1"));             
+                params.add(new BasicNameValuePair("limit", AppCAP.FEEDS_LIMIT));
+
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            String responseString = EntityUtils.toString(resEntity);
+            if (responseString != null && responseString.trim().length() > 0) {
+                JSONObject json = new JSONObject(responseString);
+                if (json != null) {
+
+                    if (json.optBoolean("error")) {
+                        result.setHandlerCode(Executor.HTTP_ERROR_IN_MORE_FEED);
+                        result.setResponseMessage(json.optString("message"));
+                    } else {
+                        JSONArray feeds = json.optJSONArray("payload");
+                        ArrayList<Feed> feedsArray = venueNameAndFeeds.getFeedsArray();
+                        ArrayList<Feed> feedsArrayForComments = new ArrayList<Feed>();
+                        if (feeds != null) {
+                            for (int m = 0; m < feeds.length(); m++) {
+
+                                JSONObject currFeed = feeds.optJSONObject(m);
+                                if (currFeed != null
+                                        && currFeed.optString("entry")
+                                                .contentEquals("") == false) {
+                                    try {
+                                        Feed currentFeed = new Feed(currFeed);
+                                        if (currentFeed.getOriginalPostId() != 0){
+                                            feedsArrayForComments.add(currentFeed);
+                                            
+                                        } else {
+                                            feedsArray.add(new Feed(currFeed));
+                                        }
+                                    } catch (Exception e) {
+                                        Log.d("HttpUtil", "Received exception "
+                                                + e.getLocalizedMessage()
+                                                + " from getVenueFeedsList API");
+                                    }
+                                }
+                            }
+                        }
+                        for (Feed currFeed : feedsArrayForComments) {
+                            currFeed.attachToFeedsArray(feedsArray);
+                        }                        
+                        result.setObject(venueNameAndFeeds);
+                        result.setHandlerCode(Executor.HANDLE_VENUE_MORE_FEED);
+                        return result;
+                    }
+                }
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.setResponseMessage("JSON Parsing Error: " + e);
+            return result;
         }
         return result;
     }

@@ -15,6 +15,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.UserResume;
 import com.coffeeandpower.cont.UserSmart;
+import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.location.LocationDetectionService;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
@@ -54,8 +55,9 @@ public class Executor {
     public static final int HANDLE_USER_LINKEDIN_SKILLS = 1630;
     public static final int HANDLE_USER_LINKEDIN_SKILL_UPDATE = 1631;
     public static final int HANDLE_GET_QUESTIONS_RECEIVERS = 1632;
+    public static final int HANDLE_VENUE_MORE_FEED = 1633;
+    public static final int HTTP_ERROR_IN_MORE_FEED = 1634;   
     
-
     private DataHolder result;
 
     private ProgressDialog progress;
@@ -561,6 +563,18 @@ public class Executor {
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
         }, "Executor.getQuestionReceivers").start();
+    }
+
+    public void getMoreFeeds(final VenueNameAndFeeds venueNameAndFeeds) {
+        progress.setMessage("Get more feeds...");
+        progress.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().getMoreFeeds(venueNameAndFeeds) ;
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.getMoreFeeds").start();
     }
 
 }
