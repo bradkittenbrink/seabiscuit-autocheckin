@@ -1,19 +1,11 @@
 package com.coffeeandpower.fragments;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,24 +13,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
-import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityPlaceDetails;
 import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.adapters.MyPlacesAdapter;
 import com.coffeeandpower.adapters.MyUsersAdapter;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
-
-import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.Utils;
+
+import java.util.*;
 
 public class FragmentPeopleAndPlaces extends Fragment {
 
@@ -80,7 +71,7 @@ public class FragmentPeopleAndPlaces extends Fragment {
             if (listView != null && listView.isShown() == true) {
                 if (type.equals("people")) {
 
-                    arrayUsers = msg.getData().getParcelableArrayList("users");
+                    arrayUsers = msg.getData().getParcelableArrayList("nearby");
 
                     // Sort users list
                     if (arrayUsers != null) {
@@ -296,13 +287,13 @@ public class FragmentPeopleAndPlaces extends Fragment {
                 @SuppressWarnings("unchecked")
                 List<VenueSmart> arrayVenues = (List<VenueSmart>) obj[0];
                 @SuppressWarnings("unchecked")
-                List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
+                List<UserSmart> arrayUsers = (List<UserSmart>) obj[3];
 
                 Message message = new Message();
                 Bundle bundle = new Bundle();
                 bundle.putCharSequence("type", counterdata.type);
                 if (type.equals("people")) {
-                    bundle.putParcelableArrayList("users",
+                    bundle.putParcelableArrayList("nearby",
                             new ArrayList<UserSmart>(arrayUsers));
                 } else {
                     bundle.putParcelableArrayList("venues",

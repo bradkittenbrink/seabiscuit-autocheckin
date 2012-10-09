@@ -7,17 +7,29 @@
     
        <!--  production linkedin V2 
     <string name="linkedInApiKey"></string>
-    <string name="linkedInApiSec"></string>	-->
+    <string name="linkedInApiSec"></string>
+	-->
+
+
+
    
     <!--
          staging linkedin V1
     <string name="linkedInApiKey">4xkfzpnvuc72</string>
-    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+    <string name="linkedInApiSec">mxgFhH1i1PbPlWjq</string>
+
+
+
+
     -->
     <!--
     production linkedin V1
     <string name="linkedInApiKey">5tk2ex0mnjqk</string>
-    <string name="linkedInApiSec">9JIH0rUiSbvJuHI2</string>
+    <string name="linkedInApiSec">9JIH0rUiSbvJuHI2</string>
+
+
+
+
     -->
 	<string name="GOOGLE_MAPS_API_KEY">0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q</string>
 

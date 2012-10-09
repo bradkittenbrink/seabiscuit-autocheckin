@@ -1,22 +1,19 @@
 package com.coffeeandpower.adapters;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.Constants;
-import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.imageutil.ImageLoader;
+
+import java.util.ArrayList;
 
 public class MyUsersAdapter extends BaseAdapter {
 
@@ -80,7 +77,6 @@ public class MyUsersAdapter extends BaseAdapter {
         public TextView textVenueName;
         public TextView textDistance;
         public TextView textCheckinsCount;
-        public TextView textGrayLine;
         public TextView textJobName;
 
         public ImageView profileImage;
@@ -97,8 +93,6 @@ public class MyUsersAdapter extends BaseAdapter {
                     .findViewById(R.id.textview_place);
             this.textNickName = (TextView) convertView
                     .findViewById(R.id.textview_persone_nickname);
-            this.textGrayLine = (TextView) convertView
-                    .findViewById(R.id.textview_days);
             this.profileImage = (ImageView) convertView
                     .findViewById(R.id.imageview_image);
             this.textJobName = (TextView) convertView
@@ -154,8 +148,6 @@ public class MyUsersAdapter extends BaseAdapter {
                     + jobName.substring(1);
         holder.textJobName.setText(jobName);
 
-        // Deafult gray line state is gone
-        holder.textGrayLine.setVisibility(View.GONE);
         // Not the best check since 0, 0 is a valid lat, long, but there is no
         // coffee or power off the coast of Africa so we should be good
         if (myLat == 0 || myLng == 0) {
@@ -165,20 +157,6 @@ public class MyUsersAdapter extends BaseAdapter {
                     myLng, current.getLat(),
                     current.getLng(), false));
         }
-
-        // Check if we have hereNow user
-        if (current.getCheckedIn() == 1
-                && mudArray.get(position).isFirstInList()) {
-            holder.textGrayLine.setText("Checked In Now");
-            holder.textGrayLine.setVisibility(View.VISIBLE);
-        }
-        if (current.getCheckedIn() == 0
-                && current.isFirstInList()) {
-            // it was in last seven days
-            holder.textGrayLine.setText("Last 7 Days");
-            holder.textGrayLine.setVisibility(View.VISIBLE);
-        }
-
         return convertView;
     }
 

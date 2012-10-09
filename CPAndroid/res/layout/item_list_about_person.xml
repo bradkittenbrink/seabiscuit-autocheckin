@@ -9,18 +9,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textview_days"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="#ff555555"
-            android:paddingBottom="5dip"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:paddingTop="5dip"
-            android:textColor="#ffffff"
-            android:textStyle="bold" />
-
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

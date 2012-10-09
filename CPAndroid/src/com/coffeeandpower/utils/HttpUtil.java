@@ -1,23 +1,17 @@
 package com.coffeeandpower.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TimeZone;
-
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.util.Log;
+import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
+import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.activity.ActivitySettings;
+import com.coffeeandpower.cont.*;
+import com.coffeeandpower.cont.VenueSmart.CheckinData;
+import com.coffeeandpower.linkedin.LinkedIn;
+import com.google.android.maps.GeoPoint;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -48,35 +42,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
-import android.util.Log;
-
-import com.coffeeandpower.AppCAP;
-import com.coffeeandpower.Constants;
-import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.activity.ActivitySettings;
-import com.coffeeandpower.cont.ChatMessage;
-import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.cont.Education;
-import com.coffeeandpower.cont.Feed;
-import com.coffeeandpower.cont.Listing;
-import com.coffeeandpower.cont.RankedSkill;
-import com.coffeeandpower.cont.Review;
-import com.coffeeandpower.cont.Transaction;
-import com.coffeeandpower.cont.UserLinkedinSkills;
-import com.coffeeandpower.cont.UserResume;
-import com.coffeeandpower.cont.UserShort;
-import com.coffeeandpower.cont.UserSmart;
-import com.coffeeandpower.cont.UserTransaction;
-import com.coffeeandpower.cont.Venue;
-import com.coffeeandpower.cont.VenueNameAndFeeds;
-import com.coffeeandpower.cont.VenueSmart;
-import com.coffeeandpower.cont.VenueSmart.CheckinData;
-import com.coffeeandpower.cont.Work;
-import com.coffeeandpower.linkedin.LinkedIn;
-import com.google.android.maps.GeoPoint;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.net.*;
+import java.util.*;
 
 public class HttpUtil {
 
@@ -92,7 +64,7 @@ public class HttpUtil {
     /**
      * Get Resume for user with userId
      * 
-     * @param userId
+     * @param userIdForUrl
      * @return
      */
     public DataHolder getUserResume(int userIdForUrl) {
@@ -966,8 +938,7 @@ public class HttpUtil {
     /**
      * Send Plus One
      * 
-     * @param user
-     * @param review
+     * @param post_id
      * @return
      */
     public DataHolder sendPlusOneForLove(int post_id) {
@@ -1625,7 +1596,7 @@ public class HttpUtil {
     /**
      * Get users checked in venue
      * 
-     * @param venue
+     * @param foursquareId
      * @return
      */
     public DataHolder getUsersCheckedInAtFoursquareID(String foursquareId) {
@@ -2369,6 +2340,73 @@ public class HttpUtil {
         return result;
     }
 
+    public DataHolder getNearbyPeople(double[] coords) {
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR, internetConnectionErrorMsg, null);
+        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        if (coords.length != 2) {
+            Log.e("HttpUtil", "getNearbyPeople: invalid `coords` length");
+            return result;
+        }
+
+        try {
+            params.add(new BasicNameValuePair("action", "getNearestCheckedIn"));
+            params.add(new BasicNameValuePair("lat", Double.toString(coords[0])));
+            params.add(new BasicNameValuePair("lng", Double.toString(coords[1])));
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            String responseString = EntityUtils.toString(resEntity);
+            if (Constants.enableApiJsonLogging) {
+                RootActivity.log("HttpUtil_getNearbyPeople: " + responseString);
+            }
+
+            if (responseString != null) {
+                JSONObject json = new JSONObject(responseString);
+
+                if (json.optBoolean("error")) {
+                    result.setHandlerCode(AppCAP.HTTP_ERROR);
+                    result.setResponseMessage(json.optString("message"));
+                    return result;
+                }
+
+                JSONObject payload = json.optJSONObject("payload");
+                if (payload != null) {
+                    JSONArray people = payload.optJSONArray("people");
+                    ArrayList<UserSmart> contactsArray = new ArrayList<UserSmart>();
+                    if (people != null) {
+                        for (int m = 0; m < people.length(); m++) {
+                            JSONObject currContact = people.optJSONObject(m);
+                            if (currContact != null) {
+                                try {
+                                    contactsArray.add(new UserSmart(currContact));
+                                } catch (Exception e) {
+                                    Log.d("HttpUtil",
+                                            "Received exception " + e.getLocalizedMessage() + " from getNearbyPeople API");
+                                }
+                            }
+                        }
+                        result.setObject(Collections.unmodifiableList(contactsArray));
+                        result.setResponseMessage("HTTP 200 OK");
+                        return result;
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.setResponseMessage("JSON Parsing Error: " + e);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
+        }
+        return result;
+    }
+
     public DataHolder getNearestVenueFeedsList() {
         Log.d("HttpUtil",
                 "---------------------getNearestVenueFeedsList------------");
@@ -2880,9 +2918,6 @@ public class HttpUtil {
 
     /**
      * Get or send venue feed
-     * 
-     * @param venueId
-     * @param lastChatIDString
      * @return
      */
     public DataHolder postableVenues() {
@@ -3406,9 +3441,7 @@ public class HttpUtil {
 
     /**
      * Get venues in bounds, uses C&P API
-     * 
-     * @param gp
-     * @param number
+     * @param data
      * @return
      */
     public DataHolder getVenuesInSWCoords(double data[]) {
@@ -3763,10 +3796,13 @@ public class HttpUtil {
                                 }
                             }
                         }
+                        DataHolder nearby = this.getNearbyPeople(coords);
                         result.setObject(new Object[] {
                                 Collections.unmodifiableList(venues),
                                 Collections.unmodifiableList(users),
-                                Collections.unmodifiableList(contacts) });
+                                Collections.unmodifiableList(contacts),
+                                nearby.getObject()
+                        });
                     }
                     result.setHandlerCode(Executor.HANDLE_GET_VENUES_AND_USERS_IN_BOUNDS);
                     result.setResponseMessage("HTTP 200 OK");
@@ -4090,7 +4126,6 @@ public class HttpUtil {
      * 
      * @param userName
      * @param password
-     * @param confPassword
      * @param nickName
      * @return
      */
