@@ -13,21 +13,27 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.text.format.Time;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.activity.ActivityChat;
 import com.coffeeandpower.adapters.MyVenueFeedsAdapter;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cache.CachedDataContainer;
@@ -39,9 +45,12 @@ import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 
+import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.UserAndTabMenu;
+import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
+import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.urbanairship.UAirship;
@@ -52,7 +61,8 @@ public class FragmentVenueFeeds extends Fragment {
 
     private ListView listView;
     private ProgressDialog progress;
-
+    private DataHolder result;
+    private Executor exe;
     private ArrayList<VenueNameAndFeeds> arrayFeeds;
 
     private boolean initialLoad = true;
@@ -122,6 +132,30 @@ public class FragmentVenueFeeds extends Fragment {
             act.updateMenuOnFragmentchange(R.id.tab_fragment_area_feed);
             act.setFragmentId(R.id.tab_fragment_area_feed);
         }
+        exe = new Executor(getActivity());
+        exe.setExecutorListener(new ExecutorInterface() {
+            @Override
+            public void onErrorReceived() {
+            }
+
+            @Override
+            public void onActionFinished(int action) {
+                result = exe.getResult();
+
+                switch (action) {
+                case Executor.HANDLE_VENUE_FEED_PREVIEW:
+                    if (result != null
+                            && result.getObject() != null) {
+                        arrayFeeds =  (ArrayList<VenueNameAndFeeds>) result.getObject();
+                        updateVenueFeedsFromApiResult(arrayFeeds);
+
+                        progress.dismiss();
+                    }
+                    break;
+                
+                }
+            }
+        });
 
     }
 
@@ -151,9 +185,6 @@ public class FragmentVenueFeeds extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (listView.isShown()) {
-            startUpdate();
-        }
         if (!AppCAP.shouldFinishActivities()) {
             if (!AppCAP.isLoggedIn()) {
                 progress.dismiss();
@@ -181,9 +212,7 @@ public class FragmentVenueFeeds extends Fragment {
     }
 
     public void refresh() {
-
-        // Restart the activity so user lists load correctly
-        CacheMgrService.resetVenueFeedsData(true);
+        exe.getVenueFeedPreviews();
     }
 
     private void updateVenueFeedsFromApiResult(
@@ -197,7 +226,6 @@ public class FragmentVenueFeeds extends Fragment {
         } else {
             this.arrayFeeds = new ArrayList<VenueNameAndFeeds>();
         }
-
         if (initialLoad && listView != null) {
             adapterFeeds = new MyVenueFeedsAdapter(getActivity(),
                     this.arrayFeeds);

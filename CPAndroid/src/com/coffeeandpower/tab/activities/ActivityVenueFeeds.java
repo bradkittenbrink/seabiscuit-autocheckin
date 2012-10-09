@@ -207,7 +207,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
               }
               newFragment = new FragmentPeopleAndPlaces(this.intentExtras);
           } else {
-              CacheMgrService.resetVenueFeedsData(false);
+              CacheMgrService.resetVenueFeedsData(false); 
               newFragment = new FragmentVenueFeeds(this.intentExtras);
           }
           transaction.add(fragment_id, newFragment);
@@ -583,14 +583,8 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             FragmentManager manager = getSupportFragmentManager();
             FragmentVenueFeeds currFrag = (FragmentVenueFeeds)manager.findFragmentById(R.id.tab_fragment_area_feed);
             if (currFrag != null) {
-                currFrag.startUpdate();
+                currFrag.refresh();
             }
-            Thread thread = new Thread(new Runnable() {
-                public void run() {
-                    CacheMgrService.resetVenueFeedsData(false);
-                }
-            }, "CacheMgrService.run");
-            thread.start();
         } else if (fragment_id == R.id.tab_fragment_area_feeds_for_one_venue) {
             FragmentManager manager = getSupportFragmentManager();
             FragmentFeedsForOneVenue currFrag = (FragmentFeedsForOneVenue) manager.findFragmentById(R.id.tab_fragment_area_feeds_for_one_venue);

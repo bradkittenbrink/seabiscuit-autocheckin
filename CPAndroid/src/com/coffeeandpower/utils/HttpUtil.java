@@ -2539,6 +2539,7 @@ public class HttpUtil {
                     result.setObject(Collections
                             .unmodifiableList(VenueNameArray));
                     result.setResponseMessage("HTTP 200 OK");
+                    result.setHandlerCode(Executor.HANDLE_VENUE_FEED_PREVIEW);
                     return result;
                 }
 
@@ -4618,5 +4619,95 @@ public class HttpUtil {
         }
         return result;
     }
+    public DataHolder getVenueFeedPreviews() {
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                internetConnectionErrorMsg, null);
+        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
+                HttpVersion.HTTP_1_1);
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+        Log.d("HttpUtil",
+                "getVenueFeedsList" + AppCAP.getUserLastCheckinVenueIds());
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        if (AppCAP.getUserLastCheckinVenueIds().contentEquals("") == true) {
+            return getNearestVenueFeedsList();
+        } else {
+            try {
+                params.add(new BasicNameValuePair("action",
+                        "getVenueFeedPreviews"));
+                params.add(new BasicNameValuePair("venue_IDs", "["
+                        + AppCAP.getUserLastCheckinVenueIds() + "]"));
+                post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
+                // Execute HTTP Post Request
+                HttpResponse response = client.execute(post);
+                HttpEntity resEntity = response.getEntity();
+
+                String responseString = EntityUtils.toString(resEntity);
+
+                if (responseString != null) {
+                    JSONObject json = new JSONObject(responseString);
+                    JSONObject venueFeeds = json.optJSONObject("payload");
+                    ArrayList<VenueNameAndFeeds> VenueNameArray = new ArrayList<VenueNameAndFeeds>();
+                    ArrayList<VenueNameAndFeeds> listLastCheckedinVenues = AppCAP
+                            .getListLastCheckedinVenues();
+                    for (VenueNameAndFeeds currVenue : listLastCheckedinVenues) {
+                        ArrayList<Feed> feedsArray = new ArrayList<Feed>();
+                        if (venueFeeds != null) {
+                            JSONArray feeds = venueFeeds.optJSONArray(String
+                                    .valueOf(currVenue.getVenueId()));
+
+                            if (feeds != null) {
+                                for (int m = 0; m < feeds.length(); m++) {
+
+                                    JSONObject currFeed = feeds
+                                            .optJSONObject(m);
+                                    if (currFeed != null
+                                            && currFeed.optString("entry")
+                                                    .contentEquals("") == false) {
+                                        try {
+                                            feedsArray.add(new Feed(currFeed));
+                                        } catch (Exception e) {
+                                            Log.d("HttpUtil",
+                                                    "Received exception "
+                                                            + e.getLocalizedMessage()
+                                                            + " from getVenueFeedsList API");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        VenueNameArray
+                                .add(new VenueNameAndFeeds(currVenue
+                                        .getVenueId(), currVenue.getName(),
+                                        feedsArray));
+                    }
+
+                    result.setObject(VenueNameArray);
+                    result.setHandlerCode(Executor.HANDLE_VENUE_FEED_PREVIEW);
+                    return result;
+                }
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                return result;
+
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+                return result;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return result;
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                result.setResponseMessage("JSON Parsing Error: " + e);
+                return result;
+            }
+        }
+        return result;
+    }
+
 
 }

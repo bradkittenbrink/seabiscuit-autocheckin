@@ -57,6 +57,7 @@ public class Executor {
     public static final int HANDLE_GET_QUESTIONS_RECEIVERS = 1632;
     public static final int HANDLE_VENUE_MORE_FEED = 1633;
     public static final int HTTP_ERROR_IN_MORE_FEED = 1634;   
+    public static final int HANDLE_VENUE_FEED_PREVIEW = 1635;   
     
     private DataHolder result;
 
@@ -575,6 +576,18 @@ public class Executor {
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
         }, "Executor.getMoreFeeds").start();
+    }
+
+    public void getVenueFeedPreviews() {
+        progress.setMessage("Loading...");
+        progress.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().getVenueFeedPreviews();
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.getVenueFeedPreviews").start();
     }
 
 }

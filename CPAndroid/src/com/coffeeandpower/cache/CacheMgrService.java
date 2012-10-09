@@ -274,6 +274,7 @@ public class CacheMgrService extends Service {
             // Log.d(TAG,"CacheMgrService.start()");
             Log.d(TAG, "Starting periodic timer...");
             isRunning = true;
+            startLoopNumber = 0;
             taskHandler.removeCallbacks(runTimer);
             taskHandler.post(runTimer);
         } else {

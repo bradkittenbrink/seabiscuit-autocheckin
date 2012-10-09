@@ -42,16 +42,15 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
 
-    private int localUserId;
     private Activity context;
 
     private ImageLoader imageLoader;
+
 
     public MyVenueFeedsAdapter(Activity context, ArrayList<VenueNameAndFeeds> venueNameAndFeeds) {
         this.context = context;
         if (context == null) return;
         this.inflater = context.getLayoutInflater();
-        this.localUserId = AppCAP.getLoggedInUserId();
         this.imageLoader = new ImageLoader(context.getApplicationContext());
 
         if (venueNameAndFeeds != null) {
@@ -83,22 +82,40 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
 
     public static class ViewHolder {
 
-        public TextView textDate;
         public TextView textMessage;
         public LinearLayout listFeeds;
         public LinearLayout reply_area;
         public Button removeButton;
+        public View item_venue_feeds_1;
+        public View item_venue_feeds_2;
+        public View item_venue_feeds_3;
 
         public ViewHolder(View convertView) {
 
-            this.textDate = (TextView) convertView
-                    .findViewById(R.id.textview_last_checkedin_date);  
             this.textMessage = (TextView) convertView
                     .findViewById(R.id.textview_venue_name);
             this.listFeeds = (LinearLayout) convertView
                     .findViewById(R.id.item_venue_feeds_listview);
             this.removeButton = (Button) convertView
                     .findViewById(R.id.btn_remove);
+            this.item_venue_feeds_1 = convertView
+                    .findViewById(R.id.item_venue_feeds_1);
+            this.item_venue_feeds_2 = convertView
+                    .findViewById(R.id.item_venue_feeds_2);
+            this.item_venue_feeds_3 = convertView
+                    .findViewById(R.id.item_venue_feeds_3);
+        }
+        public View getItemVenueFeeds(int position){
+            if (position == 0){
+                return this.item_venue_feeds_1;
+            }
+            if (position == 1){
+                return this.item_venue_feeds_2;
+            }
+            if (position == 2){
+                return this.item_venue_feeds_3;
+            }
+            return null;
         }
     }
 
@@ -125,24 +142,21 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
         ArrayList<Feed> messages = venueNameAndFeeds.get(
                 position).getFeedsArray();
         VenueNameAndFeeds venue = venueNameAndFeeds.get(position);
-        holder.listFeeds.removeAllViews();
-        for (int i=0; i < messages.size(); i++) {
-            Feed message = messages.get(i);
-              View vi = inflater.inflate(R.layout.item_list_feeds, null);
-              fillItem(vi, message, venue);
-              if (i == 2){
-                  View sep = (View) vi
-                          .findViewById(R.id.horizontal_line);  
-                  sep.setVisibility(View.GONE);
-              }
-              holder.listFeeds.addView(vi);        
+        for (int i=0; i < 3; i++) {
+            View vi = holder.getItemVenueFeeds(i);
+            if (i < messages.size()) {
+                Feed message = messages.get(i);
+                vi.setVisibility(View.VISIBLE);
+                fillItem(vi, message, venue);
+            } else {
+                vi.setVisibility(View.GONE);
+            }
         }
         if (messages.size() == 0) {
             holder.listFeeds.setVisibility(View.GONE);
         } else {
             holder.listFeeds.setVisibility(View.VISIBLE);
         }
- 
         return convertView; 
     }
 
@@ -160,8 +174,6 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
         vi.setTag(R.id.venue_name_and_feeds, venueNameAndFeeds);
         RelativeLayout love_sent_area = (RelativeLayout) vi
                 .findViewById(R.id.love_sent_area); 
-        LinearLayout reply_area = (LinearLayout) vi
-                .findViewById(R.id.item_venue_feeds_reply_listview);
 
     Date date = new Date();
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");        
@@ -174,8 +186,6 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
         e.printStackTrace();
     }
             
-    int pixels14 = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
-            14, vi.getResources().getDisplayMetrics()));
     if (message.getEntryType().contentEquals(Feed.FEED_TYPE_LOVE)) {
         love_sent_area.setVisibility(View.VISIBLE);
         love_sent_area.measure(0, 0);
@@ -235,4 +245,5 @@ public class MyVenueFeedsAdapter extends BaseAdapter {
                     R.drawable.default_avatar50_login, 70);  
         }
     }
+
 }

@@ -31,15 +31,6 @@
                 android:textColor="#009c91"
                 android:textSize="20dip" />
 
-            <TextView
-                android:id="@+id/textview_last_checkedin_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dip"
-                android:focusable="false"
-                android:gravity="left"
-                android:textSize="12sp" />
-
             <Button
                 android:id="@+id/btn_remove"
                 android:layout_width="40dp"
@@ -59,7 +50,20 @@
             android:divider="#dddddd"
             android:dividerHeight="4dip"
             android:focusable="false"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <include
+                android:id="@+id/item_venue_feeds_1"
+                layout="@layout/item_list_feeds_for_active_feeds" />
+
+            <include
+                android:id="@+id/item_venue_feeds_2"
+                layout="@layout/item_list_feeds_for_active_feeds" />
+
+            <include
+                android:id="@+id/item_venue_feeds_3"
+                layout="@layout/item_list_feeds_for_active_feeds" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
