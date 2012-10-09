@@ -114,11 +114,9 @@ public class ActivityLoginPage extends RootActivity {
 	}
 	
 	public void displayLinkedinLogin() {
-        (findViewById(R.id.text_connect)).setVisibility(View.GONE); 
         (findViewById(R.id.btn_linked_in)).setVisibility(View.GONE);
         (findViewById(R.id.btn_later)).setVisibility(View.GONE);
         (findViewById(R.id.candp_logo)).setVisibility(View.GONE);
-        (findViewById(R.id.text_connect)).setVisibility(View.GONE); 
         ( findViewById(R.id.btn_linked_in)).setVisibility(View.GONE);
         (findViewById(R.id.btn_later)).setVisibility(View.GONE);
         (findViewById(R.id.candp_logo)).setVisibility(View.GONE);
@@ -162,7 +160,6 @@ public class ActivityLoginPage extends RootActivity {
 	                    String mess = lastAuthorize.getErrorMessage();
 	                    if (!mess.contentEquals("")) {
 	                        showDialog("Error returned by Linkedin",mess);
-	                        (findViewById(R.id.text_connect)).setVisibility(View.VISIBLE); 
 	                        ( findViewById(R.id.btn_linked_in)).setVisibility(View.VISIBLE);
                             (findViewById(R.id.btn_later)).setVisibility(View.VISIBLE);
                             (findViewById(R.id.candp_logo)).setVisibility(View.VISIBLE);
