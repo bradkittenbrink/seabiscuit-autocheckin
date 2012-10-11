@@ -20,7 +20,7 @@ public class CapPushNotificationBuilder extends BasicPushNotificationBuilder {
         boolean active = AppCAP.isActive();
         boolean loggedin = AppCAP.isLoggedIn();
 
-        if(active && loggedin) {
+        if (active && loggedin) {
             // the app is already running with UI, so the notification will
             // filter through to the internal RootActivity's - no system notification
             return null;

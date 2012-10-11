@@ -31,7 +31,6 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.coffeeandpower.app.R;
 import com.coffeeandpower.app.R.string;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cont.DataHolder;
@@ -44,8 +43,8 @@ import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
-import com.urbanairship.push.BasicPushNotificationBuilder;
 import com.urbanairship.push.PushManager;
 import com.urbanairship.push.PushPreferences;
 
@@ -96,6 +95,7 @@ public class AppCAP extends Application {
     private static final String TAG_SCREEN_WIDTH = "tag_screen_width";
     private static final String TAG_FIRST_START = "tag_first_start";
     private static final String TAG_INFO_DIALOG = "tag_info_dialog";
+    private static final String TAG_APP_FOREGROUND = "tag_app_foreground";
 
     private static final String TAG_VENUES_WITH_USER_CHECKINS = "venuesWithUserCheckins";
     private static final String TAG_VENUES_WITH_AUTO_CHECKINS = "venuesWithAutoCheckins";
@@ -119,11 +119,12 @@ public class AppCAP extends Application {
     // production
     public static final String URL_WEB_SERVICE = "https://staging.candp.me/";
     // staging
-
     //public static final String URL_WEB_SERVICE =
     // "http://dev.worklist.net/~andres/candpweb2/web/"; // staging
     //public static final String URL_WEB_SERVICE =
     //"http://dev.worklist.net/~vincent/candpweb2_18320/web/"; // staging
+    //public static final String URL_WEB_SERVICE = 
+    // "http://dev.candp.me/~leet/candpweb2/web/"; // leet dev
 
     public static final String URL_FOURSQUARE = "https://api.foursquare.com/v2/venues/search?oauth_token=BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4&v=20120302";
     public static final String FOURSQUARE_OAUTH = "BCG410DXRKXSBRWUNM1PPQFSLEFQ5ND4HOUTTTWYUB1PXYC4";
@@ -134,7 +135,6 @@ public class AppCAP extends Application {
     public static final String URL_API = "api.php";
     public static final String URL_TOS = "terms.php#termsTabContent";
     public static final String FEEDS_LIMIT = "20";
-    
 
     // Activity codes
     public static final int ACT_CHECK_IN = 1888;
@@ -153,7 +153,6 @@ public class AppCAP extends Application {
     private static Gson gsonConverter = new Gson();
 
     private static Context mapContext;
-    private static boolean bActive = false;
 
     // App wide observables
 
@@ -168,8 +167,6 @@ public class AppCAP extends Application {
 
     // Service management
     private static boolean locationDetectionServiceRunning = false;
-
-    // private Counter timingCounter;
 
     public AppCAP() {
         instance = this;
@@ -186,15 +183,23 @@ public class AppCAP extends Application {
         super.onCreate();
 
         setReleaseApp(!isDebuggable(this));
+
         // Start Urban Airship
-        UAirship.takeOff(this);
+        AirshipConfigOptions options = AirshipConfigOptions.loadDefaultOptions(this);
+        UAirship.takeOff(this, options);
+
+        // Setup push notifications (will use app icon
+        // and push payload 'alert' string for message)
+        CapPushNotificationBuilder pnb = new CapPushNotificationBuilder();
+        PushManager.shared().setNotificationBuilder(pnb);
+        PushManager.shared().setIntentReceiver(IntentReceiver.class);
 
         // Detect whether we are on the main thread. If so, do app init stuff
         // onCreate will get triggered multiple times due to the UA process
         // getting started
         // so we only want to call the app init stuff on the main thread/process
-
-        if (getAppName().equalsIgnoreCase("com.coffeeandpower.app")) {
+        String pkg = getApplicationContext().getPackageName();
+        if (isProcess(pkg)) {
 
             Log.d("Coffee", "Main process loading (onCreate)...");
 
@@ -206,21 +211,15 @@ public class AppCAP extends Application {
 
             this.http = new HttpUtil(getString(string.message_internet_connection_error));
 
+            // configure for sound/vibration in local persistence
             PushPreferences prefs = PushManager.shared().getPreferences();
             prefs.setSoundEnabled(true);
             prefs.setVibrateEnabled(true);
 
-            // Setup push notifications (will use app icon
-            // and push payload 'alert' string for message)
-            CapPushNotificationBuilder pnb = new CapPushNotificationBuilder();
-            PushManager.shared().setNotificationBuilder(pnb);
-
+            // enable on server side
             PushManager.enablePush();
-            PushManager.shared().setIntentReceiver(IntentReceiver.class);
 
             getUserLastCheckinVenue();
-            if (Constants.debugLog)
-                Log.d("LOG", "Found APID: " + prefs.getPushId());
 
             // Get country code for metrics/imperial units
             TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -256,11 +255,12 @@ public class AppCAP extends Application {
     }
 
     public static void setActive(boolean active) {
-        bActive = active;
+        getSharedPreferences().edit().putBoolean(TAG_APP_FOREGROUND, active)
+                .commit();
     }
 
     public static boolean isActive() {
-        return bActive;
+        return getSharedPreferences().getBoolean(TAG_APP_FOREGROUND, false);
     }
 
     // called from main activity on app exit
@@ -791,18 +791,14 @@ public class AppCAP extends Application {
         // if nonzero (login), update the Urban Airship alias and enable push
         // TODO: add user preferences to control whether to enable push
         if (userId != 0) {
+
             // Register userID as UAirship alias for server-side pushes
-            PushPreferences prefs = PushManager.shared().getPreferences();
-            prefs.setAlias(String.valueOf(userId));
-
-            PushManager.shared().setIntentReceiver(IntentReceiver.class);
-            PushManager.enablePush();
+            PushManager.shared().setAlias(String.valueOf(userId));
+            Log.d(TAG, "User Logged in - alias: "+userId);
         }
-
         // Save logged in user ID
         getSharedPreferences().edit().putInt(TAG_LOGGED_IN_USER_ID, userId)
                 .commit();
-
     }
 
     /**
@@ -1334,6 +1330,18 @@ public class AppCAP extends Application {
             }
         }
         return processName;
+    }
+
+    private boolean isProcess(String name) {
+        Context context = getApplicationContext();
+        ActivityManager actMgr = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<RunningAppProcessInfo> appList = actMgr.getRunningAppProcesses();
+        for (RunningAppProcessInfo info : appList) {
+            if (info.pid == android.os.Process.myPid() && name.equals(info.processName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void removeUserLastCheckinVenue(int venueId) {

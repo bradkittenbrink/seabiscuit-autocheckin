@@ -13,17 +13,18 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    
+    <!-- DEPRECATED: REQUIRED for C2DM -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="com.coffeeandpower.app.permission.C2D_MESSAGE" />
 
-    <!-- REQUIRED for C2DM -->
     <permission
         android:name="com.coffeeandpower.app.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.coffeeandpower.app.permission.C2D_MESSAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
 
     <application
         android:name="com.coffeeandpower.AppCAP"
@@ -37,9 +38,9 @@
 
         <receiver android:name="CheckOutIntentReceiver" >
         </receiver>
+
         <!-- REQUIRED -->
         <receiver android:name="com.urbanairship.CoreReceiver" >
-
             <!-- REQUIRED IntentFilter - For Helium and Hybrid -->
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -47,19 +48,17 @@
             </intent-filter>
         </receiver>
 
-        <!-- REQUIRED for C2DM and Hybrid -->
+        <!-- DEPRECATED: REQUIRED for C2DM and Hybrid -->
         <receiver
             android:name="com.urbanairship.push.c2dm.C2DMPushReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
 
-            <!-- Receive the actual message -->
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
                 <category android:name="com.coffeeandpower.app" />
             </intent-filter>
 
-            <!-- Receive the registration id -->
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
@@ -67,9 +66,8 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name="com.urbanairship.push.PushService"
-            android:process=":com.urbanairship.push.process" />
+        <service android:name="com.urbanairship.push.PushService"
+                 android:process=":com.urbanairship.push.process" />
         <service android:name="com.coffeeandpower.cache.CacheMgrService" />
         <service android:name="com.coffeeandpower.location.LocationDetectionService" />
 
@@ -79,7 +77,7 @@
 
         <!--
              OPTIONAL, if you want to receive push, push opened and registration 
-            completed intents
+            completed intents
         -->
         <receiver android:name="com.coffeeandpower.urbanairship.IntentReceiver" />
 
