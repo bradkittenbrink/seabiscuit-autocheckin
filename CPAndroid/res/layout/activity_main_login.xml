@@ -3,14 +3,14 @@
     android:layout_height="fill_parent"
     android:background="@drawable/secret_society"
     android:layoutAnimation="@anim/layout_animation_row_right_slide" >
-
-    <ImageView
+    <ImageView
         android:id="@+id/candp_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="80dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/cp_explanation" />
 
     <ProgressBar
@@ -34,9 +34,9 @@
         android:id="@+id/btn_linked_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/candp_logo"
+        android:layout_above="@+id/dummy_layout"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="-20dp"
+        android:layout_marginBottom="50dp"
         android:layout_marginLeft="20dp"
         android:background="@drawable/btn_sign_up_with_linkedin"
         android:onClick="onClickLinkedIn"
@@ -44,7 +44,7 @@
 
     <Button
         android:id="@+id/btn_later"
-        android:layout_width="80dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/btn_linked_in"
         android:layout_marginLeft="20dp"
@@ -53,5 +53,11 @@
         android:background="@drawable/btn_sign_up_later"
         android:onClick="onClickLater"
         android:textColor="#ffffff" />
+
+    <View
+        android:id="@+id/dummy_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="0dip"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>
