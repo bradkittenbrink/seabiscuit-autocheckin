@@ -533,23 +533,27 @@ public class CacheMgrService extends Service {
     };
 
     public static VenueSmart searchVenueInCache(int venueId) {
-        // We need to look at the list of venues with checkins and see if they
-        // checked into one of those venues
-        // If they checked into a venue without checkins, we need to add it to
-        // the venuesWithCheckinsCache
         DataHolder venuesWithCheckins = venuesWithCheckinsCache.getData();
-        Object[] obj = (Object[]) venuesWithCheckins.getObject();
-        @SuppressWarnings("unchecked")
-        List<VenueSmart> listVenues = (List<VenueSmart>) obj[0];
         VenueSmart tmpVenue = null;
-        ArrayList<VenueSmart> arrayVenues = new ArrayList<VenueSmart>(
-                listVenues);
-        for (VenueSmart currVenue : arrayVenues) {
-            if (currVenue.getVenueId() == venueId) {
-                tmpVenue = currVenue;
-                break;
+
+        if (venuesWithCheckins != null) {
+            if(!(venuesWithCheckins.getObject() instanceof Object[])) {
+                Log.e(TAG, "invalid venuesWithCheckins data type");
+                return null;
+            }
+
+            Object[] obj = (Object[]) venuesWithCheckins.getObject();
+            @SuppressWarnings("unchecked")
+            List<VenueSmart> listVenues = (List<VenueSmart>) obj[0];
+
+            for (VenueSmart currVenue : listVenues) {
+                if (currVenue.getVenueId() == venueId) {
+                    tmpVenue = currVenue;
+                    break;
+                }
             }
         }
+
         return tmpVenue;
     }
 

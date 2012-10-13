@@ -152,8 +152,6 @@ public class AppCAP extends Application {
 
     private static Gson gsonConverter = new Gson();
 
-    private static Context mapContext;
-
     // App wide observables
 
     private static AppCAP instance;
@@ -241,13 +239,11 @@ public class AppCAP extends Application {
         } else {
             Log.d(TAG, "Starting process " + getAppName());
         }
+		Log.d("AppCAP", "onCreate done, autoCheckinEnabled: " + ((Boolean)autoCheckinEnabled()).toString());
     }
 
-    // called from onCreate of main activity (FragmentMap)
+    // called from onCreate of main activity (ActivityVenueFeeds)
     public static void mainActivityDidStart(Context context) {
-
-        mapContext = context;
-
         // context.startService(new Intent(context, CacheMgrService.class));
 
         enableAutoCheckin(context);
@@ -302,6 +298,10 @@ public class AppCAP extends Application {
                 context.startService(new Intent(context,
                         LocationDetectionService.class));
                 locationDetectionServiceRunning = true;
+
+                for(int venue_id : currentAutoCheckinVenues) {
+                    LocationDetectionService.addVenueToAutoCheckinList(venue_id);
+                }
             }
         }
     }
@@ -317,7 +317,7 @@ public class AppCAP extends Application {
 
     public static void showToast(String msg) {
 
-        Toast.makeText(mapContext, msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
 
     }
 

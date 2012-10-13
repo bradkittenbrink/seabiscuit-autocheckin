@@ -5,6 +5,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.Constants;
 import com.coffeeandpower.activity.ActivityCheckIn;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cont.DataHolder;
@@ -54,11 +55,12 @@ public class LocationDetectionStateMachine {
     private static LocationDetectionService myService;
     
     private static Executor exe;
-        
-    private static class MyAutoCheckinObservable extends Observable {
+
+    // TODO(brad) - redesign this class to make this private again
+    public static class MyAutoCheckinObservable extends Observable {
         
     }
-    private static MyAutoCheckinObservable myAutoCheckinObservable = new MyAutoCheckinObservable();
+    public static MyAutoCheckinObservable myAutoCheckinObservable = new MyAutoCheckinObservable();
     
     // This function must be called before the state machine will work
     public static void init(Context context, Handler mainThreadHandler) {
@@ -139,8 +141,6 @@ public class LocationDetectionStateMachine {
         wifiScanBroadcastReceiver = new WifiScanBroadcastReceiver(myContext);
         
         start();
-        
-        
     }
     
     public static void manualCheckin(Context context, Handler mainThreadHandler, VenueSmart venue) {
@@ -160,7 +160,10 @@ public class LocationDetectionStateMachine {
         
         Log.d(TAG,"Sending message..." + bundle.getString("type"));
         locationThreadTaskHandler.sendMessage(message);
-    
+
+        AppCAP.enableAutoCheckinForVenue(venue.getVenueId());
+        AppCAP.enableAutoCheckin(context);
+        LocationDetectionService.addVenueToAutoCheckinList(venue);
     }
     
     
@@ -244,7 +247,6 @@ public class LocationDetectionStateMachine {
                     LocationDetectionStateMachine.checkinCheckoutCOMPLETE();
                 }
             },"LocationDectionStateMachine.transitionVenueCheckinINIT").start();
-
         }
         else
         {
@@ -258,10 +260,6 @@ public class LocationDetectionStateMachine {
             myAutoCheckinObservable.notifyObservers(null);
             //currVenueCACHE
         }
-        
-        
-        
-        
     }
     
     //=============================================================
@@ -291,8 +289,6 @@ public class LocationDetectionStateMachine {
         } else {
             Log.d(TAG,"Warning: Tried to start state machine while already active...");
         }
-        
-        
     }
     
     private static void startCallback() {
@@ -318,6 +314,7 @@ public class LocationDetectionStateMachine {
         //Why don't we need to sendMessage here?
         stopCallback();
     }
+
     private static void stopCallback() {
         
         Log.d(TAG,"Stop callback...");
@@ -325,7 +322,7 @@ public class LocationDetectionStateMachine {
         stopActiveLocationListener();
         stopWifiScanListener();
     }
-    
+
     private static void startCollectionCallback(VenueSmart venue)
     {
         //This is after the handler so it should be ok to call stop, we might want to send all 
@@ -369,6 +366,7 @@ public class LocationDetectionStateMachine {
         else
             Log.d(TAG,"WARNING: positionListenersCOMPLETE came back before state machine was initialized...");
     }
+
     private static void positionListenersCallback(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
         if(currentState == 0 || (currentState > 0 && currentState <= 1 && isHighConfidence))
         {
@@ -448,7 +446,9 @@ public class LocationDetectionStateMachine {
     }
     
     public static void checkWifiSignatureCOMPLETE(VenueSmart currVenue) {
-        AppCAP.showToast("checkWifiSignatureComplete");
+        if(Constants.debugLocationToast) {
+            AppCAP.showToast("checkWifiSignatureComplete");
+        }
         Log.d(TAG,"checkWifiSignatureCOMPLETE");
         Message message = new Message();
         Bundle bundle = new Bundle();
@@ -458,9 +458,12 @@ public class LocationDetectionStateMachine {
         
         locationThreadTaskHandler.sendMessage(message);
     }
+
     private static void checkWifiSignatureCallback(VenueSmart currVenue)
     {
-        AppCAP.showToast("checkWifiSignatureCallback");
+        if(Constants.debugLocationToast) {
+            AppCAP.showToast("checkWifiSignatureCallback");
+        }
         if(AppCAP.isUserCheckedIn())
         {
             //If we get a null the venue did not match
@@ -536,6 +539,7 @@ public class LocationDetectionStateMachine {
             Log.d(TAG,"WARNING: Passive Listener received location before State Machine init was called...");
         
     }
+
     public static void passiveListenerDidReceiveLocationCallback() {
         stopPassiveLocationListener();
     }
@@ -553,8 +557,7 @@ public class LocationDetectionStateMachine {
     private static void wifiScanListenerDidReceiveScanCallback() {
         stopWifiScanListener();
     }
-    
-    
+
     
     //=============================================================
     // Private Helper functions
@@ -581,6 +584,7 @@ public class LocationDetectionStateMachine {
         //else 
             //Log.d(TAG,"Warning: Tried to start passive location listener when it was already active.");
     }
+
     private static void startActiveLocationListener() {
         //Skip this state for now
         
@@ -721,13 +725,12 @@ public class LocationDetectionStateMachine {
         //  Log.d(TAG,"Warning: Tried to stop wifiScanBroadcastReceiver when it wasn't active.");
         
     }
-    
-    
-    
+
+
     //=============================================================
     // EXE METHODS
     //============================================================= 
-    
+
     private static void errorReceived() {
 
     }
@@ -744,10 +747,7 @@ public class LocationDetectionStateMachine {
 
         }
     }
-    
-    
-    
-    
+
     
     //=============================================================
     // Non-Transitioning Public Methods
@@ -762,8 +762,5 @@ public class LocationDetectionStateMachine {
         myAutoCheckinObservable.deleteObserver(obs);
         
     }
-
-    
-
 
 }

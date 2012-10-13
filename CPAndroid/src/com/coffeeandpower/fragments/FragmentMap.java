@@ -146,7 +146,6 @@ public class FragmentMap extends Fragment {
         View mainView = null;
         mainView = inflater.inflate(R.layout.tab_fragment_map, null);
          // start services
-        AppCAP.mainActivityDidStart(getActivity());      
         progress = new ProgressDialog(this.getActivity());
         progress.setMessage("Loading...");
         progress.show();

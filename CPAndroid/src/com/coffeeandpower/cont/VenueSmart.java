@@ -3,9 +3,11 @@ package com.coffeeandpower.cont;
 import java.util.ArrayList;
 
 import org.json.JSONObject;
+import org.json.JSONException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 @SuppressWarnings("rawtypes")
 public class VenueSmart implements Parcelable, Comparable {
@@ -138,6 +140,35 @@ public class VenueSmart implements Parcelable, Comparable {
 
     public static VenueSmart createVenueFromJSON(JSONObject obj) {
         return new VenueSmart(obj, null);
+    }
+
+    public JSONObject toJSON() {
+        JSONObject objVenue = new JSONObject();
+
+        try {
+            objVenue.put("venue_id", this.venueId);
+            objVenue.put("name", this.name);
+            objVenue.put("address", this.address);
+            objVenue.put("city", this.city);
+            objVenue.put("state", this.state);
+            objVenue.put("postalCode", this.zip);
+            objVenue.put("distance", this.distance);
+            objVenue.put("foursquare_id", this.foursquareId);
+            objVenue.put("checkins", this.checkins);
+            objVenue.put("checkins_for_week", this.checkinsForWeek);
+            objVenue.put("checkins_for_interval", this.checkinsForInterval);
+            objVenue.put("photo_url", this.photoURL);
+            objVenue.put("phone", this.phone);
+            objVenue.put("formatted_phone", this.formattedPhone);
+            objVenue.put("lastChatEntry", this.lastChatEntry);
+            objVenue.put("special_venue_type", this.specialVenueType);
+            objVenue.put("lat", this.lat);
+            objVenue.put("lng", this.lng);
+        } catch (JSONException ex) {
+            Log.e("VenueSmart", "failed to serialize VenueSmart", ex);
+        }
+
+        return objVenue;
     }
 
     /**

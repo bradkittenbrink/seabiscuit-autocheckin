@@ -170,6 +170,8 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         });
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN |
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        AppCAP.mainActivityDidStart(this);
     }
     
     public void displayFragment(int fragment_id) {
