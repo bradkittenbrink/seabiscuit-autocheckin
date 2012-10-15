@@ -20,6 +20,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
@@ -28,7 +29,7 @@ import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
-import com.coffeeandpower.activity.ActivityEnterInviteCode;
+import com.coffeeandpower.activity.ActivityInviteContacts;
 import com.coffeeandpower.activity.ActivityLoginPage;
 import com.coffeeandpower.activity.ActivityNotifications;
 import com.coffeeandpower.activity.ActivitySettings;
@@ -150,18 +151,6 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         ((RootActivity) context).startSmartActivity(new Intent(), "ActivityMap");
     }
     
-    @Override
-    public boolean onClickVenueFeeds(View v) {
-        if (AppCAP.isLoggedIn()) {
-            Intent intent = new Intent(context, ActivityVenueFeeds.class);
-            intent.putExtra("fragment", "FragmentVenueFeeds");
-            ((RootActivity) context).startSmartActivity(intent, "ActivityVenueFeeds");
-            return true;
-        } else {
-            this.showDialogLogin();
-            return false;
-        }
-    }
 
     @Override
     public void onClickPlaces(View v) {
@@ -224,29 +213,6 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         
     }
 
-
-    @Override
-    public void onClickQuestion(View v) {
-        hideVerticalMenu(v);
-        if (!AppCAP.isUserCheckedIn()) {
-            showDialogCheckin();
-        } else {
-            VenueSmart tmpVenue = null;
-            tmpVenue = CacheMgrService.getCheckedInVenue();
-            if (tmpVenue != null) {
-                Intent intent = new Intent(context, ActivityVenueFeeds.class);
-                intent.putExtra("venue_id", tmpVenue.getVenueId());
-                intent.putExtra("venue_name", tmpVenue.getName());
-                intent.putExtra("caller", "question_button");
-                intent.putExtra("fragment", R.id.tab_fragment_area_feeds_for_one_venue);
-                
-                context.startActivity(intent);
-            } else {
-                showDialogCheckin();
-            }
-        }
-    }
-
     @Override
     public void onClickCheckOut(View v, final Activity finishActivity) { 
         if (v != null) {
@@ -298,7 +264,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 
     @Override
     public void onClickEnterInviteCode(View v) {
-        Intent intent = new Intent(context, ActivityEnterInviteCode.class);
+        Intent intent = new Intent(context, ActivityInviteContacts.class);
         context.startActivity(intent);
     }
 
@@ -342,8 +308,6 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
                 .findViewById(R.id.imageview_button_minus);
         LinearLayout layout_action_menu = (LinearLayout) ((Activity) context)
                 .findViewById(R.id.layout_action_menu);
-        ImageView imageview_button_update = (ImageView) ((Activity) context)
-                .findViewById(R.id.imageview_button_update);
 
         layout_action_menu.setVisibility(View.VISIBLE);
         TranslateAnimation animation = new TranslateAnimation(0, 0, 170, -60);   
@@ -418,48 +382,6 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         }
     }
     
-    public void showDialogFeedActions(final ActivityVenueFeeds activity) {
-        if (!AppCAP.isLoggedIn()) {
-            showDialogLogin();
-        } else {
-            // custom dialog
-            final Dialog dialog = new Dialog(context);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.dialog_feed_actions);
-    
-            Button dialog_btn_checkin = (Button) dialog.findViewById(R.id.btn_checkin);
-            dialog_btn_checkin.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    onClickCheckIn(v);
-                }
-            });
-    
-            Button dialog_btn_post_to_feed = (Button) dialog.findViewById(R.id.btn_post_to_feed);
-            dialog_btn_post_to_feed.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    if (activity != null && activity.getFragmentId() == R.id.tab_fragment_area_feeds_for_one_venue) {
-                        activity.changeToUpdateMode();
-                    } else {
-                        onClickPostToFeed(v, activity);
-                    }
-                }
-            });
-    
-            Button dialog_btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
-            dialog_btn_cancel.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-    
-            dialog.show();
-        }
-    }
 
     private void showDialogLogin() {
         // custom dialog
@@ -501,35 +423,4 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         dialog.show();
     }
 
-    protected void onClickPostToFeed(View v, FragmentActivity activity) {
-        if (activity != null) {
-            ((ActivityVenueFeeds) activity).displayFragment(R.id.tab_fragment_area_postable_feed_venue);
-        } else {
-            // not yet supported in the other activity 
-            // will be fix when all will be done in fragments
-            Intent intent = new Intent((Activity) context, ActivityVenueFeeds.class);
-            intent.putExtra("fragment", "FragmentPostableFeedVenue");
-            context.startActivity(intent);
-        }
-     }
-
-    public void onClickFeed(View v, ActivityVenueFeeds activity) {
-        hideVerticalMenu(v);
-        if (AppCAP.isUserCheckedIn()) {
-            VenueSmart tmpVenue = CacheMgrService.searchVenueInCache(AppCAP.getUserLastCheckinVenueId());         
-            if(tmpVenue != null) {
-                Intent intent = new Intent((Activity) context, ActivityVenueFeeds.class);
-                intent.putExtra("venue_id", tmpVenue.getVenueId());
-                intent.putExtra("venue_name", tmpVenue.getName());
-                intent.putExtra("caller", "pen_button");
-                intent.putExtra("fragment", R.id.tab_fragment_area_feeds_for_one_venue);
-                context.startActivity(intent);
-            } else {
-                showDialogFeedActions(activity);
-            }
-        } else {
-            // it should never occur
-            showDialogFeedActions(activity);
-        }
-    }
 }

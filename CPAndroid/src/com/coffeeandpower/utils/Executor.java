@@ -128,18 +128,6 @@ public class Executor {
         }, "Executor.getResumeForUserId").start();
     }
 
-    public synchronized void sendPlusOneForLove(final int post_id) {
-        progress.setMessage("Sending...");
-        progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                result = AppCAP.getConnection().sendPlusOneForLove(post_id);
-                handler.sendEmptyMessage(result.getHandlerCode());
-            }
-        }, "Executor.sendReview").start();
-    }
-
     public synchronized void sendReview(final UserResume userResume,
             final Review review, final int skillId) {
         progress.setMessage("Sending...");
@@ -153,24 +141,6 @@ public class Executor {
         }, "Executor.sendReview").start();
     }
 
-    public synchronized void getVenuesAndUsersWithCheckinsInBoundsDuringInterval(
-            final double[] coords, boolean withProgress) {
-        if (withProgress) {
-            progress.setMessage("Loading...");
-            progress.show();
-        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                result = AppCAP.getConnection()
-                        .getVenuesAndUsersWithCheckinsInBoundsDuringInterval(
-                                coords, 7);
-                handler.sendEmptyMessage(result.getHandlerCode());
-            }
-        }, "Executor.getVenuesAndUsersWithCheckinsInBoundsDuringInterval")
-                .start();
-    }
-
     public synchronized void getUserData() {
         progress.setMessage("Loading...");
         progress.show();
@@ -181,20 +151,6 @@ public class Executor {
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
         }, "Executor.getUserData").start();
-    }
-
-    public synchronized void getVenuesCloseToLocation(final GeoPoint gp,
-            final int number) {
-        progress.setMessage("Loading nearby places...");
-        progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                result = AppCAP.getConnection().getVenuesCloseToLocation(gp,
-                        number);
-                handler.sendEmptyMessage(result.getHandlerCode());
-            }
-        }, "Executor.getVenuesCloseToLocation").start();
     }
 
     public synchronized void sendFriendRequest(final int userId) {
@@ -368,33 +324,6 @@ public class Executor {
         }, "Executor.checkOut").start();
     }
 
-    public synchronized void enterInvitationCode(final String invitationCode,
-            final double lat, final double lng) {
-        progress.setMessage("Checking...");
-        progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                result = AppCAP.getConnection().enterInvitationCode(
-                        invitationCode, lat, lng);
-                handler.sendEmptyMessage(result.getHandlerCode());
-            }
-        }, "Executor.enterInvitationCode").start();
-    }
-
-    public synchronized void getInvitationCode(final double[] latLong) {
-        progress.setMessage("Generating Code...");
-        progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                result = AppCAP.getConnection().getInvitationCodeForLocation(
-                        latLong[0], latLong[1]);
-                handler.sendEmptyMessage(result.getHandlerCode());
-            }
-        }, "Executor.getInvitationCode").start();
-
-    }
 
     public synchronized void saveUserJobCategory(final String selectedMajorJob,
             final String selectedMinorJob) {
@@ -459,74 +388,7 @@ public class Executor {
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
         }).start();
-    }
-
-    /**
-     * Get/send venue feeds <br>
-     * getObject() instance of ArrayList <br>
-     * <br>
-     * [0]String lastId [1]String firstDate [2]String lastDate
-     * [3]ArrayList(VenueChatEntry)
-     * 
-     * @param venueId
-     * @param lastChatIDString
-     */
-    public synchronized void postableVenues() {
-            progress.setMessage("Loading...");
-            progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                result = AppCAP.getConnection().postableVenues();
-                handler.sendEmptyMessage(result.getHandlerCode());
-            }
-        }, "Executor.postableVenues").start();
-    }
-   /**
-     * Get/send venue feeds <br>
-     * getObject() instance of ArrayList <br>
-     * <br>
-     * [0]String lastId [1]String firstDate [2]String lastDate
-     * [3]ArrayList(VenueChatEntry)
-     * 
-     * @param venueId
-     * @param lastChatIDString
-     */
-    public synchronized void venueFeeds(final int venueId,
-            final String venueName, final String lastChatIDString,
-            final String message, final boolean isSend, boolean withProgress,
-            final String messageType) {
-        if (withProgress) {
-            progress.setMessage(isSend ? "Sending..." : "Loading...");
-            progress.show();
-        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                result = AppCAP.getConnection().venueFeedsForVenueWithID(
-                        venueId, venueName, lastChatIDString, message, isSend, messageType);
-                handler.sendEmptyMessage(result.getHandlerCode());
-            }
-        }, "Executor.venueFeeds").start();
-    }
-    
-    public synchronized void newPost(final int venueId,
-            final String venueName, final String lastChatIDString,
-            final String message, boolean withProgress,
-            final String messageType, final int original_post_id) {
-        if (withProgress) {
-            progress.setMessage("Sending...");
-            progress.show();
-        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                result = AppCAP.getConnection().newPost(
-                        venueId, venueName, lastChatIDString, message, messageType, original_post_id);
-                handler.sendEmptyMessage(result.getHandlerCode());
-            }
-        }, "Executor.venueFeeds").start();
-    }
+    } 
 
     public TextView getCounter() {
         return counter;
@@ -564,40 +426,5 @@ public class Executor {
         }, "Executor.changeSkillVisibility").start();
     }
 
-    public void getQuestionReceivers(final String input, final double[] userLatLon) {
-        progress.setMessage("Get number of receivers...");
-        progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                result = AppCAP.getConnection().getQuestionReceivers(input, userLatLon) ;
-                handler.sendEmptyMessage(result.getHandlerCode());
-            }
-        }, "Executor.getQuestionReceivers").start();
-    }
-
-    public void getMoreFeeds(final VenueNameAndFeeds venueNameAndFeeds) {
-        progress.setMessage("Get more feeds...");
-        progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                result = AppCAP.getConnection().getMoreFeeds(venueNameAndFeeds) ;
-                handler.sendEmptyMessage(result.getHandlerCode());
-            }
-        }, "Executor.getMoreFeeds").start();
-    }
-
-    public void getVenueFeedPreviews() {
-        progress.setMessage("Loading...");
-        progress.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                result = AppCAP.getConnection().getVenueFeedPreviews();
-                handler.sendEmptyMessage(result.getHandlerCode());
-            }
-        }, "Executor.getVenueFeedPreviews").start();
-    }
 
 }

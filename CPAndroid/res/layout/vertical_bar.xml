@@ -25,28 +25,12 @@
             android:visibility="gone" >
 
             <ImageView
-                android:id="@+id/imageview_button_question"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/action_menu_button_question_b"
-                android:clickable="true"
-                android:onClick="onClickQuestion" />
-
-            <ImageView
                 android:id="@+id/imageview_button_checkin"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@drawable/action_menu_button_checkin_b"
                 android:clickable="true"
                 android:onClick="onClickCheckIn" />
-
-            <ImageView
-                android:id="@+id/imageview_button_update"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/action_menu_button_update_b"
-                android:clickable="true"
-                android:onClick="onClickFeed" />
         </LinearLayout>
 
         <LinearLayout

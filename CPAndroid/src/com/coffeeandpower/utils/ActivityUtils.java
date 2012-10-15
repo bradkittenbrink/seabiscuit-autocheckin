@@ -127,7 +127,7 @@ public class ActivityUtils {
             case AppCAP.HTTP_REQUEST_SUCCEEDED:
                 AppCAP.setLoggedIn(true);
                     Intent intent = new Intent(a, ActivityVenueFeeds.class);
-                    intent.putExtra("fragment", R.id.tab_fragment_area_feed);
+                    intent.putExtra("fragment", R.id.tab_fragment_area_map);
                     // check for more extras to forward
                     if(null != forwardedExtras && !forwardedExtras.isEmpty()) {
                         Set<String> keys = forwardedExtras.keySet();

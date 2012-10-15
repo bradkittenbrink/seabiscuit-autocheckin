@@ -27,7 +27,6 @@ import com.coffeeandpower.views.CustomDialog;
 public class ActivityInviteContactsConfirm extends RootActivity {
 
     
-    private String inviteCodeText;
     private List<String> arraySelectedUsersIds;
     private String title;
     private String messageContent;
@@ -42,7 +41,6 @@ public class ActivityInviteContactsConfirm extends RootActivity {
         // Get data from intent
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            inviteCodeText = extras.getString("inviteCodeText");
             arraySelectedUsersIds = extras.getStringArrayList("arraySelectedUsersIds");
         }
 
@@ -54,7 +52,7 @@ public class ActivityInviteContactsConfirm extends RootActivity {
         CharSequence styledText = Html.fromHtml(text);
         title = styledText.toString();
         ((TextView) findViewById(R.id.confirm_header)).setText(styledText);
-        text = String.format(res.getString(R.string.activity_invite_confirm_content), escapedUsername, inviteCodeText);
+        text = String.format(res.getString(R.string.activity_invite_confirm_content), escapedUsername);
         styledText = Html.fromHtml(text);
         messageContent = styledText.toString();
         ((TextView) findViewById(R.id.confirm_content)).setText(styledText);

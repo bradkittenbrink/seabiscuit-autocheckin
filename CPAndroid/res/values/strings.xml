@@ -40,8 +40,7 @@
     <string name="activity_check_in_what">What are you working on right now?</string>
     <string name="activity_check_in_optional">optional</string>
     <string name="activity_check_in_for_how_long">FOR HOW LONG?</string>
-    <string name="activity_enter_invite_code_enter">Enter invite code from \nnearby C&amp;P user
-</string>
+    <string name="activity_enter_invite_code_enter">Enter invite code from \nnearby C&amp;P user</string>
     <string name="activity_enter_invite_linkedin">Invite LinkedIn Connections</string>
     <string name="activity_invite_contacts_send_invitation">Send LinkedIn Invitation</string>
     <string name="activity_job_category_job">Job Categories</string>
@@ -50,13 +49,10 @@
     <string name="activity_join_join">Join</string>
     <string name="activity_join_co_working">Join the co-working revolution!</string>
     <string name="activity_join_email_address">Email Address</string>
-    <string name="activity_join_did_not">You did not enter a valid email address.
-</string>
-    <string name="activity_join_nickname_must_be">Nickname must be at least 3 characters long.
-</string>
+    <string name="activity_join_did_not">You did not enter a valid email address.</string>
+    <string name="activity_join_nickname_must_be">Nickname must be at least 3 characters long.</string>
     <string name="activity_list_places_details_place_name">Place Name</string>
-    <string name="activity_main_login_connect">Connect with LinkedIn \n to start using C&amp;P
-</string>
+    <string name="activity_main_login_connect">Connect with LinkedIn \n to start using C&amp;P</string>
     <string name="login">Login</string>
     <string name="you_must_be_a_member">You must be a member to use this feature.</string>
     <string name="you_must_be_checked_in">Please check in at venue to post a question.</string>
@@ -90,7 +86,6 @@
     <string name="activity_user_details_sendlove">Recognize User</string>
     <string name="activity_user_details_often">Often works at...</string>
     <string name="activity_user_details_joined">Joined on</string>
-    <string name="activity_user_details_sponsored">Sponsored by</string>
     <string name="activity_wallet">Wallet</string>
     <string name="activity_wallet_your_balance">Your Balance</string>
     <string name="activity_wallet_transaction_history">Transaction History</string>
@@ -100,8 +95,7 @@
     <string name="recognition_char_limit">140</string>
     <string name="recognize_skill_prompt">Recognize Skill</string>
     <string name="tab_activity_contacts_contact">Contact list</string>
-    <string name="tab_activity_login_connect">Connect with LinkedIn \n to start using C&amp;P
-</string>
+    <string name="tab_activity_login_connect">Connect with LinkedIn \n to start using C&amp;P</string>
     <string name="tab_map">Map</string>
     <string name="tab_list">List</string>
     <string name="tab_places">Places</string>
@@ -122,15 +116,12 @@
     <string name="user_menu_in_contacts">contacts</string>
     <string name="user_menu_only">Only when I am\nchecked in</string>
     <string name="help_linked_in_invite_list">Click here to select LinkedIn contacts</string>
-    <string name="checked_out_confirmation">Are you sure you want to be checked out?
-</string>
+    <string name="checked_out_confirmation">Are you sure you want to be checked out?</string>
     <string name="checked_out_confirmation_with_venue_name">Do you want to leave %1$s?
         You can always go back
-        later!
-</string>
+        later!</string>
     <string name="activity_invite_contacts_title">Invite LinkedIn Connections</string>
-    <string name="activity_invite_confirm_header">%1$s is inviting you to Coffee &amp; Power
-</string>
+    <string name="activity_invite_confirm_header">%1$s is inviting you to Coffee &amp; Power</string>
     <string name="message_checking_out">"Checking out..."</string>
     <string name="message_choose_feed">"Choose Feed"</string>
     <string name="message_active_feeds">"Active Feeds"</string>
@@ -140,12 +131,14 @@
     <string name="contacts_screen_title">Contacts</string>
     <string name="activity_invite_confirm_content">
 <![CDATA[
-        Hi! %1$s is inviting you to join Coffee &amp; Power, the mobile work network.<br/>
-If you haven\'t already, first download the Coffee &amp; Power app in the iTunes or Google Play stores.<br/>
-Your personal invite code is: %2$s<br/>
-This code is only good for 24 hours. If you accept this invitation, %1$s will be shown as your sponsor on your Coffee &amp; Power resume.<br/>
-Once signed up, you may sponsor other users with the \'Invite\' button in the app settings page.<br/>
-Welcome!
+        Hi! %1$s is inviting you to join Coffee &amp; Power. C&amp;P is an app that lets you see 
+        who is working near you right now. 
+<br/>
+If %1$s is also a LinkedIn contact, they will automatically be added to your C&amp;P contact list and 
+you will be notified when they check in to workplaces. 
+<br/>
+If you have not already, download the app from the iTunes or Google Play stores.
+<br/>
     ]]>
     </string>
     <string name="googleMapsApiKey">0PV0Dp_6Dj6PkG_8xJqiTbSPxXwq2XEiEqXkO_Q</string>

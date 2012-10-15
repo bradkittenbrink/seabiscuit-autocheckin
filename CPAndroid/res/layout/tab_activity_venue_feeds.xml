@@ -49,9 +49,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginLeft="10dip"
-                        android:layout_centerVertical="true" 
-                        android:minWidth="50dip">
+                        android:minWidth="50dip" >
 
                         <Button
                             android:id="@+id/btn_menu"
@@ -59,18 +59,6 @@
                             android:layout_height="28dip"
                             android:background="@drawable/btn_settings"
                             android:onClick="onClickMenu" />
-
-                        <Button
-                            android:id="@+id/btn_feed"
-                            android:padding="8dip"
-                            android:minWidth="50dip"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:singleLine="true"
-                            android:background="@drawable/rounded_border"
-                            android:onClick="onClickVenueFeeds"
-                            android:text="@string/button_feeds"
-                            android:textColor="#ffffff" />
                     </FrameLayout>
 
                     <FrameLayout
@@ -98,17 +86,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginRight="10dip"
-                        android:minWidth="50dip"
-                        android:layout_centerVertical="true" >
-
-                        <Button
-                            android:id="@+id/btn_top_refresh"
-                            android:layout_width="41dip"
-                            android:layout_height="28dip"
-                            android:layout_marginTop="10dip"
-                            android:background="@drawable/btn_refresh"
-                            android:onClick="onClickRefreshActiveFeeds" />
+                        android:minWidth="50dip" >
 
                         <Button
                             android:id="@+id/btn_top_cancel"
@@ -156,22 +136,6 @@
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentTop="true"
                         android:background="#f5f4f3" >
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/tab_fragment_area_postable_feed_venue"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true" >
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/tab_fragment_area_feeds_for_one_venue"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true" >
                     </RelativeLayout>
 
                     <RelativeLayout

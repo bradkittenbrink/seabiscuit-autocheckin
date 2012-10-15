@@ -39,8 +39,6 @@ public class ActivityInviteContacts extends RootActivity {
 
     private LinkedInUsersAdapter adapterUsers;
 
-    private String inviteCodeText;
-
     private ListView listView;
 
     private ProgressDialog progress;
@@ -79,9 +77,6 @@ public class ActivityInviteContacts extends RootActivity {
         pager.setCurrentScreen(SCREEN_USER, false);
         // Get data from intent
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            inviteCodeText = extras.getString("inviteCodeText");
-        }
         // Display the list of users if the user is logged in
         listView = (ListView) findViewById(R.id.linkedin_users_listview);
 
@@ -110,7 +105,6 @@ public class ActivityInviteContacts extends RootActivity {
             arraySelectedUsersIds.add(person.getLinkedinId());
         }
         Intent intent = new Intent(this, ActivityInviteContactsConfirm.class);
-        intent.putExtra("inviteCodeText", inviteCodeText);
         intent.putStringArrayListExtra("arraySelectedUsersIds",
                 arraySelectedUsersIds);
         startActivity(intent);

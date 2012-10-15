@@ -562,19 +562,6 @@ public class ActivityPlaceDetails extends RootActivity {
         super.onDestroy();
     }
 
-    public void onClickChat(View v) {
-        AppCAP.updateUserLastCheckinVenue(new VenueNameAndFeeds(selectedVenue
-                .getVenueId(), selectedVenue.getName()), false);
-        Intent intent = new Intent(ActivityPlaceDetails.this,
-                ActivityVenueFeeds.class);
-        intent.putExtra("venue_id", selectedVenue.getVenueId());
-        intent.putExtra("venue_name", selectedVenue.getName());
-        intent.putExtra("caller", "venue_chat");
-        intent.putExtra("fragment", R.id.tab_fragment_area_feeds_for_one_venue);
-        startActivity(intent);
-        CacheMgrService.resetVenueFeedsData(true);
-    }
-
     private class MyAutoCheckinTriggerObserver implements Observer {
 
         @Override

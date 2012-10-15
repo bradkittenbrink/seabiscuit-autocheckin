@@ -37,27 +37,6 @@
             android:onClick="onClickMap" />
 
         <RelativeLayout
-            android:id="@+id/rel_feed"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="35px"
-            android:layout_marginTop="2dip"
-            android:layout_weight="0.85"
-            android:background="@drawable/bg_tabbar_press"
-            android:clickable="true"
-            android:gravity="center"
-            android:onClick="onClickVenueFeeds" >
-
-            <ImageView
-                android:id="@+id/imageview_feed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:background="@drawable/tab_feed_a" />
-        </RelativeLayout>
-
-        <RelativeLayout
             android:id="@+id/rel_places"
             android:layout_width="0dip"
             android:layout_height="wrap_content"

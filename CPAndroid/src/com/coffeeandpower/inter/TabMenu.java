@@ -7,8 +7,6 @@ public interface TabMenu {
 
     public void onClickMap(View v);
 
-    public boolean onClickVenueFeeds(View v);
-
     public void onClickPlaces(View v);
 
     public void onClickCheckIn(View v);
@@ -25,6 +23,5 @@ public interface TabMenu {
 
     public void onClickMapFromTab(View v);
 
-    public void onClickQuestion(View v);
 
 }
