@@ -250,7 +250,9 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 
             switch (msg.what) {
             case AppCAP.HTTP_ERROR:
-                new CustomDialog(context, "Error", result.getResponseMessage())
+                new CustomDialog(context,
+                        getString(R.string.error),
+                        result.getResponseMessage())
                         .show();
                 break;
 

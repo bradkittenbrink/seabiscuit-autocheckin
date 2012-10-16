@@ -149,5 +149,6 @@ If you have not already, download the app from the iTunes or Google Play stores.
     <string name="wont_tell">(we won\'t tell)</string>
     <string name="contact_exchanged_message">%1$s exchanged contact info with you.</string>
     <string name="message_internet_connection_error">Internet connection error</string>
-
+    <string name="message_linkedin_oauth_error">There was an issue with your LinkedIn authorization.</string>
+    <string name="error">Error</string>
 </resources>

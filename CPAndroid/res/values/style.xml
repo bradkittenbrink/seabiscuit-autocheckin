@@ -21,6 +21,7 @@
 
     <style name="CustomDialogTitle" parent="@android:style/TextAppearance.DialogWindowTitle">
         <item name="android:gravity">center_horizontal</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="DialogWindowTitle">

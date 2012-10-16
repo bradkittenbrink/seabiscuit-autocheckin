@@ -145,6 +145,8 @@ public class AppCAP extends Application {
     public static final int HTTP_REQUEST_SUCCEEDED = 1404;
     public static final int ERROR_SUCCEEDED_SHOW_MESS = 1407;
 
+    public static final int OAUTH_ERROR = 1418;
+
     public static final int VIEW_HOLDER = 1;
     public static final int VENUE_NAME_AND_FEEDS = 2;
     

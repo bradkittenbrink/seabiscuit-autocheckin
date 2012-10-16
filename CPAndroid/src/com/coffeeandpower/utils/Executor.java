@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.Review;
 import com.coffeeandpower.cont.UserResume;
@@ -102,7 +103,9 @@ public class Executor {
 
             if (msg.what == AppCAP.HTTP_ERROR) {
                 exeInter.onErrorReceived();
-                new CustomDialog(context, "Error", result.getResponseMessage())
+                new CustomDialog(context,
+                        context.getString(R.string.error),
+                        result.getResponseMessage())
                         .show();
             } else {
                 exeInter.onActionFinished(msg.what);

@@ -45,7 +45,8 @@ public class ActivitySignInViaMail extends RootActivity {
 
 			case AppCAP.HTTP_ERROR:
 				textViewErrorMsg.setVisibility(View.INVISIBLE);
-                new CustomDialog(ActivitySignInViaMail.this, "Error",
+                new CustomDialog(ActivitySignInViaMail.this,
+                        getString(R.string.error),
                         getString(string.message_internet_connection_error)).show();
 				break;
 

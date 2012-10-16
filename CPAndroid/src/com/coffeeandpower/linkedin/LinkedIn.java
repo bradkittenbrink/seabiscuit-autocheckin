@@ -75,7 +75,7 @@ public class LinkedIn {
         try {
             requestToken = service.getRequestToken();
         } catch (OAuthException e) {
-            throw new LinkedInInitException("Problem fetching a LinkedIn token", e);
+            throw new LinkedInInitException("LinkedIn authorization failure", e);
         }
 
         String url = service.getAuthorizationUrl(requestToken);
@@ -192,7 +192,7 @@ public class LinkedIn {
         return service.getAuthorizationUrl(requestToken);
     }
 
-    public boolean callbackReceived(String url) {
+    public boolean callbackReceived(String url) throws OAuthException {
         if (url.startsWith(OAUTH_CALLBACK_SCHEME)) {
             Uri uri = Uri.parse(url);
             String verifier = uri.getQueryParameter("oauth_verifier");
@@ -203,12 +203,12 @@ public class LinkedIn {
         return false;
     }
 
-    public boolean reconnectUsingAccessToken(String token, String tokenSecret) {
+    public boolean reconnectUsingAccessToken(String token, String tokenSecret) throws OAuthException {
         accessToken = new Token(token, tokenSecret);
         return connectUsingAccessToken();
     }
 
-    public boolean connectUsingAccessToken() {
+    public boolean connectUsingAccessToken() throws OAuthException {
         try {
             OAuthRequest req = new OAuthRequest(Verb.GET,
                     PROTECTED_RESOURCE_URL);

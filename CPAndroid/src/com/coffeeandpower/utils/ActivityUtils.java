@@ -61,7 +61,7 @@ public class ActivityUtils {
             switch (msg.what) {
 
             case AppCAP.HTTP_ERROR:
-                new CustomDialog(a, "Error", 
+                new CustomDialog(a, a.getString(R.string.error), 
                         a.getString(string.message_internet_connection_error))
                         .show();
                 break;
@@ -101,7 +101,7 @@ public class ActivityUtils {
 
             progress = new ProgressDialog(a);
             progress.setOwnerActivity(a);
-            progress.setMessage("Logging in...");
+            progress.setMessage("Signing in...");
             progress.show();
         }
 
@@ -114,14 +114,20 @@ public class ActivityUtils {
 
             switch (msg.what) {
 
+            case AppCAP.OAUTH_ERROR:
+                new CustomDialog(a, a.getString(R.string.error), 
+                        a.getString(string.message_linkedin_oauth_error))
+                        .show();
+                break;
+
             case AppCAP.HTTP_ERROR:
-                new CustomDialog(a, "Error", 
+                new CustomDialog(a, a.getString(R.string.error), 
                         a.getString(string.message_internet_connection_error))
                         .show();
                 break;
 
             case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:
-                new CustomDialog(a, "Error", "Could not login").show();
+                new CustomDialog(a, a.getString(R.string.error), "Unable to sign in.").show();
                 break;
 
             case AppCAP.HTTP_REQUEST_SUCCEEDED:
@@ -149,7 +155,7 @@ public class ActivityUtils {
         public DisplayLinkedinLoginProgressHandler(Activity a) {
             progress = new ProgressDialog(a);
             progress.setOwnerActivity(a);
-            progress.setMessage("Logging in...");
+            progress.setMessage("Signing in...");
             progress.show();
         }
 

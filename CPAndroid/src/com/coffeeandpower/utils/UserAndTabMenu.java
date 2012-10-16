@@ -109,7 +109,9 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
 
             switch (msg.what) {
             case AppCAP.HTTP_ERROR:
-                new CustomDialog(context, "Error", result.getResponseMessage())
+                new CustomDialog(context,
+                        context.getString(R.string.error),
+                        result.getResponseMessage())
                         .show();
                 break;
 

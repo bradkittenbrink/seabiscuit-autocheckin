@@ -72,7 +72,9 @@ public class ActivityCheckInList extends ListActivity implements Observer {
 
             switch (msg.what) {
             case AppCAP.HTTP_ERROR:
-                new CustomDialog(ActivityCheckInList.this, "Error", result.getResponseMessage())
+                new CustomDialog(ActivityCheckInList.this,
+                        getString(R.string.error),
+                        result.getResponseMessage())
                         .show();
                 break;
 

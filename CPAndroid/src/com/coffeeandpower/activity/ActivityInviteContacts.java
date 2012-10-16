@@ -89,8 +89,8 @@ public class ActivityInviteContacts extends RootActivity {
                     (String) getResources().getText(R.string.linkedInApiKey),
                     (String) getResources().getText(R.string.linkedInApiSec));
         } catch (LinkedInInitException e) {
-            new CustomDialog(this, "Error", 
-                    getString(R.string.message_internet_connection_error)).show();
+            new CustomDialog(this, getString(R.string.error), 
+                    getString(R.string.message_linkedin_oauth_error)).show();
             return new ArrayList<UserSmart>();
         }
         return lastAuthorize.getConnections();

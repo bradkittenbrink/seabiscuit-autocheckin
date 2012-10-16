@@ -22,13 +22,19 @@
         android:max="100"
         android:visibility="gone" />
 
-    <WebView
-        android:id="@+id/webview"
+    <ScrollView 
+        android:id="@+id/webscroller"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/progressbar"
-        android:focusable="true"
-        android:visibility="gone" />
+        android:scrollbars="vertical"
+        android:visibility="gone" >
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true" />
+    </ScrollView>
 
     <ImageButton
         android:id="@+id/btn_linked_in"

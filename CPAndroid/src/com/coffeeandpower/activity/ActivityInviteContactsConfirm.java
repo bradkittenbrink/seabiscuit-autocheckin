@@ -84,7 +84,9 @@ public class ActivityInviteContactsConfirm extends RootActivity {
                 break;
 
             default:
-                new CustomDialog(ActivityInviteContactsConfirm.this, "Error", result.getResponseMessage()).show();
+                new CustomDialog(ActivityInviteContactsConfirm.this,
+                        getString(R.string.error),
+                        result.getResponseMessage()).show();
                 break;
 
             }
@@ -106,7 +108,7 @@ public class ActivityInviteContactsConfirm extends RootActivity {
                                 (String) getResources().getText(R.string.linkedInApiKey),
                                 (String) getResources().getText(R.string.linkedInApiSec));
                     } catch (LinkedInInitException e) {
-                        final String errorMsg = getString(R.string.message_internet_connection_error);
+                        final String errorMsg = getString(R.string.message_linkedin_oauth_error);
                         final int errorCode = -1;
                         result = new DataHolder(errorCode, errorMsg, null);
                         handler.sendEmptyMessage(result.getResponseCode());

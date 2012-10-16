@@ -49,7 +49,7 @@ public class ActivityJoin extends RootActivity {
 			switch (msg.what) {
 
 			case AppCAP.HTTP_ERROR:
-                new CustomDialog(ActivityJoin.this, "Error",
+                new CustomDialog(ActivityJoin.this, getString(R.string.error),
                         getString(string.message_internet_connection_error)).show();
 				break;
 
