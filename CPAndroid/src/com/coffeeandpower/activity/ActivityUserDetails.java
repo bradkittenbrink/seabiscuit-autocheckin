@@ -333,8 +333,6 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                             .getJobTitle()));
             ((TextView) findViewById(R.id.textview_date))
                     .setText(userResumeData.getJoined());
-            ((TextView) findViewById(R.id.textview_sponsor))
-                    .setText(userResumeData.getJoinSponsor());
 
             // Was EARNED now it's HOURS
             ((TextView) findViewById(R.id.textview_earned))

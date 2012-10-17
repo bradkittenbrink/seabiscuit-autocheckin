@@ -753,16 +753,6 @@
                         android:textColor="#338585"
                         android:textSize="18dip" />
 
-                    <com.coffeeandpower.views.CustomFontView
-                        android:id="@+id/textview_sponsor"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_below="@+id/dummy_view_78"
-                        android:layout_marginRight="10dip"
-                        android:textColor="#338585"
-                        android:textSize="18dip" />
-
                     <View
                         android:id="@+id/dummy_view_1"
                         android:layout_width="fill_parent"
@@ -1062,7 +1052,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/check_in"
-        android:onClick="onClickCheckIn" />
+        android:onClick="onClickCheckIn" />
     -->
 
 </RelativeLayout>
