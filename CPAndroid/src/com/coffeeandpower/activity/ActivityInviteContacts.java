@@ -159,68 +159,49 @@ public class ActivityInviteContacts extends RootActivity {
     
     protected void displayContacts() {
 
-        if (AppCAP.isLoggedIn()) {
+        if (this.arraySelectedUsers != null) {
+            this.arraySelectedUsers.clear();
+        }
+        if (Constants.debugLog)
+            Log.d("ActivityInviteContacts", "Contacts List Initial Load");
+        
+        adapterUsers = new LinkedInUsersAdapter(
+                ActivityInviteContacts.this, this.arrayUsers,
+                this.arraySelectedUsers);
 
-            if (this.arraySelectedUsers != null) {
-                this.arraySelectedUsers.clear();
-            }
-            if (Constants.debugLog)
-                Log.d("ActivityInviteContacts", "Contacts List Initial Load");
-            adapterUsers = new LinkedInUsersAdapter(
-                    ActivityInviteContacts.this, this.arrayUsers,
-                    this.arraySelectedUsers);
-
-            if (listView != null){
-                listView.setAdapter(adapterUsers);
-                Utils.animateListView(listView);
-                listView.setOnItemClickListener(new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> arg0, View arg1,
-                            int position, long arg3) {
-                        if (!AppCAP.isLoggedIn()) {
-                            showDialog(DIALOG_MUST_BE_A_MEMBER);
+        if (listView != null){
+            listView.setAdapter(adapterUsers);
+            Utils.animateListView(listView);
+            listView.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View arg1,
+                        int position, long arg3) {
+                    if (!AppCAP.isLoggedIn()) {
+                        showDialog(DIALOG_MUST_BE_A_MEMBER);
+                    } else {
+                        if (arraySelectedUsers.contains((UserSmart) adapterUsers
+                                .getItem(position))) {
+                            arraySelectedUsers.remove((UserSmart) adapterUsers
+                                    .getItem(position));
                         } else {
-                            if (arraySelectedUsers.contains((UserSmart) adapterUsers
-                                    .getItem(position))) {
-                                arraySelectedUsers.remove((UserSmart) adapterUsers
-                                        .getItem(position));
-                            } else {
-                                arraySelectedUsers.add((UserSmart) adapterUsers
-                                        .getItem(position));
-                            }
-                            adapterUsers.notifyDataSetChanged();
-                            if (arraySelectedUsers.isEmpty()) {
-                                ((Button) findViewById(R.id.btn_next))
-                                        .setClickable(false);
-                                ((Button) findViewById(R.id.btn_next))
-                                        .setBackgroundResource(0);
-                            } else {
-                                ((Button) findViewById(R.id.btn_next))
-                                        .setClickable(true);
-                                ((Button) findViewById(R.id.btn_next))
-                                        .setBackgroundResource(R.drawable.button_turquoise_a);
-                            }
+                            arraySelectedUsers.add((UserSmart) adapterUsers
+                                    .getItem(position));
+                        }
+                        adapterUsers.notifyDataSetChanged();
+                        if (arraySelectedUsers.isEmpty()) {
+                            ((Button) findViewById(R.id.btn_next))
+                                    .setClickable(false);
+                            ((Button) findViewById(R.id.btn_next))
+                                    .setBackgroundResource(0);
+                        } else {
+                            ((Button) findViewById(R.id.btn_next))
+                                    .setClickable(true);
+                            ((Button) findViewById(R.id.btn_next))
+                                    .setBackgroundResource(R.drawable.button_turquoise_a);
                         }
                     }
-                });
-            }
-        } else {
-            setContentView(R.layout.tab_activity_login);
-            ((RelativeLayout) findViewById(R.id.rel_log_in))
-                    .setBackgroundResource(R.drawable.bg_tabbar_selected);
-            ((ImageView) findViewById(R.id.imageview_log_in))
-                    .setImageResource(R.drawable.tab_login_pressed);
-
-            RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
-            RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);
-
-            if (r != null) {
-                r.setVisibility(View.VISIBLE);
-            }
-            if (r1 != null) {
-                r1.setVisibility(View.GONE);
-            }
-
+                }
+            });
         }
         progress.dismiss();
     }

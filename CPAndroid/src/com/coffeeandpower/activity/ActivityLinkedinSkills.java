@@ -185,23 +185,6 @@ public class ActivityLinkedinSkills extends RootActivity {
             if (listView != null){
                 listView.setAdapter(adapterUsers);
             }
-        } else {
-            setContentView(R.layout.tab_activity_login);
-            ((RelativeLayout) findViewById(R.id.rel_log_in))
-                    .setBackgroundResource(R.drawable.bg_tabbar_selected);
-            ((ImageView) findViewById(R.id.imageview_log_in))
-                    .setImageResource(R.drawable.tab_login_pressed);
-
-            RelativeLayout r = (RelativeLayout) findViewById(R.id.rel_log_in);
-            RelativeLayout r1 = (RelativeLayout) findViewById(R.id.rel_contacts);
-
-            if (r != null) {
-                r.setVisibility(View.VISIBLE);
-            }
-            if (r1 != null) {
-                r1.setVisibility(View.GONE);
-            }
-
         }
     }
 
