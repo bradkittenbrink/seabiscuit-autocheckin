@@ -117,33 +117,34 @@ public class MyUsersAdapter extends BaseAdapter {
             holder.textNickName.setText(AppCAP.cleanResponseString(current.getNickName()));
             imageLoader.DisplayImage(current.getFileName(),
                     holder.profileImage, R.drawable.default_avatar50, 70);
+            
+            // Display major job category
+            String jobName = current.getMajorJobCategory();
+            if (jobName != null && jobName.length() > 1)
+                jobName = jobName.substring(0, 1).toUpperCase()
+                        + jobName.substring(1);
+            holder.textJobName.setText(jobName);
+            
+            // Display status text
+            if (current.getStatusText() != null
+                    && current.getStatusText().length() > 0) {
+                holder.textStatus.setText("\""
+                        + AppCAP.cleanResponseString(current.getStatusText()) + "\"");
+            } else {
+                holder.textStatus.setText("");
+            }
         } else {
             holder.textNickName.setText("Name Hidden");
             imageLoader.DisplayImage("", holder.profileImage,
                     R.drawable.default_avatar50_login, 70);
         }
 
-        // Display status text
-        if (current.getStatusText() != null
-                && current.getStatusText().length() > 0) {
-            holder.textStatus.setText("\""
-                    + AppCAP.cleanResponseString(current.getStatusText()) + "\"");
-        } else {
-            holder.textStatus.setText("");
-        }
         if (current.getVenueName() != null
                 && current.getVenueName().length() > 0) { 
             holder.textVenueName.setText("@" + AppCAP.cleanResponseString(current.getVenueName()));
         } else {
             holder.textVenueName.setText("");
         }
-
-        // Display major job category
-        String jobName = current.getMajorJobCategory();
-        if (jobName != null && jobName.length() > 1)
-            jobName = jobName.substring(0, 1).toUpperCase()
-                    + jobName.substring(1);
-        holder.textJobName.setText(jobName);
 
         return convertView;
     }

@@ -83,16 +83,17 @@ public class MyUserSmartAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        if (mudArray.get(position).getHeadLine() != null) {
-            holder.textJobName.setText(mudArray.get(position).getHeadLine()
-                    .equals("null") ? "" : (mudArray.get(position).getHeadLine()
-                    .equals("NULL") ? "" : ((mudArray.get(position).getHeadLine()
-                    .equals(null) ? "" : AppCAP.cleanResponseString(mudArray.get(
-                    position).getHeadLine())))));
-        } else {
-            holder.textJobName.setText("");
-        }
         if (AppCAP.isLoggedIn()) {
+            if (mudArray.get(position).getHeadLine() != null) {
+                holder.textJobName.setText(mudArray.get(position).getHeadLine()
+                        .equals("null") ? "" : (mudArray.get(position).getHeadLine()
+                        .equals("NULL") ? "" : ((mudArray.get(position).getHeadLine()
+                        .equals(null) ? "" : AppCAP.cleanResponseString(mudArray.get(
+                        position).getHeadLine())))));
+            } else {
+                holder.textJobName.setText("");
+            }
+            
             holder.textNickName.setText(AppCAP.cleanResponseString(mudArray
                     .get(position).getNickName()));
 

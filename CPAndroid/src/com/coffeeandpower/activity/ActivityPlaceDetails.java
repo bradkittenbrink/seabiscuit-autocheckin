@@ -1,7 +1,6 @@
 package com.coffeeandpower.activity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
@@ -33,24 +32,20 @@ import android.widget.TextView;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
-import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.adapters.MyUserSmartAdapter;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.SkillCategory;
 import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.Venue;
-import com.coffeeandpower.cont.VenueChatEntry;
-import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
-import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 import com.coffeeandpower.utils.Executor;
-import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.utils.Utils;
@@ -400,8 +395,15 @@ public class ActivityPlaceDetails extends RootActivity {
 
                         }
                     });
-                    imageLoaderUser.DisplayImage(checkedInUsers.get(i).getFileName(),
-                            image, R.drawable.default_avatar50, 70);
+
+                    if (AppCAP.isLoggedIn()) {
+                        imageLoader.DisplayImage(checkedInUsers.get(i)
+                                .getFileName(), image,
+                                R.drawable.default_avatar50, 70);
+                    } else {
+                        imageLoader.DisplayImage("", image,
+                                R.drawable.default_avatar50_login, 70);
+                    }
                     layoutForInflateUsers.addView(image);
 
                 }
