@@ -25,12 +25,21 @@
             android:visibility="gone" >
 
             <ImageView
-                android:id="@+id/imageview_button_checkin"
+                android:id="@+id/imageview_button_checkout"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="@drawable/action_menu_button_checkin_b"
+                android:background="@drawable/check_out"
                 android:clickable="true"
-                android:onClick="onClickCheckIn" />
+                android:onClick="onClickCheckOut" />
+
+            <ImageView
+                android:id="@+id/imageview_button_update"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/action_menu_button_update_b"
+                android:clickable="true"
+                android:onClick="onClickUpdateHeadline" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -80,6 +89,17 @@
                 android:background="@drawable/action_menu_button_minus_b"
                 android:clickable="true"
                 android:onClick="onClickMinus"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/imageview_button_checkin"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/action_menu_check_in_b"
+                android:clickable="true"
+                android:onClick="onClickCheckIn"
                 android:visibility="gone" />
 
             <ImageView

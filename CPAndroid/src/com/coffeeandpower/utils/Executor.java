@@ -58,7 +58,8 @@ public class Executor {
     public static final int HANDLE_GET_QUESTIONS_RECEIVERS = 1632;
     public static final int HANDLE_VENUE_MORE_FEED = 1633;
     public static final int HTTP_ERROR_IN_MORE_FEED = 1634;   
-    public static final int HANDLE_VENUE_FEED_PREVIEW = 1635;   
+    public static final int HANDLE_VENUE_FEED_PREVIEW = 1635;
+    public static final int HANDLE_UPDATE_HEADLINE = 1636;   
     
     private DataHolder result;
 
@@ -427,6 +428,18 @@ public class Executor {
                 handler.sendEmptyMessage(result.getHandlerCode());
             }
         }, "Executor.changeSkillVisibility").start();
+    }
+
+    public void sendHeadline(final String headline) {
+        progress.setMessage("Update headline...");
+        progress.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result = AppCAP.getConnection().sendHeadline(headline);
+                handler.sendEmptyMessage(result.getHandlerCode());
+            }
+        }, "Executor.sendHeadline").start();
     }
 
 

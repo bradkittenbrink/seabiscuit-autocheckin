@@ -118,6 +118,7 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
             case HANDLE_CHECK_OUT:
                 CacheMgrService.checkOutTrigger();
                 userState.onCheckOut();
+                displayActionButton();
                 break;
 
             case HANDLE_GET_NOTIFICATION_SETTINGS:
@@ -214,8 +215,33 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
         }
         
     }
-
+    
+    
     @Override
+    public void onClickCheckOut(final View v) { 
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                context);
+        builder.setTitle("Are you sure?");
+        builder.setMessage(context.getResources().getString(R.string.checked_out_confirmation))
+                .setCancelable(false)
+                .setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                    int id) {
+                                onClickCheckOut(v, null);
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                    int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     public void onClickCheckOut(View v, final Activity finishActivity) { 
         if (v != null) {
             hideVerticalMenu(v);
@@ -365,17 +391,40 @@ public class UserAndTabMenu implements UserMenu, TabMenu {
                         .findViewById(R.id.layout_action_menu);
                 layout_action_menu.clearAnimation();
                 minus.clearAnimation();
-                if (plus != null) {
-                    plus.setVisibility(View.VISIBLE); 
-                }
-                if (minus != null) {
-                    minus.setVisibility(View.GONE);
-                }       
+                displayActionButton();       
                 layout_action_menu.setVisibility(View.GONE);
             }
         }, 400);
     }
     
+    
+    public void displayActionButton() {
+        ImageView plus = (ImageView) ((Activity) context)
+                .findViewById(R.id.imageview_button_plus);
+        ImageView minus = (ImageView) ((Activity) context)
+                .findViewById(R.id.imageview_button_minus);
+        ImageView checkin = (ImageView) ((Activity) context)
+                .findViewById(R.id.imageview_button_checkin); 
+        if (minus != null) {
+            minus.setVisibility(View.GONE); 
+        }
+        if (AppCAP.isUserCheckedIn()) {
+            if (plus != null) {
+                plus.setVisibility(View.VISIBLE); 
+            }
+            if (checkin != null) {
+                checkin.setVisibility(View.GONE);
+            }       
+        } else {
+            if (plus != null) {
+                plus.setVisibility(View.GONE); 
+            }
+            if (checkin != null) {
+                checkin.setVisibility(View.VISIBLE);
+            }       
+        }
+
+    }
     public void hideVerticalMenu(View v) {
         ImageView minus = (ImageView) ((Activity) context)
                 .findViewById(R.id.imageview_button_minus); 

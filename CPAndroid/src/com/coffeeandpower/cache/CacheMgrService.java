@@ -690,4 +690,34 @@ public class CacheMgrService extends Service {
             refreshAllData();
         }
     }
+    
+    public static void updateHeadline(String headLine) {
+
+        int loggedInUserId = AppCAP.getLoggedInUserId();
+        DataHolder venuesWithCheckins = venuesWithCheckinsCache.getData();
+        Object[] obj = (Object[]) venuesWithCheckins.getObject();
+        @SuppressWarnings("unchecked")
+        List<UserSmart> arrayUsers1 = (List<UserSmart>) obj[3];
+
+        for (UserSmart currUser : arrayUsers1) {
+            if (currUser.getUserId() == loggedInUserId) {
+                currUser.setStatusText(headLine);
+                break;
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        List<UserSmart> arrayUsers = (List<UserSmart>) obj[1];
+        for (UserSmart currUser : arrayUsers) {
+            if (currUser.getUserId() == AppCAP.getLoggedInUserId()) {
+                currUser.setStatusText(headLine);
+                break;
+            }
+        }
+        venuesWithCheckinsCache.sendCachedData();
+    }
+    
+    public static void getCachedData() {
+        venuesWithCheckinsCache.sendCachedData();
+    }
 }

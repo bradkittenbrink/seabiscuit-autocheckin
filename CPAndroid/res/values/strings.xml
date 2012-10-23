@@ -92,6 +92,7 @@
     <string name="custom_dialog_title">Title</string>
     <string name="custom_dialog_message">Message</string>
     <string name="recognition_placeholder">Type your recognition text here.</string>
+    <string name="headline_placeholder">Type your new headline here...</string>
     <string name="recognition_char_limit">140</string>
     <string name="recognize_skill_prompt">Recognize Skill</string>
     <string name="tab_activity_contacts_contact">Contact list</string>
@@ -150,4 +151,4 @@ If you have not already, download the app from the iTunes or Google Play stores.
     <string name="message_internet_connection_error">Internet connection error</string>
     <string name="message_linkedin_oauth_error">There was an issue with your LinkedIn authorization.</string>
     <string name="error">Error</string>
-</resources>
+</resources>

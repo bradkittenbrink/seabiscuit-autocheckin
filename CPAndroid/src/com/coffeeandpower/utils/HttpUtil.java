@@ -3412,6 +3412,64 @@ public class HttpUtil {
                 .register(new Scheme("https", socketFactory, 443));
     }
 
+    public DataHolder sendHeadline(String headline) {
+        DataHolder result = new DataHolder(AppCAP.HTTP_ERROR,
+                internetConnectionErrorMsg, null);
+
+        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
+                HttpVersion.HTTP_1_1);
+
+        HttpPost post = new HttpPost(AppCAP.URL_WEB_SERVICE + AppCAP.URL_API);
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        try {
+            params.add(new BasicNameValuePair("action", "changeCurrentHeadline"));
+            params.add(new BasicNameValuePair("headline", URLEncoder.encode(
+                    headline + "", "utf-8")));
+
+            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            String responseString = EntityUtils.toString(resEntity);
+            if (Constants.enableApiJsonLogging)
+                RootActivity.log("HttpUtil_sendF2FAccept: " + responseString);
+
+            if (responseString != null) {
+
+                JSONObject json = new JSONObject(responseString);
+                if (json != null) {
+
+                    String message = json.optString("payload");
+                    result.setResponseMessage(message);
+                    result.setHandlerCode(Executor.HANDLE_UPDATE_HEADLINE); 
+                    return result;
+                }
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return result;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.setResponseMessage("JSON Parsing Error: " + e);
+            return result;
+        }
+        return result;
+    }
+
 
 
 }

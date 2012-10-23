@@ -4,6 +4,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,28 +16,45 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.activity.ActivityCheckIn;
 import com.coffeeandpower.activity.ActivityLoginPage;
+import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.app.R;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cont.DataHolder;
+import com.coffeeandpower.cont.Review;
+import com.coffeeandpower.cont.UserLinkedinSkills;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
+import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.fragments.FragmentContacts;
 import com.coffeeandpower.fragments.FragmentMap;
 import com.coffeeandpower.fragments.FragmentPeopleAndPlaces;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
+import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.UserAndTabMenu;
+import com.coffeeandpower.utils.Executor.ExecutorInterface;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
@@ -43,10 +64,12 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
 
     private static final int SCREEN_SETTINGS = 0;
     private static final int SCREEN_USER = 1;
+    private static final int DIALOG_UPDATE_HEADLINE = 2;
 
     public static final int DIALOG_MUST_BE_A_MEMBER = 30;
 
     private HorizontalPagerModified pager;
+    private Executor exe;
 
     private UserAndTabMenu menu;
 
@@ -88,6 +111,19 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab_activity_venue_feeds);
 
+        // Executor
+        exe = new Executor(ActivityVenueFeeds.this);
+        exe.setExecutorListener(new ExecutorInterface() {
+            @Override
+            public void onErrorReceived() {
+                errorReceived();
+            }
+
+            @Override
+            public void onActionFinished(int action) {
+                actionFinished(action);
+            }
+        });
 
         ((CustomFontView) findViewById(R.id.text_nick_name)).setText(AppCAP.getLoggedInUserNickname());
         
@@ -127,6 +163,21 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
 
         AppCAP.mainActivityDidStart(this);
     }
+
+    public void errorReceived() {
+    }
+
+    private void actionFinished(int action) {
+        DataHolder result = exe.getResult();
+
+        switch (action) {
+        case Executor.HANDLE_UPDATE_HEADLINE:
+            if (result.getObject() != null) {
+            }
+            break;
+        }
+    }
+
     
     public void displayFragment(int fragment_id) {
         Fragment newFragment;
@@ -173,7 +224,10 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         }
         // Commit the transaction
         transaction.commit(); 
-        
+        manager.executePendingTransactions();
+        if (fragment_id == R.id.tab_fragment_area_people) {
+            CacheMgrService.getCachedData();
+        }
     }
     
     public void switchTabBackground(int onRelativeLayout) {
@@ -397,13 +451,12 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         if (AppCAP.shouldFinishActivities()) {
             onBackPressed();
         } else {
+            menu.displayActionButton();
             this.displayFragment(fragment_id);
 
             getSupportFragmentManager().addOnBackStackChangedListener(getListener());
         }
     }
-    
-    
 
     @Override
     public void onBackPressed() {
@@ -473,6 +526,15 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         intentExtras.putString("caller", caller);
     }
 
+    public void onClickUpdateHeadline(View v) {
+        if (AppCAP.isLoggedIn()) {
+            showDialog(DIALOG_UPDATE_HEADLINE);
+        } else {
+            showDialog(DIALOG_MUST_BE_A_MEMBER);
+        }
+    }
+
+
     @Override
     public void onClickCheckIn(View v) {
         if (AppCAP.isLoggedIn()) {
@@ -482,11 +544,11 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         }
     }
 
-
     @Override
-    public void onClickCheckOut(View v, Activity finishActivity) {
+    public void onClickCheckOut(View v) {
         if (AppCAP.isLoggedIn()) {
-            menu.onClickCheckOut(v, finishActivity);
+            menu.hideVerticalMenu(v);
+            menu.onClickCheckOut(v);
         } else {
             showDialog(DIALOG_MUST_BE_A_MEMBER);
         }
@@ -543,6 +605,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         menu.onClickPlus(v);
     }
 
+
     
     @Override
     public boolean startSmartActivity(Intent intent, String activityName) {
@@ -567,6 +630,130 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             super.startSmartActivity(intent, activityName);
         }
         return false;
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+
+        // reset as required
+        switch (id) {
+
+        case DIALOG_UPDATE_HEADLINE:
+            // edit text area
+            EditText textbox = (EditText)dialog.findViewById(R.id.edit_headline);
+            textbox.setText("");
+            break;
+        }
+
+        super.onPrepareDialog(id, dialog, args);
+    }
+    
+    public void hideKeyboard(EditText textbox) {
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(textbox.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id, Bundle arg) {
+
+        final Dialog dialog;
+
+        switch (id) {
+
+        case DIALOG_UPDATE_HEADLINE:
+
+
+            dialog = new Dialog(ActivityVenueFeeds.this, R.style.CustomDialog);
+            dialog.setContentView(R.layout.dialog_update_headline);
+            
+
+            // title: nickname or default
+            final String title = "";
+            dialog.setTitle(title);
+
+            dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            dialog.getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+            // placeholder text
+            final TextView placeholder = (TextView)dialog.findViewById(R.id.headline_placeholder);
+            // countdown text
+            final TextView countdown = (TextView)dialog.findViewById(R.id.headline_char_limit);
+
+            // edit text area
+            final EditText textbox = (EditText)dialog.findViewById(R.id.edit_headline);
+            // limit text input to 140 chars
+            final int MAX_LENGTH = 140;
+            InputFilter[] fa = new InputFilter[1];
+            fa[0] = new InputFilter.LengthFilter(MAX_LENGTH);
+            textbox.setFilters(fa);
+            // listen for text changes for dynamic update
+            textbox.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // update the length countdown
+                    int remainder = MAX_LENGTH - (start + count);
+                    countdown.setText(String.valueOf(remainder));
+                    // update placeholder visibility
+                    placeholder.setVisibility((s.length() > 0) ? View.GONE : View.VISIBLE);
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count,
+                        int after) {
+                    // do nothing
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    // do nothing
+                }
+            });
+
+
+            ((Button) dialog.findViewById(R.id.btn_send))
+                    .setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String headline = null;
+                            hideKeyboard(textbox);
+
+                            if (((EditText) dialog.findViewById(R.id.edit_headline))
+                                    .getText().toString().length() > 0)
+                            {
+                                headline = ((EditText) dialog.findViewById(R.id.edit_headline)).getText().toString();
+
+                                dialog.dismiss();
+                                exe.sendHeadline(headline);
+                                CacheMgrService.updateHeadline(headline);
+
+                                onClickMinus(findViewById(R.id.imageview_button_minus));
+                            } else {
+                                dialog.dismiss();
+                                Toast.makeText(ActivityVenueFeeds.this,
+                                        "Headline can't be empty!",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+            ((Button) dialog.findViewById(R.id.btn_cancel))
+                    .setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            hideKeyboard(textbox);
+                            dialog.dismiss();
+                        }
+                    });
+            break;
+            default:
+                dialog = super.onCreateDialog(id);
+                break;
+        }
+
+        return dialog;
     }
 
 

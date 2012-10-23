@@ -467,6 +467,7 @@ public class Counter {
         this.refreshAllData();
     }
 */
+    
     public void checkOutTrigger() {
 
         this.stop();

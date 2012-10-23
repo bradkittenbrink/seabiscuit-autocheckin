@@ -11,7 +11,7 @@ public interface TabMenu {
 
     public void onClickCheckIn(View v);
 
-    public void onClickCheckOut(View v, Activity finishActivity);
+    public void onClickCheckOut(View v);
 
     public void onClickPeople(View v);
 
