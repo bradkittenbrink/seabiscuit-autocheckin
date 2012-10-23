@@ -75,7 +75,6 @@ public class MyUsersAdapter extends BaseAdapter {
         public TextView textNickName;
         public TextView textStatus;
         public TextView textVenueName;
-        public TextView textDistance;
         public TextView textCheckinsCount;
         public TextView textJobName;
 
@@ -85,8 +84,6 @@ public class MyUsersAdapter extends BaseAdapter {
 
             this.textCheckinsCount = (TextView) convertView
                     .findViewById(R.id.textview_checkin);
-            this.textDistance = (TextView) convertView
-                    .findViewById(R.id.textview_how_far);
             this.textStatus = (TextView) convertView
                     .findViewById(R.id.textview_comment);
             this.textVenueName = (TextView) convertView
@@ -136,7 +133,7 @@ public class MyUsersAdapter extends BaseAdapter {
         }
         if (current.getVenueName() != null
                 && current.getVenueName().length() > 0) { 
-            holder.textVenueName.setText(AppCAP.cleanResponseString(current.getVenueName()));
+            holder.textVenueName.setText("@" + AppCAP.cleanResponseString(current.getVenueName()));
         } else {
             holder.textVenueName.setText("");
         }
@@ -148,15 +145,6 @@ public class MyUsersAdapter extends BaseAdapter {
                     + jobName.substring(1);
         holder.textJobName.setText(jobName);
 
-        // Not the best check since 0, 0 is a valid lat, long, but there is no
-        // coffee or power off the coast of Africa so we should be good
-        if (myLat == 0 || myLng == 0) {
-            // If we have no position fill that space with something else
-        } else {
-            holder.textDistance.setText(RootActivity.getDistanceBetween(myLat,
-                    myLng, current.getLat(),
-                    current.getLng(), false));
-        }
         return convertView;
     }
 

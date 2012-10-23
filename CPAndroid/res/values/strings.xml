@@ -21,7 +21,7 @@
     <string name="resume">Resume</string>
     <string name="linkedin">LinkedIn</string>
     <string name="facebook">Facebook</string>
-    <string name="recognition">Recognition</string>
+    <string name="recognition">Endorsements</string>
     <string name="education">Education</string>
     <string name="ok">Ok</string>
     <string name="done">Done</string>
@@ -82,7 +82,7 @@
     <string name="activity_user_details_available">AVAILABLE FOR:</string>
     <string name="activity_user_details_rate">RATE:</string>
     <string name="activity_user_details_earned">HOURS</string>
-    <string name="activity_user_details_props">RECOGNITION</string>
+    <string name="activity_user_details_props">ENDORSEMENTS</string>
     <string name="activity_user_details_sendlove">Recognize User</string>
     <string name="activity_user_details_often">Often works at...</string>
     <string name="activity_user_details_joined">Joined on</string>
@@ -91,10 +91,10 @@
     <string name="activity_wallet_transaction_history">Transaction History</string>
     <string name="custom_dialog_title">Title</string>
     <string name="custom_dialog_message">Message</string>
-    <string name="recognition_placeholder">Type your recognition text here.</string>
+    <string name="recognition_placeholder">Type your endorsement text here.</string>
     <string name="headline_placeholder">Type your new headline here...</string>
     <string name="recognition_char_limit">140</string>
-    <string name="recognize_skill_prompt">Recognize Skill</string>
+    <string name="recognize_skill_prompt">Endorse Skill</string>
     <string name="tab_activity_contacts_contact">Contact list</string>
     <string name="tab_map">Map</string>
     <string name="tab_list">List</string>

@@ -605,14 +605,12 @@ public class ActivityUserDetails extends RootActivity implements Observer {
                     tableRow.setVisibility(View.VISIBLE);
                     tableLayoutRankedSkills.getChildAt(row+1).setVisibility(View.VISIBLE);  //the thin line after
                     skill = rankedSkills.get(skillNum);
-                    for (int col = 0; col < tableRow.getChildCount(); col++) {
-                        tvName = (TextView) tableRow.getChildAt(0);
-                        tvLove = (TextView) tableRow.getChildAt(1);
-                        tvTop = (TextView) tableRow.getChildAt(2);
-                        tvName.setText(skill.getName());
-                        tvLove.setText(String.valueOf(skill.getRecs()));
-                        tvTop.setText(skill.getTop());
-                    } //end of looping through columns
+                    tvName = (TextView) tableRow.getChildAt(0);
+                    tvLove = (TextView) tableRow.getChildAt(2);
+                    tvTop = (TextView) tableRow.getChildAt(4);
+                    tvName.setText(skill.getName());
+                    tvLove.setText(String.valueOf(skill.getRecs()));
+                    tvTop.setText(skill.getTop());
                    
                 } //end of checking if there are more skills for this person
                 skillNum++;  
@@ -965,7 +963,7 @@ public class ActivityUserDetails extends RootActivity implements Observer {
 
         case Executor.HANDLE_SENDING_PROP:
             Toast.makeText(ActivityUserDetails.this,
-                    "You recognized " + userResumeData.getNickName(),
+                    "You just endorsed " + userResumeData.getNickName(),
                     Toast.LENGTH_SHORT).show();
             // we've updated the local data for reviews - refresh UI here
             updateUserDataInUI();

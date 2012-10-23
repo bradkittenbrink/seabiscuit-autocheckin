@@ -279,14 +279,12 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/dummy_view"
-                        android:background="#f2f2f1"
                         android:orientation="vertical" >
 
                         <LinearLayout
                             android:id="@+id/dummy_layout_1b"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:background="#f2f2f1"
                             android:orientation="horizontal" >
 
                             <View
@@ -299,6 +297,7 @@
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:background="#f2f2f1"
                                 android:paddingBottom="5dip"
                                 android:paddingLeft="10dip"
                                 android:paddingRight="5dip"
@@ -332,6 +331,7 @@
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:background="#f2f2f1"
                                 android:paddingBottom="5dip"
                                 android:paddingLeft="10dip"
                                 android:paddingRight="5dip"
@@ -385,21 +385,29 @@
                             <TableRow>
 
                                 <TextView
-                                    android:layout_weight="0.54"
+                                    android:layout_weight="0.6"
                                     android:text="Skill"
                                     android:textColor="#62615f"
                                     android:textSize="17sp"
                                     android:textStyle="bold" />
 
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent" />
+
                                 <TextView
-                                    android:layout_weight="0.21"
-                                    android:text="Recs"
+                                    android:layout_weight="0.2"
+                                    android:text="Endrsmnts"
                                     android:textColor="#62615f"
                                     android:textSize="17sp"
                                     android:textStyle="bold" />
 
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent" />
+
                                 <TextView
-                                    android:layout_weight="0.25"
+                                    android:layout_weight="0.2"
                                     android:text="Top"
                                     android:textColor="#62615f"
                                     android:textSize="17sp"
@@ -415,9 +423,19 @@
                                     android:background="#cccac9" />
 
                                 <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
+                                <View
                                     android:layout_width="fill_parent"
                                     android:layout_height="1dip"
                                     android:layout_weight="0.2"
+                                    android:background="#cccac9" />
+
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
                                     android:background="#cccac9" />
 
                                 <View
@@ -427,24 +445,35 @@
                                     android:background="#cccac9" />
                             </TableRow>
 
-                            <TableRow
-                                android:padding="5dp"
-                                android:visibility="gone" >
+                            <TableRow android:visibility="gone" >
 
                                 <TextView
                                     android:layout_weight="0.6"
+                                    android:padding="5dp"
                                     android:tag="name"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
 
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
                                 <TextView
                                     android:layout_weight="0.2"
+                                    android:padding="5dp"
                                     android:tag="love"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
 
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
                                 <TextView
                                     android:layout_weight="0.2"
+                                    android:padding="5dp"
                                     android:tag="rank"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
@@ -461,9 +490,19 @@
                                     android:background="#cccac9" />
 
                                 <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
+                                <View
                                     android:layout_width="fill_parent"
                                     android:layout_height="1dip"
                                     android:layout_weight="0.2"
+                                    android:background="#cccac9" />
+
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
                                     android:background="#cccac9" />
 
                                 <View
@@ -473,24 +512,35 @@
                                     android:background="#cccac9" />
                             </TableRow>
 
-                            <TableRow
-                                android:padding="5dp"
-                                android:visibility="gone" >
+                            <TableRow android:visibility="gone" >
 
                                 <TextView
                                     android:layout_weight="0.6"
+                                    android:padding="5dp"
                                     android:tag="name"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
 
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
                                 <TextView
                                     android:layout_weight="0.2"
+                                    android:padding="5dp"
                                     android:tag="love"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
 
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
                                 <TextView
                                     android:layout_weight="0.2"
+                                    android:padding="5dp"
                                     android:tag="rank"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
@@ -507,9 +557,19 @@
                                     android:background="#cccac9" />
 
                                 <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
+                                <View
                                     android:layout_width="fill_parent"
                                     android:layout_height="1dip"
                                     android:layout_weight="0.2"
+                                    android:background="#cccac9" />
+
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
                                     android:background="#cccac9" />
 
                                 <View
@@ -519,24 +579,35 @@
                                     android:background="#cccac9" />
                             </TableRow>
 
-                            <TableRow
-                                android:padding="5dp"
-                                android:visibility="gone" >
+                            <TableRow android:visibility="gone" >
 
                                 <TextView
                                     android:layout_weight="0.6"
+                                    android:padding="5dp"
                                     android:tag="name"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
 
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
                                 <TextView
                                     android:layout_weight="0.2"
+                                    android:padding="5dp"
                                     android:tag="love"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
 
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
                                 <TextView
                                     android:layout_weight="0.2"
+                                    android:padding="5dp"
                                     android:tag="rank"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
@@ -553,9 +624,19 @@
                                     android:background="#cccac9" />
 
                                 <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
+                                <View
                                     android:layout_width="fill_parent"
                                     android:layout_height="1dip"
                                     android:layout_weight="0.2"
+                                    android:background="#cccac9" />
+
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
                                     android:background="#cccac9" />
 
                                 <View
@@ -565,24 +646,35 @@
                                     android:background="#cccac9" />
                             </TableRow>
 
-                            <TableRow
-                                android:padding="5dp"
-                                android:visibility="gone" >
+                            <TableRow android:visibility="gone" >
 
                                 <TextView
                                     android:layout_weight="0.6"
+                                    android:padding="5dp"
                                     android:tag="name"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
 
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
                                 <TextView
                                     android:layout_weight="0.2"
+                                    android:padding="5dp"
                                     android:tag="love"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
 
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
                                 <TextView
                                     android:layout_weight="0.2"
+                                    android:padding="5dp"
                                     android:tag="rank"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
@@ -599,9 +691,19 @@
                                     android:background="#cccac9" />
 
                                 <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
+                                <View
                                     android:layout_width="fill_parent"
                                     android:layout_height="1dip"
                                     android:layout_weight="0.2"
+                                    android:background="#cccac9" />
+
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
                                     android:background="#cccac9" />
 
                                 <View
@@ -611,24 +713,35 @@
                                     android:background="#cccac9" />
                             </TableRow>
 
-                            <TableRow
-                                android:padding="5dp"
-                                android:visibility="gone" >
+                            <TableRow android:visibility="gone" >
 
                                 <TextView
                                     android:layout_weight="0.6"
+                                    android:padding="5dp"
                                     android:tag="name"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
 
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
                                 <TextView
                                     android:layout_weight="0.2"
+                                    android:padding="5dp"
                                     android:tag="love"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
 
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
                                 <TextView
                                     android:layout_weight="0.2"
+                                    android:padding="5dp"
                                     android:tag="rank"
                                     android:textColor="#62615f"
                                     android:textSize="17sp" />
@@ -645,9 +758,19 @@
                                     android:background="#cccac9" />
 
                                 <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="#cccac9" />
+
+                                <View
                                     android:layout_width="fill_parent"
                                     android:layout_height="1dip"
                                     android:layout_weight="0.2"
+                                    android:background="#cccac9" />
+
+                                <View
+                                    android:layout_width="1dip"
+                                    android:layout_height="fill_parent"
                                     android:background="#cccac9" />
 
                                 <View
@@ -1052,7 +1175,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/check_in"
-        android:onClick="onClickCheckIn" />
+        android:onClick="onClickCheckIn" />
     -->
 
 </RelativeLayout>
