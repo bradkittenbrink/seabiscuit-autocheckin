@@ -13,12 +13,15 @@ public class CustomSeek extends SeekBar {
 
     private Paint paintNormal;
     private Paint paintBig;
+    private Paint paintSmall;
 
     private Rect textRect;
 
     private int viewWidth;
 
     private int TEXT_VERT_OFFSET = 23;
+    private int TEXT_VERT_OFFSET_X = 4;
+    
     private boolean lockSetProgress = false;
 
     public interface HoursChangeListener {
@@ -61,6 +64,12 @@ public class CustomSeek extends SeekBar {
         paintBig.setColor(0xff42818b); // text Color Big
         paintBig.setAntiAlias(true);
 
+        paintSmall = new Paint();
+        paintSmall.setTextSize(20); // text Size Big
+        paintSmall.setTypeface(Typeface.DEFAULT_BOLD);
+        paintSmall.setColor(0xff42818b); // text Color Big
+        paintSmall.setAntiAlias(true);
+
         textRect = new Rect();
         paintNormal.getTextBounds("5", 0, 1, textRect);
     }
@@ -75,6 +84,8 @@ public class CustomSeek extends SeekBar {
             if (getProgress() >= 0 && getProgress() < 2 * getMax() / 8) {
                 canvas.drawText("1", 1 * step - textRect.width() / 2,
                         TEXT_VERT_OFFSET, paintBig);
+                canvas.drawText("hr", TEXT_VERT_OFFSET_X + 1 * step + textRect.width() / 2,
+                        TEXT_VERT_OFFSET, paintSmall);
                 if (!lockSetProgress) {
                     setProgress(12);
                     hoursChangeListener.onHoursChange(1);
@@ -88,6 +99,8 @@ public class CustomSeek extends SeekBar {
                     && getProgress() < 4 * getMax() / 8) {
                 canvas.drawText("3", 3 * step - textRect.width() / 2,
                         TEXT_VERT_OFFSET, paintBig);
+                canvas.drawText("hrs", TEXT_VERT_OFFSET_X + 3 * step + textRect.width() / 2,
+                        TEXT_VERT_OFFSET, paintSmall);
                 if (!lockSetProgress) {
                     setProgress(39);
                     hoursChangeListener.onHoursChange(3);
@@ -101,6 +114,8 @@ public class CustomSeek extends SeekBar {
                     && getProgress() < 6 * getMax() / 8) {
                 canvas.drawText("5", 5 * step - textRect.width() / 2,
                         TEXT_VERT_OFFSET, paintBig);
+                canvas.drawText("hrs", TEXT_VERT_OFFSET_X + 5 * step + textRect.width() / 2,
+                        TEXT_VERT_OFFSET, paintSmall);
                 if (!lockSetProgress) {
                     setProgress(66);
                     hoursChangeListener.onHoursChange(5);
@@ -113,6 +128,8 @@ public class CustomSeek extends SeekBar {
             if (getProgress() >= 6 * getMax() / 8 && getProgress() <= getMax()) {
                 canvas.drawText("7", 7 * step - textRect.width() / 2,
                         TEXT_VERT_OFFSET, paintBig);
+                canvas.drawText("hrs", TEXT_VERT_OFFSET_X + 7 * step + textRect.width() / 2,
+                        TEXT_VERT_OFFSET, paintSmall);
                 if (!lockSetProgress) {
                     setProgress(93);
                     hoursChangeListener.onHoursChange(7);

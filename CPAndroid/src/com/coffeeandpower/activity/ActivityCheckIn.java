@@ -62,7 +62,6 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 	private VenueSmart venue;
 
 	// Views
-	private CustomFontView textHours;
 	private CustomFontView textTitle;
 	private CustomFontView textName;
 	private CustomFontView textStreet;
@@ -151,7 +150,6 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 
 		// Views
 		textTitle = (CustomFontView) findViewById(R.id.text_title);
-		textHours = (CustomFontView) findViewById(R.id.textview_hours);
 		textName = (CustomFontView) findViewById(R.id.textview_name);
 		textStreet = (CustomFontView) findViewById(R.id.textview_street);
 		hoursSeek = (CustomSeek) findViewById(R.id.seekbar_hours);
@@ -194,12 +192,10 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 			public void onHoursChange(int hours) {
 				switch (hours) {
 				case 1:
-					textHours.setText(hours + " hour");
 					checkInDuration = 1;
 					break;
 
 				default:
-					textHours.setText(hours + " hours");
 					checkInDuration = hours;
 					break;
 				}
