@@ -266,7 +266,9 @@ public class ActivitySettings extends RootActivity {
         });
 
         // -- Setup the visibility options spinner
-        String[] visibilityOptions = { "Allow anyone", "Only logged in users" };
+        String[] visibilityOptions = {
+                getString(R.string.activity_settings_profile_visibility_everyone),
+                getString(R.string.activity_settings_profile_visibility_logged_in) };
         ArrayAdapter<String> voAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, visibilityOptions);
         voAdapter

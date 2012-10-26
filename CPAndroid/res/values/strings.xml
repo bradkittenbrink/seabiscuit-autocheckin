@@ -76,6 +76,8 @@
     <string name="activity_settings_job_category">Other/Other</string>
     <string name="activity_settings_smarterer">Smarterer Badges</string>
     <string name="activity_settings_profile_visibility">Profile visibility</string>
+    <string name="activity_settings_profile_visibility_everyone">Allow everyone</string>
+    <string name="activity_settings_profile_visibility_logged_in">Only logged in users</string>
     <string name="activity_settings_profile_delete">Delete Account</string>
     <string name="activity_sign_in">Sign In</string>
     <string name="activity_sign_in_join">Join Coffee &amp; Power</string>
