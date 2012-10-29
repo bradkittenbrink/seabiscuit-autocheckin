@@ -174,34 +174,7 @@
                         android:footerDividersEnabled="false"
                         android:headerDividersEnabled="false" />
                 </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/shadow_view3"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:id="@+id/textview_place_check_in"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/activity_check_in_list_check"
-                        android:textColor="#656565"
-                        android:textStyle="bold" />
-
-                    <ImageButton
-                        android:id="@+id/imagebutton_check_in"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/check_in_big"
-                        android:clickable="true"
-                        android:onClick="onClickCheckIn" />
-                </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>
-
 </RelativeLayout>

@@ -39,7 +39,7 @@
                 android:orientation="vertical" >
 
                 <RelativeLayout
-                    android:id="@+id/dummy_layout"
+                    android:id="@+id/title_bar"
                     android:layout_width="fill_parent"
                     android:layout_height="45dip"
                     android:background="@drawable/header" >
@@ -127,7 +127,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/tab_bar"
-                    android:layout_below="@+id/dummy_layout" >
+                    android:layout_below="@+id/title_bar" >
 
                     <RelativeLayout
                         android:id="@+id/tab_fragment_area_feed"
@@ -143,11 +143,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true" >
+                        android:layout_alignParentTop="true"
+                        android:background="#333333">
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:id="@+id/tab_fragment_area_places"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true" >
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/tab_fragment_area_place_details"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_alignParentLeft="true"

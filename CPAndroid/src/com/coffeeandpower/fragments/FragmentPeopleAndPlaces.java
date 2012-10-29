@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -176,19 +177,11 @@ public class FragmentPeopleAndPlaces extends Fragment {
                         startActivity(intent);
                     }
                 } else {
-                    Intent intent = new Intent(getActivity(),
-                            ActivityPlaceDetails.class);
-                    intent.putExtra("venueSmart",
-                            (VenueSmart) adapterPlaces.getItem(position));
-                    // We are sending the whole place object so we won't need
-                    // the 4sqId separately
-                    // intent.putExtra("foursquare_id",
-                    // arrayVenues.get(position).getFoursquareId());
-                    // I don't know what data is, but I don't think we will need
-                    // intent.putExtra("coords", data);
-                    startActivity(intent);
+                    Intent intent = new Intent(getActivity(), ActivityPlaceDetails.class);
+                    intent.putExtra("venueSmart", (VenueSmart) adapterPlaces.getItem(position));
+                    FragmentActivity act = getActivity();
+                    ((ActivityVenueFeeds) act).startSmartActivity(intent, "ActivityPlaceDetails");
                 }
-
             }
         });
 

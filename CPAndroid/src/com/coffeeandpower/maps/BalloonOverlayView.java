@@ -10,9 +10,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.coffeeandpower.app.R;
 import com.coffeeandpower.activity.ActivityPlaceDetails;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.cont.VenueSmart;
+import com.coffeeandpower.tab.activities.ActivityVenueFeeds;
 
 public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout {
 
@@ -48,12 +49,9 @@ public class BalloonOverlayView<Item extends MyOverlayItem> extends FrameLayout 
             public void onClick(View v) {
 
                 if (pinVenue != null) {
-                    Intent intent = new Intent(context,
-                            ActivityPlaceDetails.class);
+                    Intent intent = new Intent(context, ActivityPlaceDetails.class);
                     intent.putExtra("venueSmart", pinVenue);
-                    // intent.putExtra("foursquare_id", foursquareIdKey);
-                    // intent.putExtra("coords", AppCAP.getUserCoordinates());
-                    context.startActivity(intent);
+                    ((ActivityVenueFeeds) context).startSmartActivity(intent, "ActivityPlaceDetails");
                 }
                 layout.setVisibility(GONE);
             }

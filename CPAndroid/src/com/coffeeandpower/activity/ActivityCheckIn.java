@@ -1,10 +1,5 @@
 package com.coffeeandpower.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,16 +12,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
-import com.coffeeandpower.app.R;
 import com.coffeeandpower.RootActivity;
+import com.coffeeandpower.app.R;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cache.CachedDataContainer;
 import com.coffeeandpower.cont.DataHolder;
@@ -38,8 +28,8 @@ import com.coffeeandpower.imageutil.ImageLoader;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
 import com.coffeeandpower.utils.Executor;
-import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
+import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.Utils;
 import com.coffeeandpower.views.CustomDialog;
 import com.coffeeandpower.views.CustomFontView;
@@ -49,6 +39,11 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 public class ActivityCheckIn extends RootActivity implements Observer {
 
@@ -94,13 +89,6 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 
 		@Override
 		public void handleMessage(Message msg) {
-			usersArray = msg.getData().getParcelableArrayList("users");
-            // FIXME
-            // For now we are going to convert from UserSmart to UserShort
-            // Eventually UserShort should just be eliminated
-			checkedInUsers = convertUserSmart2UserShort(usersArray);
-			populateUsersIfExist();
-			
 			// Deregister since we only want to get a single data update in the checkin view
 			// multiple data updates will result in the checked in users getting replicated
 			CacheMgrService.stopObservingAPICall("venuesWithCheckins",ActivityCheckIn.this);
@@ -144,6 +132,7 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			venue = (VenueSmart) extras.getParcelable("venue");
+            exe.getUsersCheckedInAtFoursquareID(venue.getFoursquareId());
 		} else {
 			venue = new VenueSmart();
 		}
@@ -427,20 +416,25 @@ public class ActivityCheckIn extends RootActivity implements Observer {
 
 		switch (action) {
 
-		case Executor.HANDLE_CHECK_IN:
-			CacheMgrService.checkInTrigger(venue);
-			setResult(AppCAP.ACT_QUIT);
-			AppCAP.setUserCheckedIn(true);
-			ActivityCheckIn.this.finish();
-			break;
-        case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:
-            if (result != null) {
-                new CustomDialog(ActivityCheckIn.this,
-                        "Error Checkin",
-                        result.getResponseMessage()).show();
-            }
-            break;
-
+            case Executor.HANDLE_CHECK_IN:
+                CacheMgrService.checkInTrigger(venue);
+                setResult(AppCAP.ACT_QUIT);
+                AppCAP.setUserCheckedIn(true);
+                ActivityCheckIn.this.finish();
+                break;
+            case Executor.HANDLE_GET_CHECHED_USERS_IN_FOURSQUARE:
+                if (result.getObject() instanceof ArrayList<?>) {
+                    checkedInUsers = (ArrayList<UserShort>) result.getObject();
+                    populateUsersIfExist();
+                }
+                break;
+            case AppCAP.ERROR_SUCCEEDED_SHOW_MESS:
+                if (result != null) {
+                    new CustomDialog(ActivityCheckIn.this,
+                            "Error Checkin",
+                            result.getResponseMessage()).show();
+                }
+                break;
 		}
 	}
 

@@ -1,9 +1,5 @@
 package com.coffeeandpower.tab.activities;
 
-import java.util.Observable;
-import java.util.Observer;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -21,44 +17,38 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import android.widget.LinearLayout.LayoutParams;
-
 import com.coffeeandpower.AppCAP;
 import com.coffeeandpower.Constants;
 import com.coffeeandpower.RootActivity;
 import com.coffeeandpower.activity.ActivityCheckIn;
 import com.coffeeandpower.activity.ActivityLoginPage;
-import com.coffeeandpower.activity.ActivityUserDetails;
 import com.coffeeandpower.app.R;
 import com.coffeeandpower.cache.CacheMgrService;
 import com.coffeeandpower.cont.DataHolder;
-import com.coffeeandpower.cont.Review;
-import com.coffeeandpower.cont.UserLinkedinSkills;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.fragments.FragmentContacts;
 import com.coffeeandpower.fragments.FragmentMap;
 import com.coffeeandpower.fragments.FragmentPeopleAndPlaces;
+import com.coffeeandpower.fragments.FragmentPlaceDetails;
 import com.coffeeandpower.inter.TabMenu;
 import com.coffeeandpower.inter.UserMenu;
 import com.coffeeandpower.location.LocationDetectionStateMachine;
 import com.coffeeandpower.utils.Executor;
-import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
+import com.coffeeandpower.utils.UserAndTabMenu;
 import com.coffeeandpower.utils.UserAndTabMenu.OnUserStateChanged;
 import com.coffeeandpower.views.CustomFontView;
 import com.coffeeandpower.views.HorizontalPagerModified;
 import com.urbanairship.UAirship;
+
+import java.util.Observable;
+import java.util.Observer;
 
 public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, UserMenu {
 
@@ -103,8 +93,6 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
     public void setFragmentId(int fragment_id) {
         this.fragment_id = fragment_id;
     }
-    
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -178,7 +166,25 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         }
     }
 
-    
+    public void onClickBack(View v) {
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry entry = manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1);
+            int id = 0;
+            try {
+                id = Integer.parseInt(entry.getName());
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            manager.popBackStackImmediate();
+            if (id > 0) {
+                displayFragment(id);
+            } else {
+                displayFragment(R.id.tab_fragment_area_map);
+            }
+        }
+    }
+
     public void displayFragment(int fragment_id) {
         Fragment newFragment;
         int hide_fragment_id = 0;
@@ -195,9 +201,9 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         Fragment fragment = manager.findFragmentById(fragment_id);
         if (fragment == null) {
             // Create new fragment and transaction
-          if (fragment_id == R.id.tab_fragment_area_contacts) { 
+          if (fragment_id == R.id.tab_fragment_area_contacts) {
               newFragment = new FragmentContacts(this.intentExtras);
-          } else if (fragment_id == R.id.tab_fragment_area_map) { 
+          } else if (fragment_id == R.id.tab_fragment_area_map) {
               newFragment = new FragmentMap(this.intentExtras);
           } else if (fragment_id == R.id.tab_fragment_area_people) {
               if (intentExtras.getInt("fragment") == 0) {
@@ -209,6 +215,9 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
                   intentExtras.putInt("fragment", R.id.tab_fragment_area_places);
               }
               newFragment = new FragmentPeopleAndPlaces(this.intentExtras);
+          } else if (fragment_id == R.id.tab_fragment_area_place_details) {
+              transaction.addToBackStack(Integer.toString(hide_fragment_id));
+              newFragment = new FragmentPlaceDetails(this.intentExtras);
           } else {
               newFragment = new FragmentMap(this.intentExtras);
           }
@@ -216,6 +225,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         } else {
             transaction.show(fragment);
         }
+
         if (hide_fragment_id != 0) {
             Fragment hide_fragment = manager.findFragmentById(hide_fragment_id);
             if (hide_fragment != null) {
@@ -231,6 +241,14 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
     }
     
     public void switchTabBackground(int onRelativeLayout) {
+
+        if (onRelativeLayout == R.id.tab_fragment_area_place_details) {
+            findViewById(R.id.title_bar).setVisibility(View.GONE);
+            return;
+        } else {
+            findViewById(R.id.title_bar).setVisibility(View.VISIBLE);
+        }
+
         if (onRelativeLayout == R.id.rel_people) {
             ((Button) findViewById(R.id.btn_top_map)).setVisibility(View.GONE);
             ((Button) findViewById(R.id.btn_top_list)).setVisibility(View.GONE);
@@ -345,6 +363,8 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             } else {
                 ((CustomFontView) findViewById(R.id.textview_contact_list)).setVisibility(View.GONE);
             }
+        } else if (next_fragment_id == R.id.tab_fragment_area_place_details) {
+            switchTabBackground(R.id.tab_fragment_area_place_details);
         } else {
             switchTabBackground(R.id.rel_map);
             ((CustomFontView) findViewById(R.id.textview_contact_list)).setText(getResStr(R.string.map_screen_title));
@@ -373,8 +393,8 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             }
         }
     }
-   
-    
+
+
     private OnBackStackChangedListener getListener()
     {
         OnBackStackChangedListener result = new OnBackStackChangedListener()
@@ -385,7 +405,7 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
 
                 if (manager != null)
                 {
-/*                    
+/*
                     Fragment currFrag = (Fragment)manager.findFragmentById(R.id.tab_fragment_area);
                     if (currFrag != null) {
                     updateMenuOnFragmentchange(fragment_id);
@@ -521,7 +541,6 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         menu.onClickMapFromTab(v);
     }
 
-
     public void changeIntentCaller(String caller) {
         intentExtras.putString("caller", caller);
     }
@@ -534,11 +553,37 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         }
     }
 
-
     @Override
-    public void onClickCheckIn(View v) {
+    public void onClickCheckIn(final View v) {
         if (AppCAP.isLoggedIn()) {
-            menu.onClickCheckIn(v);
+            if (fragment_id == R.id.tab_fragment_area_place_details && intentExtras.containsKey("venueSmart")) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityVenueFeeds.this);
+                builder.setMessage("Would you like to check in to this venue?")
+                        .setCancelable(false)
+                        .setPositiveButton("Show me list", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                menu.onClickCheckIn(v);
+                                dialog.cancel();
+                            }
+                        })
+                        .setNegativeButton("Check in here", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                VenueSmart selectedVenue = (VenueSmart) intentExtras.getParcelable("venueSmart");
+                                Intent intent = new Intent(ActivityVenueFeeds.this, ActivityCheckIn.class);
+                                intent.putExtra("venue", selectedVenue);
+                                startActivityForResult(intent, AppCAP.ACT_CHECK_IN);
+
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                menu.onClickCheckIn(v);
+            }
+
         } else {
             showDialog(DIALOG_MUST_BE_A_MEMBER);
         }
@@ -605,8 +650,6 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
         menu.onClickPlus(v);
     }
 
-
-    
     @Override
     public boolean startSmartActivity(Intent intent, String activityName) {
         if (activityName == "ActivityMap") {
@@ -625,6 +668,10 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
             } else {
                 displayFragment(R.id.tab_fragment_area_places);
             }
+            return true;
+        } else if (activityName == "ActivityPlaceDetails") {
+            this.intentExtras = intent.getExtras();
+            displayFragment(R.id.tab_fragment_area_place_details);
             return true;
         } else {
             super.startSmartActivity(intent, activityName);
@@ -755,7 +802,4 @@ public class ActivityVenueFeeds extends RootActivity   implements   TabMenu, Use
 
         return dialog;
     }
-
-
-
 }
