@@ -25,7 +25,7 @@ import com.coffeeandpower.cont.UserSmart;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.cont.VenueSmart.CheckinData;
 import com.coffeeandpower.imageutil.ImageLoader;
-import com.coffeeandpower.location.LocationDetectionStateMachine;
+import com.coffeeandpower.location.LocationDetectionService;
 import com.coffeeandpower.maps.MyItemizedOverlay2;
 import com.coffeeandpower.utils.Executor;
 import com.coffeeandpower.utils.Executor.ExecutorInterface;
@@ -305,33 +305,30 @@ public class ActivityCheckIn extends RootActivity implements Observer {
                 .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		
 		if (!venueMatched) {
-                		
         		AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
         		myAlertDialog.setTitle("Automatic Checkin");
         		myAlertDialog.setMessage("Do you want to check in to " + venue.getName() + " automatically?");
+
         		myAlertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-        			
         			 public void onClick(DialogInterface arg0, int arg1) {
         				 Log.d("CheckIn","User clicked YES");
-        				 exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),true,false,context);
-        				 LocationDetectionStateMachine.manualCheckin(getApplicationContext(),new Handler(), venue);
+        				 exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(), true, false, context);
+        				 LocationDetectionService.manualCheckin(getApplicationContext(), venue);
         		 	 }
         		});
+
         		myAlertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-        		       
-                		  public void onClick(DialogInterface arg0, int arg1) {
-                			  Log.d("CheckIn","User clicked NO");
-                			  exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false,context);
-                		  }
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        Log.d("CheckIn","User clicked NO");
+                        exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(), false, false, context);
+                    }
         		});
+
         		myAlertDialog.show();
 		} else {
 			// If user already selected autocheckin, just check them in silently
-			exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(),false,false,context);
+			exe.checkIn(venue, checkInTime, checkOutTime, statusEditText.getText().toString(), false, false, context);
 		}
-		
-		
-		
 	}
 	
 	private ArrayList<UserShort> convertUserSmart2UserShort(ArrayList<UserSmart> userList) {

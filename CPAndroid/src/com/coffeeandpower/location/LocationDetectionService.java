@@ -45,33 +45,8 @@ public class LocationDetectionService extends Service {
     
     private TreeMap<Integer, PendingIntent> activeProxAlerts;
     private static HashSet<Integer> queuedVenues;
+    private static VenueSmart initialManualCheckin = null;
 
-    private Handler mainThreadTaskHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            
-            super.handleMessage(msg);
-            
-            String messageType = msg.getData().getString("type");
-            Log.d(TAG,"mainThreadTaskHandler.handleMessage: " + messageType);
-            
-            if (messageType.equalsIgnoreCase("startActiveListener")) {
-                
-                
-                activeLocationListener.startListener();
-                //Looper.myLooper().quit();
-                
-                /*
-                getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                        0,
-                        activeLocationListener);*/
-            } else if (messageType.equalsIgnoreCase("stopActiveListener")) {
-                getLocationManager().removeUpdates(activeLocationListener);
-            }
-        }
-    };
-    
     private static class ProximityReceiver extends BroadcastReceiver {
  
         private VenueSmart venue;
@@ -140,28 +115,20 @@ public class LocationDetectionService extends Service {
         
         instance = this;
         
-        activeLocationListener = new ActiveLocationListener(this);
+        activeLocationListener = new ActiveLocationListener();
         activeLocationListener.init();
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                
-                Looper.prepare();
-                
-                LocationDetectionStateMachine.init(LocationDetectionService.this, mainThreadTaskHandler);
-                
-                Looper.loop();
-                
-            }
-        },"LocationDetectionService.onCreate");
-        thread.setDaemon(true);
-        thread.start();
+        LocationDetectionStateMachine.init(LocationDetectionService.this);
 
         activeProxAlerts = new TreeMap<Integer, PendingIntent>();
         
         if(queuedVenues != null) {
             CacheMgrService.startObservingAPICall("venuesWithCheckins", new MyVenueCacheObserver());
+        }
+
+        if (initialManualCheckin != null) {
+            LocationDetectionStateMachine.manualCheckin(initialManualCheckin);
+            initialManualCheckin = null;
         }
     }
     
@@ -253,6 +220,33 @@ public class LocationDetectionService extends Service {
         }
     }
 
+    public static void manualCheckin(Context context, VenueSmart venue) {
+        AppCAP.enableAutoCheckinForVenue(venue.getVenueId());
+        AppCAP.enableAutoCheckin(context);
+
+        addVenueToAutoCheckinList(venue);
+
+        if (instance != null) {
+            LocationDetectionStateMachine.manualCheckin(venue);
+        } else {
+            // service hasn't finished starting yet, so save it for onCreate
+            initialManualCheckin = venue;
+        }
+    }
+    
+    public void startActiveListener() {
+        activeLocationListener.startListener(this);
+    }
+
+    public void stopActiveListener() {
+        getLocationManager().removeUpdates(activeLocationListener);
+    }
+
+    // package-private
+    static void runOnMainThread(Runnable r) {
+        new Handler(Looper.getMainLooper()).post(r);
+    }
+
     private LocationManager getLocationManager() {
         return (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
@@ -260,7 +254,7 @@ public class LocationDetectionService extends Service {
     private static void debugMessage(final String msg) {
         Log.d(TAG, msg);
         if(Constants.debugLocationToast) {
-            instance.mainThreadTaskHandler.post(new Runnable() {
+            runOnMainThread(new Runnable() {
                 @Override public void run() {
                     Toast.makeText(instance, msg, Toast.LENGTH_LONG).show();
                 }

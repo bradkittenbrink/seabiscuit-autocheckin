@@ -19,13 +19,11 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
-public class LocationFence {
+class LocationFence {
 
     private static Context myContext;
     
-    private static LocationFence instance = new LocationFence();
-    
-    private MyVenuesObserver myVenuesObserver = new MyVenuesObserver();
+    private static MyVenuesObserver myVenuesObserver = new MyVenuesObserver();
     
     private static Location pendingLocation;
     private static int[] autoCheckinArray;
@@ -58,11 +56,11 @@ public class LocationFence {
     
     public static void isLocationWithinFence(Location location) {
         isLocationHighAssurance(location);
-        CacheMgrService.startObservingAPICall("venuesWithCheckins", instance.myVenuesObserver); 
+        CacheMgrService.startObservingAPICall("venuesWithCheckins", myVenuesObserver); 
         
     }
     
-    private class MyVenuesObserver implements Observer {
+    private static class MyVenuesObserver implements Observer {
         @Override
         public void update(Observable observable, Object data) {
 
@@ -96,7 +94,7 @@ public class LocationFence {
                         }
                 }
                 //We have the venue positions now lets check for fence breaks
-                venuesWithFenceBreaks =  this.checkFence(venuesWithAutoCheckins);
+                venuesWithFenceBreaks =  checkFence(venuesWithAutoCheckins);
                 if(venuesWithFenceBreaks.size() > 0) {
                     if (Constants.debugLog)
                         Log.d("LocationFence",String.valueOf(venuesWithFenceBreaks.size()) + " Fence breaks found");

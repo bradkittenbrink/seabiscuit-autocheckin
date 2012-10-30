@@ -8,16 +8,13 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-public class ActiveLocationListener implements LocationListener{
+public class ActiveLocationListener implements LocationListener {
 
     private final String TAG = "ActiveLocationListener";
     private boolean hasReceivedHighAssuranceLocation;
-    private Context myContext;
     
-    public ActiveLocationListener(Context context) {
+    public ActiveLocationListener() {
         hasReceivedHighAssuranceLocation = false;
-        
-        myContext = context;
     }
     
     // only want to send a single high assurance position
@@ -26,9 +23,9 @@ public class ActiveLocationListener implements LocationListener{
         hasReceivedHighAssuranceLocation = false;
     }
     
-    public void startListener() {
+    public void startListener(Context context) {
         Log.d(TAG,"Starting Active Listener...");
-        LocationManager locationManager = (LocationManager)myContext.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
             400,
             0,
@@ -65,5 +62,4 @@ public class ActiveLocationListener implements LocationListener{
         // TODO Auto-generated method stub
         
     }
-
 }

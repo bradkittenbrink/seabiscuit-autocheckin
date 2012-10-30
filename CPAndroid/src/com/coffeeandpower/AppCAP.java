@@ -37,7 +37,7 @@ import com.coffeeandpower.cont.DataHolder;
 import com.coffeeandpower.cont.VenueNameAndFeeds;
 import com.coffeeandpower.cont.VenueSmart;
 import com.coffeeandpower.location.LocationDetectionService;
-import com.coffeeandpower.location.venueWifiSignature;
+import com.coffeeandpower.location.VenueSignature;
 import com.coffeeandpower.urbanairship.CapPushNotificationBuilder;
 import com.coffeeandpower.urbanairship.IntentReceiver;
 import com.coffeeandpower.utils.HttpUtil;
@@ -223,14 +223,14 @@ public class AppCAP extends Application {
 
             // Get country code for metrics/imperial units
             TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            String simCountry = tm.getSimCountryIso();
             if (Constants.debugLog)
-                Log.d("LOG", "Locale: " + tm.getSimCountryIso());
-            if (tm.getSimCountryIso() != null
-                    && !tm.getSimCountryIso().equals("")) {
-                if (tm.getSimCountryIso().contains("US")
-                        || tm.getSimCountryIso().contains("us")
-                        || tm.getSimCountryIso().contains("usa")
-                        || tm.getSimCountryIso().contains("um")) {
+                Log.d("AppCAP", "Locale: " + simCountry);
+            if (simCountry != null && !simCountry.equals("")) {
+                if (simCountry.contains("US")
+                        || simCountry.contains("us")
+                        || simCountry.contains("usa")
+                        || simCountry.contains("um")) {
                     setMetricsSys(false);
                 } else {
                     setMetricsSys(true);
@@ -266,7 +266,6 @@ public class AppCAP extends Application {
 
         Log.d("AppCAP", "Running app cleanup...");
 
-        // ProximityManager.onStop(this);
         Log.d("AppCAP", "Disabling cache service...");
         // context.stopService(new Intent(context,CacheMgrService.class));
         CacheMgrService.stop();
@@ -296,7 +295,7 @@ public class AppCAP extends Application {
             // If the service is already running don't start it.
             // There should only be one
             if (!locationDetectionServiceRunning) {
-
+                Log.d(TAG, "Starting LocationDetectionService");
                 context.startService(new Intent(context,
                         LocationDetectionService.class));
                 locationDetectionServiceRunning = true;
@@ -1196,14 +1195,14 @@ public class AppCAP extends Application {
      * 
      * @category setter
      */
-    public static void addAutoCheckinWifiSignature(venueWifiSignature currentSig) {
+    public static void addAutoCheckinVenueSignature(VenueSignature currentSig) {
         Gson gsonConverter = new Gson();
-        Type listOfVenueWifiSigs = new TypeToken<ArrayList<venueWifiSignature>>() {
+        Type listOfVenueWifiSigs = new TypeToken<ArrayList<VenueSignature>>() {
         }.getType();
 
         String jsonWifiSigs = getSharedPreferences().getString(
                 TAG_VENUE_WIFI_SIGNATURES, "");
-        ArrayList<venueWifiSignature> ArrayOfSignatures = new ArrayList<venueWifiSignature>();
+        ArrayList<VenueSignature> ArrayOfSignatures = new ArrayList<VenueSignature>();
         if (jsonWifiSigs.equals("")) {
             // No existing venues in autocheckin list
         } else {
@@ -1232,17 +1231,17 @@ public class AppCAP extends Application {
      * 
      * @category setter
      */
-    public static void removeAutoCheckinWifiSignature(int venueId) {
-        venueWifiSignature currentSig = new venueWifiSignature();
+    public static void removeAutoCheckinVenueSignature(int venueId) {
+        VenueSignature currentSig = new VenueSignature();
         currentSig.venueId = venueId;
         Gson gsonConverter = new Gson();
-        Type listOfVenueWifiSigs = new TypeToken<ArrayList<venueWifiSignature>>() {
+        Type listOfVenueWifiSigs = new TypeToken<ArrayList<VenueSignature>>() {
         }.getType();
 
         String jsonWifiSigs = getSharedPreferences().getString(
                 TAG_VENUE_WIFI_SIGNATURES, "");
 
-        ArrayList<venueWifiSignature> ArrayOfSignatures = gsonConverter
+        ArrayList<VenueSignature> ArrayOfSignatures = gsonConverter
                 .fromJson(jsonWifiSigs, listOfVenueWifiSigs);
         if (ArrayOfSignatures.contains(currentSig)) {
             ArrayOfSignatures.remove(currentSig);
@@ -1258,54 +1257,20 @@ public class AppCAP extends Application {
      * 
      * @category localUserData
      */
-    public static ArrayList<venueWifiSignature> getAutoCheckinWifiSignatures() {
+    public static ArrayList<VenueSignature> getAutoCheckinVenueSignatures() {
         Gson gsonConverter = new Gson();
-        Type listOfVenueWifiSigs = new TypeToken<ArrayList<venueWifiSignature>>() {
+        Type listOfVenueWifiSigs = new TypeToken<ArrayList<VenueSignature>>() {
         }.getType();
 
         String jsonWifiSigs = getSharedPreferences().getString(
                 TAG_VENUE_WIFI_SIGNATURES, "");
 
         if (jsonWifiSigs == "") {
-            return new ArrayList<venueWifiSignature>();
+            return new ArrayList<VenueSignature>();
         }
         return gsonConverter.fromJson(jsonWifiSigs, listOfVenueWifiSigs);
     }
 
-    /**
-     * 
-     * @category tempTestData
-     */
-    /*
-     * public static ArrayList<venueWifiSignature>
-     * getAutoCheckinWifiSignatures() { ArrayList<venueWifiSignature>
-     * arrayOfVenuesSigs = new ArrayList<venueWifiSignature>(); //Data for C&P
-     * List<String> testBssids = Arrays.asList("98:fc:11:8f:8f:b0",
-     * "00:1c:b3:ff:8d:53", "f4:6d:04:6d:33:2e", "e0:91:f5:87:71:2b",
-     * "74:91:1a:50:eb:98","c4:3d:c7:8d:6b:f8"); ArrayList<MyScanResult>
-     * venueWifiNetworks = new ArrayList<MyScanResult>(); for(String
-     * currBssid:testBssids) { venueWifiNetworks.add(new
-     * MyScanResult(currBssid)); }
-     * 
-     * venueWifiSignature testSignature = new venueWifiSignature();
-     * testSignature.venueId = 23;
-     * testSignature.addConnectedSSID("coffeeandpower");
-     * testSignature.addWifiNetworkToSignature(venueWifiNetworks);
-     * arrayOfVenuesSigs.add(testSignature);
-     * 
-     * //This is a fake test list for Andrew's testBssids =
-     * Arrays.asList("00:24:36:a4:f5:2d", "e4:83:99:07:c8:e0",
-     * "20:4e:7f:44:cd:dc", "1c:14:48:09:30:40", "c8:60:00:94:33:12",
-     * "30:46:9a:1c:63:5c"); ArrayList<MyScanResult> andrewWifiNetworks = new
-     * ArrayList<MyScanResult>(); for(String currBssid:testBssids) {
-     * andrewWifiNetworks.add(new MyScanResult(currBssid)); }
-     * 
-     * venueWifiSignature andrewTestSignature = new venueWifiSignature();
-     * andrewTestSignature.addConnectedSSID("veronica");
-     * andrewTestSignature.addWifiNetworkToSignature(andrewWifiNetworks);
-     * 
-     * arrayOfVenuesSigs.add(andrewTestSignature); return arrayOfVenuesSigs; }
-     */
     private String getAppName() {
         int pID = android.os.Process.myPid();
         String processName = "";

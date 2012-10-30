@@ -8,8 +8,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
-public class PassiveLocationUpdateReceiver extends BroadcastReceiver {
-    protected static String TAG = "PassiveLocationChangedReceiver";
+class PassiveLocationUpdateReceiver extends BroadcastReceiver {
+    protected static String TAG = "PassiveLocationUpdateReceiver";
 
     /**
      * When a new location is received, extract it from the Intent
@@ -30,7 +30,7 @@ public class PassiveLocationUpdateReceiver extends BroadcastReceiver {
             // This update came from Passive provider, so we can extract the location
             // directly.
             location = (Location)intent.getExtras().get(key);
-                Log.d(TAG,"Received Updated Location: " + location.getLatitude() + ", " + location.getLongitude());
+            Log.d(TAG,"Received Updated Location: " + location.getLatitude() + ", " + location.getLongitude());
                 
             LocationFence.isLocationWithinFence(location);
         }
