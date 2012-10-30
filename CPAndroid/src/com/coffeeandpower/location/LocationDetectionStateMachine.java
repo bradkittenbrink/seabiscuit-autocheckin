@@ -368,67 +368,40 @@ public class LocationDetectionStateMachine {
     }
 
     private static void positionListenersCallback(boolean isHighConfidence, ArrayList<VenueSmart> triggeringVenues) {
-        if(currentState == 0 || (currentState > 0 && currentState <= 1 && isHighConfidence))
-        {
-                triggeringVenuesCACHE = triggeringVenues;
-                //If we have a fence break respond
-                if(triggeringVenues != null )
-                {
-                    if(triggeringVenues.size() == 0)
-                    {
-                            try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                            passiveListeningSTATE();            
-                        }
-                    else
-                    {
-                                //PassiveListenersINIT returning
-                                if(currentState == 0)
-                                {
-                                    //We are going to move this until we have verified the Wifi
-                                    //Since we get a false state change everytime we register for the 
-                                    //WifiState listener
-                                    //stopPassiveListeners();
-                                        if (isHighConfidence) {
-                                            wifiBasedVerificationSTATE();
-                                        }
-                                        else {
-                                            //FIXME
-                                            //Skipping active GPS right now
-                                            wifiBasedVerificationSTATE();
-                                            //locationBasedVerificationSTATE();
-                                        }
-                                }
-                                else{
-                                    //commandGPSINIT
-                                        if (isHighConfidence) {
-                                            wifiBasedVerificationSTATE();
-                                        }
-                                        else {
-                                            //If we can't get a high assurance position
-                                            //Return to passive listening
-                                            try {
-                                    Thread.sleep(2000);
-                                } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-                                            passiveListeningSTATE();
-                                        }           
-                                }
+        if (currentState == 0 || (currentState > 0 && currentState <= 1 && isHighConfidence)) {
+            triggeringVenuesCACHE = triggeringVenues;
+            //If we have a fence break respond
+            if (triggeringVenues != null ) {
+                if (triggeringVenues.size() == 0) {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
-                }
-                else
-                {
-                    if (AppCAP.isUserCheckedIn()) {
-                        venueStateTransitionSTATE();
-                    }
-                    else {
-                            //No fence breaks return to passive listening
+                    passiveListeningSTATE();            
+                } else {
+                    //PassiveListenersINIT returning
+                    if (currentState == 0) {
+                        //We are going to move this until we have verified the Wifi
+                        //Since we get a false state change everytime we register for the 
+                        //WifiState listener
+                        //stopPassiveListeners();
+                        if (isHighConfidence) {
+                            wifiBasedVerificationSTATE();
+                        } else {
+                            //FIXME
+                            //Skipping active GPS right now
+                            wifiBasedVerificationSTATE();
+                            //locationBasedVerificationSTATE();
+                        }
+                    } else {
+                        //commandGPSINIT
+                        if (isHighConfidence) {
+                            wifiBasedVerificationSTATE();
+                        } else {
+                            //If we can't get a high assurance position
+                            //Return to passive listening
                             try {
                                 Thread.sleep(2000);
                             } catch (InterruptedException e) {
@@ -436,12 +409,25 @@ public class LocationDetectionStateMachine {
                                 e.printStackTrace();
                             }
                             passiveListeningSTATE();
+                        }           
                     }
                 }
-        }
-        else{
+            } else {
+                if (AppCAP.isUserCheckedIn()) {
+                    venueStateTransitionSTATE();
+                } else {
+                    //No fence breaks return to passive listening
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    passiveListeningSTATE();
+                }
+            }
+        } else {
             Log.d(TAG,"Redundant late call to: positionListenersCallback");
-
         }
     }
     
