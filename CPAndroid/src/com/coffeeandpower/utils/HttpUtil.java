@@ -3425,8 +3425,7 @@ public class HttpUtil {
 
         try {
             params.add(new BasicNameValuePair("action", "changeCurrentHeadline"));
-            params.add(new BasicNameValuePair("headline", URLEncoder.encode(
-                    headline + "", "utf-8")));
+            params.add(new BasicNameValuePair("headline", headline));
 
             post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
